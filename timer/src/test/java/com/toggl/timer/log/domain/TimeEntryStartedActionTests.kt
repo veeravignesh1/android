@@ -3,9 +3,9 @@ package com.toggl.timer.log.domain
 import com.toggl.architecture.core.noEffect
 import com.toggl.repository.timeentry.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
-import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.kotlintest.specs.FreeSpec
 import io.mockk.mockk
 
@@ -16,7 +16,7 @@ class TimeEntryStartedActionTests : FreeSpec({
 
     "The TimeEntryStarted action" - {
         "updates the state to add the time entry" - {
-            var state = createEmptyState()
+            var state = createInitialState()
             val settableValue = state.toSettableValue { state = it }
 
             assertAll(fn = { id: Long ->
@@ -24,7 +24,7 @@ class TimeEntryStartedActionTests : FreeSpec({
                 val action = TimeEntriesLogAction.TimeEntryStarted(timeEntry, null)
                 val effect = reducer.reduce(settableValue, action)
                 effect shouldBe noEffect()
-                state.timeEntries shouldContain timeEntry
+                state.timeEntries[timeEntry.id] shouldNotBe null
             })
         }
     }

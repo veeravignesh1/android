@@ -17,7 +17,7 @@ class TimeEntryTappedActionTests : FreeSpec({
     "The TimeEntryTapped action" - {
         "should thrown when there are no time entries" - {
             "with the matching id" {
-                val initialState = createEmptyState().copy(timeEntries = listOf(testTe))
+                val initialState = createInitialState(listOf(testTe))
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 shouldThrow<IllegalStateException> {
@@ -26,7 +26,7 @@ class TimeEntryTappedActionTests : FreeSpec({
             }
 
             "at all" {
-                val initialState = createEmptyState()
+                val initialState = createInitialState()
                 assertAll(fn = { id: Long ->
                     var state = initialState
                     val settableValue = state.toSettableValue { state = it }
@@ -38,7 +38,7 @@ class TimeEntryTappedActionTests : FreeSpec({
         }
 
         "set the editing time entry property when the time entry exists" {
-            val initialState = createEmptyState().copy(timeEntries = listOf(testTe))
+            val initialState = createInitialState(listOf(testTe))
 
             var state = initialState
             val settableValue = state.toSettableValue { state = it }

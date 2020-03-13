@@ -6,20 +6,27 @@ import com.toggl.models.domain.TimeEntry
 typealias TimerReducer = Reducer<TimerState, TimerAction>
 
 fun handleTimeEntryCreationStateChanges(
-    timeEntries: List<TimeEntry>,
+    timeEntries: Map<Long, TimeEntry>,
     startedTimeEntry: TimeEntry,
     stoppedTimeEntry: TimeEntry?
-): List<TimeEntry> {
+): Map<Long, TimeEntry> {
 
-    val newEntries =
-        if (stoppedTimeEntry == null) timeEntries
-        else timeEntries.map { if (it.id != stoppedTimeEntry.id) it else stoppedTimeEntry }
+    val newEntries = timeEntries.toMutableMap()
+    newEntries[startedTimeEntry.id] = startedTimeEntry
+    if (stoppedTimeEntry != null) {
+        newEntries[stoppedTimeEntry.id] = stoppedTimeEntry
+    }
 
-    return newEntries + startedTimeEntry
+    return newEntries.toMap()
 }
 
 fun handleTimeEntryDeletionStateChanges(
-    timeEntries: List<TimeEntry>,
-    deletedTimeEntry: TimeEntry
-): List<TimeEntry> =
-    timeEntries.filter { it.id != deletedTimeEntry.id }
+    timeEntries: Map<Long, TimeEntry>,
+    deletedTimeEntries: HashSet<TimeEntry>
+): Map<Long, TimeEntry> {
+
+    val newEntries = timeEntries.toMutableMap()
+    deletedTimeEntries.forEach { newEntries.remove(it.id) }
+
+    return newEntries.toMap()
+}
