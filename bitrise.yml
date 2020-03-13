@@ -34,7 +34,9 @@ workflows:
     before_run: []
   health-tests:
     steps:
-    - android-unit-test@1.0.0: {}
+    - android-unit-test@1.0.0:
+        inputs:
+        - variant: debug
     - github-status@2.2.2:
         inputs:
         - status_identifier: Unit Tests
