@@ -17,7 +17,7 @@ class TimeEntryRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) { timeEntryDao.getAll() }
 
     override suspend fun startTimeEntry(description: String): StartTimeEntryResult {
-        val oldStoppedTimeEntries = stopAllRunningTimeEntries()
+        val stoppedTimeEntry = stopRunningTimeEntry()
         val id = timeEntryDao.insert(
             TimeEntry(
                 description = description,
@@ -31,14 +31,17 @@ class TimeEntryRepositoryImpl @Inject constructor(
         )
         return StartTimeEntryResult(
             timeEntryDao.getOne(id),
-            oldStoppedTimeEntries.firstOrNull()
+            stoppedTimeEntry
         )
     }
 
     override suspend fun stopRunningTimeEntry(): TimeEntry? {
-        val oldStoppedTimeEntries = stopAllRunningTimeEntries()
-        timeEntryDao.updateAll(oldStoppedTimeEntries)
-        return oldStoppedTimeEntries.firstOrNull()
+        val now = timeService.now()
+        return timeEntryDao
+            .getAllRunning()
+            .map { it.copy(duration = Duration.between(it.startTime, now)) }
+            .also(timeEntryDao::updateAll)
+            .firstOrNull()
     }
 
     override suspend fun editTimeEntry(timeEntry: TimeEntry): TimeEntry =
@@ -49,10 +52,4 @@ class TimeEntryRepositoryImpl @Inject constructor(
             .map { it.copy(isDeleted = true) }
             .apply(timeEntryDao::updateAll)
             .toHashSet()
-
-    private fun stopAllRunningTimeEntries(): List<TimeEntry> {
-        val now = timeService.now()
-        val oldRunningTimeEntries = timeEntryDao.getAllRunning()
-        return oldRunningTimeEntries.map { it.copy(duration = Duration.between(it.startTime, now)) }
-    }
 }
