@@ -6,10 +6,11 @@ trigger_map:
 - push_branch: "*"
   workflow: health
 workflows:
-  base:
+  setup:
     steps:
     - activate-ssh-key@4.0.5:
         run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - cache-pull@2.1.4: {}
     - git-clone@4.0.18: {}
     - install-missing-android-tools@2.3.8:
         inputs:
@@ -41,18 +42,21 @@ workflows:
         inputs:
         - status_identifier: Unit Tests
         - auth_token: "$GITHUB_STATUS_KEY"
-    - deploy-to-bitrise-io@1.9.6: {}
     before_run:
-    - base
+    - setup
+    after_run:
+    - teardown
   health-compile:
     steps:
-    - android-build@0.10.0: {}
+    - android-build@0.10.0:
+        inputs:
+        - variant: debug
     - github-status@2.2.2:
         inputs:
         - status_identifier: Compiler Check
         - auth_token: "$GITHUB_STATUS_KEY"
     before_run:
-    - base
+    - setup
   health-linter:
     steps:
     - gradle-runner@1.9.3:
@@ -64,7 +68,11 @@ workflows:
         - status_identifier: Linter Check
         - auth_token: "$GITHUB_STATUS_KEY"
     before_run:
-    - base
+    - setup
+  teardown:
+    steps:
+    - cache-push@2.2.3: {}
+    - deploy-to-bitrise-io@1.9.6: {}
 app:
   envs:
   - opts:
