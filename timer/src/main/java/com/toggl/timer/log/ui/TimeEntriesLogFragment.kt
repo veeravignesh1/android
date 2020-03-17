@@ -7,10 +7,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.toggl.environment.services.TimeService
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
-import com.toggl.timer.extensions.toTimeEntryViewModelList
 import com.toggl.timer.log.domain.TimeEntriesLogAction
+import com.toggl.timer.log.domain.TimeEntriesLogState
+import com.toggl.timer.log.domain.TimeEntryViewModel
+import com.toggl.timer.log.domain.timeEntriesLogSelector
 import javax.inject.Inject
 import kotlinx.android.synthetic.main.time_entries_log_fragment.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,11 +26,14 @@ import kotlinx.coroutines.launch
 class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
 
     @Inject
+    lateinit var timeService: TimeService
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val store: TimeEntriesLogStoreViewModel by viewModels { viewModelFactory }
-    private val adapter =
-        TimeEntryLogAdapter { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
+
+    private val adapter = TimeEntriesLogAdapter { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -41,11 +47,18 @@ class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
 
         recycler_view.adapter = adapter
 
+        val context = requireContext()
+        val todayString = context.getString(R.string.today)
+        val yesterdayString = context.getString(R.string.yesterday)
+
+        val curriedTimeEntriesSelector: suspend (TimeEntriesLogState) -> List<TimeEntryViewModel> = {
+            timeEntriesLogSelector(it.timeEntries, it.projects, timeService, todayString, yesterdayString)
+        }
+
         lifecycleScope.launch {
             store.state
-                .map { Pair(it.timeEntries, it.projects) }
+                .map(curriedTimeEntriesSelector)
                 .distinctUntilChanged()
-                .map { (timeEntries, projects) -> timeEntries.toTimeEntryViewModelList(projects) }
                 .onEach { adapter.submitList(it) }
                 .launchIn(this)
         }

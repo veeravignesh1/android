@@ -7,4 +7,6 @@
     <string name="calendar">Calendar</string>
     <string name="add_description">Add description</string>
     <string name="login">Login</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>

@@ -1,23 +1,56 @@
 package com.toggl.timer.log.ui
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.toggl.timer.R
-import com.toggl.timer.log.domain.FlatTimeEntryItem
+import com.toggl.timer.log.domain.DayHeaderViewModel
+import com.toggl.timer.log.domain.FlatTimeEntryViewModel
+import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 import com.toggl.timer.log.domain.TimeEntryViewModel
+import java.lang.IllegalStateException
 
-class TimeEntryLogAdapter(private val onContinueTappedListener: (Long) -> Unit = {}) :
+class TimeEntriesLogAdapter(private val onContinueTappedListener: (Long) -> Unit = {}) :
     ListAdapter<TimeEntryViewModel, TimeEntryLogViewHolder>(diffCallback) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeEntryLogViewHolder =
-        LayoutInflater.from(parent.context)
-            .inflate(R.layout.time_entries_log_item, parent, false)
-            .let { TimeEntryLogViewHolder(it, onContinueTappedListener) }
+
+    private val dayHeaderViewType = 0
+    private val flatTimeEntryViewType = 1
+    private val timeEntryGroupViewType = 2
+
+    override fun getItemViewType(position: Int): Int =
+        when (getItem(position)) {
+            is DayHeaderViewModel -> dayHeaderViewType
+            is FlatTimeEntryViewModel -> flatTimeEntryViewType
+            is TimeEntryGroupViewModel -> timeEntryGroupViewType
+        }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeEntryLogViewHolder {
+        val layoutId = when (viewType) {
+            dayHeaderViewType -> R.layout.time_entries_log_header
+            flatTimeEntryViewType -> R.layout.time_entries_log_item
+            else -> throw IllegalStateException()
+        }
+
+        return LayoutInflater.from(parent.context)
+            .inflate(layoutId, parent, false)
+            .let { createViewHolder(viewType, it) }
+    }
 
     override fun onBindViewHolder(holder: TimeEntryLogViewHolder, position: Int) {
-        holder.bind(getItem(position) as FlatTimeEntryItem)
+        when (holder) {
+            is TimeEntryItemViewHolder -> holder.bind(getItem(position) as FlatTimeEntryViewModel)
+            is TimeEntryHeaderViewHolder -> holder.bind(getItem(position) as DayHeaderViewModel)
+        }
     }
+
+    private fun createViewHolder(viewType: Int, itemView: View): TimeEntryLogViewHolder =
+        when (viewType) {
+            dayHeaderViewType -> TimeEntryHeaderViewHolder(itemView)
+            flatTimeEntryViewType -> TimeEntryItemViewHolder(itemView, onContinueTappedListener)
+            else -> throw IllegalStateException()
+        }
 
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<TimeEntryViewModel>() {
@@ -25,17 +58,27 @@ class TimeEntryLogAdapter(private val onContinueTappedListener: (Long) -> Unit =
                 oldItem: TimeEntryViewModel,
                 newItem: TimeEntryViewModel
             ): Boolean =
-                oldItem is FlatTimeEntryItem &&
-                    newItem is FlatTimeEntryItem &&
-                    oldItem.id == newItem.id
+                when (oldItem) {
+                    is FlatTimeEntryViewModel ->
+                        newItem is FlatTimeEntryViewModel && oldItem.id == newItem.id
+                    is DayHeaderViewModel ->
+                        newItem is DayHeaderViewModel && oldItem.dayTitle == newItem.dayTitle
+                    is TimeEntryGroupViewModel ->
+                        newItem is TimeEntryGroupViewModel && oldItem.timeEntryIds == newItem.timeEntryIds
+                }
 
             override fun areContentsTheSame(
                 oldItem: TimeEntryViewModel,
                 newItem: TimeEntryViewModel
             ): Boolean =
-                oldItem is FlatTimeEntryItem &&
-                    newItem is FlatTimeEntryItem &&
-                    oldItem.description == newItem.description
+                when (oldItem) {
+                    is FlatTimeEntryViewModel ->
+                        newItem is FlatTimeEntryViewModel && oldItem == newItem
+                    is DayHeaderViewModel ->
+                        newItem is DayHeaderViewModel && oldItem == newItem
+                    is TimeEntryGroupViewModel ->
+                        newItem is TimeEntryGroupViewModel && oldItem == newItem
+                }
         }
     }
 }

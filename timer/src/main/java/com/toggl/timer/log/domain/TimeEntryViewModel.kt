@@ -5,11 +5,11 @@ import org.threeten.bp.OffsetDateTime
 
 sealed class TimeEntryViewModel
 
-data class FlatTimeEntryItem(
+data class FlatTimeEntryViewModel(
     val id: Long,
     val description: String,
     val startTime: OffsetDateTime,
-    val duration: Duration?,
+    val duration: Duration,
     val project: ProjectViewModel?,
     val billable: Boolean
 ) : TimeEntryViewModel()

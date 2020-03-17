@@ -8,4 +8,6 @@
     <string name="description">説明</string>
     <string name="password">パスワード</string>
     <string name="email">メールアドレス</string>
+    <string name="today">今日</string>
+    <string name="yesterday">昨日</string>
 </resources>

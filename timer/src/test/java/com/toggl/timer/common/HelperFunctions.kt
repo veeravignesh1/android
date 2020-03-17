@@ -1,14 +1,20 @@
 package com.toggl.timer.common
 
 import com.toggl.models.domain.TimeEntry
+import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
-fun createTimeEntry(id: Long, description: String) =
+fun createTimeEntry(
+    id: Long,
+    description: String = "",
+    startTime: OffsetDateTime = OffsetDateTime.now(),
+    duration: Duration? = null
+) =
     TimeEntry(
         id,
         description,
-        OffsetDateTime.now(),
-        null,
+        startTime,
+        duration,
         false,
         null,
         null,
