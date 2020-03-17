@@ -1,6 +1,6 @@
 package com.toggl.architecture.core
 
-import kotlinx.coroutines.Dispatchers
+import com.toggl.architecture.DispatcherProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 interface Store<State, Action> {
@@ -48,7 +46,8 @@ class FlowStore<State, Action> private constructor(
         @ExperimentalCoroutinesApi
         fun <State, Action> create(
             initialState: State,
-            reducer: Reducer<State, Action>
+            reducer: Reducer<State, Action>,
+            dispatcherProvider: DispatcherProvider
         ): Store<State, Action> {
 
             val stateChannel = ConflatedBroadcastChannel<State>()
@@ -58,17 +57,15 @@ class FlowStore<State, Action> private constructor(
 
             val state = stateChannel
                 .asFlow()
-                .flowOn(Dispatchers.Main)
+                .flowOn(dispatcherProvider.main)
 
             val settableValue = SettableValue(stateChannel::value) { stateChannel.offer(it) }
 
             lateinit var dispatch: (Action) -> Unit
             dispatch = { action ->
                 GlobalScope.launch {
-                    reducer
-                        .reduce(settableValue, action)
-                        .onEach { dispatch(it) }
-                        .launchIn(this)
+                    val effect = reducer.reduce(settableValue, action)
+                    effect.execute()?.also(dispatch)
                 }
             }
 

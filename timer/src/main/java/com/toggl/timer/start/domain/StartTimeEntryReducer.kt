@@ -1,10 +1,10 @@
 package com.toggl.timer.start.domain
 
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.noEffect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.timeentry.TimeEntryRepository
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
-import com.toggl.timer.common.domain.startTimeEntryEffect
+import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 
 typealias StartTimeEntryReducer = Reducer<StartTimeEntryState, StartTimeEntryAction>
@@ -12,9 +12,8 @@ typealias StartTimeEntryReducer = Reducer<StartTimeEntryState, StartTimeEntryAct
 internal fun createStartTimeEntryReducer(repository: TimeEntryRepository) =
     StartTimeEntryReducer { state, action ->
         when (action) {
-            StartTimeEntryAction.StopTimeEntryButtonTapped -> stopTimeEntryEffect(
-                repository
-            )
+            StartTimeEntryAction.StopTimeEntryButtonTapped ->
+                StopTimeEntryEffect(repository)
             StartTimeEntryAction.StartTimeEntryButtonTapped -> {
                 val description = state.value.editedDescription
                 state.value = state.value.copy(editedDescription = "")
@@ -44,6 +43,6 @@ internal fun createStartTimeEntryReducer(repository: TimeEntryRepository) =
     }
 
 private fun startTimeEntry(description: String, repository: TimeEntryRepository) =
-    startTimeEntryEffect(description, repository) {
+    StartTimeEntryEffect(repository, description) {
         StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
     }

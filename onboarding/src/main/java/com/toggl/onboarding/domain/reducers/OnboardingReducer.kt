@@ -6,13 +6,13 @@ import com.toggl.architecture.Loadable.Error
 import com.toggl.architecture.Loadable.Loaded
 import com.toggl.architecture.Loadable.Loading
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.noEffect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.models.validation.toEmail
 import com.toggl.models.validation.toPassword
 import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.effects.logUserInEffect
+import com.toggl.onboarding.domain.effects.LogUserInEffect
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.onboarding.domain.states.email
 import com.toggl.onboarding.domain.states.password
@@ -31,7 +31,7 @@ fun createOnboardingReducer(api: LoginApi) = OnboardingReducer { state, action -
                     is Password.Invalid -> noEffect()
                     is Password.Valid -> {
                         state.value = currentState.copy(user = Loading())
-                        logUserInEffect(email, password, api)
+                        LogUserInEffect(api, email, password)
                     }
                 }
             }

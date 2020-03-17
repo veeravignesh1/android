@@ -10,7 +10,6 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.single
 
 class TimeEntrySwipedActionTests : FreeSpec({
 
@@ -51,8 +50,9 @@ class TimeEntrySwipedActionTests : FreeSpec({
                 val initialState = createInitialState(listOf(entryInDatabase))
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
-                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Right))
-                val startedTimeEntry = (effect.single() as TimeEntriesLogAction.TimeEntryStarted).startedTimeEntry
+                val action = TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Right)
+                val effectAction = reducer.reduce(settableValue, action).execute() as TimeEntriesLogAction.TimeEntryStarted
+                val startedTimeEntry = effectAction.startedTimeEntry
                 startedTimeEntry shouldBe entryToBeStarted
             }
         }
@@ -62,8 +62,9 @@ class TimeEntrySwipedActionTests : FreeSpec({
                 val initialState = createInitialState(listOf(entryInDatabase))
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
-                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Left))
-                val deletedTimeEntries = (effect.single() as TimeEntriesLogAction.TimeEntriesDeleted).deletedTimeEntries
+                val action = TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Left)
+                val effectAction = reducer.reduce(settableValue, action).execute() as TimeEntriesLogAction.TimeEntriesDeleted
+                val deletedTimeEntries = effectAction.deletedTimeEntries
                 deletedTimeEntries.single() shouldBe entryInDatabase.copy(isDeleted = true)
             }
         }

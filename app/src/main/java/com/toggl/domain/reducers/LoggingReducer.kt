@@ -2,7 +2,7 @@ package com.toggl.domain.reducers
 
 import android.util.Log
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.noEffect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.onboarding.domain.actions.formatForDebug

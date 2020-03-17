@@ -11,7 +11,6 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.flow.single
 
 class TimeEntryGroupSwipedActionTests : FreeSpec({
 
@@ -52,7 +51,7 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 val effect = reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(1, 2), SwipeDirection.Right))
-                val startedTimeEntry = (effect.single() as TimeEntriesLogAction.TimeEntryStarted).startedTimeEntry
+                val startedTimeEntry = (effect.execute() as TimeEntriesLogAction.TimeEntryStarted).startedTimeEntry
                 startedTimeEntry shouldBe entryToBeStarted
             }
         }
@@ -66,8 +65,8 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntryGroupSwiped(timeEntriesToDelete.map { it.id }, SwipeDirection.Left)
-                val effect = reducer.reduce(settableValue, action)
-                val deletedTimeEntries = (effect.single() as TimeEntriesLogAction.TimeEntriesDeleted).deletedTimeEntries
+                val effectAction = reducer.reduce(settableValue, action).execute() as TimeEntriesLogAction.TimeEntriesDeleted
+                val deletedTimeEntries = effectAction.deletedTimeEntries
                 action.ids shouldContainAll deletedTimeEntries.map { it.id }
             }
         }

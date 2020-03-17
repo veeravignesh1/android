@@ -1,14 +1,14 @@
 package com.toggl.timer.log.domain
 
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.noEffect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.timeentry.TimeEntryRepository
-import com.toggl.timer.common.domain.deleteTimeEntriesEffect
+import com.toggl.timer.common.domain.DeleteTimeEntriesEffect
+import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.common.domain.handleTimeEntryDeletionStateChanges
-import com.toggl.timer.common.domain.startTimeEntryEffect
 import java.lang.IllegalStateException
 
 typealias TimeEntriesLogReducer = Reducer<TimeEntriesLogState, TimeEntriesLogAction>
@@ -87,11 +87,11 @@ internal fun createTimeEntriesLogReducer(repository: TimeEntryRepository) =
     }
 
 private fun startTimeEntry(timeEntry: TimeEntry, repository: TimeEntryRepository) =
-    startTimeEntryEffect(timeEntry.description, repository) {
+    StartTimeEntryEffect(repository, timeEntry.description) {
         TimeEntriesLogAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
     }
 
 private fun delete(timeEntry: List<TimeEntry>, repository: TimeEntryRepository) =
-    deleteTimeEntriesEffect(timeEntry, repository) {
+    DeleteTimeEntriesEffect(repository, timeEntry) {
         TimeEntriesLogAction.TimeEntriesDeleted(it)
     }

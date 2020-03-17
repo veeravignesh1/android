@@ -3,8 +3,6 @@ package com.toggl.repository.timeentry
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.environment.services.TimeService
 import com.toggl.models.domain.TimeEntry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import org.threeten.bp.Duration
 
@@ -14,7 +12,7 @@ class TimeEntryRepositoryImpl @Inject constructor(
 ) : TimeEntryRepository {
 
     override suspend fun loadTimeEntries() =
-        withContext(Dispatchers.IO) { timeEntryDao.getAll() }
+        timeEntryDao.getAll()
 
     override suspend fun startTimeEntry(description: String): StartTimeEntryResult {
         val stoppedTimeEntry = stopRunningTimeEntry()

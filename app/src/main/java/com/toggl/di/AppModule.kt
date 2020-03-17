@@ -2,6 +2,7 @@ package com.toggl.di
 
 import android.content.Context
 import com.toggl.TogglApplication
+import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.FlowStore
 import com.toggl.architecture.core.Store
 import com.toggl.domain.AppAction
@@ -23,6 +24,7 @@ import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 import javax.inject.Singleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,18 +55,22 @@ class AppModule {
     @Provides
     @Singleton
     @Named("timeEntryListReducer")
-    fun timeEntryListReducer(timeEntryRepository: TimeEntryRepository) =
-        createTimeEntryListReducer(timeEntryRepository)
+    fun timeEntryListReducer(timeEntryRepository: TimeEntryRepository, dispatcherProvider: DispatcherProvider) =
+        createTimeEntryListReducer(timeEntryRepository, dispatcherProvider)
 
     @FlowPreview
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton
-    fun appStore(@Named("appReducer") appReducer: AppReducer): Store<AppState, AppAction> {
+    fun appStore(
+        @Named("appReducer") appReducer: AppReducer,
+        dispatcherProvider: DispatcherProvider
+    ): Store<AppState, AppAction> {
         return FlowStore.create(
             initialState = AppState(),
-            reducer = appReducer
+            reducer = appReducer,
+            dispatcherProvider = dispatcherProvider
         )
     }
 
@@ -82,5 +88,14 @@ class AppModule {
         store.view(
             mapToLocalState = ::mapAppStateToTimerState,
             mapToGlobalAction = ::mapTimerActionToAppAction
+        )
+
+    @Provides
+    @Singleton
+    fun dispatcherProvider() =
+        DispatcherProvider(
+            io = Dispatchers.IO,
+            computation = Dispatchers.Default,
+            main = Dispatchers.Main
         )
 }
