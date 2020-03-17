@@ -31,5 +31,5 @@ interface TimeEntryDao {
     fun updateAll(timeEntries: List<TimeEntry>)
 
     @Delete
-    fun delete(user: TimeEntry)
+    fun delete(timeEntry: TimeEntry)
 }
