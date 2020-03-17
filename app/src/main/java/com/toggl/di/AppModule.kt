@@ -11,10 +11,15 @@ import com.toggl.domain.mappings.mapAppStateToOnboardingState
 import com.toggl.domain.mappings.mapAppStateToTimerState
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
+import com.toggl.domain.reducers.AnalyticsReducer
 import com.toggl.domain.reducers.AppReducer
+import com.toggl.domain.reducers.LoggingReducer
 import com.toggl.domain.reducers.TimeEntryListReducer
+import com.toggl.domain.reducers.createAnalyticsReducer
 import com.toggl.domain.reducers.createAppReducer
+import com.toggl.domain.reducers.createLoggingReducer
 import com.toggl.domain.reducers.createTimeEntryListReducer
+import com.toggl.environment.services.analytics.AnalyticsService
 import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.onboarding.domain.reducers.OnboardingReducer
 import com.toggl.onboarding.domain.states.OnboardingState
@@ -45,11 +50,15 @@ class AppModule {
     fun appReducer(
         @Named("timeEntryListReducer") timeEntryListReducer: TimeEntryListReducer,
         onboardingReducer: OnboardingReducer,
-        timerReducer: TimerReducer
+        timerReducer: TimerReducer,
+        @Named("loggingReducer") loggingReducer: LoggingReducer,
+        @Named("analyticsReducer") analyticsReducer: AnalyticsReducer
     ) = createAppReducer(
         timeEntryListReducer,
         onboardingReducer,
-        timerReducer
+        timerReducer,
+        loggingReducer,
+        analyticsReducer
     )
 
     @Provides
@@ -89,6 +98,17 @@ class AppModule {
             mapToLocalState = ::mapAppStateToTimerState,
             mapToGlobalAction = ::mapTimerActionToAppAction
         )
+
+    @Provides
+    @Singleton
+    @Named("analyticsReducer")
+    fun analyticsReducer(analyticsService: AnalyticsService): AnalyticsReducer =
+        createAnalyticsReducer(analyticsService)
+
+    @Provides
+    @Singleton
+    @Named("loggingReducer")
+    fun loggingReducer(): LoggingReducer = createLoggingReducer()
 
     @Provides
     @Singleton

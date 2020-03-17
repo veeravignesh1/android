@@ -8,6 +8,8 @@ import com.toggl.domain.AppState
 import com.toggl.onboarding.domain.actions.formatForDebug
 import com.toggl.timer.common.domain.formatForDebug
 
+typealias LoggingReducer = Reducer<AppState, AppAction>
+
 fun createLoggingReducer() = Reducer<AppState, AppAction> { _, action ->
 
     Log.i(

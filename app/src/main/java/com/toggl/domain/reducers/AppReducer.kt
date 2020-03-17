@@ -25,11 +25,14 @@ typealias AppReducer = Reducer<AppState, AppAction>
 fun createAppReducer(
     timeEntryListReducer: TimeEntryListReducer,
     onboardingReducer: OnboardingReducer,
-    timerReducer: TimerReducer
+    timerReducer: TimerReducer,
+    loggingReducer: LoggingReducer,
+    analyticsReducer: AnalyticsReducer
 ): AppReducer =
     combine(
         timeEntryListReducer,
-        createLoggingReducer(),
+        loggingReducer,
+        analyticsReducer,
         timerReducer.pullback(
             mapToLocalState = ::mapAppStateToTimerState,
             mapToLocalAction = ::mapAppActionToTimerAction,
