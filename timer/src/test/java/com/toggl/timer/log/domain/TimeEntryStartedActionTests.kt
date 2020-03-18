@@ -12,7 +12,7 @@ import io.mockk.mockk
 class TimeEntryStartedActionTests : FreeSpec({
 
     val repository = mockk<TimeEntryRepository>()
-    val reducer = createTimeEntriesLogReducer(repository)
+    val reducer = TimeEntriesLogReducer(repository)
 
     "The TimeEntryStarted action" - {
         "updates the state to add the time entry" - {

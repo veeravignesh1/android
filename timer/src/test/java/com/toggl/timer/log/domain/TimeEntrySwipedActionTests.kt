@@ -18,7 +18,7 @@ class TimeEntrySwipedActionTests : FreeSpec({
     val entryToBeStarted = createTimeEntry(2, "test")
     coEvery { repository.startTimeEntry("test") } returns StartTimeEntryResult(entryToBeStarted, null)
     coEvery { repository.deleteTimeEntries(listOf(entryInDatabase)) } returns hashSetOf(entryInDatabase.copy(isDeleted = true))
-    val reducer = createTimeEntriesLogReducer(repository)
+    val reducer = TimeEntriesLogReducer(repository)
 
     "The TimeEntrySwiped action" - {
         "should throw when there are no time entries" - {
@@ -51,7 +51,7 @@ class TimeEntrySwipedActionTests : FreeSpec({
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Right)
-                val effectAction = reducer.reduce(settableValue, action).execute() as TimeEntriesLogAction.TimeEntryStarted
+                val effectAction = reducer.reduce(settableValue, action).single().execute() as TimeEntriesLogAction.TimeEntryStarted
                 val startedTimeEntry = effectAction.startedTimeEntry
                 startedTimeEntry shouldBe entryToBeStarted
             }
@@ -63,7 +63,7 @@ class TimeEntrySwipedActionTests : FreeSpec({
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Left)
-                val effectAction = reducer.reduce(settableValue, action).execute() as TimeEntriesLogAction.TimeEntriesDeleted
+                val effectAction = reducer.reduce(settableValue, action).single().execute() as TimeEntriesLogAction.TimeEntriesDeleted
                 val deletedTimeEntries = effectAction.deletedTimeEntries
                 deletedTimeEntries.single() shouldBe entryInDatabase.copy(isDeleted = true)
             }

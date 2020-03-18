@@ -11,7 +11,7 @@ import io.mockk.mockk
 class TimeEntryTappedActionTests : FreeSpec({
 
     val repository = mockk<TimeEntryRepository>()
-    val reducer = createTimeEntriesLogReducer(repository)
+    val reducer = TimeEntriesLogReducer(repository)
     val testTe = createTimeEntry(1, "test")
 
     "The TimeEntryTapped action" - {

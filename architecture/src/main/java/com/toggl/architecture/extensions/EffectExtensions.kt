@@ -13,22 +13,11 @@ private class MapEffect<T, R>(
         innerEffect.execute()?.run(mapFn)
 }
 
-fun <Action> List<Effect<Action>>.compose(): Effect<Action> =
-    CompositeEffect(this)
+fun <Action> effect(effect: Effect<Action>) = listOf(effect)
 
-private class CompositeEffect<Action>(val effects: List<Effect<Action>>) : Effect<Action> {
-    override suspend fun execute(): Action? =
-        effects.fold<Effect<Action>, Action?>(null) { action, effect ->
-            action ?: effect.execute()
-        }
-}
+fun <Action> effects(vararg effects: Effect<Action>) = listOf(effects)
 
-fun <T> noEffect(): Effect<T> =
-    NoEffect()
+infix operator fun <Action> Effect<Action>.plus(otherEffect: Effect<Action>) = listOf(this, otherEffect)
 
-private class NoEffect<Action> : Effect<Action> {
-    override suspend fun execute(): Action? = null
-
-    override fun equals(other: Any?): Boolean =
-        other is NoEffect<*>
-}
+fun <T> noEffect(): List<Effect<T>> =
+    emptyList()

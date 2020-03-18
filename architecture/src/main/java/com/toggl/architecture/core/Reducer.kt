@@ -1,34 +1,46 @@
 package com.toggl.architecture.core
 
-import com.toggl.architecture.extensions.compose
 import com.toggl.architecture.extensions.map
 import com.toggl.architecture.extensions.noEffect
 
-typealias ReduceFunction<State, Action> =
-        (SettableValue<State>, Action) -> Effect<Action>
+interface Reducer<State, Action> {
+    fun reduce(state: SettableValue<State>, action: Action): List<Effect<Action>>
+}
 
-class Reducer<State, Action>(
-    val reduce: ReduceFunction<State, Action>
-)
+fun <State, Action> combine(vararg reducers: Reducer<State, Action>) =
+    CombinedReducer(reducers.toList())
 
-fun <State, Action> combine(vararg reducers: Reducer<State, Action>):
-    Reducer<State, Action> =
-    Reducer { state, action ->
-        reducers.map { it.reduce(state, action) }
-            .compose()
-    }
+class CombinedReducer<State, Action>(private val reducers: List<Reducer<State, Action>>)
+    : Reducer<State, Action> {
+    override fun reduce(state: SettableValue<State>, action: Action): List<Effect<Action>> =
+        reducers.flatMap { it.reduce(state, action) }
+}
 
 fun <LocalState, GlobalState, LocalAction, GlobalAction>
     Reducer<LocalState, LocalAction>.pullback(
         mapToLocalState: (GlobalState) -> LocalState,
         mapToLocalAction: (GlobalAction) -> LocalAction?,
-        mapToGlobalAction: (LocalAction) -> GlobalAction,
-        mapToGlobalState: (GlobalState, LocalState) -> GlobalState
+        mapToGlobalState: (GlobalState, LocalState) -> GlobalState,
+        mapToGlobalAction: (LocalAction) -> GlobalAction
     ): Reducer<GlobalState, GlobalAction> =
-    Reducer { globalState, globalAction ->
-        val localAction = mapToLocalAction(globalAction)
-            ?: return@Reducer noEffect()
+    PullbackReducer(this, mapToLocalState, mapToLocalAction, mapToGlobalState, mapToGlobalAction)
 
-        reduce(globalState.map(mapToLocalState, mapToGlobalState), localAction)
-            .map { it?.run(mapToGlobalAction) }
+class PullbackReducer<LocalState, GlobalState, LocalAction, GlobalAction>(
+    private val innerReducer: Reducer<LocalState, LocalAction>,
+    private val mapToLocalState: (GlobalState) -> LocalState,
+    private val mapToLocalAction: (GlobalAction) -> LocalAction?,
+    private val mapToGlobalState: (GlobalState, LocalState) -> GlobalState,
+    private val mapToGlobalAction: (LocalAction) -> GlobalAction
+) : Reducer<GlobalState, GlobalAction> {
+    override fun reduce(
+        state: SettableValue<GlobalState>,
+        action: GlobalAction
+    ): List<Effect<GlobalAction>> {
+        val localAction = mapToLocalAction(action)
+            ?: return noEffect()
+
+        return innerReducer
+            .reduce(state.map(mapToLocalState, mapToGlobalState), localAction)
+            .map { effect -> effect.map { action -> action?.run(mapToGlobalAction) } }
     }
+}

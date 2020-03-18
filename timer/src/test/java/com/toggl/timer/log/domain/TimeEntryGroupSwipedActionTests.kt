@@ -18,7 +18,7 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
     val entryInDatabase = createTimeEntry(1, "test")
     val entryToBeStarted = createTimeEntry(2, "test")
     coEvery { repository.startTimeEntry("test") } returns StartTimeEntryResult(entryToBeStarted, null)
-    val reducer = createTimeEntriesLogReducer(repository)
+    val reducer = TimeEntriesLogReducer(repository)
 
     "The TimeEntryGroupSwiped action" - {
         "should throw when there are no time entries" - {
@@ -50,8 +50,9 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
                 val initialState = createInitialState(listOf(entryInDatabase))
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
-                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(1, 2), SwipeDirection.Right))
-                val startedTimeEntry = (effect.execute() as TimeEntriesLogAction.TimeEntryStarted).startedTimeEntry
+                val action = TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(1, 2), SwipeDirection.Right)
+                val effects = reducer.reduce(settableValue, action)
+                val startedTimeEntry = (effects.single().execute() as TimeEntriesLogAction.TimeEntryStarted).startedTimeEntry
                 startedTimeEntry shouldBe entryToBeStarted
             }
         }
@@ -65,7 +66,7 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntryGroupSwiped(timeEntriesToDelete.map { it.id }, SwipeDirection.Left)
-                val effectAction = reducer.reduce(settableValue, action).execute() as TimeEntriesLogAction.TimeEntriesDeleted
+                val effectAction = reducer.reduce(settableValue, action).single().execute() as TimeEntriesLogAction.TimeEntriesDeleted
                 val deletedTimeEntries = effectAction.deletedTimeEntries
                 action.ids shouldContainAll deletedTimeEntries.map { it.id }
             }

@@ -17,7 +17,7 @@ import io.mockk.verify
 class AnalyticsReducerTests : FreeSpec({
     mockkStatic("com.toggl.domain.reducers.AnalyticsReducerKt")
     val analyticsService = mockk<AnalyticsService>(relaxed = true)
-    val analyticsReducer = createAnalyticsReducer(analyticsService)
+    val analyticsReducer = AnalyticsReducer(analyticsService)
 
     "The AnalyticsReducer's reduce function " - {
         val initialState = AppState()

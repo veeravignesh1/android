@@ -10,7 +10,7 @@ import io.mockk.mockk
 class ContinueButtonTappedActionTests : FreeSpec({
 
     val repository = mockk<TimeEntryRepository>()
-    val reducer = createTimeEntriesLogReducer(repository)
+    val reducer = TimeEntriesLogReducer(repository)
     val testTe = createTimeEntry(1, "test")
 
     "The ContinueButtonTapped action" - {

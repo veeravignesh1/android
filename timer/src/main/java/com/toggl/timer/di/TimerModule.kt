@@ -3,16 +3,15 @@ package com.toggl.timer.di
 import com.toggl.architecture.core.Store
 import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.pullback
-import com.toggl.repository.timeentry.TimeEntryRepository
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
 import com.toggl.timer.log.domain.TimeEntriesLogAction
+import com.toggl.timer.log.domain.TimeEntriesLogReducer
 import com.toggl.timer.log.domain.TimeEntriesLogState
-import com.toggl.timer.log.domain.createTimeEntriesLogReducer
 import com.toggl.timer.start.domain.StartTimeEntryAction
+import com.toggl.timer.start.domain.StartTimeEntryReducer
 import com.toggl.timer.start.domain.StartTimeEntryState
-import com.toggl.timer.start.domain.createStartTimeEntryReducer
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -42,16 +41,19 @@ class TimerModule {
     @InternalCoroutinesApi
     @Provides
     @Singleton
-    internal fun timerReducer(repository: TimeEntryRepository): TimerReducer {
+    internal fun timerReducer(
+        timeEntriesLogReducer: TimeEntriesLogReducer,
+        startTimeEntryReducer: StartTimeEntryReducer
+    ): TimerReducer {
 
         return combine(
-            createTimeEntriesLogReducer(repository).pullback(
+            timeEntriesLogReducer.pullback(
                 mapToLocalState = TimeEntriesLogState.Companion::fromTimerState,
                 mapToLocalAction = TimeEntriesLogAction.Companion::fromTimerAction,
                 mapToGlobalState = TimeEntriesLogState.Companion::toTimerState,
                 mapToGlobalAction = TimeEntriesLogAction.Companion::toTimerAction
             ),
-            createStartTimeEntryReducer(repository).pullback(
+            startTimeEntryReducer.pullback(
                 mapToLocalState = StartTimeEntryState.Companion::fromTimerState,
                 mapToLocalAction = StartTimeEntryAction.Companion::fromTimerAction,
                 mapToGlobalState = StartTimeEntryState.Companion::toTimerState,

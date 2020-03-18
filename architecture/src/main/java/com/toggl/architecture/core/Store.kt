@@ -12,31 +12,32 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-interface Store<State, Action> {
+interface Store<State, Action : Any> {
     val state: Flow<State>
-    val dispatch: (Action) -> Unit
+    fun dispatch(action: Action)
+    fun dispatch(actions: List<Action>)
 
     @ExperimentalCoroutinesApi
-    fun <ViewState, ViewAction> view(
+    fun <ViewState, ViewAction : Any> view(
         mapToLocalState: (State) -> ViewState,
         mapToGlobalAction: (ViewAction) -> Action?
     ): Store<ViewState, ViewAction>
 }
 
-class FlowStore<State, Action> private constructor(
+class FlowStore<State, Action : Any> private constructor(
     override val state: Flow<State>,
-    override val dispatch: (Action) -> Unit
+    private val dispatchFn: (List<Action>) -> Unit
 ) : Store<State, Action> {
     @ExperimentalCoroutinesApi
-    override fun <ViewState, ViewAction> view(
+    override fun <ViewState, ViewAction : Any> view(
         mapToLocalState: (State) -> ViewState,
         mapToGlobalAction: (ViewAction) -> Action?
     ): Store<ViewState, ViewAction> {
         return FlowStore(
             state = state.map { mapToLocalState(it) }.distinctUntilChanged(),
-            dispatch = { action ->
-                val globalAction = mapToGlobalAction(action) ?: return@FlowStore
-                dispatch(globalAction)
+            dispatchFn = { actions ->
+                val globalActions = actions.mapNotNull(mapToGlobalAction)
+                dispatchFn(globalActions)
             }
         )
     }
@@ -44,7 +45,7 @@ class FlowStore<State, Action> private constructor(
     companion object {
         @FlowPreview
         @ExperimentalCoroutinesApi
-        fun <State, Action> create(
+        fun <State, Action : Any> create(
             initialState: State,
             reducer: Reducer<State, Action>,
             dispatcherProvider: DispatcherProvider
@@ -59,17 +60,33 @@ class FlowStore<State, Action> private constructor(
                 .asFlow()
                 .flowOn(dispatcherProvider.main)
 
-            val settableValue = SettableValue(stateChannel::value) { stateChannel.offer(it) }
-
-            lateinit var dispatch: (Action) -> Unit
-            dispatch = { action ->
+            lateinit var dispatch: (List<Action>) -> Unit
+            dispatch = { actions ->
                 GlobalScope.launch {
-                    val effect = reducer.reduce(settableValue, action)
-                    effect.execute()?.also(dispatch)
+
+                    var tempState = stateChannel.value
+                    val settableValue = SettableValue({ tempState }) { tempState = it }
+
+                    val effects = actions.flatMap { reducer.reduce(settableValue, it) }
+                    stateChannel.send(tempState)
+
+                    val effectActions = effects.mapNotNull { it.execute() }
+                    if (effectActions.isEmpty()) return@launch
+                    dispatch(effectActions)
                 }
             }
 
             return FlowStore(state, dispatch)
         }
     }
+
+    override fun dispatch(action: Action) =
+        dispatchFn(listOf(action))
+
+    override fun dispatch(actions: List<Action>) {
+        if (actions.isEmpty())
+            return
+
+        dispatchFn(actions)
+        }
 }

@@ -11,7 +11,7 @@ class TimeEntriesDeletedActionTests : FreeSpec({
 
     val repository = mockk<TimeEntryRepository>()
     val entriesInDatabase = (1L..10L).map { createTimeEntry(it, "test") }
-    val reducer = createTimeEntriesLogReducer(repository)
+    val reducer = TimeEntriesLogReducer(repository)
 
     "The TimeEntriesDeleted action updates the state to remove" - {
         "a single time entry from the time entry list" - {

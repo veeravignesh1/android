@@ -9,7 +9,7 @@ import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.reducers.createOnboardingReducer
+import com.toggl.onboarding.domain.reducers.OnboardingReducer
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.onboarding.domain.states.email
 import com.toggl.onboarding.domain.states.password
@@ -44,7 +44,7 @@ infix fun <T> Loadable<T>?.shouldBeLoadedWith(value: T) {
 val loginApi = mock(LoginApi::class)
 
 abstract class TheOnboardingReducer :
-    BaseReducerTest<OnboardingState, OnboardingAction, LoginApi>(createOnboardingReducer(loginApi)) {
+    BaseReducerTest<OnboardingState, OnboardingAction, LoginApi>(OnboardingReducer(loginApi)) {
 
     companion object {
         val validPassword = Password.from("avalidpassword")

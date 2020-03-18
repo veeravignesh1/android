@@ -23,14 +23,14 @@ typealias AppReducer = Reducer<AppState, AppAction>
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 fun createAppReducer(
-    timeEntryListReducer: TimeEntryListReducer,
+    entityLoadReducer: EntityLoadReducer,
     onboardingReducer: OnboardingReducer,
     timerReducer: TimerReducer,
     loggingReducer: LoggingReducer,
     analyticsReducer: AnalyticsReducer
 ): AppReducer =
     combine(
-        timeEntryListReducer,
+        entityLoadReducer,
         loggingReducer,
         analyticsReducer,
         timerReducer.pullback(

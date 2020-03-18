@@ -13,17 +13,12 @@ import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
 import com.toggl.domain.reducers.AnalyticsReducer
 import com.toggl.domain.reducers.AppReducer
+import com.toggl.domain.reducers.EntityLoadReducer
 import com.toggl.domain.reducers.LoggingReducer
-import com.toggl.domain.reducers.TimeEntryListReducer
-import com.toggl.domain.reducers.createAnalyticsReducer
 import com.toggl.domain.reducers.createAppReducer
-import com.toggl.domain.reducers.createLoggingReducer
-import com.toggl.domain.reducers.createTimeEntryListReducer
-import com.toggl.environment.services.analytics.AnalyticsService
 import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.onboarding.domain.reducers.OnboardingReducer
 import com.toggl.onboarding.domain.states.OnboardingState
-import com.toggl.repository.timeentry.TimeEntryRepository
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
@@ -48,24 +43,18 @@ class AppModule {
     @InternalCoroutinesApi
     @Named("appReducer")
     fun appReducer(
-        @Named("timeEntryListReducer") timeEntryListReducer: TimeEntryListReducer,
+        entityLoadReducer: EntityLoadReducer,
         onboardingReducer: OnboardingReducer,
         timerReducer: TimerReducer,
-        @Named("loggingReducer") loggingReducer: LoggingReducer,
-        @Named("analyticsReducer") analyticsReducer: AnalyticsReducer
+        loggingReducer: LoggingReducer,
+        analyticsReducer: AnalyticsReducer
     ) = createAppReducer(
-        timeEntryListReducer,
+        entityLoadReducer,
         onboardingReducer,
         timerReducer,
         loggingReducer,
         analyticsReducer
     )
-
-    @Provides
-    @Singleton
-    @Named("timeEntryListReducer")
-    fun timeEntryListReducer(timeEntryRepository: TimeEntryRepository, dispatcherProvider: DispatcherProvider) =
-        createTimeEntryListReducer(timeEntryRepository, dispatcherProvider)
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -98,17 +87,6 @@ class AppModule {
             mapToLocalState = ::mapAppStateToTimerState,
             mapToGlobalAction = ::mapTimerActionToAppAction
         )
-
-    @Provides
-    @Singleton
-    @Named("analyticsReducer")
-    fun analyticsReducer(analyticsService: AnalyticsService): AnalyticsReducer =
-        createAnalyticsReducer(analyticsService)
-
-    @Provides
-    @Singleton
-    @Named("loggingReducer")
-    fun loggingReducer(): LoggingReducer = createLoggingReducer()
 
     @Provides
     @Singleton
