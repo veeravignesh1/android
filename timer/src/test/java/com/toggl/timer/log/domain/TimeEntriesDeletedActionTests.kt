@@ -38,5 +38,16 @@ class TimeEntriesDeletedActionTests : FreeSpec({
                 state.timeEntries[it.id] shouldBe null
             }
         }
+
+        "nothing deleted time entry wasn't there in the first place" - {
+            var state = createInitialState(entriesInDatabase)
+            val settableValue = state.toSettableValue { state = it }
+
+            val nonExistingTimeEntry = createTimeEntry(321, "I don't exist")
+            val action = TimeEntriesLogAction.TimeEntriesDeleted(hashSetOf(nonExistingTimeEntry))
+            val effect = reducer.reduce(settableValue, action)
+            effect shouldBe noEffect()
+            state.timeEntries shouldBe entriesInDatabase.associateBy { it.id }
+        }
     }
 })
