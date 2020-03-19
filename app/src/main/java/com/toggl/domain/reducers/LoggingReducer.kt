@@ -23,7 +23,8 @@ class LoggingReducer @Inject constructor() : Reducer<AppState, AppAction> {
                 is AppAction.Onboarding -> action.onboarding.formatForDebug()
                 is AppAction.Timer -> action.timer.formatForDebug()
                 AppAction.Load -> "Initial load of entities"
-                is AppAction.EntitiesLoaded -> "Entities loaded"
+                is AppAction.TimeEntriesLoaded -> "Time Entries loaded"
+                is AppAction.WorkspacesLoaded -> "Workspaces Loaded"
             }
         )
 

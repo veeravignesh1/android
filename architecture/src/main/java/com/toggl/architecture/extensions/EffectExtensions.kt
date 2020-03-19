@@ -15,7 +15,7 @@ private class MapEffect<T, R>(
 
 fun <Action> effect(effect: Effect<Action>) = listOf(effect)
 
-fun <Action> effects(vararg effects: Effect<Action>) = listOf(effects)
+fun <Action> effects(vararg effects: Effect<Action>) = effects.toList()
 
 infix operator fun <Action> Effect<Action>.plus(otherEffect: Effect<Action>) = listOf(this, otherEffect)
 

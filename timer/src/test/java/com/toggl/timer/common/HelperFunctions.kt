@@ -16,6 +16,7 @@ fun createTimeEntry(
         startTime,
         duration,
         false,
+        1,
         null,
         null,
         false

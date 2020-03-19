@@ -1,8 +1,8 @@
 package com.toggl.timer.log.domain
 
 import com.toggl.models.common.SwipeDirection
-import com.toggl.repository.timeentry.StartTimeEntryResult
-import com.toggl.repository.timeentry.TimeEntryRepository
+import com.toggl.repository.interfaces.StartTimeEntryResult
+import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
 import io.kotlintest.matchers.collections.shouldContainAll
 import io.kotlintest.properties.assertAll
@@ -17,7 +17,7 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
     val repository = mockk<TimeEntryRepository>()
     val entryInDatabase = createTimeEntry(1, "test")
     val entryToBeStarted = createTimeEntry(2, "test")
-    coEvery { repository.startTimeEntry("test") } returns StartTimeEntryResult(entryToBeStarted, null)
+    coEvery { repository.startTimeEntry(1, "test") } returns StartTimeEntryResult(entryToBeStarted, null)
     val reducer = TimeEntriesLogReducer(repository)
 
     "The TimeEntryGroupSwiped action" - {

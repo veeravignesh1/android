@@ -1,7 +1,7 @@
 package com.toggl.timer.log.domain
 
 import com.toggl.architecture.extensions.noEffect
-import com.toggl.repository.timeentry.TimeEntryRepository
+import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe

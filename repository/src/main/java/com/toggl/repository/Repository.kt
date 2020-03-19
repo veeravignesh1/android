@@ -1,20 +1,41 @@
-package com.toggl.repository.timeentry
+package com.toggl.repository
 
 import com.toggl.database.dao.TimeEntryDao
+import com.toggl.database.dao.WorkspaceDao
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
-import javax.inject.Inject
+import com.toggl.models.domain.Workspace
+import com.toggl.models.domain.WorkspaceFeature
+import com.toggl.repository.interfaces.StartTimeEntryResult
+import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.repository.interfaces.WorkspaceRepository
 import org.threeten.bp.Duration
 
-class TimeEntryRepositoryImpl @Inject constructor(
+class Repository(
     private val timeEntryDao: TimeEntryDao,
+    private val workspaceDao: WorkspaceDao,
     private val timeService: TimeService
-) : TimeEntryRepository {
+) : TimeEntryRepository, WorkspaceRepository {
 
     override suspend fun loadTimeEntries() =
         timeEntryDao.getAll()
 
-    override suspend fun startTimeEntry(description: String): StartTimeEntryResult {
+    override suspend fun loadWorkspaces() =
+        workspaceDao.getAll().let {
+            if (it.any())
+                return@let it
+
+            // Automatically create a default workspace
+            val workspace = Workspace(
+                name = "Auto created workspace",
+                features = listOf(WorkspaceFeature.Pro)
+            )
+            val workspaceId = workspaceDao.insert(workspace)
+
+            return@let listOf(workspace.copy(id = workspaceId))
+        }
+
+    override suspend fun startTimeEntry(workspaceId: Long, description: String): StartTimeEntryResult {
         val stoppedTimeEntry = stopRunningTimeEntry()
         val id = timeEntryDao.insert(
             TimeEntry(
@@ -22,6 +43,7 @@ class TimeEntryRepositoryImpl @Inject constructor(
                 startTime = timeService.now(),
                 duration = null,
                 billable = false,
+                workspaceId = workspaceId,
                 projectId = null,
                 taskId = null,
                 isDeleted = false

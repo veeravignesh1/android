@@ -5,7 +5,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
-import com.toggl.repository.timeentry.TimeEntryRepository
+import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.extensions.replaceTimeEntryWithId
@@ -24,8 +24,9 @@ class StartTimeEntryReducer @Inject constructor(
                 effect(StopTimeEntryEffect(repository))
             StartTimeEntryAction.StartTimeEntryButtonTapped -> {
                 val description = state.value.editedDescription
+                val workspace = state.value.workspaces.values.single()
                 state.value = state.value.copy(editedDescription = "")
-                startTimeEntry(description, repository)
+                startTimeEntry(workspace.id, description, repository)
             }
             is StartTimeEntryAction.TimeEntryDescriptionChanged -> {
                 state.value = state.value.copy(editedDescription = action.description)
@@ -49,8 +50,10 @@ class StartTimeEntryReducer @Inject constructor(
             }
         }
 
-    private fun startTimeEntry(description: String, repository: TimeEntryRepository) =
-        effect(StartTimeEntryEffect(repository, description) {
-            StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
-        })
+    private fun startTimeEntry(workspaceId: Long, description: String, repository: TimeEntryRepository) =
+        effect(
+            StartTimeEntryEffect(repository, description, workspaceId) {
+                StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
+            }
+        )
 }

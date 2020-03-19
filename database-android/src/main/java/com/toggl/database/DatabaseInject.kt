@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TimeEntryDao
+import com.toggl.database.dao.WorkspaceDao
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -32,6 +33,10 @@ class DatabaseDaoModule {
     @Provides
     @Singleton
     fun timeEntryDao(appDatabase: TogglDatabase): TimeEntryDao = appDatabase.timeEntryDao()
+
+    @Provides
+    @Singleton
+    fun workspaceDao(appDatabase: TogglDatabase): WorkspaceDao = appDatabase.workspaceDao()
 
     @Provides
     @Singleton

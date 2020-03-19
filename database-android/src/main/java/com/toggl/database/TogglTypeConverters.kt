@@ -1,6 +1,7 @@
 package com.toggl.database
 
 import androidx.room.TypeConverter
+import com.toggl.models.domain.WorkspaceFeature
 import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.OffsetDateTime
@@ -12,7 +13,7 @@ class TogglTypeConverters {
         value?.let { Instant.ofEpochMilli(it).atOffset(ZoneOffset.UTC) }
 
     @TypeConverter
-    fun dateToTimestamp(date: OffsetDateTime?): Long? {
+    fun toTimestamp(date: OffsetDateTime?): Long? {
         return date?.run { toInstant().toEpochMilli() }
     }
 
@@ -24,4 +25,18 @@ class TogglTypeConverters {
     fun toEpoch(duration: Duration?): Long? {
         return duration?.run { toMillis() }
     }
+
+    @TypeConverter
+    fun fromFeatureList(value: String?): List<WorkspaceFeature>? =
+        value?.run {
+            split(',')
+                .map(String::toInt)
+                .mapNotNull(WorkspaceFeature.Companion::fromFeatureId)
+        }
+
+    @TypeConverter
+    fun toFeatureList(value: List<WorkspaceFeature>?): String? =
+        value?.run {
+            joinToString(",") { it.featureId.toString() }
+        }
 }

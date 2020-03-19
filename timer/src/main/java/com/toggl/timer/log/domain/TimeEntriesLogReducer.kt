@@ -7,7 +7,7 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.TimeEntry
-import com.toggl.repository.timeentry.TimeEntryRepository
+import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.DeleteTimeEntriesEffect
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
@@ -95,7 +95,7 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
             }
 
     private fun startTimeEntry(timeEntry: TimeEntry, repository: TimeEntryRepository) =
-        effect(StartTimeEntryEffect(repository, timeEntry.description) {
+        effect(StartTimeEntryEffect(repository, timeEntry.description, timeEntry.workspaceId) {
             TimeEntriesLogAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
         })
 
