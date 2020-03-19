@@ -1,10 +1,12 @@
 package com.toggl.onboarding.domain.states
 
+import arrow.optics.optics
 import com.toggl.architecture.Loadable
 import com.toggl.models.domain.User
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 
+@optics
 data class OnboardingState(
     val user: Loadable<User>,
     val localState: LocalState
@@ -14,7 +16,11 @@ data class OnboardingState(
         internal val password: Password
     ) {
         constructor() : this(Email.Invalid(""), Password.Invalid(""))
+
+        companion object
     }
+
+    companion object
 }
 
 internal val OnboardingState.email: Email

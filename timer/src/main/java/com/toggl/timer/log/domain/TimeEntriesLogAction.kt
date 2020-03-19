@@ -1,9 +1,11 @@
 package com.toggl.timer.log.domain
 
+import arrow.optics.optics
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerAction
 
+@optics
 sealed class TimeEntriesLogAction {
     data class ContinueButtonTapped(val id: Long) : TimeEntriesLogAction()
     data class TimeEntryTapped(val id: Long) : TimeEntriesLogAction()

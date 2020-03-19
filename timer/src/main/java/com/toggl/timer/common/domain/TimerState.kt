@@ -1,8 +1,10 @@
 package com.toggl.timer.common.domain
 
+import arrow.optics.optics
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 
+@optics
 data class TimerState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
@@ -13,8 +15,9 @@ data class TimerState(
         internal val editedTimeEntry: TimeEntry?
     ) {
         constructor() : this("", null)
-    }
-}
 
-val TimerState.editedDescription: String
-    get() = localState.editedDescription
+        companion object
+    }
+
+    companion object
+}

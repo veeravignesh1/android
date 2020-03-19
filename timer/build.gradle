@@ -56,6 +56,9 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.viewModel
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
+    implementation Libs.Arrow.optics
+    implementation Libs.Arrow.syntax
+    kapt Libs.Arrow.meta
 
     testImplementation (Libs.threeTen) {
         exclude group:'com.jakewharton.threetenabp', module:'threetenabp'

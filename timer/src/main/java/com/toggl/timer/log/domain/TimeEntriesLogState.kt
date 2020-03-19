@@ -1,9 +1,11 @@
 package com.toggl.timer.log.domain
 
+import arrow.optics.optics
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerState
 
+@optics
 data class TimeEntriesLogState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,

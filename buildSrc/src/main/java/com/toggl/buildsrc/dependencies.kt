@@ -102,4 +102,11 @@ object Libs {
     object Microsoft {
         const val appCenterAnalytics = "com.microsoft.appcenter:appcenter-analytics:3.0.0"
     }
+
+    object Arrow {
+        private const val version = "0.10.4"
+        const val optics = "io.arrow-kt:arrow-optics:$version"
+        const val syntax = "io.arrow-kt:arrow-syntax:$version"
+        const val meta = "io.arrow-kt:arrow-meta:$version"
+    }
 }

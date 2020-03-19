@@ -1,9 +1,10 @@
 package com.toggl.timer.start.domain
 
+import arrow.optics.optics
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerState
-import com.toggl.timer.common.domain.editedDescription
 
+@optics
 data class StartTimeEntryState(
     val timeEntries: Map<Long, TimeEntry>,
     val editedDescription: String
@@ -12,7 +13,7 @@ data class StartTimeEntryState(
         fun fromTimerState(timerState: TimerState) =
             StartTimeEntryState(
                 timeEntries = timerState.timeEntries,
-                editedDescription = timerState.editedDescription
+                editedDescription = timerState.localState.editedDescription
             )
 
         fun toTimerState(timerState: TimerState, startTimeEntryState: StartTimeEntryState) =

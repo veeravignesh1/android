@@ -18,6 +18,7 @@ import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.onboarding.domain.effects.LogUserInEffect
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.onboarding.domain.states.email
+import com.toggl.onboarding.domain.states.localState
 import com.toggl.onboarding.domain.states.password
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -51,14 +52,15 @@ class OnboardingReducer @Inject constructor(private val api: LoginApi) : Reducer
                 noEffect()
             }
             is OnboardingAction.EmailEntered -> {
-                val newLocalState = currentState.localState.copy(email = action.email.toEmail())
-                state.value = currentState.copy(localState = newLocalState)
+                state.value = OnboardingState.localState.modify(currentState) {
+                    it.copy(email = action.email.toEmail())
+                }
                 noEffect()
             }
             is OnboardingAction.PasswordEntered -> {
-                val newLocalState =
-                    currentState.localState.copy(password = action.password.toPassword())
-                state.value = currentState.copy(localState = newLocalState)
+                state.value = OnboardingState.localState.modify(currentState) {
+                    it.copy(password = action.password.toPassword())
+                }
                 noEffect()
             }
         }
