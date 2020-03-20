@@ -17,6 +17,7 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AppModule::class,
+        ReducerModule::class,
         ViewModelModule::class,
         OnboardingModule::class,
         TimerModule::class,

@@ -4,6 +4,7 @@ import android.content.Context
 import com.toggl.TogglApplication
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.FlowStore
+import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -11,21 +12,13 @@ import com.toggl.domain.mappings.mapAppStateToOnboardingState
 import com.toggl.domain.mappings.mapAppStateToTimerState
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
-import com.toggl.domain.reducers.AnalyticsReducer
-import com.toggl.domain.reducers.AppReducer
-import com.toggl.domain.reducers.EntityLoadReducer
-import com.toggl.domain.reducers.LoggingReducer
-import com.toggl.domain.reducers.createAppReducer
 import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.reducers.OnboardingReducer
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.timer.common.domain.TimerAction
-import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 import javax.inject.Singleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -37,37 +30,18 @@ class AppModule {
     @Provides
     fun provideContext(application: TogglApplication): Context = application.applicationContext
 
-    @Provides
-    @Singleton
-    @ExperimentalCoroutinesApi
-    @InternalCoroutinesApi
-    @Named("appReducer")
-    fun appReducer(
-        entityLoadReducer: EntityLoadReducer,
-        onboardingReducer: OnboardingReducer,
-        timerReducer: TimerReducer,
-        loggingReducer: LoggingReducer,
-        analyticsReducer: AnalyticsReducer
-    ) = createAppReducer(
-        entityLoadReducer,
-        onboardingReducer,
-        timerReducer,
-        loggingReducer,
-        analyticsReducer
-    )
-
     @FlowPreview
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton
     fun appStore(
-        @Named("appReducer") appReducer: AppReducer,
+        @ProvideLoggingReducer reducer: Reducer<AppState, AppAction>,
         dispatcherProvider: DispatcherProvider
     ): Store<AppState, AppAction> {
         return FlowStore.create(
             initialState = AppState(),
-            reducer = appReducer,
+            reducer = reducer,
             dispatcherProvider = dispatcherProvider
         )
     }

@@ -26,12 +26,10 @@ fun createAppReducer(
     entityLoadReducer: EntityLoadReducer,
     onboardingReducer: OnboardingReducer,
     timerReducer: TimerReducer,
-    loggingReducer: LoggingReducer,
     analyticsReducer: AnalyticsReducer
 ): AppReducer =
     combine(
         entityLoadReducer,
-        loggingReducer,
         analyticsReducer,
         timerReducer.pullback(
             mapToLocalState = ::mapAppStateToTimerState,

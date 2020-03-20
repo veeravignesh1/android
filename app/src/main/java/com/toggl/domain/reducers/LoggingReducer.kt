@@ -2,18 +2,16 @@ package com.toggl.domain.reducers
 
 import android.util.Log
 import com.toggl.architecture.core.Effect
+import com.toggl.architecture.core.HigherOrderReducer
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
-import com.toggl.architecture.extensions.noEffect
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.onboarding.domain.actions.formatForDebug
 import com.toggl.timer.common.domain.formatForDebug
-import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class LoggingReducer @Inject constructor() : Reducer<AppState, AppAction> {
+class LoggingReducer(override val innerReducer: Reducer<AppState, AppAction>)
+    : HigherOrderReducer<AppState, AppAction> {
     override fun reduce(
         state: SettableValue<AppState>,
         action: AppAction
@@ -28,6 +26,6 @@ class LoggingReducer @Inject constructor() : Reducer<AppState, AppAction> {
             }
         )
 
-        return noEffect()
+        return innerReducer.reduce(state, action)
     }
 }

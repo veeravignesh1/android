@@ -7,6 +7,10 @@ interface Reducer<State, Action> {
     fun reduce(state: SettableValue<State>, action: Action): List<Effect<Action>>
 }
 
+interface HigherOrderReducer<State, Action> : Reducer<State, Action> {
+    val innerReducer: Reducer<State, Action>
+}
+
 fun <State, Action> combine(vararg reducers: Reducer<State, Action>) =
     CombinedReducer(reducers.toList())
 
