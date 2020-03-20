@@ -33,7 +33,10 @@ class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
 
     private val store: TimeEntriesLogStoreViewModel by viewModels { viewModelFactory }
 
-    private val adapter = TimeEntriesLogAdapter { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
+    private val adapter = TimeEntriesLogAdapter(
+        { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) },
+        { TODO("dispatch group expanding action") }
+    )
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -52,7 +55,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
         val yesterdayString = context.getString(R.string.yesterday)
 
         val curriedTimeEntriesSelector: suspend (TimeEntriesLogState) -> List<TimeEntryViewModel> = {
-            timeEntriesLogSelector(it.timeEntries, it.projects, timeService, todayString, yesterdayString)
+            timeEntriesLogSelector(it.timeEntries, it.projects, timeService, todayString, yesterdayString, true)
         }
 
         lifecycleScope.launch {

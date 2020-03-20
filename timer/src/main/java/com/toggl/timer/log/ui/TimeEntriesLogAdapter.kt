@@ -12,8 +12,10 @@ import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 import com.toggl.timer.log.domain.TimeEntryViewModel
 import java.lang.IllegalStateException
 
-class TimeEntriesLogAdapter(private val onContinueTappedListener: (Long) -> Unit = {}) :
-    ListAdapter<TimeEntryViewModel, TimeEntryLogViewHolder>(diffCallback) {
+class TimeEntriesLogAdapter(
+    private val onContinueTappedListener: (Long) -> Unit = {},
+    private val onExpandTappedListener: (List<Long>) -> Unit = {}
+) : ListAdapter<TimeEntryViewModel, TimeEntryLogViewHolder>(diffCallback) {
 
     private val dayHeaderViewType = 0
     private val flatTimeEntryViewType = 1
@@ -30,6 +32,7 @@ class TimeEntriesLogAdapter(private val onContinueTappedListener: (Long) -> Unit
         val layoutId = when (viewType) {
             dayHeaderViewType -> R.layout.time_entries_log_header
             flatTimeEntryViewType -> R.layout.time_entries_log_item
+            timeEntryGroupViewType -> R.layout.time_entries_group_item
             else -> throw IllegalStateException()
         }
 
@@ -42,6 +45,7 @@ class TimeEntriesLogAdapter(private val onContinueTappedListener: (Long) -> Unit
         when (holder) {
             is TimeEntryItemViewHolder -> holder.bind(getItem(position) as FlatTimeEntryViewModel)
             is TimeEntryHeaderViewHolder -> holder.bind(getItem(position) as DayHeaderViewModel)
+            is TimeEntryGroupViewHolder -> holder.bind(getItem(position) as TimeEntryGroupViewModel)
         }
     }
 
@@ -49,6 +53,7 @@ class TimeEntriesLogAdapter(private val onContinueTappedListener: (Long) -> Unit
         when (viewType) {
             dayHeaderViewType -> TimeEntryHeaderViewHolder(itemView)
             flatTimeEntryViewType -> TimeEntryItemViewHolder(itemView, onContinueTappedListener)
+            timeEntryGroupViewType -> TimeEntryGroupViewHolder(itemView, onContinueTappedListener, onExpandTappedListener)
             else -> throw IllegalStateException()
         }
 

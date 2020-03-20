@@ -8,16 +8,18 @@ fun createTimeEntry(
     id: Long,
     description: String = "",
     startTime: OffsetDateTime = OffsetDateTime.now(),
-    duration: Duration? = null
+    duration: Duration? = null,
+    billable: Boolean = false,
+    projectId: Long? = null
 ) =
     TimeEntry(
         id,
         description,
         startTime,
         duration,
-        false,
+        billable,
         1,
-        null,
+        projectId,
         null,
         false
     )

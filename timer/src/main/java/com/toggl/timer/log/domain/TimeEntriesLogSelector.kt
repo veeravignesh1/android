@@ -3,7 +3,7 @@ package com.toggl.timer.log.domain
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
-import org.threeten.bp.Duration
+import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
 private const val timeEntriesLogHeaderTimeFormat = "eee, dd MMM"
@@ -13,47 +13,72 @@ fun timeEntriesLogSelector(
     projects: Map<Long, Project>,
     timeService: TimeService,
     todayString: String,
-    yesterdayString: String
+    yesterdayString: String,
+    shouldGroup: Boolean
 ): List<TimeEntryViewModel> {
 
     val today = timeService.now().toLocalDate()
     val yesterday = today.minusDays(1)
 
+    fun TimeEntry.similarityHashCode(): Int {
+        var result = description.hashCode()
+        result = 31 * result + billable.hashCode()
+        result = 31 * result + (projectId?.hashCode() ?: 0)
+        result = 31 * result + (taskId?.hashCode() ?: 0)
+        return result
+    }
+
+    fun List<TimeEntry>.mapToGroups(): List<List<TimeEntry>> =
+        this.groupBy(TimeEntry::similarityHashCode)
+            .map { (_, timeEntries) -> timeEntries }
+
+    suspend fun SequenceScope<TimeEntryViewModel>.yieldDayHeader(
+        groupDate: LocalDate,
+        timeEntries: List<TimeEntry>
+    ) {
+        yield(
+            DayHeaderViewModel(
+                dayTitle = when (groupDate) {
+                    today -> todayString
+                    yesterday -> yesterdayString
+                    else -> groupDate.format(
+                        DateTimeFormatter.ofPattern(
+                            timeEntriesLogHeaderTimeFormat
+                        )
+                    )
+                },
+                totalDuration = timeEntries.totalDuration()
+            )
+        )
+    }
+
+    suspend fun SequenceScope<TimeEntryViewModel>.yieldFlatTimeEntry(timeEntry: TimeEntry) =
+        yield(timeEntry.toFlatTimeEntryViewModel(projects))
+
+    suspend fun SequenceScope<TimeEntryViewModel>.yieldTimeEntryGroup(timeEntries: List<TimeEntry>) =
+        yield(timeEntries.toTimeEntryGroupViewModel(projects))
+
     return timeEntries.values
-        .filter { it.duration != null }
+        .filter { it.duration != null && !it.isDeleted }
         .sortedByDescending { it.startTime }
         .groupBy { timeEntry -> timeEntry.startTime.toLocalDate() }
         .flatMap { (groupDate, timeEntries) ->
-            sequence {
-                yield(
-                    DayHeaderViewModel(
-                        dayTitle = when (groupDate) {
-                            today -> todayString
-                            yesterday -> yesterdayString
-                            else -> groupDate.format(DateTimeFormatter.ofPattern(timeEntriesLogHeaderTimeFormat))
-                        },
-                        totalDuration = timeEntries
-                            .fold(Duration.ZERO) { acc, timeEntry -> acc + timeEntry.duration }
-                    )
-                )
+            sequence<TimeEntryViewModel> {
+                yieldDayHeader(groupDate, timeEntries)
 
-                for (timeEntry in timeEntries) {
-                    val projectId = timeEntry.projectId
-                    val project =
-                        if (projectId == null) null
-                        else projects[projectId]?.run { ProjectViewModel(id, name, color) }
-
-                    yield(
-                        FlatTimeEntryViewModel(
-                            id = timeEntry.id,
-                            description = timeEntry.description,
-                            startTime = timeEntry.startTime,
-                            duration = timeEntry.duration
-                                ?: throw IllegalStateException("You can't display a running time entry in the log"),
-                            project = project,
-                            billable = timeEntry.billable
-                        )
-                    )
+                if (shouldGroup) {
+                    val timeEntryGroups = timeEntries.mapToGroups()
+                    for (timeEntryGroup in timeEntryGroups) {
+                        if (timeEntryGroup.size == 1) {
+                            yieldFlatTimeEntry(timeEntryGroup.first())
+                        } else {
+                            yieldTimeEntryGroup(timeEntryGroup)
+                        }
+                    }
+                } else {
+                    for (timeEntry in timeEntries) {
+                        yieldFlatTimeEntry(timeEntry)
+                    }
                 }
             }.toList()
         }

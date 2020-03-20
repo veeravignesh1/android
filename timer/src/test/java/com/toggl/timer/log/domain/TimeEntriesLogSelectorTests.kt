@@ -6,6 +6,7 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.createTimeEntry
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
+import io.kotlintest.matchers.types.shouldNotBeTypeOf
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import io.mockk.every
@@ -25,10 +26,55 @@ class TimeEntriesLogSelectorTests : FreeSpec({
 
     val selectorToTest: (Map<Long, TimeEntry>, Map<Long, Project>) -> List<TimeEntryViewModel> =
         { timeEntries, projects ->
-            timeEntriesLogSelector(timeEntries, projects, timeService, todayString, yesterdayString)
+            timeEntriesLogSelector(
+                timeEntries,
+                projects,
+                timeService,
+                todayString,
+                yesterdayString,
+                false
+            )
+        }
+
+    val groupSelectorToTest: (Map<Long, TimeEntry>, Map<Long, Project>) -> List<TimeEntryViewModel> =
+        { timeEntries, projects ->
+            timeEntriesLogSelector(
+                timeEntries,
+                projects,
+                timeService,
+                todayString,
+                yesterdayString,
+                true
+            )
         }
 
     every { timeService.now() } returns today
+
+    /*
+     *  Test Data
+     */
+    val projectsMap = mapOf(
+        1L to Project(
+            id = 1,
+            name = "First Project",
+            color = "",
+            active = true,
+            isPrivate = true,
+            billable = true,
+            workspaceId = 1,
+            clientId = 1
+        ),
+        2L to Project(
+            id = 2,
+            name = "Second Project",
+            color = "",
+            active = true,
+            isPrivate = true,
+            billable = true,
+            workspaceId = 1,
+            clientId = 2
+        )
+    )
 
     val timeEntries = (0L..10L).flatMap { daysInThePast ->
         val date = today.minusDays(daysInThePast)
@@ -42,8 +88,165 @@ class TimeEntriesLogSelectorTests : FreeSpec({
         }
     }
 
+    val shortDuration = Duration.ofMinutes(30)
+
+    fun List<TimeEntry>.mapToYesterday() = this.map { it.copy(id = it.id * 100, startTime = it.startTime.minusDays(1)) }
+
+    val singleItem = listOf(
+        createTimeEntry(
+            id = 1,
+            description = "S",
+            startTime = today,
+            duration = shortDuration
+        )
+    )
+
+    val yesterdaySingleItem = singleItem.mapToYesterday()
+
+    val groupA = (2L..5L).map { id ->
+        createTimeEntry(
+            id = id,
+            description = "A",
+            startTime = today,
+            duration = shortDuration.plusMinutes(id)
+        )
+    }
+
+    val yesterdayGroupA = groupA.mapToYesterday()
+
+    val groupB = (6L..9L).map { id ->
+        createTimeEntry(
+            id = id,
+            description = "B",
+            startTime = today,
+            duration = shortDuration.plusMinutes(id)
+        )
+    }
+
+    val yesterdayGroupB = groupB.mapToYesterday()
+
+    val twoProjects = listOf(
+        createTimeEntry(
+            id = 10,
+            description = "B",
+            startTime = today,
+            duration = shortDuration.plusMinutes(10),
+            projectId = 1
+        ),
+        createTimeEntry(
+            id = 11,
+            description = "B",
+            startTime = today,
+            duration = shortDuration.plusMinutes(11),
+            projectId = 2
+        )
+    )
+
+    val yesterdayTwoProjects = twoProjects.mapToYesterday()
+
+    val differentDescriptions = listOf(
+        createTimeEntry(
+            id = 12,
+            description = "C1",
+            startTime = today,
+            duration = shortDuration.plusMinutes(12)
+        ),
+        createTimeEntry(
+            id = 13,
+            description = "C1",
+            startTime = today,
+            duration = shortDuration.plusMinutes(13)
+        ),
+        createTimeEntry(
+            id = 14,
+            description = "C2",
+            startTime = today,
+            duration = shortDuration.plusMinutes(14)
+        )
+    )
+
+    val yesterdayDifferentDescriptions = differentDescriptions.mapToYesterday()
+
+    val longDuration = listOf(
+        createTimeEntry(
+            id = 15,
+            description = "D1",
+            startTime = today,
+            duration = Duration.ofHours(1)
+        ),
+        createTimeEntry(
+            id = 16,
+            description = "D1",
+            startTime = today,
+            duration = Duration.ofHours(2)
+        ),
+        createTimeEntry(
+            id = 17,
+            description = "D3",
+            startTime = today,
+            duration = Duration.ofHours(3)
+        )
+    )
+
+    val yesterdayLongDuration = longDuration.mapToYesterday()
+
+    val todayEntries = (
+        singleItem +
+            groupA +
+            groupB +
+            twoProjects +
+            differentDescriptions +
+            longDuration
+        )
+
+    val yesterdayEntries = (
+        yesterdaySingleItem +
+            yesterdayGroupA +
+            yesterdayGroupB +
+            yesterdayTwoProjects +
+            yesterdayDifferentDescriptions +
+            yesterdayLongDuration
+        )
+
+    val similarTimeEntries: List<TimeEntry> = yesterdayEntries + todayEntries
+
     val timeEntriesMap = timeEntries.associateBy { it.id }
-    val projectsMap = mapOf<Long, Project>()
+    val similarTimeEntriesMap = similarTimeEntries.associateBy { it.id }
+
+    /*
+     *  Expected Data
+     */
+    val expectedTodayGroupedTimeEntries: List<TimeEntryViewModel> = listOf(
+        singleItem.first().toFlatTimeEntryViewModel(projectsMap),
+        groupA.toTimeEntryGroupViewModel(projectsMap),
+        groupB.toTimeEntryGroupViewModel(projectsMap),
+        twoProjects.first().toFlatTimeEntryViewModel(projectsMap),
+        twoProjects[1].toFlatTimeEntryViewModel(projectsMap),
+        differentDescriptions.dropLast(1).toTimeEntryGroupViewModel(projectsMap),
+        differentDescriptions.last().toFlatTimeEntryViewModel(projectsMap),
+        longDuration.dropLast(1).toTimeEntryGroupViewModel(projectsMap),
+        longDuration.last().toFlatTimeEntryViewModel(projectsMap)
+    )
+
+    val expectedYesterdayGroupedTimeEntries = expectedTodayGroupedTimeEntries.map {
+        when (it) {
+            is FlatTimeEntryViewModel -> it.copy(id = it.id * 100, startTime = it.startTime.minusDays(1))
+            is TimeEntryGroupViewModel -> it.copy(timeEntryIds = it.timeEntryIds.map { id -> id * 100 })
+            else -> it
+        }
+    }
+
+    val expectedGroupedTimeEntries: List<TimeEntryViewModel> = listOf(
+        DayHeaderViewModel(
+            dayTitle = todayString,
+            totalDuration = todayEntries.totalDuration()
+        )
+    ) + expectedTodayGroupedTimeEntries + listOf(
+        DayHeaderViewModel(
+            dayTitle = yesterdayString,
+            totalDuration = yesterdayEntries.totalDuration()
+        )
+    ) + expectedYesterdayGroupedTimeEntries
 
     "The TimeEntriesLogSelector" - {
         "does not" - {
@@ -65,7 +268,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 )
 
                 val headers =
-                    groupedTimeEntries.filterIsInstance<DayHeaderViewModel>().map { it.dayTitle }
+                    groupedTimeEntries.filterIsInstance<DayHeaderViewModel>()
+                        .map { it.dayTitle }
 
                 val flatTimeEntryHeaders =
                     groupedTimeEntries
@@ -85,6 +289,17 @@ class TimeEntriesLogSelectorTests : FreeSpec({
 
                 headers shouldContainExactlyInAnyOrder flatTimeEntryHeaders
             }
+            "group similar time entries when grouping is disabled" - {
+
+                val notGroupedTimeEntries = selectorToTest(
+                    similarTimeEntriesMap,
+                    projectsMap
+                )
+
+                notGroupedTimeEntries.forEach {
+                    it.shouldNotBeTypeOf<TimeEntryGroupViewModel>()
+                }
+            }
         }
 
         "the header titles are formatted" - {
@@ -96,7 +311,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 )
 
                 val headerTitles =
-                    groupedTimeEntries.filterIsInstance<DayHeaderViewModel>().map { it.dayTitle }
+                    groupedTimeEntries.filterIsInstance<DayHeaderViewModel>()
+                        .map { it.dayTitle }
 
                 headerTitles shouldContain todayString
             }
@@ -108,7 +324,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 )
 
                 val headerTitles =
-                    groupedTimeEntries.filterIsInstance<DayHeaderViewModel>().map { it.dayTitle }
+                    groupedTimeEntries.filterIsInstance<DayHeaderViewModel>()
+                        .map { it.dayTitle }
 
                 headerTitles shouldContain yesterdayString
             }
@@ -140,6 +357,14 @@ class TimeEntriesLogSelectorTests : FreeSpec({
 
                 headerTitles shouldContainExactlyInAnyOrder formattedDates
             }
+        }
+
+        "groups similar time entries" - {
+            val groupedTimeEntries = groupSelectorToTest(
+                similarTimeEntriesMap,
+                projectsMap
+            )
+            groupedTimeEntries shouldBe expectedGroupedTimeEntries
         }
     }
 })
