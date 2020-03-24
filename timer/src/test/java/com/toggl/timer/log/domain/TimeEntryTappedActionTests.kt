@@ -2,6 +2,7 @@ package com.toggl.timer.log.domain
 
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
+import com.toggl.timer.common.toSettableValue
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -43,7 +44,7 @@ class TimeEntryTappedActionTests : FreeSpec({
             var state = initialState
             val settableValue = state.toSettableValue { state = it }
             reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntryTapped(1))
-            state.editedTimeEntry shouldBe testTe
+            state.editableTimeEntry!!.ids.single() shouldBe testTe.id
         }
     }
 })
