@@ -10,18 +10,18 @@ object Libs {
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.2"
     // fixes warning thrown by SLF4J
     const val slf4j = "org.slf4j:slf4j-simple:1.7.26"
-    const val threeTen = "org.threeten:threetenbp:1.4.1"
+    const val threeTen = "org.threeten:threetenbp:1.4.2"
     const val threeTenAndroid = "com.jakewharton.threetenabp:threetenabp:1.2.2"
 
     object Test {
         const val junit5Plugin = "de.mannodermaus.gradle.plugins:android-junit5:1.5.0.0"
         const val kotlinTestRunner = "io.kotlintest:kotlintest-runner-junit5:3.4.2"
-        const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.3.41"
-        const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.41"
+        const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.3.71"
+        const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.71"
         const val mockk = "io.mockk:mockk:1.9.3"
 
         object Jupiter {
-            private const val version = "5.5.0"
+            private const val version = "5.6.1"
             // (Required) Writing and executing Unit Tests on the JUnit5 Platform
             const val api = "org.junit.jupiter:junit-jupiter-api:$version"
             const val engine = "org.junit.jupiter:junit-jupiter-engine:$version"
@@ -33,16 +33,16 @@ object Libs {
     object Google {
         const val material = "com.google.android.material:material:1.1.0"
         const val googleServicesPluginClassPath = "com.google.gms:google-services:4.3.3"
-        const val firebaseCrashlyticsPluginClassPath = "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta02"
+        const val firebaseCrashlyticsPluginClassPath = "com.google.firebase:firebase-crashlytics-gradle:2.0.0-beta03"
         const val firebaseCore = "com.google.firebase:firebase-core:17.2.3"
-        const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.0.0-beta01"
+        const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.0.0-beta02"
         const val firebasePerformance = "com.google.firebase:firebase-perf:19.0.5"
         const val firebasePerformancePluginClassPath = "com.google.firebase:perf-plugin:1.3.1"
         const val firebaseAnalytics = "com.google.firebase:firebase-analytics:17.2.3"
     }
 
     object Kotlin {
-        private const val version = "1.3.70"
+        private const val version = "1.3.71"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
@@ -79,7 +79,7 @@ object Libs {
         }
 
         object Room {
-            private const val version = "2.2.4"
+            private const val version = "2.2.5"
             const val common = "androidx.room:room-common:$version"
             const val runtime = "androidx.room:room-runtime:$version"
             const val compiler = "androidx.room:room-compiler:$version"
@@ -87,20 +87,20 @@ object Libs {
         }
 
         object Navigation {
-            private const val version = "2.3.0-alpha03"
+            private const val version = "2.3.0-alpha04"
             const val fragment = "androidx.navigation:navigation-fragment-ktx:$version"
             const val ui = "androidx.navigation:navigation-ui-ktx:$version"
         }
     }
 
     object Dagger {
-        private const val version = "2.26"
+        private const val version = "2.27"
         const val dagger = "com.google.dagger:dagger:$version"
         const val compiler = "com.google.dagger:dagger-compiler:$version"
     }
 
     object Microsoft {
-        const val appCenterAnalytics = "com.microsoft.appcenter:appcenter-analytics:3.0.0"
+        const val appCenterAnalytics = "com.microsoft.appcenter:appcenter-analytics:3.1.0"
     }
 
     object Arrow {
