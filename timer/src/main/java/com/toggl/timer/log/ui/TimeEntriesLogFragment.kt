@@ -15,7 +15,7 @@ import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.log.domain.TimeEntryViewModel
 import com.toggl.timer.log.domain.timeEntriesLogSelector
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.time_entries_log_fragment.*
+import kotlinx.android.synthetic.main.fragment_time_entries_log.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class TimeEntriesLogFragment : Fragment(R.layout.time_entries_log_fragment) {
+class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
 
     @Inject
     lateinit var timeService: TimeService

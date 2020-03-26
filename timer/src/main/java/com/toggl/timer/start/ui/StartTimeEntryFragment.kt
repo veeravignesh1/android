@@ -17,7 +17,9 @@ import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.runningTimeEntryOrNull
 import com.toggl.timer.start.domain.StartTimeEntryAction
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.start_time_entry_fragment.*
+import kotlinx.android.synthetic.main.fragment_start_time_entry.*
+import kotlinx.android.synthetic.main.running_time_entry_layout.*
+import kotlinx.android.synthetic.main.start_time_entry_layout.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -26,7 +28,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
-class StartTimeEntryFragment : Fragment(R.layout.start_time_entry_fragment) {
+class StartTimeEntryFragment : Fragment(R.layout.fragment_start_time_entry) {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -82,7 +84,7 @@ class StartTimeEntryFragment : Fragment(R.layout.start_time_entry_fragment) {
     }
 
     private fun setEditedTimeEntryState(timeEntryIsRunning: Boolean) {
-        time_entry_description_input_layout.isVisible = !timeEntryIsRunning
+        start_time_entry_layout.isVisible = !timeEntryIsRunning
         running_time_entry_layout.isVisible = timeEntryIsRunning
 
         with(start_time_entry_button) {

@@ -45,7 +45,7 @@
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/start_time_entry_container"
             android:name="com.toggl.timer.start.ui.StartTimeEntryFragment"
-            tools:layout="@layout/start_time_entry_fragment"
+            tools:layout="@layout/fragment_start_time_entry"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </com.google.android.material.card.MaterialCardView>
