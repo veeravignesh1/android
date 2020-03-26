@@ -10,4 +10,6 @@
     <string name="login">Entrar</string>
     <string name="today">Hoje</string>
     <string name="yesterday">Ontem</string>
+    <string name="continue_this">Continuar</string>
+    <string name="delete">Excluir</string>
 </resources>

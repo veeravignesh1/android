@@ -9,4 +9,6 @@
     <string name="login">Login</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <string name="continue_this">Continue</string>
+    <string name="delete">Delete</string>
 </resources>
