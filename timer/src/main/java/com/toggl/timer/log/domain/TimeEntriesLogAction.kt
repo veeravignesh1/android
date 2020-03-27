@@ -12,7 +12,7 @@ sealed class TimeEntriesLogAction {
     data class TimeEntrySwiped(val id: Long, val direction: SwipeDirection) : TimeEntriesLogAction()
     data class TimeEntryGroupTapped(val ids: List<Long>) : TimeEntriesLogAction()
     data class TimeEntryGroupSwiped(val ids: List<Long>, val direction: SwipeDirection) : TimeEntriesLogAction()
-    data class TimeEntriesDeleted(val deletedTimeEntries: HashSet<TimeEntry>) : TimeEntriesLogAction()
+    data class TimeEntryDeleted(val deletedTimeEntry: TimeEntry) : TimeEntriesLogAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) :
         TimeEntriesLogAction()
 
@@ -36,5 +36,5 @@ fun TimeEntriesLogAction.formatForDebug() =
         is TimeEntriesLogAction.TimeEntryGroupTapped -> "Tapped group containing time entries $ids"
         is TimeEntriesLogAction.TimeEntryGroupSwiped -> "Group containing time entries $ids swiped to the $direction"
         is TimeEntriesLogAction.TimeEntryStarted -> "Time entry started $startedTimeEntry"
-        is TimeEntriesLogAction.TimeEntriesDeleted -> "Time entries deleted $deletedTimeEntries"
+        is TimeEntriesLogAction.TimeEntryDeleted -> "Deleted time entry with id ${deletedTimeEntry.id}"
     }

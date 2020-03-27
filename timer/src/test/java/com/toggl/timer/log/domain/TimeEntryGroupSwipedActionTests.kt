@@ -62,14 +62,17 @@ class TimeEntryGroupSwipedActionTests : FreeSpec({
             "should delete the swiped time entries" {
                 val timeEntries = (1L..10L).map { createTimeEntry(it, "testing") }
                 val timeEntriesToDelete = timeEntries.take(4)
-                coEvery { repository.deleteTimeEntries(timeEntriesToDelete) } returns timeEntriesToDelete.map { it.copy(isDeleted = true) }.toHashSet()
+                for (te in timeEntriesToDelete) {
+                    coEvery { repository.deleteTimeEntry(te) } returns te.copy(isDeleted = true)
+                }
                 val initialState = createInitialState(timeEntries)
                 var state = initialState
                 val settableValue = state.toSettableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntryGroupSwiped(timeEntriesToDelete.map { it.id }, SwipeDirection.Left)
-                val effectAction = reducer.reduce(settableValue, action).single().execute() as TimeEntriesLogAction.TimeEntriesDeleted
-                val deletedTimeEntries = effectAction.deletedTimeEntries
-                action.ids shouldContainAll deletedTimeEntries.map { it.id }
+                val effectActions = reducer.reduce(settableValue, action)
+                    .map { it.execute() as TimeEntriesLogAction.TimeEntryDeleted }
+                val deletedTimeEntryIds = effectActions.map { it.deletedTimeEntry.id }
+                action.ids shouldContainAll deletedTimeEntryIds
             }
         }
     }

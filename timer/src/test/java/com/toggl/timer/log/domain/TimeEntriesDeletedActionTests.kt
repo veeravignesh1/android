@@ -1,5 +1,6 @@
 package com.toggl.timer.log.domain
 
+import com.toggl.architecture.core.SettableValue
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.createTimeEntry
@@ -20,7 +21,7 @@ class TimeEntriesDeletedActionTests : FreeSpec({
             val settableValue = state.toSettableValue { state = it }
 
             val timeEntry = entriesInDatabase.first()
-            val action = TimeEntriesLogAction.TimeEntriesDeleted(hashSetOf(timeEntry))
+            val action = TimeEntriesLogAction.TimeEntryDeleted(timeEntry)
             val effect = reducer.reduce(settableValue, action)
             effect shouldBe noEffect()
             state.timeEntries[timeEntry.id] shouldBe null
@@ -28,12 +29,14 @@ class TimeEntriesDeletedActionTests : FreeSpec({
 
         "multiple time entries from the time entry list" - {
             var state = createInitialState(entriesInDatabase)
-            val settableValue = state.toSettableValue { state = it }
+            val settableValue = SettableValue({ state }, { state = it })
 
             val timeEntriesToRemove = entriesInDatabase.take(3)
-            val action = TimeEntriesLogAction.TimeEntriesDeleted(timeEntriesToRemove.toHashSet())
-            val effect = reducer.reduce(settableValue, action)
-            effect shouldBe noEffect()
+            for (timeEntry in timeEntriesToRemove) {
+                val action = TimeEntriesLogAction.TimeEntryDeleted(timeEntry)
+                val effect = reducer.reduce(settableValue, action)
+                effect shouldBe noEffect()
+            }
 
             timeEntriesToRemove.forEach {
                 state.timeEntries[it.id] shouldBe null
@@ -45,7 +48,7 @@ class TimeEntriesDeletedActionTests : FreeSpec({
             val settableValue = state.toSettableValue { state = it }
 
             val nonExistingTimeEntry = createTimeEntry(321, "I don't exist")
-            val action = TimeEntriesLogAction.TimeEntriesDeleted(hashSetOf(nonExistingTimeEntry))
+            val action = TimeEntriesLogAction.TimeEntryDeleted(nonExistingTimeEntry)
             val effect = reducer.reduce(settableValue, action)
             effect shouldBe noEffect()
             state.timeEntries shouldBe entriesInDatabase.associateBy { it.id }

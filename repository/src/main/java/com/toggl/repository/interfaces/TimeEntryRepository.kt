@@ -12,5 +12,5 @@ interface TimeEntryRepository {
     suspend fun startTimeEntry(workspaceId: Long, description: String): StartTimeEntryResult
     suspend fun stopRunningTimeEntry(): TimeEntry?
     suspend fun editTimeEntry(timeEntry: TimeEntry): TimeEntry
-    suspend fun deleteTimeEntries(timeEntries: List<TimeEntry>): HashSet<TimeEntry>
+    suspend fun deleteTimeEntry(timeEntry: TimeEntry): TimeEntry
 }

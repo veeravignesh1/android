@@ -8,7 +8,7 @@ import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
-import com.toggl.timer.common.domain.DeleteTimeEntriesEffect
+import com.toggl.timer.common.domain.DeleteTimeEntryEffect
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
@@ -54,7 +54,7 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                         ?: throw IllegalStateException()
 
                     when (action.direction) {
-                        SwipeDirection.Left -> delete(listOf(swipedEntry), repository)
+                        SwipeDirection.Left -> effect(delete(swipedEntry, repository))
                         SwipeDirection.Right ->
                             startTimeEntry(EditableTimeEntry.fromSingle(swipedEntry), repository)
                     }
@@ -63,13 +63,9 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                 is TimeEntriesLogAction.TimeEntryGroupSwiped -> {
 
                     when (action.direction) {
-                        SwipeDirection.Left -> {
-                            val timeEntriesToDelete = action.ids
-                                .map {
-                                    state.value.timeEntries[it] ?: throw IllegalStateException()
-                                }
-                            delete(timeEntriesToDelete, repository)
-                        }
+                        SwipeDirection.Left -> action.ids
+                            .map { state.value.timeEntries[it] ?: throw IllegalStateException() }
+                            .map { delete(it, repository) }
                         SwipeDirection.Right -> {
                             val timeEntryToStart = state.value.timeEntries[action.ids.first()]
                                 ?.let { EditableTimeEntry.fromGroup(action.ids, it) }
@@ -90,11 +86,11 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                     noEffect()
                 }
 
-                is TimeEntriesLogAction.TimeEntriesDeleted -> {
+                is TimeEntriesLogAction.TimeEntryDeleted -> {
                     state.value = state.value.copy(
                         timeEntries = handleTimeEntryDeletionStateChanges(
                             state.value.timeEntries,
-                            action.deletedTimeEntries
+                            action.deletedTimeEntry
                         )
                     )
                     noEffect()
@@ -108,10 +104,6 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
             }
         )
 
-    private fun delete(timeEntries: List<TimeEntry>, repository: TimeEntryRepository) =
-        effect(
-            DeleteTimeEntriesEffect(repository, timeEntries) {
-                TimeEntriesLogAction.TimeEntriesDeleted(it)
-            }
-        )
+    private fun delete(timeEntry: TimeEntry, repository: TimeEntryRepository) =
+        DeleteTimeEntryEffect(repository, timeEntry, TimeEntriesLogAction::TimeEntryDeleted)
 }

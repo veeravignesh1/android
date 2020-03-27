@@ -9,8 +9,6 @@ import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import io.kotlintest.TestCase
-import io.kotlintest.matchers.collections.containExactlyInAnyOrder
-import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.mockk.called
@@ -25,11 +23,11 @@ import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
 class RepositoryTest : StringSpec() {
-    val projectDao = mockk<ProjectDao>()
-    val timeEntryDao = mockk<TimeEntryDao>()
-    val workspaceDao = mockk<WorkspaceDao>()
-    val timeService = mockk<TimeService>()
-    var repository = Repository(projectDao, timeEntryDao, workspaceDao, timeService)
+    private val projectDao = mockk<ProjectDao>()
+    private val timeEntryDao = mockk<TimeEntryDao>()
+    private val workspaceDao = mockk<WorkspaceDao>()
+    private val timeService = mockk<TimeService>()
+    private var repository = Repository(projectDao, timeEntryDao, workspaceDao, timeService)
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
@@ -207,8 +205,8 @@ class RepositoryTest : StringSpec() {
             result shouldBe timeEntry
         }
 
-        "deleteTimeEntries sets isDeleted, updates the DAO and returns the updated entries" {
-            val timeEntryOne = TimeEntry(
+        "deleteTimeEntry sets isDeleted, updates the DAO and returns the updated entries" {
+            val timeEntry = TimeEntry(
                 1337,
                 "desc",
                 OffsetDateTime.MAX,
@@ -219,31 +217,19 @@ class RepositoryTest : StringSpec() {
                 null,
                 false
             )
-            val timeEntryTwo = timeEntryOne.copy(id = 1338, isDeleted = true)
-            val timeEntryThree = timeEntryOne.copy(id = 1339)
-            every { timeEntryDao.updateAll(any()) } returns mockk()
+            every { timeEntryDao.update(any()) } returns mockk()
 
             val result =
-                repository.deleteTimeEntries(listOf(timeEntryOne, timeEntryTwo, timeEntryThree))
+                repository.deleteTimeEntry(timeEntry)
 
             verify(exactly = 1) {
-                timeEntryDao.updateAll(
-                    listOf(
-                        timeEntryOne.copy(isDeleted = true),
-                        timeEntryTwo,
-                        timeEntryThree.copy(isDeleted = true)
-                    )
-                )
+                timeEntryDao.update(timeEntry.copy(isDeleted = true))
             }
             verify {
                 workspaceDao wasNot called
                 timeService wasNot called
             }
-            result should containExactlyInAnyOrder(
-                timeEntryOne.copy(isDeleted = true),
-                timeEntryTwo,
-                timeEntryThree.copy(isDeleted = true)
-            )
+            result shouldBe timeEntry.copy(isDeleted = true)
         }
     }
 }

@@ -4,13 +4,13 @@ import com.toggl.architecture.core.Effect
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 
-class DeleteTimeEntriesEffect<Action>(
+class DeleteTimeEntryEffect<Action>(
     private val repository: TimeEntryRepository,
-    private val timeEntriesToDelete: List<TimeEntry>,
-    private val mapFn: (HashSet<TimeEntry>) -> Action
+    private val timeEntryToDelete: TimeEntry,
+    private val mapFn: (TimeEntry) -> Action
 ) : Effect<Action> {
     override suspend fun execute(): Action? =
         repository
-            .deleteTimeEntries(timeEntriesToDelete)
+            .deleteTimeEntry(timeEntryToDelete)
             .run(mapFn)
 }

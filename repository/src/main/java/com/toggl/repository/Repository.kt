@@ -74,9 +74,6 @@ class Repository(
     override suspend fun editTimeEntry(timeEntry: TimeEntry): TimeEntry =
         timeEntryDao.update(timeEntry).run { timeEntry }
 
-    override suspend fun deleteTimeEntries(timeEntries: List<TimeEntry>): HashSet<TimeEntry> =
-        timeEntries
-            .map { it.copy(isDeleted = true) }
-            .apply(timeEntryDao::updateAll)
-            .toHashSet()
+    override suspend fun deleteTimeEntry(timeEntry: TimeEntry): TimeEntry =
+        timeEntry.copy(isDeleted = true).apply(timeEntryDao::update)
 }
