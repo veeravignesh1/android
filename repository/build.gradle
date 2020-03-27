@@ -2,6 +2,7 @@ import com.toggl.buildsrc.Libs
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'de.mannodermaus.android-junit5'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
@@ -23,6 +24,12 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
     }
 
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
     buildTypes {
         adhoc {}
     }
@@ -39,6 +46,15 @@ dependencies {
     api Libs.AndroidX.Lifecycle.viewModel
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
+
+    testImplementation Libs.Test.Jupiter.api
+    testRuntimeOnly Libs.Test.Jupiter.engine
+    testRuntimeOnly Libs.Test.Jupiter.params
+    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.kotlinTest
+    testImplementation Libs.Test.kotlinTestJunit
 
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore
