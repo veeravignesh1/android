@@ -11,6 +11,7 @@ import com.toggl.architecture.core.Store
 import com.toggl.common.DeepLinkUrls
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
+import com.toggl.domain.loading.LoadingAction
 import javax.inject.Inject
 import kotlinx.android.synthetic.main.main_activity.*
 
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
 
         (applicationContext as TogglApplication).appComponent.inject(this)
 
-        store.dispatch(AppAction.Load)
+        store.dispatch(AppAction.Loading(LoadingAction.StartLoading))
 
         bottom_navigation.setOnNavigationItemSelectedListener(::changeTab)
         bottom_navigation.setOnNavigationItemReselectedListener(::scrollUpOnTab)

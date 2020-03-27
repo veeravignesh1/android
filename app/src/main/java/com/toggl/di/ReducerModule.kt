@@ -4,7 +4,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.reducers.AnalyticsReducer
-import com.toggl.domain.reducers.EntityLoadReducer
+import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
 import com.toggl.domain.reducers.createAppReducer
@@ -25,13 +25,13 @@ class ReducerModule {
     @InternalCoroutinesApi
     @ProvideAppReducer
     fun appReducer(
-        entityLoadReducer: EntityLoadReducer,
+        loadingReducer: LoadingReducer,
         onboardingReducer: OnboardingReducer,
         timerReducer: TimerReducer,
         analyticsReducer: AnalyticsReducer
     ): Reducer<AppState, AppAction> =
         createAppReducer(
-            entityLoadReducer,
+            loadingReducer,
             onboardingReducer,
             timerReducer,
             analyticsReducer

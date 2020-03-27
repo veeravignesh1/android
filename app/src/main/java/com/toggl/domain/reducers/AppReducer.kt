@@ -5,10 +5,15 @@ import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.pullback
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
+import com.toggl.domain.loading.LoadingReducer
+import com.toggl.domain.mappings.mapAppActionToLoadingAction
 import com.toggl.domain.mappings.mapAppActionToOnboardingAction
 import com.toggl.domain.mappings.mapAppActionToTimerAction
+import com.toggl.domain.mappings.mapAppStateToLoadingState
 import com.toggl.domain.mappings.mapAppStateToOnboardingState
 import com.toggl.domain.mappings.mapAppStateToTimerState
+import com.toggl.domain.mappings.mapLoadingActionToAppAction
+import com.toggl.domain.mappings.mapLoadingStateToAppState
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapOnboardingStateToAppState
 import com.toggl.domain.mappings.mapTimerActionToAppAction
@@ -23,14 +28,19 @@ typealias AppReducer = Reducer<AppState, AppAction>
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
 fun createAppReducer(
-    entityLoadReducer: EntityLoadReducer,
+    loadingReducer: LoadingReducer,
     onboardingReducer: OnboardingReducer,
     timerReducer: TimerReducer,
     analyticsReducer: AnalyticsReducer
 ): AppReducer =
     combine(
-        entityLoadReducer,
         analyticsReducer,
+        loadingReducer.pullback(
+            mapToLocalState = ::mapAppStateToLoadingState,
+            mapToLocalAction = ::mapAppActionToLoadingAction,
+            mapToGlobalState = ::mapLoadingStateToAppState,
+            mapToGlobalAction = ::mapLoadingActionToAppAction
+        ),
         timerReducer.pullback(
             mapToLocalState = ::mapAppStateToTimerState,
             mapToLocalAction = ::mapAppActionToTimerAction,

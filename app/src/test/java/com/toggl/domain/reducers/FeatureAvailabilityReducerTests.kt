@@ -3,6 +3,7 @@ package com.toggl.domain.reducers
 import com.toggl.architecture.core.Reducer
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
+import com.toggl.domain.loading.LoadingAction
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.onboarding.domain.actions.OnboardingAction
@@ -16,9 +17,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
     init {
 
         val allActions = listOf(
-            AppAction.Load,
-            AppAction.WorkspacesLoaded(listOf()),
-            AppAction.TimeEntriesLoaded(listOf()),
+            AppAction.Loading(LoadingAction.StartLoading),
             AppAction.Timer(TimerAction.StartTimeEntry(StartTimeEntryAction.ToggleBillable)),
             AppAction.Onboarding(OnboardingAction.LoginTapped)
         )
