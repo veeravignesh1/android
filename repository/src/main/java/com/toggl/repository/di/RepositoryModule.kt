@@ -1,10 +1,12 @@
 package com.toggl.repository.di
 
+import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.environment.services.time.TimeService
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.Repository
+import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import dagger.Module
 import dagger.Provides
@@ -15,10 +17,11 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun repository(
+        projectDao: ProjectDao,
         timeEntryDao: TimeEntryDao,
         workspaceDao: WorkspaceDao,
         timeService: TimeService
-    ) = Repository(timeEntryDao, workspaceDao, timeService)
+    ) = Repository(projectDao, timeEntryDao, workspaceDao, timeService)
 
     @Provides
     @Singleton
@@ -28,5 +31,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun workspaceRepository(repository: Repository): WorkspaceRepository =
+        repository
+
+    @Provides
+    @Singleton
+    fun projectRepository(repository: Repository): ProjectRepository =
         repository
 }

@@ -1,5 +1,6 @@
 package com.toggl.repository
 
+import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.environment.services.time.TimeService
@@ -24,10 +25,11 @@ import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
 class RepositoryTest : StringSpec() {
+    val projectDao = mockk<ProjectDao>()
     val timeEntryDao = mockk<TimeEntryDao>()
     val workspaceDao = mockk<WorkspaceDao>()
     val timeService = mockk<TimeService>()
-    var repository = Repository(timeEntryDao, workspaceDao, timeService)
+    var repository = Repository(projectDao, timeEntryDao, workspaceDao, timeService)
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
