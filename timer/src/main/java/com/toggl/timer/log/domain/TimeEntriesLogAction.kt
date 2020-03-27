@@ -15,6 +15,7 @@ sealed class TimeEntriesLogAction {
     data class TimeEntryDeleted(val deletedTimeEntry: TimeEntry) : TimeEntriesLogAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) :
         TimeEntriesLogAction()
+    data class ToggleTimeEntryGroupTapped(val groupId: Long) : TimeEntriesLogAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): TimeEntriesLogAction? =
@@ -37,4 +38,5 @@ fun TimeEntriesLogAction.formatForDebug() =
         is TimeEntriesLogAction.TimeEntryGroupSwiped -> "Group containing time entries $ids swiped to the $direction"
         is TimeEntriesLogAction.TimeEntryStarted -> "Time entry started $startedTimeEntry"
         is TimeEntriesLogAction.TimeEntryDeleted -> "Deleted time entry with id ${deletedTimeEntry.id}"
+        is TimeEntriesLogAction.ToggleTimeEntryGroupTapped -> "Time entry group with id $groupId toggled"
     }
