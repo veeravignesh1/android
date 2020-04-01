@@ -1,9 +1,11 @@
 package com.toggl.domain.reducers
 
 import com.toggl.architecture.DispatcherProvider
+import com.toggl.domain.extensions.createClient
 import com.toggl.domain.extensions.createProject
 import com.toggl.domain.extensions.createTimeEntry
 import com.toggl.domain.extensions.toSettableValue
+import com.toggl.domain.loading.LoadClientsEffect
 import com.toggl.domain.loading.LoadProjectsEffect
 import com.toggl.domain.loading.LoadTimeEntriesEffect
 import com.toggl.domain.loading.LoadWorkspacesEffect
@@ -12,6 +14,7 @@ import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.loading.LoadingState
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
+import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
@@ -22,11 +25,12 @@ import io.mockk.mockk
 
 class LoadingReducerTests : FreeSpec({
     val projectRepository = mockk<ProjectRepository>()
+    val clientRepository = mockk<ClientRepository>()
     val timeEntryRepository = mockk<TimeEntryRepository>()
     val workspaceRepository = mockk<WorkspaceRepository>()
     val dispatcherProvider = mockk<DispatcherProvider>()
-    val reducer = LoadingReducer(projectRepository, timeEntryRepository, workspaceRepository, dispatcherProvider)
-    val emptyState = LoadingState(listOf(), listOf(), listOf())
+    val reducer = LoadingReducer(projectRepository, clientRepository, timeEntryRepository, workspaceRepository, dispatcherProvider)
+    val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf())
 
     "The LoadingReducer" - {
         "when receiving a Start Loading action" - {
@@ -47,6 +51,7 @@ class LoadingReducerTests : FreeSpec({
                 effects.map { it.javaClass.kotlin } shouldContainInOrder listOf(
                     LoadWorkspacesEffect::class,
                     LoadProjectsEffect::class,
+                    LoadClientsEffect::class,
                     LoadTimeEntriesEffect::class
                 )
             }
@@ -89,6 +94,18 @@ class LoadingReducerTests : FreeSpec({
                 reducer.reduce(settableValue, LoadingAction.ProjectsLoaded(projects))
 
                 initialState shouldBe emptyState.copy(projects = projects)
+            }
+        }
+
+        "when receiving a Clients Loaded action" - {
+
+            "updates the state to add the loaded clients" - {
+                val clients = (1L..10L).map { createClient(it) }
+                var initialState = emptyState
+                val settableValue = initialState.toSettableValue { initialState = it }
+                reducer.reduce(settableValue, LoadingAction.ClientsLoaded(clients))
+
+                initialState shouldBe emptyState.copy(clients = clients)
             }
         }
     }

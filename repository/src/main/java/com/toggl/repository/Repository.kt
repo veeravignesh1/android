@@ -1,5 +1,6 @@
 package com.toggl.repository
 
+import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
@@ -8,6 +9,7 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
+import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -18,8 +20,9 @@ class Repository(
     private val projectDao: ProjectDao,
     private val timeEntryDao: TimeEntryDao,
     private val workspaceDao: WorkspaceDao,
+    private val clientDao: ClientDao,
     private val timeService: TimeService
-) : ProjectRepository, TimeEntryRepository, WorkspaceRepository {
+) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository {
 
     override suspend fun loadProjects(): List<Project> =
         projectDao.getAll()
@@ -41,6 +44,8 @@ class Repository(
 
             return@let listOf(workspace.copy(id = workspaceId))
         }
+
+    override suspend fun loadClients() = clientDao.getAll()
 
     override suspend fun startTimeEntry(workspaceId: Long, description: String): StartTimeEntryResult {
         val stoppedTimeEntry = stopRunningTimeEntry()

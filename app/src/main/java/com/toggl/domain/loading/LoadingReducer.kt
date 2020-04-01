@@ -6,6 +6,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
 import com.toggl.architecture.extensions.effects
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
@@ -15,6 +16,7 @@ import javax.inject.Singleton
 @Singleton
 class LoadingReducer @Inject constructor(
     private val projectRepository: ProjectRepository,
+    private val clientRepository: ClientRepository,
     private val timeEntryRepository: TimeEntryRepository,
     private val workspaceRepository: WorkspaceRepository,
     private val dispatcherProvider: DispatcherProvider
@@ -28,6 +30,7 @@ class LoadingReducer @Inject constructor(
             LoadingAction.StartLoading -> effects(
                 LoadWorkspacesEffect(workspaceRepository, dispatcherProvider),
                 LoadProjectsEffect(projectRepository, dispatcherProvider),
+                LoadClientsEffect(clientRepository, dispatcherProvider),
                 LoadTimeEntriesEffect(timeEntryRepository, dispatcherProvider)
             )
             is LoadingAction.TimeEntriesLoaded -> {
@@ -40,6 +43,10 @@ class LoadingReducer @Inject constructor(
             }
             is LoadingAction.ProjectsLoaded -> {
                 state.value = state.value.copy(projects = action.projects)
+                noEffect()
+            }
+            is LoadingAction.ClientsLoaded -> {
+                state.value = state.value.copy(clients = action.clients)
                 noEffect()
             }
         }

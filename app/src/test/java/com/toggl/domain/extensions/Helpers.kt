@@ -1,5 +1,6 @@
 package com.toggl.domain.extensions
 
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import org.threeten.bp.Duration
@@ -44,3 +45,5 @@ fun createProject(
     workspaceId,
     clientId
 )
+
+fun createClient(id: Long) = Client(id, "name: $id", 1)

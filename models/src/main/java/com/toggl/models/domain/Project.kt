@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(
     foreignKeys = [
-        ForeignKey(entity = Workspace::class, parentColumns = ["id"], childColumns = ["workspaceId"])
+        ForeignKey(entity = Workspace::class, parentColumns = ["id"], childColumns = ["workspaceId"]),
+        ForeignKey(entity = Client::class, parentColumns = ["id"], childColumns = ["clientId"])
     ]
 )
 data class Project(

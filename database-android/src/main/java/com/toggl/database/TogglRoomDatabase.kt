@@ -3,6 +3,7 @@ package com.toggl.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
@@ -11,7 +12,8 @@ import com.toggl.models.domain.Workspace
     entities = [
         TimeEntry::class,
         Project::class,
-        Workspace::class
+        Workspace::class,
+        Client::class
     ],
     version = 1
 )
