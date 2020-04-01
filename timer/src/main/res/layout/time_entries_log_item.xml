@@ -119,17 +119,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true" />
-    <ImageView
+    <ViewStub
         android:id="@+id/billable_icon"
-        android:src="@drawable/ic_billable"
-        android:tint="@color/icon"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/duration"
-        app:layout_constraintEnd_toStartOf="@id/duration"
-        app:layout_constraintBottom_toBottomOf="@id/duration"
+        android:inflatedId="@+id/billable_icon"
+        android:layout="@layout/time_entries_log_item_billable_icon"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        android:layout_marginEnd="4dp" />
+        android:layout_marginEnd="4dp"
+        app:layout_constraintTop_toTopOf="@id/duration"
+        app:layout_constraintEnd_toStartOf="@id/duration"
+        app:layout_constraintBottom_toBottomOf="@id/duration" />
     <ImageView
         android:id="@+id/tags"
         android:src="@drawable/ic_tag"

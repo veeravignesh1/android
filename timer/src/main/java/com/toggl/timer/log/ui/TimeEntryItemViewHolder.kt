@@ -15,6 +15,7 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
     private val description = itemView.findViewById<TextView>(R.id.description)
     private val duration = itemView.findViewById<TextView>(R.id.duration)
     private val continueButton = itemView.findViewById<View>(R.id.continue_button)
+    private val billableIcon = itemView.findViewById<View>(R.id.billable_icon)
 
     fun bind(item: FlatTimeEntryViewModel) {
 
@@ -30,6 +31,8 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
             project.text = item.project.name
             project.setTextColor(item.project.color.toColorInt())
         }
+
+        billableIcon.isVisible = item.billable
 
         duration.text = item.duration.formatForDisplaying()
 

@@ -16,6 +16,7 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
     private val duration = itemView.findViewById<TextView>(R.id.duration)
     private val groupCount = itemView.findViewById<TextView>(R.id.group_count)
     private val continueButton = itemView.findViewById<View>(R.id.continue_button)
+    private val billableIcon = itemView.findViewById<View>(R.id.billable_icon)
 
     fun bind(item: TimeEntryGroupViewModel) {
 
@@ -32,6 +33,8 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
             project.text = item.project.name
             project.setTextColor(item.project.color.toColorInt())
         }
+
+        billableIcon.isVisible = item.billable
 
         duration.text = item.duration.formatForDisplaying()
         continueButton.setOnClickListener {
