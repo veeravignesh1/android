@@ -19,14 +19,14 @@ data class TimeEntriesLogState(
                 timerState.timeEntries,
                 timerState.projects,
                 timerState.localState.expandedGroupIds,
-                timerState.localState.editViewTimeEntry
+                timerState.localState.editableTimeEntry
             )
 
         fun toTimerState(timerState: TimerState, timeEntriesLogState: TimeEntriesLogState) =
             timerState.copy(
                 timeEntries = timeEntriesLogState.timeEntries,
                 localState = timerState.localState.copy(
-                    editViewTimeEntry = timeEntriesLogState.editableTimeEntry,
+                    editableTimeEntry = timeEntriesLogState.editableTimeEntry,
                     expandedGroupIds = timeEntriesLogState.expandedGroupIds
                 )
             )

@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.running.domain
 
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -22,16 +22,19 @@ class TimeEntryStartedActionTests : FreeSpec({
         2L to createTimeEntry(2, "second", duration = null)
     )
     val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
-    val initState = StartTimeEntryState(timeEntries, mapOf(1L to workspace), editableTimeEntry)
+    val initState = createInitialState(
+        editableTimeEntry = editableTimeEntry,
+        timeEntries = timeEntries
+    )
     val started = createTimeEntry(3, "started", duration = null)
     val stopped = timeEntries[2L]!!.copy(duration = Duration.ofHours(2))
-    val reducer = StartTimeEntryReducer(repository)
+    val reducer = RunningTimeEntryReducer(repository)
 
     "The TimeEntryStarted action" - {
         "with stopped entry" - {
             reducer.testReduce(
                 initialState = initState,
-                action = StartTimeEntryAction.TimeEntryStarted(started, stopped)
+                action = RunningTimeEntryAction.TimeEntryStarted(started, stopped)
             ) { state, effect ->
                 "should start started time entry" {
                     state.timeEntries.shouldContain(3L to started)
@@ -47,7 +50,7 @@ class TimeEntryStartedActionTests : FreeSpec({
         "without stopped entry" - {
             reducer.testReduce(
                 initialState = initState,
-                action = StartTimeEntryAction.TimeEntryStarted(started, null)
+                action = RunningTimeEntryAction.TimeEntryStarted(started, null)
             ) { state, effect ->
                 "should start started time entry" {
                     state.timeEntries.shouldContain(3L to started)

@@ -7,7 +7,6 @@ import com.toggl.models.domain.Tag
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
-import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.timer.common.domain.TimerState
 
@@ -19,7 +18,5 @@ data class AppState(
     val tags: Map<Long, Tag> = mapOf(),
     val timeEntries: Map<Long, TimeEntry> = mapOf(),
     val onboardingLocalState: OnboardingState.LocalState = OnboardingState.LocalState(),
-    val timerLocalState: TimerState.LocalState = TimerState.LocalState(
-        Workspace(1, "Auto created workspace", listOf(WorkspaceFeature.Pro))
-    )
+    val timerLocalState: TimerState.LocalState = TimerState.LocalState()
 )
