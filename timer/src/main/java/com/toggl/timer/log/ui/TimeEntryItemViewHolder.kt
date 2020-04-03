@@ -2,11 +2,11 @@ package com.toggl.timer.log.ui
 
 import android.view.View
 import android.widget.TextView
-import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import com.toggl.timer.R
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.log.domain.FlatTimeEntryViewModel
+import com.toggl.timer.log.domain.formatForDisplay
 
 class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListener: (Long) -> Unit)
     : TimeEntryLogViewHolder(itemView) {
@@ -24,13 +24,7 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
         description.isVisible = hasDescription
         description.text = item.description
 
-        if (item.project == null) {
-            project.isVisible = false
-        } else {
-            project.isVisible = true
-            project.text = item.project.name
-            project.setTextColor(item.project.color.toColorInt())
-        }
+        project.text = item.project.formatForDisplay()
 
         billableIcon.isVisible = item.billable
 

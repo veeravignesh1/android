@@ -2,11 +2,11 @@ package com.toggl.timer.log.ui
 
 import android.view.View
 import android.widget.TextView
-import androidx.core.graphics.toColorInt
 import androidx.core.view.isVisible
 import com.toggl.timer.R
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.log.domain.TimeEntryGroupViewModel
+import com.toggl.timer.log.domain.formatForDisplay
 
 class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListener: (Long) -> Unit, private val onExpandTappedListener: (Long) -> Unit)
     : TimeEntryLogViewHolder(itemView) {
@@ -26,13 +26,7 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         description.text = item.description
         groupCount.text = "${item.timeEntryIds.size}"
 
-        if (item.project == null) {
-            project.isVisible = false
-        } else {
-            project.isVisible = true
-            project.text = item.project.name
-            project.setTextColor(item.project.color.toColorInt())
-        }
+        project.text = item.project.formatForDisplay()
 
         billableIcon.isVisible = item.billable
 

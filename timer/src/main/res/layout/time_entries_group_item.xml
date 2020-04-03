@@ -76,18 +76,18 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/project_label"
         app:layout_constraintTop_toTopOf="@+id/project_label"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/group_count"
         android:layout_marginStart="@dimen/time_entry_log_side_padding"
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_marginEnd="12dp" />
     <TextView
         android:id="@+id/project_label"
-        tools:text="Design"
-        android:gravity="start"
-        tools:textColor="#c56bff"
-        android:visibility="gone"
+        android:layout_marginStart="4dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:maxLines="1"
+        android:singleLine="true"
         android:textSize="15sp"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"
@@ -96,9 +96,8 @@
         app:layout_constraintStart_toEndOf="@id/archived_icon"
         app:layout_constraintEnd_toEndOf="@+id/duration_gradient"
         app:layout_goneMarginStart="@dimen/time_entry_log_side_padding"
-        android:layout_marginStart="4dp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+        tools:text="Short proj"
+        tools:textColor="#c56bff" />
     <View
         android:id="@+id/duration_padding_area"
         app:layout_constraintTop_toTopOf="parent"

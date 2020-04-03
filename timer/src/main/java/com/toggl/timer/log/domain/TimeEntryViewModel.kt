@@ -1,5 +1,8 @@
 package com.toggl.timer.log.domain
 
+import androidx.core.graphics.toColorInt
+import androidx.core.text.buildSpannedString
+import androidx.core.text.color
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -17,8 +20,20 @@ data class FlatTimeEntryViewModel(
 data class ProjectViewModel(
     val id: Long,
     val name: String,
-    val color: String
+    val color: String,
+    val clientName: String?
 )
+
+fun ProjectViewModel?.formatForDisplay() =
+    if (this == null) ""
+    else
+        buildSpannedString {
+            color(color.toColorInt()) {
+                append(name)
+            }
+            append(" ")
+            append(clientName ?: "")
+        }
 
 data class DayHeaderViewModel(
     val dayTitle: String,
