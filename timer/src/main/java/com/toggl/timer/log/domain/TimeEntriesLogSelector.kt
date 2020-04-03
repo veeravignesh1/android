@@ -17,7 +17,8 @@ fun timeEntriesLogSelector(
     todayString: String,
     yesterdayString: String,
     shouldGroup: Boolean,
-    expandedGroupIds: Set<Long>
+    expandedGroupIds: Set<Long>,
+    entriesPendingDeletion: Set<Long>
 ): List<TimeEntryViewModel> {
 
     val today = timeService.now().toLocalDate()
@@ -54,7 +55,7 @@ fun timeEntriesLogSelector(
         yield(timeEntries.toTimeEntryGroupViewModel(timeEntries.first().similarityHashCode(), isExpanded, projects, clients))
 
     return timeEntries.values
-        .filter { it.duration != null && !it.isDeleted }
+        .filter { it.duration != null && !it.isDeleted && !entriesPendingDeletion.contains(it.id) }
         .sortedByDescending { it.startTime }
         .groupBy { timeEntry -> timeEntry.startTime.toLocalDate() }
         .flatMap { (groupDate, timeEntries) ->

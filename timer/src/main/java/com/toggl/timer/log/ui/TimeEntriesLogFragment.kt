@@ -65,7 +65,17 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         val yesterdayString = context.getString(R.string.yesterday)
 
         val curriedTimeEntriesSelector: suspend (TimeEntriesLogState) -> List<TimeEntryViewModel> = {
-            timeEntriesLogSelector(it.timeEntries, it.projects, it.clients, timeService, todayString, yesterdayString, true, it.expandedGroupIds)
+            timeEntriesLogSelector(
+                it.timeEntries,
+                it.projects,
+                it.clients,
+                timeService,
+                todayString,
+                yesterdayString,
+                true,
+                it.expandedGroupIds,
+                it.entriesPendingDeletion
+            )
         }
 
         lifecycleScope.launch {

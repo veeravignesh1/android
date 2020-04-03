@@ -13,7 +13,8 @@ data class TimeEntriesLogState(
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
     val expandedGroupIds: Set<Long>,
-    val editableTimeEntry: EditableTimeEntry?
+    val editableTimeEntry: EditableTimeEntry?,
+    val entriesPendingDeletion: Set<Long>
 ) {
     companion object {
         fun fromTimerState(timerState: TimerState) =
@@ -22,7 +23,8 @@ data class TimeEntriesLogState(
                 timerState.projects,
                 timerState.clients,
                 timerState.localState.expandedGroupIds,
-                timerState.localState.editableTimeEntry
+                timerState.localState.editableTimeEntry,
+                timerState.localState.entriesPendingDeletion
             )
 
         fun toTimerState(timerState: TimerState, timeEntriesLogState: TimeEntriesLogState) =

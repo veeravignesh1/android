@@ -16,11 +16,13 @@ data class TimerState(
 ) {
     data class LocalState internal constructor(
         internal val editableTimeEntry: EditableTimeEntry?,
-        internal val expandedGroupIds: Set<Long>
+        internal val expandedGroupIds: Set<Long>,
+        internal val entriesPendingDeletion: Set<Long>
     ) {
         constructor() : this(
             editableTimeEntry = null,
-            expandedGroupIds = setOf()
+            expandedGroupIds = setOf(),
+            entriesPendingDeletion = setOf()
         )
 
         companion object

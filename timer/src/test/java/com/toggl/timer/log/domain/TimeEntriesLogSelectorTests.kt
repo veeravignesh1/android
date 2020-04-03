@@ -24,7 +24,8 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.Year
 import org.threeten.bp.format.DateTimeFormatter
 
-class TimeEntriesLogSelectorTests : FreeSpec({
+class TimeEntriesLogSelectorTests : FreeSpec(
+{
 
     val todayString = "Today"
     val yesterdayString = "Yesterday"
@@ -33,8 +34,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
     val localToday = today.toLocalDate()
     val yesterday = localToday.minusDays(1)
 
-    val selectorToTest: (Map<Long, TimeEntry>, Map<Long, Project>, Map<Long, Client>) -> List<TimeEntryViewModel> =
-        { timeEntries, projects, clients ->
+    val selectorToTest: (Map<Long, TimeEntry>, Map<Long, Project>, Map<Long, Client>, Set<Long>) -> List<TimeEntryViewModel> =
+        { timeEntries, projects, clients, entriesPendingDeletion ->
             timeEntriesLogSelector(
                 timeEntries,
                 projects,
@@ -43,12 +44,13 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 todayString,
                 yesterdayString,
                 false,
-                setOf()
+                setOf(),
+                entriesPendingDeletion
             )
         }
 
-    val groupSelectorToTest: (Map<Long, TimeEntry>, Map<Long, Project>, Map<Long, Client>, Set<Long>) -> List<TimeEntryViewModel> =
-        { timeEntries, projects, clients, expandedGroups ->
+    val groupSelectorToTest: (Map<Long, TimeEntry>, Map<Long, Project>, Map<Long, Client>, Set<Long>, Set<Long>) -> List<TimeEntryViewModel> =
+        { timeEntries, projects, clients, expandedGroups, entriesPendingDeletion ->
             timeEntriesLogSelector(
                 timeEntries,
                 projects,
@@ -57,7 +59,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 todayString,
                 yesterdayString,
                 true,
-                expandedGroups
+                expandedGroups,
+                entriesPendingDeletion
             )
         }
 
@@ -285,18 +288,37 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 val groupedTimeEntries = selectorToTest(
                     timeEntriesButAllRunning.associateBy { it.id },
                     projectsMap,
-                    clientsMap
+                    clientsMap,
+                    setOf()
                 )
 
                 groupedTimeEntries.size shouldBe 0
             }
+            "add entries marked to be deleted to the groups" - {
+                val timeEntryMarkedForDeletion = createTimeEntry(
+                    0,
+                    "will be deleted",
+                    today,
+                    Duration.ofMinutes(30)
+                )
+                val timeEntriesPlusTheOneMarkedForDeletion = timeEntries + timeEntryMarkedForDeletion
+                val groupedTimeEntries = selectorToTest(
+                    timeEntriesPlusTheOneMarkedForDeletion.associateBy { it.id },
+                    projectsMap,
+                    clientsMap,
+                    setOf(0)
+                )
 
+                groupedTimeEntries.count { te -> te is FlatTimeEntryViewModel && te.description == "will be deleted" } shouldBe 0
+                groupedTimeEntries.count { te -> te is TimeEntryGroupViewModel && te.description == "will be deleted" } shouldBe 0
+            }
             "create headers for days that have no time entries" - {
 
                 val groupedTimeEntries = selectorToTest(
                     timeEntriesMap,
                     projectsMap,
-                    clientsMap
+                    clientsMap,
+                    setOf()
                 )
 
                 val headers =
@@ -326,7 +348,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 val notGroupedTimeEntries = selectorToTest(
                     similarTimeEntriesMap,
                     projectsMap,
-                    clientsMap
+                    clientsMap,
+                    setOf()
                 )
 
                 notGroupedTimeEntries.forEach {
@@ -341,7 +364,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 val groupedTimeEntries = selectorToTest(
                     timeEntriesMap,
                     projectsMap,
-                    clientsMap
+                    clientsMap,
+                    setOf()
                 )
 
                 val headerTitles =
@@ -355,7 +379,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 val groupedTimeEntries = selectorToTest(
                     timeEntriesMap,
                     projectsMap,
-                    clientsMap
+                    clientsMap,
+                    setOf()
                 )
 
                 val headerTitles =
@@ -371,7 +396,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 val groupedTimeEntries = selectorToTest(
                     timeEntriesMap,
                     projectsMap,
-                    clientsMap
+                    clientsMap,
+                    setOf()
                 )
 
                 val headerTitles =
@@ -400,6 +426,7 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 similarTimeEntriesMap,
                 projectsMap,
                 clientsMap,
+                setOf(),
                 setOf()
             )
             groupedTimeEntries shouldBe expectedGroupedTimeEntries
@@ -419,6 +446,7 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 randomSimilarInOneYear,
                 projectsMap,
                 clientsMap,
+                setOf(),
                 setOf()
             )
             val timeEntryViewModels = groupedTimeEntries.count { it is TimeEntryGroupViewModel || it is FlatTimeEntryViewModel }
@@ -457,7 +485,8 @@ class TimeEntriesLogSelectorTests : FreeSpec({
                 randomSimilarInOneYear.associateBy { it.id },
                 projectsMap,
                 clientsMap,
-                randomExpandedGroups
+                randomExpandedGroups,
+                setOf()
             )
 
             val allGroups = groupedTimeEntries.filterIsInstance<TimeEntryGroupViewModel>()
