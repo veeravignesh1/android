@@ -99,6 +99,9 @@ class RunningTimeEntryFragment : Fragment(R.layout.fragment_running_time_entry) 
                 )
                 backgroundTintList = ColorStateList.valueOf(color)
                 setImageResource(R.drawable.ic_play_big)
+                setOnClickListener {
+                    store.dispatch(RunningTimeEntryAction.StartButtonTapped)
+                }
             }
         }
     }

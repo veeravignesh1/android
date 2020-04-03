@@ -25,6 +25,7 @@ class RunningTimeEntryReducer @Inject constructor(
         action: RunningTimeEntryAction
     ): List<Effect<RunningTimeEntryAction>> =
         when (action) {
+            RunningTimeEntryAction.StartButtonTapped -> startTimeEntry(EditableTimeEntry.empty(1), repository)
             RunningTimeEntryAction.StopButtonTapped -> stopTimeEntry(repository)
             RunningTimeEntryAction.DescriptionTextFieldTapped -> {
                 state.value = state.value.copy(editableTimeEntry = EditableTimeEntry.empty(

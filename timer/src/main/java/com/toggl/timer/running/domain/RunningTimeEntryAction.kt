@@ -6,6 +6,7 @@ import com.toggl.timer.common.domain.TimerAction
 
 @optics
 sealed class RunningTimeEntryAction {
+    object StartButtonTapped : RunningTimeEntryAction()
     object StopButtonTapped : RunningTimeEntryAction()
     object DescriptionTextFieldTapped : RunningTimeEntryAction()
     object RunningTimeEntryTapped : RunningTimeEntryAction()
@@ -26,6 +27,7 @@ sealed class RunningTimeEntryAction {
 
 fun RunningTimeEntryAction.formatForDebug() =
     when (this) {
+        RunningTimeEntryAction.StartButtonTapped -> "Start time entry button tapped"
         RunningTimeEntryAction.StopButtonTapped -> "Stop time entry button tapped"
         RunningTimeEntryAction.DescriptionTextFieldTapped -> "Description field tapped"
         RunningTimeEntryAction.RunningTimeEntryTapped -> "Running time entry tapped"
