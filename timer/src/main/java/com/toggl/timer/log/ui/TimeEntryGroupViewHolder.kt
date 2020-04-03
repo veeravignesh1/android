@@ -17,6 +17,7 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
     private val groupCount = itemView.findViewById<TextView>(R.id.group_count)
     private val continueButton = itemView.findViewById<View>(R.id.continue_button)
     private val billableIcon = itemView.findViewById<View>(R.id.billable_icon)
+    private val tagsIcon = itemView.findViewById<View>(R.id.tags)
 
     fun bind(item: TimeEntryGroupViewModel) {
 
@@ -29,6 +30,7 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         project.text = item.project.formatForDisplay()
 
         billableIcon.isVisible = item.billable
+        tagsIcon.isVisible = item.hasTags
 
         duration.text = item.duration.formatForDisplaying()
         continueButton.setOnClickListener {

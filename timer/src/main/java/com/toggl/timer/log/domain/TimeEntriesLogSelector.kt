@@ -94,5 +94,6 @@ fun TimeEntry.similarityHashCode(): Long {
     result = 31 * result + startTime.dayOfYear.hashCode()
     result = 31 * result + (projectId?.hashCode() ?: 0)
     result = 31 * result + (taskId?.hashCode() ?: 0)
+    result = 31 * result + tagIds.hashCode()
     return result.toLong()
 }

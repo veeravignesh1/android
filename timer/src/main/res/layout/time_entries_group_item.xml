@@ -141,11 +141,10 @@
         app:layout_constraintTop_toTopOf="@id/duration"
         app:layout_constraintEnd_toStartOf="@id/duration"
         app:layout_constraintBottom_toBottomOf="@id/duration" />
-    <ImageView
+    <ViewStub
         android:id="@+id/tags"
-        android:src="@drawable/ic_tag"
-        android:visibility="gone"
-        android:tint="@color/icon"
+        android:inflatedId="@+id/tags"
+        android:layout="@layout/time_entries_log_item_tag_icon"
         app:layout_constraintTop_toTopOf="@id/duration"
         app:layout_constraintEnd_toStartOf="@id/billable_icon"
         app:layout_constraintBottom_toBottomOf="@id/duration"

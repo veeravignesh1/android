@@ -13,7 +13,8 @@ fun TimeEntry.toFlatTimeEntryViewModel(projects: Map<Long, Project>, clients: Ma
         duration = duration
             ?: throw IllegalStateException("Running time entries are not supported"),
         project = projects.getProjectViewModelFor(this, clients),
-        billable = billable
+        billable = billable,
+        hasTags = tagIds.isNotEmpty()
     )
 
 fun List<TimeEntry>.toTimeEntryGroupViewModel(
@@ -29,7 +30,8 @@ fun List<TimeEntry>.toTimeEntryGroupViewModel(
         description = first().description,
         duration = totalDuration(),
         project = projects.getProjectViewModelFor(this.first(), clients),
-        billable = first().billable
+        billable = first().billable,
+        hasTags = first().tagIds.isNotEmpty()
     )
 
 fun Project.toProjectViewModel(clients: Map<Long, Client>) = ProjectViewModel(id, name, color, clients[clientId]?.name)

@@ -14,7 +14,8 @@ data class FlatTimeEntryViewModel(
     val startTime: OffsetDateTime,
     val duration: Duration,
     val project: ProjectViewModel?,
-    val billable: Boolean
+    val billable: Boolean,
+    val hasTags: Boolean
 ) : TimeEntryViewModel()
 
 data class ProjectViewModel(
@@ -47,5 +48,6 @@ data class TimeEntryGroupViewModel(
     val description: String,
     val duration: Duration,
     val project: ProjectViewModel?,
-    val billable: Boolean
+    val billable: Boolean,
+    val hasTags: Boolean
 ) : TimeEntryViewModel()
