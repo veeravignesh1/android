@@ -1,12 +1,20 @@
 package com.toggl.common
 
+import android.content.Context
+import android.content.res.Resources
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 
-class DeepLinkUrls {
-    companion object {
-        val main = "toggl://main".toUri()
-        val timeEntriesLog = "toggl://timeentrieslog".toUri()
-        val calendar = "toggl://reports".toUri()
-        val reports = "toggl://calendar".toUri()
-    }
+class DeepLinkUrls(resources: Resources) {
+    val main = resources.getString(R.string.deep_link_main).toUri()
+    val timeEntriesLog = resources.getString(R.string.deep_link_time_entries_log).toUri()
+    val timeEntriesStartDialog = resources.getString(R.string.deep_link_start_time_entry_dialog).toUri()
+    val calendar = resources.getString(R.string.deep_link_calendar).toUri()
+    val reports = resources.getString(R.string.deep_link_reports).toUri()
 }
+
+val Context.deepLinks: DeepLinkUrls
+    get() = DeepLinkUrls(resources)
+
+val Fragment.deepLinks: DeepLinkUrls
+    get() = DeepLinkUrls(resources)

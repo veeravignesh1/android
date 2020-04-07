@@ -7,6 +7,7 @@ sealed class StartTimeEntryAction {
     object StopTimeEntryButtonTapped : StartTimeEntryAction()
     object ToggleBillable : StartTimeEntryAction()
     object CloseButtonTapped : StartTimeEntryAction()
+    object DialogDismissed : StartTimeEntryAction()
     object DoneButtonTapped : StartTimeEntryAction()
     data class DescriptionEntered(val description: String) : StartTimeEntryAction()
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartTimeEntryAction()
@@ -29,6 +30,7 @@ fun StartTimeEntryAction.formatForDebug() =
     when (this) {
         StartTimeEntryAction.StopTimeEntryButtonTapped -> "Stop time entry button tapped"
         StartTimeEntryAction.CloseButtonTapped -> "Close button tapped"
+        StartTimeEntryAction.DialogDismissed -> "Dialog dismissed"
         StartTimeEntryAction.DoneButtonTapped -> "Done button tapped"
         is StartTimeEntryAction.DescriptionEntered -> "Description changed to $description"
         is StartTimeEntryAction.TimeEntryUpdated -> "Time entry with id $id updated"

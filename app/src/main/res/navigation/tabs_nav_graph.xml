@@ -2,25 +2,32 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tabs_nav_graph"
-    app:startDestination="@id/timeEntriesLog">
+    app:startDestination="@id/time_entries_log">
     <fragment
-        android:id="@+id/timeEntriesLog"
+        android:id="@+id/time_entries_log"
         android:name="com.toggl.timer.log.ui.TimeEntriesLogFragment"
         android:label="TimeEntriesLogFragment">
-        <deepLink app:uri="toggl://timeentrieslog" />
+        <deepLink app:uri="@string/deep_link_time_entries_log" />
     </fragment>
+
+    <dialog
+        android:id="@+id/start_time_entry_dialog"
+        android:name="com.toggl.timer.start.ui.StartTimeEntryDialogFragment"
+        android:label="StartTimeEntryDialogFragment">
+        <deepLink app:uri="@string/deep_link_start_time_entry_dialog" />
+    </dialog>
 
     <fragment
         android:id="@+id/reports"
         android:name="com.toggl.reports.ui.ReportsFragment"
         android:label="ReportsFragment">
-        <deepLink app:uri="toggl://reports" />
+        <deepLink app:uri="@string/deep_link_reports" />
     </fragment>
 
     <fragment
         android:id="@+id/calendar"
         android:name="com.toggl.calendar.ui.CalendarFragment"
         android:label="CalendarFragment">
-        <deepLink app:uri="toggl://calendar" />
+        <deepLink app:uri="@string/deep_link_calendar" />
     </fragment>
 </navigation>

@@ -4,13 +4,15 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
-import com.toggl.common.BottomNavigationProvider
+import com.toggl.common.deepLinks
 import com.toggl.models.common.SwipeDirection
 import com.toggl.environment.services.time.TimeService
 import com.toggl.timer.R
@@ -89,9 +91,9 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
                 .map { it.editableTimeEntry != null }
                 .distinctUntilChanged()
                 .onEach { isEditViewExpanded ->
-                    running_time_entry_layout.isVisible = !isEditViewExpanded
-                    edit_time_entry_bottom_sheet.isVisible = isEditViewExpanded
-                    (activity as BottomNavigationProvider).isBottomNavigationVisible = !isEditViewExpanded
+                    if (isEditViewExpanded) {
+                        findNavController().navigate(deepLinks.timeEntriesStartDialog)
+                    }
                 }
                 .launchIn(this)
         }

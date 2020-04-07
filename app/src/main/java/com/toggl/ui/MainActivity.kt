@@ -10,7 +10,7 @@ import com.toggl.R
 import com.toggl.TogglApplication
 import com.toggl.architecture.core.Store
 import com.toggl.common.BottomNavigationProvider
-import com.toggl.common.DeepLinkUrls
+import com.toggl.common.deepLinks
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
@@ -42,9 +42,9 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigation
     private fun changeTab(menuItem: MenuItem): Boolean {
         nav_host_fragment.findNavController().navigate(
             when (menuItem.itemId) {
-                R.id.timer_tab -> DeepLinkUrls.timeEntriesLog
-                R.id.reports_tab -> DeepLinkUrls.reports
-                R.id.calendar_tab -> DeepLinkUrls.calendar
+                R.id.timer_tab -> deepLinks.timeEntriesLog
+                R.id.reports_tab -> deepLinks.reports
+                R.id.calendar_tab -> deepLinks.calendar
                 else -> throw NotImplementedError()
             }
         )

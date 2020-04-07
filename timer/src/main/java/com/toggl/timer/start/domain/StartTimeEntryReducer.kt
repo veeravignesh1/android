@@ -23,7 +23,7 @@ class StartTimeEntryReducer @Inject constructor(
     ): List<Effect<StartTimeEntryAction>> =
         when (action) {
             StartTimeEntryAction.StopTimeEntryButtonTapped -> stopTimeEntry(repository)
-            StartTimeEntryAction.CloseButtonTapped -> {
+            StartTimeEntryAction.CloseButtonTapped, StartTimeEntryAction.DialogDismissed -> {
                 state.value = state.value.copy(editableTimeEntry = null)
                 noEffect()
             }

@@ -18,6 +18,7 @@ import com.toggl.timer.running.domain.RunningTimeEntryAction
 import kotlinx.android.synthetic.main.running_time_entry_blank_layout.*
 import kotlinx.android.synthetic.main.fragment_running_time_entry.*
 import kotlinx.android.synthetic.main.running_time_entry_layout.*
+import kotlinx.android.synthetic.main.running_time_entry_blank_layout.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -44,10 +45,12 @@ class RunningTimeEntryFragment : Fragment(R.layout.fragment_running_time_entry) 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        time_entry_description.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                store.dispatch(RunningTimeEntryAction.DescriptionTextFieldTapped)
-            }
+        time_entry_description.movementMethod = null
+        time_entry_description.keyListener = null
+        time_entry_description.isFocusableInTouchMode = true
+
+        empty_running_time_entry_layout.setOnClickListener {
+            store.dispatch(RunningTimeEntryAction.DescriptionTextFieldTapped)
         }
 
         running_time_entry_description.setOnClickListener {

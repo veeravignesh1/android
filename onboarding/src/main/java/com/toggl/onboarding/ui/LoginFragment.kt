@@ -14,7 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.toggl.architecture.Loadable
 import com.toggl.architecture.extensions.emitIf
 import com.toggl.architecture.isLoaded
-import com.toggl.common.DeepLinkUrls
+import com.toggl.common.deepLinks
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.onboarding.R
@@ -69,7 +69,7 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
                 .emitIf { it.user.isLoaded() }
                 .onEach {
                     view.windowToken?.let(::dismissKeyboard)
-                    findNavController().navigate(DeepLinkUrls.main)
+                    findNavController().navigate(deepLinks.main)
                 }.launchIn(this)
 
             store.state
