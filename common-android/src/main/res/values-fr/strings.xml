@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="email">Email</string>
+    <string name="password">Mot de passe</string>
+    <string name="description">Description</string>
+    <string name="timer">Minuterie</string>
+    <string name="reports">Rapports</string>
+    <string name="calendar">Calendrier</string>
+    <string name="add_description">Ajouter une description</string>
+    <string name="login">Login</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="yesterday">Hier</string>
+    <string name="continue_this">Continuer</string>
+    <string name="delete">Effacer</string>
+</resources>
