@@ -1,6 +1,7 @@
 package com.toggl.di
 
 import com.toggl.TogglApplication
+import com.toggl.architecture.StoreScopeProvider
 import com.toggl.database.DatabaseModule
 import com.toggl.environment.di.EnvironmentModule
 import com.toggl.onboarding.di.OnboardingComponent
@@ -30,7 +31,10 @@ interface AppComponent {
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance application: TogglApplication): AppComponent
+        fun create(
+            @BindsInstance application: TogglApplication,
+            @BindsInstance storeScopeProvider: StoreScopeProvider
+        ): AppComponent
     }
 
     fun inject(activity: MainActivity)

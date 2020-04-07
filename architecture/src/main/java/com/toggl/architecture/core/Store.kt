@@ -1,9 +1,9 @@
 package com.toggl.architecture.core
 
 import com.toggl.architecture.DispatcherProvider
+import com.toggl.architecture.StoreScopeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -48,11 +48,12 @@ class FlowStore<State, Action : Any> private constructor(
         fun <State, Action : Any> create(
             initialState: State,
             reducer: Reducer<State, Action>,
-            dispatcherProvider: DispatcherProvider
+            dispatcherProvider: DispatcherProvider,
+            storeScopeProvider: StoreScopeProvider
         ): Store<State, Action> {
-
+            val storeScope = storeScopeProvider.getStoreScope()
             val stateChannel = ConflatedBroadcastChannel<State>()
-            GlobalScope.launch {
+            storeScope.launch {
                 stateChannel.send(initialState)
             }
 
@@ -62,8 +63,7 @@ class FlowStore<State, Action : Any> private constructor(
 
             lateinit var dispatch: (List<Action>) -> Unit
             dispatch = { actions ->
-                GlobalScope.launch {
-
+                storeScope.launch {
                     var tempState = stateChannel.value
                     val settableValue = SettableValue({ tempState }) { tempState = it }
 
@@ -88,5 +88,5 @@ class FlowStore<State, Action : Any> private constructor(
             return
 
         dispatchFn(actions)
-        }
+    }
 }

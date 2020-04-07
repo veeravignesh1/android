@@ -10,7 +10,7 @@ class LoadTimeEntriesEffect(
     private val dispatcherProvider: DispatcherProvider
 ) : Effect<LoadingAction> {
     override suspend fun execute(): LoadingAction? =
-        withContext(dispatcherProvider.computation) {
+        withContext(dispatcherProvider.io) {
             LoadingAction.TimeEntriesLoaded(repository.loadTimeEntries())
         }
 }

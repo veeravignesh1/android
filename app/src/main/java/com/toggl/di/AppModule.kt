@@ -3,6 +3,7 @@ package com.toggl.di
 import android.content.Context
 import com.toggl.TogglApplication
 import com.toggl.architecture.DispatcherProvider
+import com.toggl.architecture.StoreScopeProvider
 import com.toggl.architecture.core.FlowStore
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
@@ -37,12 +38,14 @@ class AppModule {
     @Singleton
     fun appStore(
         @ProvideLoggingReducer reducer: Reducer<AppState, AppAction>,
-        dispatcherProvider: DispatcherProvider
+        dispatcherProvider: DispatcherProvider,
+        storeScopeProvider: StoreScopeProvider
     ): Store<AppState, AppAction> {
         return FlowStore.create(
             initialState = AppState(),
             reducer = reducer,
-            dispatcherProvider = dispatcherProvider
+            dispatcherProvider = dispatcherProvider,
+            storeScopeProvider = storeScopeProvider
         )
     }
 

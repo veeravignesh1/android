@@ -1,5 +1,6 @@
 package com.toggl.timer.log.domain
 
+import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
@@ -17,8 +18,10 @@ import com.toggl.timer.extensions.containsExactly
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntryRepository)
-    : Reducer<TimeEntriesLogState, TimeEntriesLogAction> {
+class TimeEntriesLogReducer @Inject constructor(
+    private val repository: TimeEntryRepository,
+    private val dispatcherProvider: DispatcherProvider
+) : Reducer<TimeEntriesLogState, TimeEntriesLogAction> {
 
     override fun reduce(
         state: SettableValue<TimeEntriesLogState>,
@@ -125,7 +128,7 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
 
     private fun startTimeEntry(timeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
         effect(
-            StartTimeEntryEffect(repository, timeEntry) {
+            StartTimeEntryEffect(repository, timeEntry, dispatcherProvider) {
                 TimeEntriesLogAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
             }
         )

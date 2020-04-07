@@ -1,6 +1,6 @@
 package com.toggl.domain.reducers
 
-import com.toggl.architecture.DispatcherProvider
+import com.toggl.common.FreeCoroutineSpec
 import com.toggl.domain.extensions.createClient
 import com.toggl.domain.extensions.createProject
 import com.toggl.domain.extensions.createTag
@@ -22,106 +22,115 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import io.kotlintest.matchers.collections.shouldContainInOrder
 import io.kotlintest.shouldBe
-import io.kotlintest.specs.FreeSpec
 import io.mockk.mockk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-class LoadingReducerTests : FreeSpec({
-    val projectRepository = mockk<ProjectRepository>()
-    val clientRepository = mockk<ClientRepository>()
-    val timeEntryRepository = mockk<TimeEntryRepository>()
-    val workspaceRepository = mockk<WorkspaceRepository>()
-    val tagRepository = mockk<TagRepository>()
-    val dispatcherProvider = mockk<DispatcherProvider>()
-    val reducer = LoadingReducer(projectRepository, clientRepository, timeEntryRepository, workspaceRepository, tagRepository, dispatcherProvider)
-    val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf())
+@ExperimentalCoroutinesApi
+class LoadingReducerTests : FreeCoroutineSpec() {
+    init {
+        val projectRepository = mockk<ProjectRepository>()
+        val clientRepository = mockk<ClientRepository>()
+        val timeEntryRepository = mockk<TimeEntryRepository>()
+        val workspaceRepository = mockk<WorkspaceRepository>()
+        val tagRepository = mockk<TagRepository>()
+        val reducer = LoadingReducer(
+            projectRepository,
+            clientRepository,
+            timeEntryRepository,
+            workspaceRepository,
+            tagRepository,
+            dispatcherProvider
+        )
+        val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf())
 
-    "The LoadingReducer" - {
-        "when receiving a Start Loading action" - {
+        "The LoadingReducer" - {
+            "when receiving a Start Loading action" - {
 
-            "does not update the state" {
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                reducer.reduce(settableValue, LoadingAction.StartLoading)
+                "does not update the state" {
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.StartLoading)
 
-                initialState shouldBe emptyState
+                    initialState shouldBe emptyState
+                }
+
+                "returns a list of effects that load entities" {
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    val effects = reducer.reduce(settableValue, LoadingAction.StartLoading)
+
+                    effects.map { it.javaClass.kotlin } shouldContainInOrder listOf(
+                        LoadWorkspacesEffect::class,
+                        LoadProjectsEffect::class,
+                        LoadClientsEffect::class,
+                        LoadTimeEntriesEffect::class
+                    )
+                }
             }
 
-            "returns a list of effects that load entities" {
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                val effects = reducer.reduce(settableValue, LoadingAction.StartLoading)
+            "when receiving a Time Entries Loaded action" - {
 
-                effects.map { it.javaClass.kotlin } shouldContainInOrder listOf(
-                    LoadWorkspacesEffect::class,
-                    LoadProjectsEffect::class,
-                    LoadClientsEffect::class,
-                    LoadTimeEntriesEffect::class
-                )
+                "updates the state to add the loaded time entries" - {
+                    val entries = listOf(createTimeEntry(1), createTimeEntry(2), createTimeEntry(3))
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.TimeEntriesLoaded(entries))
+
+                    initialState shouldBe emptyState.copy(timeEntries = entries)
+                }
             }
-        }
 
-        "when receiving a Time Entries Loaded action" - {
+            "when receiving a Workspaces Loaded action" - {
 
-            "updates the state to add the loaded time entries" - {
-                val entries = listOf(createTimeEntry(1), createTimeEntry(2), createTimeEntry(3))
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                reducer.reduce(settableValue, LoadingAction.TimeEntriesLoaded(entries))
+                "updates the state to add the loaded workspaces" - {
+                    val workspaces = listOf(
+                        Workspace(1, "1", listOf()),
+                        Workspace(2, "2", listOf(WorkspaceFeature.Pro)),
+                        Workspace(3, "3", listOf())
+                    )
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.WorkspacesLoaded(workspaces))
 
-                initialState shouldBe emptyState.copy(timeEntries = entries)
+                    initialState shouldBe emptyState.copy(workspaces = workspaces)
+                }
             }
-        }
 
-        "when receiving a Workspaces Loaded action" - {
+            "when receiving a Projects Loaded action" - {
 
-            "updates the state to add the loaded workspaces" - {
-                val workspaces = listOf(
-                    Workspace(1, "1", listOf()),
-                    Workspace(2, "2", listOf(WorkspaceFeature.Pro)),
-                    Workspace(3, "3", listOf())
-                )
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                reducer.reduce(settableValue, LoadingAction.WorkspacesLoaded(workspaces))
+                "updates the state to add the loaded projects" - {
+                    val projects = (1L..10L).map { createProject(it) }
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.ProjectsLoaded(projects))
 
-                initialState shouldBe emptyState.copy(workspaces = workspaces)
+                    initialState shouldBe emptyState.copy(projects = projects)
+                }
             }
-        }
 
-        "when receiving a Projects Loaded action" - {
+            "when receiving a Clients Loaded action" - {
 
-            "updates the state to add the loaded projects" - {
-                val projects = (1L..10L).map { createProject(it) }
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                reducer.reduce(settableValue, LoadingAction.ProjectsLoaded(projects))
+                "updates the state to add the loaded clients" - {
+                    val clients = (1L..10L).map { createClient(it) }
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.ClientsLoaded(clients))
 
-                initialState shouldBe emptyState.copy(projects = projects)
+                    initialState shouldBe emptyState.copy(clients = clients)
+                }
             }
-        }
 
-        "when receiving a Clients Loaded action" - {
+            "when receiving a Tags Loaded action" - {
 
-            "updates the state to add the loaded clients" - {
-                val clients = (1L..10L).map { createClient(it) }
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                reducer.reduce(settableValue, LoadingAction.ClientsLoaded(clients))
+                "updates the state to add the loaded tags" - {
+                    val tags = (1L..10L).map { createTag(it) }
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.TagsLoaded(tags))
 
-                initialState shouldBe emptyState.copy(clients = clients)
-            }
-        }
-
-        "when receiving a Tags Loaded action" - {
-
-            "updates the state to add the loaded tags" - {
-                val tags = (1L..10L).map { createTag(it) }
-                var initialState = emptyState
-                val settableValue = initialState.toSettableValue { initialState = it }
-                reducer.reduce(settableValue, LoadingAction.TagsLoaded(tags))
-
-                initialState shouldBe emptyState.copy(tags = tags)
+                    initialState shouldBe emptyState.copy(tags = tags)
+                }
             }
         }
     }
-})
+}

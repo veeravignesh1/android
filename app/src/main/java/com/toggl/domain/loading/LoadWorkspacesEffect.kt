@@ -10,7 +10,7 @@ class LoadWorkspacesEffect(
     private val dispatcherProvider: DispatcherProvider
 ) : Effect<LoadingAction> {
     override suspend fun execute(): LoadingAction? =
-        withContext(dispatcherProvider.computation) {
+        withContext(dispatcherProvider.io) {
             LoadingAction.WorkspacesLoaded(repository.loadWorkspaces())
         }
 }

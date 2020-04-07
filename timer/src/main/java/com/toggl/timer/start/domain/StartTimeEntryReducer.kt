@@ -1,5 +1,6 @@
 package com.toggl.timer.start.domain
 
+import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
@@ -14,7 +15,8 @@ import com.toggl.timer.extensions.replaceTimeEntryWithId
 import javax.inject.Inject
 
 class StartTimeEntryReducer @Inject constructor(
-    private val repository: TimeEntryRepository
+    private val repository: TimeEntryRepository,
+    private val dispatcherProvider: DispatcherProvider
 ) : Reducer<StartTimeEntryState, StartTimeEntryAction> {
 
     override fun reduce(
@@ -69,14 +71,14 @@ class StartTimeEntryReducer @Inject constructor(
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
         effect(
-            StartTimeEntryEffect(repository, editableTimeEntry) {
+            StartTimeEntryEffect(repository, editableTimeEntry, dispatcherProvider) {
                 StartTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
             }
         )
 
     private fun stopTimeEntry(repository: TimeEntryRepository) =
         effect(
-            StopTimeEntryEffect(repository) {
+            StopTimeEntryEffect(repository, dispatcherProvider) {
                 StartTimeEntryAction.TimeEntryUpdated(
                     it.id,
                     it
