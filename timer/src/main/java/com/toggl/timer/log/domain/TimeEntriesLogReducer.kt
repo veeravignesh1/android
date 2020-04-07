@@ -102,6 +102,10 @@ class TimeEntriesLogReducer @Inject constructor(private val repository: TimeEntr
                     state.value = state.value.copy(expandedGroupIds = newUngroupedTimeEntries)
                     noEffect()
                 }
+                is TimeEntriesLogAction.UndoButtonPressed -> {
+                    state.value = state.value.copy(entriesPendingDeletion = emptySet())
+                    noEffect()
+                }
             }
 
     private fun startTimeEntry(timeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
