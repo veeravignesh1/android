@@ -32,7 +32,8 @@ data class TimeEntriesLogState(
                 timeEntries = timeEntriesLogState.timeEntries,
                 localState = timerState.localState.copy(
                     editableTimeEntry = timeEntriesLogState.editableTimeEntry,
-                    expandedGroupIds = timeEntriesLogState.expandedGroupIds
+                    expandedGroupIds = timeEntriesLogState.expandedGroupIds,
+                    entriesPendingDeletion = timeEntriesLogState.entriesPendingDeletion
                 )
             )
     }

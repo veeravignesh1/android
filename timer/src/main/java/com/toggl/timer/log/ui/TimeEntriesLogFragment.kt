@@ -125,14 +125,14 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         val actionPadding = resources.getDimension(R.dimen.swipe_action_text_padding)
 
         val swipeLeftParams = SwipeActionParams(
-            text = getString(R.string.continue_this),
+            text = getString(R.string.delete),
             backgroundColor = leftSwipeColor,
             textColor = actionTextColor,
             fontSize = actionFontSize,
             textPadding = actionPadding
         )
         val swipeRightParams = SwipeActionParams(
-            text = getString(R.string.delete),
+            text = getString(R.string.continue_this),
             backgroundColor = rightSwipeColor,
             textColor = actionTextColor,
             fontSize = actionFontSize,

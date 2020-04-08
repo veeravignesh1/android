@@ -15,7 +15,6 @@ import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.common.domain.handleTimeEntryDeletionStateChanges
 import com.toggl.timer.extensions.containsExactly
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class TimeEntriesLogReducer @Inject constructor(
@@ -58,7 +57,8 @@ class TimeEntriesLogReducer @Inject constructor(
                         ?: throw IllegalStateException()
 
                     when (action.direction) {
-                        SwipeDirection.Left -> effect(delete(swipedEntry, repository))
+                        SwipeDirection.Left ->
+                            handleDeletingSwipe(state, listOf(swipedEntry.id))
                         SwipeDirection.Right ->
                             startTimeEntry(EditableTimeEntry.fromSingle(swipedEntry), repository)
                     }
@@ -67,9 +67,8 @@ class TimeEntriesLogReducer @Inject constructor(
                 is TimeEntriesLogAction.TimeEntryGroupSwiped -> {
 
                     when (action.direction) {
-                        SwipeDirection.Left -> action.ids
-                            .map { state.value.timeEntries[it] ?: throw IllegalStateException() }
-                            .map { delete(it, repository) }
+                        SwipeDirection.Left ->
+                            handleDeletingSwipe(state, action.ids)
                         SwipeDirection.Right -> {
                             val timeEntryToStart = state.value.timeEntries[action.ids.first()]
                                 ?.let { EditableTimeEntry.fromGroup(action.ids, it) }
@@ -116,6 +115,7 @@ class TimeEntriesLogReducer @Inject constructor(
                     } else {
                         val timeEntriesToDelete =
                             timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
+
                         state.value = state.value.copy(entriesPendingDeletion = setOf())
                         timeEntriesToDelete.map { delete(it, repository) }
                     }
@@ -135,4 +135,26 @@ class TimeEntriesLogReducer @Inject constructor(
 
     private fun delete(timeEntry: TimeEntry, repository: TimeEntryRepository) =
         DeleteTimeEntryEffect(repository, timeEntry, TimeEntriesLogAction::TimeEntryDeleted)
+
+    private fun handleDeletingSwipe(
+        state: SettableValue<TimeEntriesLogState>,
+        entriesToDelete: List<Long>
+    ): List<Effect<TimeEntriesLogAction>> {
+        val entriesToCommitDeletion = state.value.entriesPendingDeletion
+        state.value = state.value.copy(entriesPendingDeletion = entriesToDelete.toSet())
+
+        val deleteEffects = prepareDeleteEffects(state, entriesToCommitDeletion)
+        deleteEffects.add(WaitForUndoEffect(entriesToDelete))
+
+        return deleteEffects
+    }
+
+    private fun prepareDeleteEffects(
+        state: SettableValue<TimeEntriesLogState>,
+        idsToDelete: Collection<Long>
+    ): MutableList<Effect<TimeEntriesLogAction>> =
+        idsToDelete
+            .mapNotNull { state.value.timeEntries[it] }
+            .map { delete(it, repository) }
+            .toMutableList()
 }
