@@ -25,7 +25,6 @@ import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
-import org.threeten.bp.Duration
 
 class Repository(
     private val projectDao: ProjectDao,
@@ -67,31 +66,18 @@ class Repository(
         workspaceId: Long,
         description: String
     ): StartTimeEntryResult {
-        val stoppedTimeEntry = stopRunningTimeEntry()
-        val id = timeEntryDao.insertTimeEntry(
-            DatabaseTimeEntry(
-                description = description,
-                startTime = timeService.now(),
-                duration = null,
-                billable = false,
-                workspaceId = workspaceId,
-                projectId = null,
-                taskId = null,
-                isDeleted = false
-            )
-        )
-        return StartTimeEntryResult(
-            timeEntryDao.getOneTimeEntry(id).let(DatabaseTimeEntry::toModel),
-            stoppedTimeEntry
-        )
+        return timeEntryDao.startTimeEntry(workspaceId, description, timeService.now())
+            .let { (started, stopped) ->
+                StartTimeEntryResult(
+                    started.let(DatabaseTimeEntry::toModel),
+                    stopped.firstOrNull()?.let(DatabaseTimeEntry::toModel)
+                )
+            }
     }
 
     override suspend fun stopRunningTimeEntry(): TimeEntry? {
         val now = timeService.now()
-        return timeEntryDao
-            .getAllRunningTimeEntries()
-            .map { it.copy(duration = Duration.between(it.startTime, now)) }
-            .also(timeEntryDao::updateAllTimeEntries)
+        return timeEntryDao.stopRunningTimeEntries(now)
             .map(DatabaseTimeEntry::toModel)
             .firstOrNull()
     }

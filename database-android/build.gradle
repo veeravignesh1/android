@@ -3,6 +3,7 @@ import com.toggl.buildsrc.Libs
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mannodermaus.android-junit5'
 apply plugin: 'kotlin-kapt'
 
 kapt {
@@ -27,6 +28,20 @@ android {
         adhoc {}
     }
 
+    testOptions {
+//        unitTests.all {
+//            useJUnitPlatform()
+//        }
+        unitTests {
+            includeAndroidResources = true
+
+            all {
+                minHeapSize = "64m"
+                maxHeapSize = "128m"
+            }
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -46,4 +61,21 @@ dependencies {
     kapt Libs.AndroidX.Room.compiler
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
+
+    testImplementation (Libs.threeTen) {
+        exclude group:'com.jakewharton.threetenabp', module:'threetenabp'
+    }
+    testImplementation Libs.Test.Jupiter.api
+    testRuntimeOnly Libs.Test.Jupiter.engine
+    testRuntimeOnly Libs.Test.Jupiter.params
+    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.robolectric
+    testImplementation Libs.AndroidX.archCoreTesting
+    testImplementation Libs.AndroidX.Test.core
+    testImplementation Libs.AndroidX.Test.runner
+    testImplementation Libs.AndroidX.Room.testing
+    kaptTest Libs.AndroidX.Room.compiler
+    kaptTest Libs.Dagger.compiler
 }

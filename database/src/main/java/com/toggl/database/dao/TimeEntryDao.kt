@@ -10,10 +10,39 @@ import androidx.room.Update
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryTag
 import com.toggl.database.models.DatabaseTimeEntryWithTags
+import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
+
+typealias StartTimeEntryDatabaseResult = Pair<DatabaseTimeEntry, List<DatabaseTimeEntry>>
 
 @Dao
 interface TimeEntryDao {
     // TimeEntries only
+
+    @Transaction
+    fun startTimeEntry(workspaceId: Long, description: String, now: OffsetDateTime): StartTimeEntryDatabaseResult {
+        val stoppedTimeEntries = stopRunningTimeEntries(now)
+        val id = insertTimeEntry(
+            DatabaseTimeEntry(
+                description = description,
+                startTime = now,
+                duration = null,
+                billable = false,
+                workspaceId = workspaceId,
+                projectId = null,
+                taskId = null,
+                isDeleted = false
+            )
+        )
+        return getOneTimeEntry(id) to stoppedTimeEntries
+    }
+
+    @Transaction
+    fun stopRunningTimeEntries(now: OffsetDateTime): List<DatabaseTimeEntry> {
+        return getAllRunningTimeEntries()
+            .map { it.copy(duration = Duration.between(it.startTime, now)) }
+            .also(this::updateAllTimeEntries)
+    }
 
     @Query("SELECT * FROM time_entries WHERE NOT isDeleted AND duration is null")
     fun getAllRunningTimeEntries(): List<DatabaseTimeEntry>

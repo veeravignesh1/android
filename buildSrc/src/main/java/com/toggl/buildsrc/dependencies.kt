@@ -12,6 +12,8 @@ object Libs {
     const val slf4j = "org.slf4j:slf4j-simple:1.7.26"
     const val threeTen = "org.threeten:threetenbp:1.4.2"
     const val threeTenAndroid = "com.jakewharton.threetenabp:threetenabp:1.2.2"
+    const val robolectric = "org.robolectric:robolectric:4.3.1"
+    const val junit = "junit:junit:4.13"
 
     object Test {
         const val junit5Plugin = "de.mannodermaus.gradle.plugins:android-junit5:1.5.0.0"
@@ -62,11 +64,13 @@ object Libs {
         const val fragment = "androidx.fragment:fragment:1.0.0"
 
         object Test {
-            const val core = "androidx.test:core:1.1.0"
-            const val runner = "androidx.test:runner:1.1.1"
-            const val rules = "androidx.test:rules:1.1.1"
+            const val core = "androidx.test:core:1.2.0"
+            const val runner = "androidx.test:runner:1.2.0"
+            const val rules = "androidx.test:rules:1.2.0"
             const val espressoCore = "androidx.test.espresso:espresso-core:3.1.1"
         }
+
+        const val archCoreTesting = "androidx.arch.core:core-testing:2.1.0"
 
         const val constraintlayout = "androidx.constraintlayout:constraintlayout:1.1.3"
 
@@ -85,6 +89,7 @@ object Libs {
             const val runtime = "androidx.room:room-runtime:$version"
             const val compiler = "androidx.room:room-compiler:$version"
             const val ktx = "androidx.room:room-ktx:$version"
+            const val testing = "androidx.room:room-testing:$version"
         }
 
         object Navigation {
