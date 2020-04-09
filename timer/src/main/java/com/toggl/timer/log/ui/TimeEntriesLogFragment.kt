@@ -41,6 +41,8 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     private val store: TimeEntriesLogStoreViewModel by viewModels { viewModelFactory }
 
     private val adapter = TimeEntriesLogAdapter(
+        { store.dispatch(TimeEntriesLogAction.TimeEntryTapped(it)) },
+        { store.dispatch(TimeEntriesLogAction.TimeEntryGroupTapped(it)) },
         { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) },
         { store.dispatch(TimeEntriesLogAction.ToggleTimeEntryGroupTapped(it)) }
     )

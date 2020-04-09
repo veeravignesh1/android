@@ -13,6 +13,8 @@ import com.toggl.timer.log.domain.TimeEntryViewModel
 import java.lang.IllegalStateException
 
 class TimeEntriesLogAdapter(
+    private val onTappedListener: (Long) -> Unit = {},
+    private val onGroupTappedListener: (List<Long>) -> Unit = {},
     private val onContinueTappedListener: (Long) -> Unit = {},
     private val onExpandTappedListener: (Long) -> Unit = {}
 ) : ListAdapter<TimeEntryViewModel, TimeEntryLogViewHolder>(diffCallback) {
@@ -52,8 +54,8 @@ class TimeEntriesLogAdapter(
     private fun createViewHolder(viewType: Int, itemView: View): TimeEntryLogViewHolder =
         when (viewType) {
             dayHeaderViewType -> TimeEntryHeaderViewHolder(itemView)
-            flatTimeEntryViewType -> TimeEntryItemViewHolder(itemView, onContinueTappedListener)
-            timeEntryGroupViewType -> TimeEntryGroupViewHolder(itemView, onContinueTappedListener, onExpandTappedListener)
+            flatTimeEntryViewType -> TimeEntryItemViewHolder(itemView, onTappedListener, onContinueTappedListener)
+            timeEntryGroupViewType -> TimeEntryGroupViewHolder(itemView, onGroupTappedListener, onContinueTappedListener, onExpandTappedListener)
             else -> throw IllegalStateException()
         }
 

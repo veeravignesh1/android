@@ -8,6 +8,7 @@ import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldNotBeNull
+import io.kotlintest.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,8 +30,9 @@ class DescriptionTextFieldTappedActionTests : FreeCoroutineSpec() {
                 initialState = initialState,
                 action = RunningTimeEntryAction.DescriptionTextFieldTapped
             ) { state, effect ->
-                "should init editableTimeEntry" {
+                "should init editableTimeEntry with empty id list" {
                     state.editableTimeEntry.shouldNotBeNull()
+                    state.editableTimeEntry!!.ids shouldBe emptyList()
                 }
                 "shouldn't emit any effect effect" {
                     effect.shouldBeEmpty()

@@ -48,6 +48,8 @@ interface TimeEntryDao {
         insertAllTimeEntryTagsPairs(databaseTimeEntryWithTags.tags.map {
             DatabaseTimeEntryTag(databaseTimeEntryWithTags.timeEntry.id, it)
         })
+
+        updateTimeEntry(databaseTimeEntryWithTags.timeEntry)
     }
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

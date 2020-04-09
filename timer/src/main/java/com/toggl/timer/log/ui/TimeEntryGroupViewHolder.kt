@@ -8,8 +8,12 @@ import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 import com.toggl.timer.log.domain.formatForDisplay
 
-class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListener: (Long) -> Unit, private val onExpandTappedListener: (Long) -> Unit)
-    : TimeEntryLogViewHolder(itemView) {
+class TimeEntryGroupViewHolder(
+    itemView: View,
+    private val onTappedListener: (List<Long>) -> Unit,
+    private val onContinueTappedListener: (Long) -> Unit,
+    private val onExpandTappedListener: (Long) -> Unit
+) : TimeEntryLogViewHolder(itemView) {
     private val addDescriptionLabel = itemView.findViewById<View>(R.id.add_description_label)
     private val project = itemView.findViewById<TextView>(R.id.project_label)
     private val description = itemView.findViewById<TextView>(R.id.description)
@@ -38,6 +42,9 @@ class TimeEntryGroupViewHolder(itemView: View, private val onContinueTappedListe
         }
         groupCount.setOnClickListener {
             onExpandTappedListener(item.groupId)
+        }
+        itemView.setOnClickListener {
+            onTappedListener(item.timeEntryIds)
         }
     }
 }

@@ -8,8 +8,11 @@ import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.log.domain.FlatTimeEntryViewModel
 import com.toggl.timer.log.domain.formatForDisplay
 
-class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListener: (Long) -> Unit)
-    : TimeEntryLogViewHolder(itemView) {
+class TimeEntryItemViewHolder(
+    itemView: View,
+    private val onTappedListener: (Long) -> Unit,
+    private val onContinueTappedListener: (Long) -> Unit
+) : TimeEntryLogViewHolder(itemView) {
     private val addDescriptionLabel = itemView.findViewById<View>(R.id.add_description_label)
     private val project = itemView.findViewById<TextView>(R.id.project_label)
     private val description = itemView.findViewById<TextView>(R.id.description)
@@ -34,6 +37,10 @@ class TimeEntryItemViewHolder(itemView: View, private val onContinueTappedListen
 
         continueButton.setOnClickListener {
             onContinueTappedListener(item.id)
+        }
+
+        itemView.setOnClickListener {
+            onTappedListener(item.id)
         }
     }
 }

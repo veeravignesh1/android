@@ -6,7 +6,9 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.timer.common.domain.EditTimeEntryEffect
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.StopTimeEntryEffect
@@ -63,9 +65,21 @@ class StartEditReducer @Inject constructor(
                 noEffect()
             }
             StartEditAction.DoneButtonTapped -> {
-                val timeEntry = state.value.editableTimeEntry
+                val editableTimeEntry = state.value.editableTimeEntry!!
                 state.value = state.value.copy(editableTimeEntry = null)
-                startTimeEntry(timeEntry!!, repository)
+                if (editableTimeEntry.shouldStart()) {
+                    startTimeEntry(editableTimeEntry, repository)
+                } else {
+                    val timeEntriesToEdit = editableTimeEntry.ids.mapNotNull { state.value.timeEntries[it] }
+
+                    timeEntriesToEdit.map {
+                        editTimeEntry(
+                            it.copy(description = editableTimeEntry.description, billable = editableTimeEntry.billable),
+                            repository,
+                            dispatcherProvider
+                        )
+                    }
+                }
             }
         }
 
@@ -85,4 +99,15 @@ class StartEditReducer @Inject constructor(
                 )
             }
         )
+
+    private fun editTimeEntry(timeEntry: TimeEntry, repository: TimeEntryRepository, dispatcherProvider: DispatcherProvider) =
+        EditTimeEntryEffect(
+            repository,
+            timeEntry,
+            dispatcherProvider
+        ) { updatedTimeEntry ->
+            StartEditAction.TimeEntryUpdated(updatedTimeEntry.id, updatedTimeEntry)
+        }
+
+    private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
 }

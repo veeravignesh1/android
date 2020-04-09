@@ -15,7 +15,6 @@ import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
-import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -29,7 +28,6 @@ import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
 import com.toggl.timer.R
-import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.startedit.domain.StartEditAction
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
@@ -79,9 +77,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             store.state
                 .mapNotNull { it.editableTimeEntry }
                 .take(1)
-                .onEach { editableTimeEntry ->
+                .onEach {
                     bottomSheetDialog.setOnShowListener { dialogInterface ->
-                        dialogInterface.attachBottomView(bottomSheetDialog, R.layout.bottom_control_panel_layout, editableTimeEntry)
+                        dialogInterface.attachBottomView(bottomSheetDialog, R.layout.bottom_control_panel_layout)
                     }
                 }
                 .launchIn(lifecycleScope)
@@ -158,8 +156,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private fun DialogInterface.attachBottomView(
         bottomSheetDialog: BottomSheetDialog,
-        @LayoutRes layoutToAttach: Int,
-        editableTimeEntry: EditableTimeEntry
+        @LayoutRes layoutToAttach: Int
     ) {
         val coordinator =
             (this as BottomSheetDialog).findViewById<CoordinatorLayout>(com.google.android.material.R.id.coordinator)
@@ -185,8 +182,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 containerLayout?.requestLayout()
             }
 
-            val isNewTimeEntry = editableTimeEntry.ids.isNullOrEmpty()
-            done_action.isVisible = isNewTimeEntry
             done_action.setOnClickListener {
                 store.dispatch(StartEditAction.DoneButtonTapped)
             }
