@@ -3,6 +3,7 @@ import com.toggl.buildsrc.Libs
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -20,12 +21,25 @@ android {
     buildTypes {
         adhoc {}
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
-    api project(':common-feature')
+    api project(':common-android')
+    api project(':architecture')
+    api project(':repository')
 
-    implementation Libs.Kotlin.stdlib
-    implementation Libs.AndroidX.appcompat
-    implementation Libs.AndroidX.coreKtx
+    implementation Libs.Dagger.dagger
+    kapt Libs.Dagger.compiler
+
+    androidTestImplementation Libs.AndroidX.Test.runner
+    androidTestImplementation Libs.AndroidX.Test.espressoCore
 }

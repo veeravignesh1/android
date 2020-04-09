@@ -32,6 +32,8 @@ android {
 }
 
 dependencies {
+    api project(':common')
+
     implementation Libs.Kotlin.stdlib
 
     api Libs.AndroidX.Navigation.fragment

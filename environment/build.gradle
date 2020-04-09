@@ -30,6 +30,8 @@ android {
 }
 
 dependencies {
+    api project(':api')
+
     implementation Libs.Kotlin.stdlib
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler

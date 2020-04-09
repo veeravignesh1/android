@@ -23,6 +23,8 @@ android {
 }
 
 dependencies {
+    api project(':common-feature')
+
     implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.appcompat
     implementation Libs.AndroidX.coreKtx

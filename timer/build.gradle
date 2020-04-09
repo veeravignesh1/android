@@ -46,11 +46,7 @@ android {
 
 
 dependencies {
-    implementation project(':architecture')
-    implementation project(':common')
-    implementation project(':common-android')
-    implementation project(':repository')
-    implementation project(':models')
+    api project(':common-feature')
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.Lifecycle.extensions

@@ -38,10 +38,7 @@ android {
 }
 
 dependencies {
-    implementation project(':api')
-    implementation project(':architecture')
-    implementation project(':common-android')
-    implementation project(':models')
+    api project(':common-feature')
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Dagger.dagger
