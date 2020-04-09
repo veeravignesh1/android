@@ -10,9 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import com.google.android.material.snackbar.Snackbar
+import com.toggl.common.Constants.timeEntryDeletionDelayMs
 import com.toggl.common.deepLinks
-import com.toggl.models.common.SwipeDirection
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.common.SwipeDirection
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.log.domain.FlatTimeEntryViewModel
@@ -21,7 +23,6 @@ import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 import com.toggl.timer.log.domain.TimeEntryViewModel
 import com.toggl.timer.log.domain.timeEntriesLogSelector
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.fragment_time_entries_log.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -29,9 +30,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.Locale
+import javax.inject.Inject
 
 class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
-
     @Inject
     lateinit var timeService: TimeService
 
@@ -46,6 +48,8 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) },
         { store.dispatch(TimeEntriesLogAction.ToggleTimeEntryGroupTapped(it)) }
     )
+
+    private var snackbar: Snackbar? = null
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -96,6 +100,33 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
                     }
                 }
                 .launchIn(this)
+
+            store.state
+                .map { it.entriesPendingDeletion }
+                .distinctUntilChanged()
+                .onEach { showUndoDeletionSnackbar(it) }
+                .launchIn(this)
+        }
+    }
+
+    override fun onDestroyView() {
+        snackbar = null
+        super.onDestroyView()
+    }
+
+    private fun showUndoDeletionSnackbar(idsToDelete: Set<Long>) {
+        snackbar?.dismiss()
+
+        if (idsToDelete.isEmpty())
+            return
+
+        val deletionMessage = resources.getQuantityString(R.plurals.entriesDeleted, idsToDelete.size, idsToDelete.size)
+        snackbar = Snackbar.make(coordinator_layout, deletionMessage, timeEntryDeletionDelayMs.toInt()).apply {
+            anchorView = running_time_entry_layout
+            setAction(getString(R.string.undo).toUpperCase(Locale.getDefault())) {
+                store.dispatch(TimeEntriesLogAction.UndoButtonPressed)
+            }
+            show()
         }
     }
 

@@ -134,7 +134,7 @@ class TimeEntriesLogReducer @Inject constructor(
         )
 
     private fun delete(timeEntry: TimeEntry, repository: TimeEntryRepository) =
-        DeleteTimeEntryEffect(repository, timeEntry, TimeEntriesLogAction::TimeEntryDeleted)
+        DeleteTimeEntryEffect(repository, timeEntry, dispatcherProvider, TimeEntriesLogAction::TimeEntryDeleted)
 
     private fun handleDeletingSwipe(
         state: SettableValue<TimeEntriesLogState>,

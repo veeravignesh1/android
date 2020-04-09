@@ -11,4 +11,9 @@
     <string name="yesterday">Yesterday</string>
     <string name="continue_this">Continue</string>
     <string name="delete">Delete</string>
+    <string name="undo">Undo</string>
+    <plurals name="entriesDeleted">
+        <item quantity="one">Time entry was deleted</item>
+        <item quantity="other">%d time entries deleted</item>
+    </plurals>
 </resources>
