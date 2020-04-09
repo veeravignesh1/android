@@ -10,19 +10,19 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
-class ToggleBillableActionTests : FreeCoroutineSpec() {
+class BillableTappedActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
         val reducer = StartEditReducer(repository, dispatcherProvider)
 
-        "The ToggleBillable action" - {
+        "The BillableTapped action" - {
             "should invert the values of the editable time entry" - {
                 Gen.bool().constants().forEach { originalBillableValue ->
                     var state = StartEditState.editableTimeEntry
                         .modify(createInitialState()) { it.copy(billable = originalBillableValue) }
                     val settableValue = state.toSettableValue { state = it }
 
-                    val effects = reducer.reduce(settableValue, StartEditAction.ToggleBillable)
+                    val effects = reducer.reduce(settableValue, StartEditAction.BillableTapped)
                     effects shouldBe noEffect()
                     state.editableTimeEntry!!.billable shouldBe !originalBillableValue
                 }

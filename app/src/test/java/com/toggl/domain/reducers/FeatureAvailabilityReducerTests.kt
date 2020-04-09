@@ -18,7 +18,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
 
         val allActions = listOf(
             AppAction.Loading(LoadingAction.StartLoading),
-            AppAction.Timer(TimerAction.StartTimeEntry(StartEditAction.ToggleBillable)),
+            AppAction.Timer(TimerAction.StartTimeEntry(StartEditAction.BillableTapped)),
             AppAction.Onboarding(OnboardingAction.LoginTapped)
         )
 
@@ -43,7 +43,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
             "For the toggle billable action" - {
                 val toggleBillableAction = AppAction.Timer(
                     TimerAction.StartTimeEntry(
-                        StartEditAction.ToggleBillable
+                        StartEditAction.BillableTapped
                     )
                 )
 

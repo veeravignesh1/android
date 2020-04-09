@@ -13,11 +13,10 @@ sealed class TimeEntriesLogAction {
     data class TimeEntryGroupTapped(val ids: List<Long>) : TimeEntriesLogAction()
     data class TimeEntryGroupSwiped(val ids: List<Long>, val direction: SwipeDirection) : TimeEntriesLogAction()
     data class TimeEntryDeleted(val deletedTimeEntry: TimeEntry) : TimeEntriesLogAction()
-    data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) :
-        TimeEntriesLogAction()
+    data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : TimeEntriesLogAction()
     data class ToggleTimeEntryGroupTapped(val groupId: Long) : TimeEntriesLogAction()
     data class CommitDeletion(val ids: List<Long>) : TimeEntriesLogAction()
-    object UndoButtonPressed : TimeEntriesLogAction()
+    object UndoButtonTapped : TimeEntriesLogAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): TimeEntriesLogAction? =
@@ -42,5 +41,5 @@ fun TimeEntriesLogAction.formatForDebug() =
         is TimeEntriesLogAction.TimeEntryDeleted -> "Deleted time entry with id ${deletedTimeEntry.id}"
         is TimeEntriesLogAction.ToggleTimeEntryGroupTapped -> "Time entry group with id $groupId toggled"
         is TimeEntriesLogAction.CommitDeletion -> "Committed deletion of $ids"
-        is TimeEntriesLogAction.UndoButtonPressed -> "Undo button pressed"
+        is TimeEntriesLogAction.UndoButtonTapped -> "Undo button tapped"
     }

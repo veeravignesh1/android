@@ -33,4 +33,4 @@ class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
 fun AppAction.isToggleBillableAction() =
     this is AppAction.Timer &&
         this.timer is TimerAction.StartTimeEntry &&
-        this.timer.startEditAction is StartEditAction.ToggleBillable
+        this.timer.startEditAction is StartEditAction.BillableTapped

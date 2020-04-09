@@ -120,7 +120,7 @@ class TimeEntriesLogReducer @Inject constructor(
                         timeEntriesToDelete.map { delete(it, repository) }
                     }
                 }
-                is TimeEntriesLogAction.UndoButtonPressed -> {
+                is TimeEntriesLogAction.UndoButtonTapped -> {
                     state.value = state.value.copy(entriesPendingDeletion = emptySet())
                     noEffect()
                 }

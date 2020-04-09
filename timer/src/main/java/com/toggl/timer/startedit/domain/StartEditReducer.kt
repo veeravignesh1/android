@@ -8,10 +8,9 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
-import com.toggl.timer.common.domain.EditTimeEntryEffect
+import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
-import com.toggl.timer.common.domain.StopTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 import javax.inject.Inject
@@ -26,7 +25,6 @@ class StartEditReducer @Inject constructor(
         action: StartEditAction
     ): List<Effect<StartEditAction>> =
         when (action) {
-            StartEditAction.StopTimeEntryButtonTapped -> stopTimeEntry(repository)
             StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed -> {
                 state.value = state.value.copy(editableTimeEntry = null)
                 noEffect()
@@ -57,7 +55,7 @@ class StartEditReducer @Inject constructor(
                 )
                 noEffect()
             }
-            StartEditAction.ToggleBillable -> {
+            StartEditAction.BillableTapped -> {
                 state.value = StartEditState.editableTimeEntry.modify(state.value) {
                     it.copy(billable = !it.billable)
                 }
@@ -68,44 +66,28 @@ class StartEditReducer @Inject constructor(
                 val editableTimeEntry = state.value.editableTimeEntry!!
                 state.value = state.value.copy(editableTimeEntry = null)
                 if (editableTimeEntry.shouldStart()) {
-                    startTimeEntry(editableTimeEntry, repository)
+                    startTimeEntry(editableTimeEntry)
                 } else {
                     val timeEntriesToEdit = editableTimeEntry.ids.mapNotNull { state.value.timeEntries[it] }
-
                     timeEntriesToEdit.map {
-                        editTimeEntry(
-                            it.copy(description = editableTimeEntry.description, billable = editableTimeEntry.billable),
-                            repository,
-                            dispatcherProvider
-                        )
+                        saveTimeEntry(it.copy(
+                            description = editableTimeEntry.description,
+                            billable = editableTimeEntry.billable
+                        ))
                     }
                 }
             }
         }
 
-    private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
+    private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
         effect(
             StartTimeEntryEffect(repository, editableTimeEntry, dispatcherProvider) {
                 StartEditAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
             }
         )
 
-    private fun stopTimeEntry(repository: TimeEntryRepository) =
-        effect(
-            StopTimeEntryEffect(repository, dispatcherProvider) {
-                StartEditAction.TimeEntryUpdated(
-                    it.id,
-                    it
-                )
-            }
-        )
-
-    private fun editTimeEntry(timeEntry: TimeEntry, repository: TimeEntryRepository, dispatcherProvider: DispatcherProvider) =
-        EditTimeEntryEffect(
-            repository,
-            timeEntry,
-            dispatcherProvider
-        ) { updatedTimeEntry ->
+    private fun saveTimeEntry(timeEntry: TimeEntry) =
+        SaveTimeEntryEffect(repository, dispatcherProvider, timeEntry) { updatedTimeEntry ->
             StartEditAction.TimeEntryUpdated(updatedTimeEntry.id, updatedTimeEntry)
         }
 

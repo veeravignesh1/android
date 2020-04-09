@@ -19,7 +19,7 @@ class UndoButtonTappedActionTests : FreeCoroutineSpec() {
                 var initialState = createInitialState(entriesPendingDeletion = setOf(1, 5, 1337))
                 val settableValue = initialState.toSettableValue { initialState = it }
 
-                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.UndoButtonPressed)
+                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.UndoButtonTapped)
 
                 effect shouldBe noEffect()
                 initialState.entriesPendingDeletion shouldBe emptySet()
@@ -28,7 +28,7 @@ class UndoButtonTappedActionTests : FreeCoroutineSpec() {
                 var initialState = createInitialState(entriesPendingDeletion = setOf())
                 val settableValue = initialState.toSettableValue { initialState = it }
 
-                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.UndoButtonPressed)
+                val effect = reducer.reduce(settableValue, TimeEntriesLogAction.UndoButtonTapped)
 
                 effect shouldBe noEffect()
                 initialState.entriesPendingDeletion shouldBe emptySet()

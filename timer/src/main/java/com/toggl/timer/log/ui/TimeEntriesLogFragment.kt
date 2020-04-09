@@ -124,7 +124,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         snackbar = Snackbar.make(coordinator_layout, deletionMessage, timeEntryDeletionDelayMs.toInt()).apply {
             anchorView = running_time_entry_layout
             setAction(getString(R.string.undo).toUpperCase(Locale.getDefault())) {
-                store.dispatch(TimeEntriesLogAction.UndoButtonPressed)
+                store.dispatch(TimeEntriesLogAction.UndoButtonTapped)
             }
             show()
         }

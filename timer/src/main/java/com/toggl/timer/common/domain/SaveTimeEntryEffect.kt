@@ -6,10 +6,10 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 import kotlinx.coroutines.withContext
 
-class EditTimeEntryEffect<Action>(
+class SaveTimeEntryEffect<Action>(
     private val repository: TimeEntryRepository,
-    private val timeEntry: TimeEntry,
     private val dispatcherProvider: DispatcherProvider,
+    private val timeEntry: TimeEntry,
     private val mapFn: (TimeEntry) -> Action
 ) : Effect<Action> {
     override suspend fun execute(): Action? = withContext(dispatcherProvider.io) {
