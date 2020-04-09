@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -19,14 +19,14 @@ class CloseButtonTappedActionTests : FreeCoroutineSpec() {
         val workspace = mockk<Workspace>()
         val editableTimeEntry =
             EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-        val state = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val state = StartEditState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
         "The CloseButtonTapped action" - {
             reducer.testReduce(
                 initialState = state,
-                action = StartTimeEntryAction.CloseButtonTapped
+                action = StartEditAction.CloseButtonTapped
             ) { state, effect ->
                 "should nullify editableTimeEntry" {
                     state.editableTimeEntry.shouldBeNull()

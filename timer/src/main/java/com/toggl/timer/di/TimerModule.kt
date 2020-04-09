@@ -12,9 +12,9 @@ import com.toggl.timer.log.domain.TimeEntriesLogState
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.RunningTimeEntryReducer
 import com.toggl.timer.running.domain.RunningTimeEntryState
-import com.toggl.timer.start.domain.StartTimeEntryAction
-import com.toggl.timer.start.domain.StartTimeEntryReducer
-import com.toggl.timer.start.domain.StartTimeEntryState
+import com.toggl.timer.startedit.domain.StartEditAction
+import com.toggl.timer.startedit.domain.StartEditReducer
+import com.toggl.timer.startedit.domain.StartEditState
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -34,10 +34,10 @@ class TimerModule {
 
     @ExperimentalCoroutinesApi
     @Provides
-    internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartTimeEntryState, StartTimeEntryAction> =
+    internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartEditState, StartEditAction> =
         store.view(
-            mapToLocalState = StartTimeEntryState.Companion::fromTimerState,
-            mapToGlobalAction = StartTimeEntryAction.Companion::toTimerAction
+            mapToLocalState = StartEditState.Companion::fromTimerState,
+            mapToGlobalAction = StartEditAction.Companion::toTimerAction
         )
 
     @ExperimentalCoroutinesApi
@@ -54,7 +54,7 @@ class TimerModule {
     @Singleton
     internal fun timerReducer(
         timeEntriesLogReducer: TimeEntriesLogReducer,
-        startTimeEntryReducer: StartTimeEntryReducer,
+        startEditReducer: StartEditReducer,
         runningTimeEntryReducer: RunningTimeEntryReducer
     ): TimerReducer {
 
@@ -65,11 +65,11 @@ class TimerModule {
                 mapToGlobalState = TimeEntriesLogState.Companion::toTimerState,
                 mapToGlobalAction = TimeEntriesLogAction.Companion::toTimerAction
             ),
-            startTimeEntryReducer.pullback(
-                mapToLocalState = StartTimeEntryState.Companion::fromTimerState,
-                mapToLocalAction = StartTimeEntryAction.Companion::fromTimerAction,
-                mapToGlobalState = StartTimeEntryState.Companion::toTimerState,
-                mapToGlobalAction = StartTimeEntryAction.Companion::toTimerAction
+            startEditReducer.pullback(
+                mapToLocalState = StartEditState.Companion::fromTimerState,
+                mapToLocalAction = StartEditAction.Companion::fromTimerAction,
+                mapToGlobalState = StartEditState.Companion::toTimerState,
+                mapToGlobalAction = StartEditAction.Companion::toTimerAction
             ),
             runningTimeEntryReducer.pullback(
                 mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,

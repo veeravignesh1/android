@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -20,18 +20,18 @@ class StopTimeEntryButtonTappedActionTests : FreeCoroutineSpec() {
         val workspace = mockk<Workspace>()
         coEvery { workspace.id } returns 1
         val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
-        val initState = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val initState = StartEditState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
 
         "The StopTimeEntryButtonTapped action" - {
             reducer.testReduce(
                 initialState = initState,
-                action = StartTimeEntryAction.StopTimeEntryButtonTapped
+                action = StartEditAction.StopTimeEntryButtonTapped
             ) { state, effect ->
                 "should return StartTimeEntryEffect effect" {
                     effect.shouldBeSingleton()
                     effect.single()
-                        .shouldBeTypeOf<StopTimeEntryEffect<StartTimeEntryAction.TimeEntryUpdated>>()
+                        .shouldBeTypeOf<StopTimeEntryEffect<StartEditAction.TimeEntryUpdated>>()
                 }
                 "shouldn't change the state" {
                     state shouldBe initState

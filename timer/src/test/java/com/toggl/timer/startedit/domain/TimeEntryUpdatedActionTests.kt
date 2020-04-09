@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -25,15 +25,15 @@ class TimeEntryUpdatedActionTests : FreeCoroutineSpec() {
             3L to createTimeEntry(2, "third")
         )
         val editableTimeEntry = EditableTimeEntry.empty(workspace.id)
-        val initState = StartTimeEntryState(timeEntries, mapOf(1L to workspace), editableTimeEntry)
+        val initState = StartEditState(timeEntries, mapOf(1L to workspace), editableTimeEntry)
         val updated = timeEntries[2L]!!.copy(description = "second updated")
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
         "The TimeEntryUpdated action" - {
             reducer.testReduce(
                 initialState = initState,
-                action = StartTimeEntryAction.TimeEntryUpdated(2, updated)
+                action = StartEditAction.TimeEntryUpdated(2, updated)
             ) { state, effect ->
                 "should update updated time entry" {
                     state.timeEntries.shouldContain(2L to updated)

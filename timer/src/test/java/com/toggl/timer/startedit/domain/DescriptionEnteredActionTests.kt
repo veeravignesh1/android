@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -19,14 +19,14 @@ class DescriptionEnteredActionTests : FreeCoroutineSpec() {
         val repository = mockk<TimeEntryRepository>()
         val workspace = mockk<Workspace>()
         val editableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(1, description = ""))
-        val state = StartTimeEntryState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val state = StartEditState(mapOf(), mapOf(1L to workspace), editableTimeEntry)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
         coEvery { workspace.id } returns 1
 
         "The TimeEntryDescriptionChanged action" - {
             reducer.testReduce(
                 initialState = state,
-                action = StartTimeEntryAction.DescriptionEntered("new description")
+                action = StartEditAction.DescriptionEntered("new description")
             ) { state, effect ->
                 "should change EditableTimeEntry's description" {
                     state.editableTimeEntry.shouldNotBeNull()

@@ -1,4 +1,4 @@
-package com.toggl.timer.start.ui
+package com.toggl.timer.startedit.ui
 
 import android.app.Dialog
 import android.content.Context
@@ -31,9 +31,9 @@ import com.toggl.common.sheet.OnStateChangedAction
 import com.toggl.timer.R
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
-import com.toggl.timer.start.domain.StartTimeEntryAction
+import com.toggl.timer.startedit.domain.StartEditAction
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
-import kotlinx.android.synthetic.main.fragment_dialog_start_time_entry.*
+import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
@@ -45,12 +45,12 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
-class StartTimeEntryDialogFragment : BottomSheetDialogFragment() {
+class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val store: StartTimeEntryStoreViewModel by viewModels { viewModelFactory }
+    private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
 
@@ -71,7 +71,7 @@ class StartTimeEntryDialogFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_dialog_start_time_entry, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_dialog_start_edit, container, false)
 
     @ExperimentalCoroutinesApi
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -116,13 +116,13 @@ class StartTimeEntryDialogFragment : BottomSheetDialogFragment() {
             }
             requestFocus()
             descriptionChangeListener = time_entry_description.addTextChangedListener {
-                val action = StartTimeEntryAction.DescriptionEntered(text.toString())
+                val action = StartEditAction.DescriptionEntered(text.toString())
                 store.dispatch(action)
             }
         }
 
         close_action.setOnClickListener {
-            store.dispatch(StartTimeEntryAction.CloseButtonTapped)
+            store.dispatch(StartEditAction.CloseButtonTapped)
         }
 
         store.state
@@ -146,7 +146,7 @@ class StartTimeEntryDialogFragment : BottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         bottomSheetCallback.clear()
-        store.dispatch(StartTimeEntryAction.DialogDismissed)
+        store.dispatch(StartEditAction.DialogDismissed)
         time_entry_description.removeTextChangedListener(descriptionChangeListener)
         super.onDestroyView()
     }
@@ -188,7 +188,7 @@ class StartTimeEntryDialogFragment : BottomSheetDialogFragment() {
             val isNewTimeEntry = editableTimeEntry.ids.isNullOrEmpty()
             done_action.isVisible = isNewTimeEntry
             done_action.setOnClickListener {
-                store.dispatch(StartTimeEntryAction.DoneButtonTapped)
+                store.dispatch(StartEditAction.DoneButtonTapped)
             }
         }
     }

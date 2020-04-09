@@ -1,4 +1,4 @@
-package com.toggl.timer.start.domain
+package com.toggl.timer.startedit.domain
 
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -13,16 +13,16 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class ToggleBillableActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
-        val reducer = StartTimeEntryReducer(repository, dispatcherProvider)
+        val reducer = StartEditReducer(repository, dispatcherProvider)
 
         "The ToggleBillable action" - {
             "should invert the values of the editable time entry" - {
                 Gen.bool().constants().forEach { originalBillableValue ->
-                    var state = StartTimeEntryState.editableTimeEntry
+                    var state = StartEditState.editableTimeEntry
                         .modify(createInitialState()) { it.copy(billable = originalBillableValue) }
                     val settableValue = state.toSettableValue { state = it }
 
-                    val effects = reducer.reduce(settableValue, StartTimeEntryAction.ToggleBillable)
+                    val effects = reducer.reduce(settableValue, StartEditAction.ToggleBillable)
                     effects shouldBe noEffect()
                     state.editableTimeEntry!!.billable shouldBe !originalBillableValue
                 }
