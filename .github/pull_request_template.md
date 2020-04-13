@@ -16,7 +16,6 @@
 <!-- DO NOT OPEN A PULL REQUEST THAT DOES NO CLOSE/REF AN ISSUE -->
 Closes #
 
----
 ## Repository health
 
 ### Pull Request checklist
