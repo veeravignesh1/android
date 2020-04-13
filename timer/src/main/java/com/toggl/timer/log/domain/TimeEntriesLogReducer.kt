@@ -116,7 +116,8 @@ class TimeEntriesLogReducer @Inject constructor(
                         val timeEntriesToDelete =
                             timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
 
-                        state.value = state.value.copy(entriesPendingDeletion = setOf())
+                        val updatedTimeEntries = markDeletedTimeEntries(state.value.timeEntries, timeEntryIdsToDelete)
+                        state.value = state.value.copy(timeEntries = updatedTimeEntries, entriesPendingDeletion = setOf())
                         timeEntriesToDelete.map { delete(it, repository) }
                     }
                 }
@@ -141,7 +142,8 @@ class TimeEntriesLogReducer @Inject constructor(
         entriesToDelete: List<Long>
     ): List<Effect<TimeEntriesLogAction>> {
         val entriesToCommitDeletion = state.value.entriesPendingDeletion
-        state.value = state.value.copy(entriesPendingDeletion = entriesToDelete.toSet())
+        val updatedEntries = markDeletedTimeEntries(state.value.timeEntries, entriesToCommitDeletion)
+        state.value = state.value.copy(timeEntries = updatedEntries, entriesPendingDeletion = entriesToDelete.toSet())
 
         val deleteEffects = prepareDeleteEffects(state, entriesToCommitDeletion)
         deleteEffects.add(WaitForUndoEffect(entriesToDelete))
@@ -157,4 +159,13 @@ class TimeEntriesLogReducer @Inject constructor(
             .mapNotNull { state.value.timeEntries[it] }
             .map { delete(it, repository) }
             .toMutableList()
+
+    private fun markDeletedTimeEntries(
+        timeEntries: Map<Long, TimeEntry>,
+        deletedTimeEntryIds: Collection<Long>
+    ): Map<Long, TimeEntry> =
+        timeEntries.map {
+            if (deletedTimeEntryIds.contains(it.key)) it.key to it.value.copy(isDeleted = true)
+            else it.key to it.value
+        }.toMap()
 }

@@ -92,7 +92,7 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                 effect shouldBe listOf()
             }
 
-            "should delete time entries and clear the pending list" - {
+            "should delete time entries" - {
                 val te1 = createTimeEntry(1)
                 val te2 = createTimeEntry(2)
                 val te3 = createTimeEntry(3)
@@ -108,7 +108,18 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                     TimeEntriesLogAction.CommitDeletion(listOf(1, 2, 3))
                 )
 
-                state shouldBe initialState.copy(entriesPendingDeletion = setOf())
+                "clear the pending list and" - {
+                    state.entriesPendingDeletion shouldBe setOf()
+                }
+
+                "optimistically update the time entries list that were deleted" - {
+                    state.timeEntries shouldBe listOf(
+                        te1.copy(isDeleted = true),
+                        te2.copy(isDeleted = true),
+                        te3.copy(isDeleted = true)
+                    ).associateBy { it.id }
+                }
+
                 effect.forEach {
                     it.shouldBeTypeOf<DeleteTimeEntryEffect<TimeEntriesLogAction.TimeEntryDeleted>>()
                     it.execute()

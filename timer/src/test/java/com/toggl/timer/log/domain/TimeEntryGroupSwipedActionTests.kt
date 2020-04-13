@@ -54,7 +54,7 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
             }
 
             "when swiping left" - {
-                "should delete TEs pending deletion (ignoring ids not in state) and put the swiped TEs to pending deletion in state" {
+                "when there already pending entries for deletion should" - {
                     val timeEntries = (1L..10L).map { createTimeEntry(it, "testing") }
                     val timeEntriesToSwipe = timeEntries.take(4)
                     for (te in timeEntries.drop(4)) {
@@ -73,8 +73,21 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
                         .map { it.deletedTimeEntry.id }
                     val waitForUndoEffect = effectActions.last()
 
-                    deletedTimeEntryIds shouldContainExactlyInAnyOrder listOf(8L, 9L)
-                    state.entriesPendingDeletion shouldBe setOf(1L, 2L, 3L, 4L)
+                    "delete TEs pending deletion (ignoring ids not in state)" - {
+                        deletedTimeEntryIds shouldContainExactlyInAnyOrder listOf(8L, 9L)
+                    }
+
+                    "put the swiped TEs to pending deletion in state" - {
+                        state.entriesPendingDeletion shouldBe setOf(1L, 2L, 3L, 4L)
+                    }
+
+                    "and optimistically update the time entries list that were deleted" - {
+                        val expectedTimeEntries = timeEntries.take(7) +
+                            timeEntries.drop(7).take(2).map { it.copy(isDeleted = true) } +
+                            timeEntries.last()
+                        state.timeEntries shouldBe expectedTimeEntries.associateBy { it.id }
+                    }
+
                     waitForUndoEffect.shouldBeTypeOf<WaitForUndoEffect>()
                     runBlockingTest {
                         val executedUndo = waitForUndoEffect.execute()
