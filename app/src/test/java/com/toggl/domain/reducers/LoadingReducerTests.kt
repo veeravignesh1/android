@@ -4,10 +4,13 @@ import com.toggl.common.FreeCoroutineSpec
 import com.toggl.domain.extensions.createClient
 import com.toggl.domain.extensions.createProject
 import com.toggl.domain.extensions.createTag
+import com.toggl.domain.extensions.createTask
 import com.toggl.domain.extensions.createTimeEntry
 import com.toggl.domain.extensions.toSettableValue
 import com.toggl.domain.loading.LoadClientsEffect
 import com.toggl.domain.loading.LoadProjectsEffect
+import com.toggl.domain.loading.LoadTagsEffect
+import com.toggl.domain.loading.LoadTasksEffect
 import com.toggl.domain.loading.LoadTimeEntriesEffect
 import com.toggl.domain.loading.LoadWorkspacesEffect
 import com.toggl.domain.loading.LoadingAction
@@ -18,9 +21,10 @@ import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.TagRepository
+import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
-import io.kotlintest.matchers.collections.shouldContainInOrder
+import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,15 +37,17 @@ class LoadingReducerTests : FreeCoroutineSpec() {
         val timeEntryRepository = mockk<TimeEntryRepository>()
         val workspaceRepository = mockk<WorkspaceRepository>()
         val tagRepository = mockk<TagRepository>()
+        val taskRepository = mockk<TaskRepository>()
         val reducer = LoadingReducer(
             projectRepository,
             clientRepository,
             timeEntryRepository,
             workspaceRepository,
             tagRepository,
+            taskRepository,
             dispatcherProvider
         )
-        val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf())
+        val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf(), listOf())
 
         "The LoadingReducer" - {
             "when receiving a Start Loading action" - {
@@ -59,10 +65,12 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                     val settableValue = initialState.toSettableValue { initialState = it }
                     val effects = reducer.reduce(settableValue, LoadingAction.StartLoading)
 
-                    effects.map { it.javaClass.kotlin } shouldContainInOrder listOf(
+                    effects.map { it.javaClass.kotlin } shouldContainExactlyInAnyOrder listOf(
                         LoadWorkspacesEffect::class,
                         LoadProjectsEffect::class,
                         LoadClientsEffect::class,
+                        LoadTagsEffect::class,
+                        LoadTasksEffect::class,
                         LoadTimeEntriesEffect::class
                     )
                 }
@@ -129,6 +137,18 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                     reducer.reduce(settableValue, LoadingAction.TagsLoaded(tags))
 
                     initialState shouldBe emptyState.copy(tags = tags)
+                }
+            }
+
+            "when receiving a Tasks Loaded action" - {
+
+                "updates the state to add the loaded tasks" - {
+                    val tasks = (1L..10L).map { createTask(it) }
+                    var initialState = emptyState
+                    val settableValue = initialState.toSettableValue { initialState = it }
+                    reducer.reduce(settableValue, LoadingAction.TasksLoaded(tasks))
+
+                    initialState shouldBe emptyState.copy(tasks = tasks)
                 }
             }
         }

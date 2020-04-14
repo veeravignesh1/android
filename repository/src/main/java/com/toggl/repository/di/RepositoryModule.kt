@@ -3,6 +3,7 @@ package com.toggl.repository.di
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
+import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.environment.services.time.TimeService
@@ -11,6 +12,7 @@ import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.TagRepository
+import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import dagger.Module
 import dagger.Provides
@@ -26,8 +28,9 @@ class RepositoryModule {
         workspaceDao: WorkspaceDao,
         clientDao: ClientDao,
         tagDao: TagDao,
+        taskDao: TaskDao,
         timeService: TimeService
-    ) = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, timeService)
+    ) = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, taskDao, timeService)
 
     @Provides
     @Singleton
@@ -52,5 +55,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun tagRepository(repository: Repository): TagRepository =
+        repository
+
+    @Provides
+    @Singleton
+    fun taskRepository(repository: Repository): TaskRepository =
         repository
 }

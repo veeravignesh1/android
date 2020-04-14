@@ -3,6 +3,7 @@ package com.toggl.repository
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
+import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseTimeEntry
@@ -32,12 +33,13 @@ class RepositoryTest : StringSpec() {
     private val timeEntryDao = mockk<TimeEntryDao>()
     private val workspaceDao = mockk<WorkspaceDao>()
     private val clientDao = mockk<ClientDao>()
+    private val taskDao = mockk<TaskDao>()
     private val timeService = mockk<TimeService>()
-    private var repository = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, timeService)
+    private var repository = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, taskDao, timeService)
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)
-        clearMocks(timeEntryDao, workspaceDao, clientDao, timeService)
+        clearMocks(timeEntryDao, workspaceDao, clientDao, timeService, taskDao)
     }
 
     init {
@@ -76,6 +78,21 @@ class RepositoryTest : StringSpec() {
             val loaded = repository.loadTags()
 
             verify(exactly = 1) { tagDao.getAll() }
+            verify {
+                workspaceDao wasNot called
+                timeService wasNot called
+                timeEntryDao wasNot called
+                projectDao wasNot called
+            }
+            loaded.shouldBeEmpty()
+        }
+
+        "loadTasks calls getAll on the DAO" {
+            every { taskDao.getAll() } returns listOf()
+
+            val loaded = repository.loadTasks()
+
+            verify(exactly = 1) { taskDao.getAll() }
             verify {
                 workspaceDao wasNot called
                 timeService wasNot called

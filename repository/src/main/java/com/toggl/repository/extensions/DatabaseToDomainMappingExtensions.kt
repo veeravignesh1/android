@@ -3,12 +3,14 @@ package com.toggl.repository.extensions
 import com.toggl.database.models.DatabaseClient
 import com.toggl.database.models.DatabaseProject
 import com.toggl.database.models.DatabaseTag
+import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
+import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 
@@ -65,4 +67,13 @@ fun DatabaseClient.toModel() = Client(
     id,
     name,
     workspaceId
+)
+
+fun DatabaseTask.toModel() = Task(
+    id,
+    name,
+    active,
+    projectId,
+    workspaceId,
+    userId
 )

@@ -9,6 +9,7 @@ fun mapAppStateToLoadingState(appState: AppState): LoadingState =
     LoadingState(
         tags = appState.tags.values,
         projects = appState.projects.values,
+        tasks = appState.tasks.values,
         clients = appState.clients.values,
         workspaces = appState.workspaces.values,
         timeEntries = appState.timeEntries.values
@@ -21,6 +22,7 @@ fun mapLoadingStateToAppState(appState: AppState, loadingState: LoadingState): A
     appState.copy(
         tags = loadingState.tags.associateBy { it.id },
         projects = loadingState.projects.associateBy { it.id },
+        tasks = loadingState.tasks.associateBy { it.id },
         clients = loadingState.clients.associateBy { it.id },
         workspaces = loadingState.workspaces.associateBy { it.id },
         timeEntries = loadingState.timeEntries.associateBy { it.id }

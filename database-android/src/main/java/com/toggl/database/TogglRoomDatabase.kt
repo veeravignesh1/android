@@ -6,6 +6,7 @@ import androidx.room.TypeConverters
 import com.toggl.database.models.DatabaseClient
 import com.toggl.database.models.DatabaseProject
 import com.toggl.database.models.DatabaseTag
+import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryTag
 import com.toggl.database.models.DatabaseWorkspace
@@ -17,7 +18,8 @@ import com.toggl.database.models.DatabaseWorkspace
         DatabaseWorkspace::class,
         DatabaseClient::class,
         DatabaseTag::class,
-        DatabaseTimeEntryTag::class
+        DatabaseTimeEntryTag::class,
+        DatabaseTask::class
     ],
     version = 1
 )

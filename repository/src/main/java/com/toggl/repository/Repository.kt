@@ -3,17 +3,20 @@ package com.toggl.repository
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
+import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseClient
 import com.toggl.database.models.DatabaseProject
 import com.toggl.database.models.DatabaseTag
+import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
+import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
@@ -23,6 +26,7 @@ import com.toggl.repository.extensions.toModel
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TagRepository
+import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 
@@ -32,8 +36,9 @@ class Repository(
     private val workspaceDao: WorkspaceDao,
     private val clientDao: ClientDao,
     private val tagDao: TagDao,
+    private val taskDao: TaskDao,
     private val timeService: TimeService
-) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository, TagRepository {
+) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository, TagRepository, TaskRepository {
 
     override suspend fun loadProjects(): List<Project> =
         projectDao.getAll().map(DatabaseProject::toModel)
@@ -61,6 +66,8 @@ class Repository(
         }
 
     override suspend fun loadClients() = clientDao.getAll().map(DatabaseClient::toModel)
+
+    override suspend fun loadTasks(): List<Task> = taskDao.getAll().map(DatabaseTask::toModel)
 
     override suspend fun startTimeEntry(
         workspaceId: Long,

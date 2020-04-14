@@ -11,7 +11,8 @@ import org.threeten.bp.OffsetDateTime
     tableName = "time_entries",
     foreignKeys = [
         ForeignKey(entity = DatabaseProject::class, parentColumns = ["id"], childColumns = ["projectId"]),
-        ForeignKey(entity = DatabaseWorkspace::class, parentColumns = ["id"], childColumns = ["workspaceId"])
+        ForeignKey(entity = DatabaseWorkspace::class, parentColumns = ["id"], childColumns = ["workspaceId"]),
+        ForeignKey(entity = DatabaseTask::class, parentColumns = ["id"], childColumns = ["taskId"])
     ],
     indices = [Index("projectId")]
 )

@@ -3,6 +3,7 @@ package com.toggl.domain.extensions
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
+import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
@@ -51,3 +52,19 @@ fun createProject(
 fun createClient(id: Long) = Client(id, "name: $id", 1)
 
 fun createTag(id: Long) = Tag(id, "# $id", 1)
+
+fun createTask(
+    id: Long,
+    projectId: Long = 1,
+    workspaceId: Long = 1,
+    name: String = "Task $id",
+    active: Boolean = true,
+    userId: Long? = null
+) = Task(
+    id,
+    name,
+    active,
+    projectId,
+    workspaceId,
+    userId
+)
