@@ -10,7 +10,6 @@ import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.WorkspaceFeature
-import com.toggl.repository.extensions.toDatabaseTimeEntry
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
 import com.toggl.repository.interfaces.StartTimeEntryResult
@@ -20,8 +19,6 @@ import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import io.mockk.called
 import io.mockk.clearMocks
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
@@ -130,6 +127,7 @@ class RepositoryTest : StringSpec() {
         }
 
         "stopRunningTimeEntry updates all running time entries and returns the first one" {
+            val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
             val timeEntryOneStartTime = OffsetDateTime.parse("2019-07-17T17:15:17+01:00")
             val timeEntryRunningOne =
                 DatabaseTimeEntry(
@@ -148,54 +146,36 @@ class RepositoryTest : StringSpec() {
                 id = 3,
                 startTime = timeEntryTwoStartTime
             )
-            val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
+            val stoppedTimeEntries = listOf(timeEntryRunningOne, timeEntryRunningTwo).map {
+                it.copy(duration = Duration.between(
+                    timeEntryOneStartTime,
+                    nowTime
+                ))
+            }
             every { timeService.now() } returns nowTime
-            every { timeEntryDao.getAllRunningTimeEntries() } returns listOf(
-                timeEntryRunningOne,
-                timeEntryRunningTwo
-            )
-            every { timeEntryDao.updateAllTimeEntries(any()) } returns mockk()
+            every { timeEntryDao.stopRunningTimeEntries(any()) } returns stoppedTimeEntries
 
             val result = repository.stopRunningTimeEntry()
 
             verify(exactly = 1) {
-                timeEntryDao.updateAllTimeEntries(
-                    listOf(
-                        timeEntryRunningOne.copy(
-                            duration = Duration.between(
-                                timeEntryOneStartTime,
-                                nowTime
-                            )
-                        ),
-                        timeEntryRunningTwo.copy(
-                            duration = Duration.between(
-                                timeEntryTwoStartTime,
-                                nowTime
-                            )
-                        )
-                    )
-                )
+                timeEntryDao.stopRunningTimeEntries(nowTime)
             }
             verify {
                 workspaceDao wasNot called
                 clientDao wasNot called
             }
-            result shouldBe timeEntryRunningOne.copy(
-                duration = Duration.between(
-                    timeEntryOneStartTime,
-                    nowTime
-                )
-            ).toModel()
+            result shouldBe stoppedTimeEntries.firstOrNull()?.let(DatabaseTimeEntry::toModel)
         }
 
         "stopRunningTimeEntry doesn't update any time entries if none are running and doesn't return any time entries" {
-            every { timeEntryDao.getAllRunningTimeEntries() } returns listOf()
-            every { timeService.now() } returns mockk()
-            every { timeEntryDao.updateAllTimeEntries(any()) } returns mockk()
+            val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
+
+            every { timeService.now() } returns nowTime
+            every { timeEntryDao.stopRunningTimeEntries(any()) } returns listOf()
 
             val result = repository.stopRunningTimeEntry()
 
-            verify(exactly = 1) { timeEntryDao.updateAllTimeEntries(listOf()) }
+            verify(exactly = 1) { timeEntryDao.stopRunningTimeEntries(nowTime) }
             verify {
                 workspaceDao wasNot called
                 clientDao wasNot called
@@ -205,46 +185,56 @@ class RepositoryTest : StringSpec() {
 
         "startTimeEntry stops currently running time entry and inserts a new one to DAO" {
             val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
-            val startedTimeEntry = TimeEntry(
-                1337,
-                "desc",
-                nowTime,
+            val timeEntryOneStartTime = OffsetDateTime.parse("2019-07-17T17:15:17+01:00")
+            val timeEntryRunningOne = DatabaseTimeEntry(
+                1,
+                "Running",
+                timeEntryOneStartTime,
+                null,
+                false,
+                0,
+                0,
+                0,
+                false
+            )
+            val timeEntryTwoStartTime = OffsetDateTime.parse("2019-07-17T12:17:17+01:00")
+            val timeEntryRunningTwo = timeEntryRunningOne.copy(
+                id = 3,
+                startTime = timeEntryTwoStartTime
+            )
+            val stoppedTimeEntries = listOf(timeEntryRunningOne, timeEntryRunningTwo).map {
+                it.copy(duration = Duration.between(
+                    timeEntryOneStartTime,
+                    nowTime
+                ))
+            }
+            val startedTimeEntry = DatabaseTimeEntry(
+                5,
+                "started",
+                timeEntryOneStartTime,
                 null,
                 false,
                 1,
-                null,
-                null,
-                false,
-                emptyList()
+                0,
+                0,
+                false
             )
-            val stoppedTimeEntry = TimeEntry(
-                336,
-                "was running",
-                nowTime.minusHours(1),
-                Duration.ofHours(1), false, 1, null, null, false, emptyList()
-            )
-            coEvery { repository.stopRunningTimeEntry() } returns stoppedTimeEntry
-            every { timeEntryDao.insertTimeEntry(any()) } returns 1337
-            every { timeEntryDao.getOneTimeEntry(any()) } returns startedTimeEntry.toDatabaseTimeEntry()
             every { timeService.now() } returns nowTime
-            every { timeEntryDao.getAllRunningTimeEntries() } returns listOf(stoppedTimeEntry.copy(duration = null).toDatabaseTimeEntry())
-            every { timeEntryDao.updateAllTimeEntries(any()) } returns mockk()
-            val repositorySpy = spyk(repository)
+            every { timeEntryDao.startTimeEntry(any(), any(), any()) } returns (startedTimeEntry to stoppedTimeEntries)
 
-            val result = repositorySpy.startTimeEntry(1, "desc")
+            val result = repository.startTimeEntry(startedTimeEntry.id, startedTimeEntry.description)
 
-            coVerify(exactly = 1) {
-                repositorySpy.stopRunningTimeEntry()
-            }
             verify(exactly = 1) {
-                timeEntryDao.insertTimeEntry(startedTimeEntry.copy(id = 0).toDatabaseTimeEntry())
-                timeEntryDao.getOneTimeEntry(1337)
+                timeEntryDao.startTimeEntry(startedTimeEntry.id, startedTimeEntry.description, nowTime)
             }
             verify {
                 workspaceDao wasNot called
                 clientDao wasNot called
             }
-            result shouldBe StartTimeEntryResult(startedTimeEntry, stoppedTimeEntry)
+            result shouldBe StartTimeEntryResult(
+                startedTimeEntry.let(DatabaseTimeEntry::toModel),
+                stoppedTimeEntries.firstOrNull()?.let(DatabaseTimeEntry::toModel)
+            )
         }
 
         "editTimeEntry updates the time entry and returns it" {
