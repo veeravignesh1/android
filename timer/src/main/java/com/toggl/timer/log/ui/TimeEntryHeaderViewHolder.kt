@@ -8,7 +8,6 @@ import com.toggl.timer.log.domain.DayHeaderViewModel
 
 class TimeEntryHeaderViewHolder(itemView: View) : TimeEntryLogViewHolder(itemView) {
     private val title = itemView.findViewById<TextView>(R.id.title)
-    private val duration = itemView.findViewById<TextView>(R.id.duration)
 
     fun bind(item: DayHeaderViewModel) {
         title.text = item.dayTitle

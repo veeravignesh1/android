@@ -27,6 +27,20 @@
         android:layout_height="0dp"
         android:layout_width="wrap_content" />
     <TextView
+        android:id="@+id/group_count"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:visibility="gone"
+        tools:text="5"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:layout_marginStart="16dp"
+        android:background="?selectableItemBackgroundBorderless"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+    <TextView
         android:id="@+id/description"
         tools:visibility="visible"
         android:maxLines="1"
@@ -38,18 +52,19 @@
         app:layout_constraintTop_toBottomOf="@id/top_guideline"
         app:layout_constraintBottom_toTopOf="@+id/add_description_label"
         app:layout_constraintEnd_toEndOf="@+id/duration_gradient"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/group_count"
         android:layout_width="0dp"
         android:layout_marginStart="@dimen/time_entry_log_side_padding"
         android:layout_height="wrap_content" />
     <TextView
         android:id="@+id/add_description_label"
+        tools:visibility="gone"
         android:maxLines="1"
         android:ellipsize="end"
         android:textSize="15sp"
         android:text="@string/add_description"
         android:textColor="#fefefe"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/group_count"
         app:layout_constraintTop_toBottomOf="@id/description"
         app:layout_constraintBottom_toTopOf="@+id/project_label"
         app:layout_constraintEnd_toEndOf="@+id/duration_gradient"
@@ -62,7 +77,7 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/project_label"
         app:layout_constraintTop_toTopOf="@+id/project_label"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/group_count"
         android:layout_marginStart="@dimen/time_entry_log_side_padding"
         android:layout_width="12dp"
         android:layout_height="12dp"
@@ -82,7 +97,7 @@
         app:layout_constraintStart_toEndOf="@id/archived_icon"
         app:layout_constraintEnd_toEndOf="@+id/duration_gradient"
         app:layout_goneMarginStart="@dimen/time_entry_log_side_padding"
-        tools:text="A prorporproprorproprorpr"
+        tools:text="Short proj"
         tools:textColor="#c56bff" />
     <View
         android:id="@+id/duration_padding_area"

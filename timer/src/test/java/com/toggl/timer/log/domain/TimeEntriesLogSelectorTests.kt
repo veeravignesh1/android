@@ -257,7 +257,7 @@ class TimeEntriesLogSelectorTests : FreeSpec(
         longDuration.last().toFlatTimeEntryViewModel(projectsMap, clientsMap)
     )
 
-    val expectedYesterdayGroupedTimeEntries = listOf(
+    val expectedYesterdayGroupedTimeEntries: List<TimeEntryViewModel> = listOf(
         singleItem.mapToYesterday().first().toFlatTimeEntryViewModel(projectsMap, clientsMap),
         groupA.mapToYesterday().toTimeEntryGroupViewModel(groupA.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
         groupB.mapToYesterday().toTimeEntryGroupViewModel(groupB.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),

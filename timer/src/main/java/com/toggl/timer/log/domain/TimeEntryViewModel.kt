@@ -8,15 +8,23 @@ import org.threeten.bp.OffsetDateTime
 
 sealed class TimeEntryViewModel
 
+interface TimeEntryContentViewModel {
+    val description: String
+    val duration: Duration
+    val project: ProjectViewModel?
+    val billable: Boolean
+    val hasTags: Boolean
+}
+
 data class FlatTimeEntryViewModel(
     val id: Long,
-    val description: String,
+    override val description: String,
     val startTime: OffsetDateTime,
-    val duration: Duration,
-    val project: ProjectViewModel?,
-    val billable: Boolean,
-    val hasTags: Boolean
-) : TimeEntryViewModel()
+    override val duration: Duration,
+    override val project: ProjectViewModel?,
+    override val billable: Boolean,
+    override val hasTags: Boolean
+) : TimeEntryViewModel(), TimeEntryContentViewModel
 
 data class ProjectViewModel(
     val id: Long,
@@ -45,9 +53,9 @@ data class TimeEntryGroupViewModel(
     val groupId: Long,
     val timeEntryIds: List<Long>,
     val isExpanded: Boolean,
-    val description: String,
-    val duration: Duration,
-    val project: ProjectViewModel?,
-    val billable: Boolean,
-    val hasTags: Boolean
-) : TimeEntryViewModel()
+    override val description: String,
+    override val duration: Duration,
+    override val project: ProjectViewModel?,
+    override val billable: Boolean,
+    override val hasTags: Boolean
+) : TimeEntryViewModel(), TimeEntryContentViewModel

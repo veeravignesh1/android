@@ -33,8 +33,7 @@ class TimeEntriesLogAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TimeEntryLogViewHolder {
         val layoutId = when (viewType) {
             dayHeaderViewType -> R.layout.time_entries_log_header
-            flatTimeEntryViewType -> R.layout.time_entries_log_item
-            timeEntryGroupViewType -> R.layout.time_entries_group_item
+            flatTimeEntryViewType, timeEntryGroupViewType -> R.layout.time_entries_log_item
             else -> throw IllegalStateException()
         }
 
