@@ -77,6 +77,10 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             }
+            is StartEditAction.AutocompleteSuggestionsUpdated -> {
+                state.value = state.value.copy(autocompleteSuggestions = action.autocompleteSuggestions)
+                noEffect()
+            }
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
