@@ -8,8 +8,7 @@ import com.toggl.timer.common.domain.TimerAction
 sealed class RunningTimeEntryAction {
     object StartButtonTapped : RunningTimeEntryAction()
     object StopButtonTapped : RunningTimeEntryAction()
-    object DescriptionTextFieldTapped : RunningTimeEntryAction()
-    object RunningTimeEntryTapped : RunningTimeEntryAction()
+    object CardTapped : RunningTimeEntryAction()
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : RunningTimeEntryAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : RunningTimeEntryAction()
 
@@ -29,8 +28,7 @@ fun RunningTimeEntryAction.formatForDebug() =
     when (this) {
         RunningTimeEntryAction.StartButtonTapped -> "Start time entry button tapped"
         RunningTimeEntryAction.StopButtonTapped -> "Stop time entry button tapped"
-        RunningTimeEntryAction.DescriptionTextFieldTapped -> "Description field tapped"
-        RunningTimeEntryAction.RunningTimeEntryTapped -> "Running time entry tapped"
+        RunningTimeEntryAction.CardTapped -> "Running time entry card tapped"
         is RunningTimeEntryAction.TimeEntryUpdated -> "Time entry with id $id updated"
         is RunningTimeEntryAction.TimeEntryStarted -> "Time entry started with id $startedTimeEntry.id"
     }

@@ -18,7 +18,6 @@ import com.toggl.timer.running.domain.RunningTimeEntryAction
 import kotlinx.android.synthetic.main.running_time_entry_blank_layout.*
 import kotlinx.android.synthetic.main.fragment_running_time_entry.*
 import kotlinx.android.synthetic.main.running_time_entry_layout.*
-import kotlinx.android.synthetic.main.running_time_entry_blank_layout.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
@@ -50,11 +49,11 @@ class RunningTimeEntryFragment : Fragment(R.layout.fragment_running_time_entry) 
         time_entry_description.isFocusableInTouchMode = true
 
         empty_running_time_entry_layout.setOnClickListener {
-            store.dispatch(RunningTimeEntryAction.DescriptionTextFieldTapped)
+            store.dispatch(RunningTimeEntryAction.CardTapped)
         }
 
-        running_time_entry_description.setOnClickListener {
-            store.dispatch(RunningTimeEntryAction.RunningTimeEntryTapped)
+        running_time_entry_layout.setOnClickListener {
+            store.dispatch(RunningTimeEntryAction.CardTapped)
         }
 
         lifecycleScope.launch {

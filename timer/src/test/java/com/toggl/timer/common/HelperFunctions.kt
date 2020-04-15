@@ -4,6 +4,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
 import com.toggl.models.domain.TimeEntry
+import io.kotlintest.matchers.collections.shouldBeEmpty
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -40,4 +41,9 @@ suspend fun <State, Action> Reducer<State, Action>.testReduce(
     val settableValue = state.toSettableValue { state = it }
     val effect = reduce(settableValue, action)
     testCase(state, effect)
+}
+
+@Suppress("UNUSED_PARAMETER")
+suspend fun <State, Action> assertNoEffectsWereReturned(state: State, effect: List<Effect<Action>>) {
+    effect.shouldBeEmpty()
 }

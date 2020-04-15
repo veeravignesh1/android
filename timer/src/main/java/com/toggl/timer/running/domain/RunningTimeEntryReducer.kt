@@ -6,8 +6,6 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.SettableValue
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
-import com.toggl.models.domain.Workspace
-import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
@@ -29,16 +27,12 @@ class RunningTimeEntryReducer @Inject constructor(
         when (action) {
             RunningTimeEntryAction.StartButtonTapped -> startTimeEntry(EditableTimeEntry.empty(1), repository)
             RunningTimeEntryAction.StopButtonTapped -> stopTimeEntry(repository)
-            RunningTimeEntryAction.DescriptionTextFieldTapped -> {
-                state.value = state.value.copy(editableTimeEntry = EditableTimeEntry.empty(
-                    Workspace(1, "Auto created workspace", listOf(WorkspaceFeature.Pro)).id)
-                )
-                noEffect()
-            }
-            RunningTimeEntryAction.RunningTimeEntryTapped -> {
-                state.value.timeEntries.runningTimeEntryOrNull()?.let { runningTimeEntry ->
-                    state.value = state.value.copy(editableTimeEntry = EditableTimeEntry.fromSingle(runningTimeEntry))
-                }
+            RunningTimeEntryAction.CardTapped -> {
+                val entryToOpen = state.value.timeEntries.runningTimeEntryOrNull()
+                    ?.run(EditableTimeEntry.Companion::fromSingle)
+                    ?: EditableTimeEntry.empty(state.value.defaultWorkspaceId())
+
+                state.value = state.value.copy(editableTimeEntry = entryToOpen)
                 noEffect()
             }
             is RunningTimeEntryAction.TimeEntryUpdated -> {
@@ -75,4 +69,6 @@ class RunningTimeEntryReducer @Inject constructor(
                     )
             }
         )
+
+    private fun RunningTimeEntryState.defaultWorkspaceId() = 1L
 }
