@@ -11,10 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -27,9 +30,13 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
+import com.toggl.models.domain.Workspace
+import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
+import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.startedit.domain.StartEditAction
+import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +49,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import javax.inject.Inject
+import com.toggl.common.R as CommonR
 
 class StartEditDialogFragment : BottomSheetDialogFragment() {
 
@@ -54,10 +62,16 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private val bottomSheetCallback = BottomSheetCallback()
 
+    private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
+
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
             .provideTimerComponent().inject(this)
         super.onAttach(context)
+
+        val activeButtonColor = ContextCompat.getColor(context, CommonR.color.button_active)
+        val inactiveButtonColor = ContextCompat.getColor(context, CommonR.color.button_inactive)
+        bottomControlPanelAnimator = BottomControlPanelAnimator(activeButtonColor, inactiveButtonColor)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,11 +89,12 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).also { bottomSheetDialog: BottomSheetDialog ->
             store.state
-                .mapNotNull { it.editableTimeEntry }
+                .filter { it.editableTimeEntry != null }
+                .map { BottomControlPanelParams.fromState(it) }
                 .take(1)
                 .onEach {
                     bottomSheetDialog.setOnShowListener { dialogInterface ->
-                        dialogInterface.attachBottomView(bottomSheetDialog, R.layout.bottom_control_panel_layout)
+                        dialogInterface.attachBottomView(bottomSheetDialog, R.layout.bottom_control_panel_layout, it)
                     }
                 }
                 .launchIn(lifecycleScope)
@@ -93,7 +108,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomSheetCallback.addOnSlideAction(AlphaSlideAction(extended_options, false))
         bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
             override fun onStateChanged(sheet: View, newState: Int) {
-                extended_options.isInvisible = newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN
+                extended_options.isInvisible =
+                    newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN
             }
         })
 
@@ -154,15 +170,29 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         super.onCancel(dialog)
     }
 
+    @ExperimentalCoroutinesApi
     private fun DialogInterface.attachBottomView(
         bottomSheetDialog: BottomSheetDialog,
-        @LayoutRes layoutToAttach: Int
+        @LayoutRes layoutToAttach: Int,
+        bottomControlPanelParams: BottomControlPanelParams
     ) {
         val coordinator =
             (this as BottomSheetDialog).findViewById<CoordinatorLayout>(com.google.android.material.R.id.coordinator)
         val containerLayout =
             this.findViewById<FrameLayout>(com.google.android.material.R.id.container)
         val bottomControlPanel = bottomSheetDialog.layoutInflater.inflate(layoutToAttach, null)
+
+        val billableButton = bottomControlPanel.findViewById<ImageView>(R.id.billable_action)
+        billableButton.isVisible = bottomControlPanelParams.isProWorkspace
+        billableButton.setOnClickListener {
+            store.dispatch(StartEditAction.BillableTapped)
+        }
+
+        store.state
+            .mapNotNull { it.editableTimeEntry?.billable }
+            .distinctUntilChanged()
+            .onEach { setBillableButtonColor(billableButton, it) }
+            .launchIn(lifecycleScope)
 
         bottomControlPanel.layoutParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -185,6 +215,22 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             done_action.setOnClickListener {
                 store.dispatch(StartEditAction.DoneButtonTapped)
             }
+        }
+    }
+
+    private fun setBillableButtonColor(billableButton: ImageView, isBillable: Boolean) {
+        bottomControlPanelAnimator.animateBackground(billableButton.background, isBillable)
+        bottomControlPanelAnimator.animateColorFilter(billableButton, isBillable)
+    }
+
+    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean) {
+        companion object {
+            private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
+
+            fun fromState(startEditState: StartEditState) = BottomControlPanelParams(
+                startEditState.editableTimeEntry!!,
+                startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
+            )
         }
     }
 }

@@ -16,4 +16,7 @@
   <color name="start_time_entry_button_background">#FF1AD180</color>
   <color name="stop_time_entry_button_background">#FFE20505</color>
   <color name="icon">#FF757575</color>
+  <color name="button_active">#06AAF5</color>
+  <color name="button_active_background">#2606AAF5</color>
+  <color name="button_inactive">#B5BCC0</color>
 </resources>

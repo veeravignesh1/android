@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="bottom_control_panel_height">50dp</dimen>
+    <dimen name="bottom_control_panel_button_background_size">32dp</dimen>
 </resources>
