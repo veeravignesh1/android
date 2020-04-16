@@ -4,7 +4,7 @@ import com.toggl.architecture.extensions.map
 import com.toggl.architecture.extensions.noEffect
 
 interface Reducer<State, Action> {
-    fun reduce(state: SettableValue<State>, action: Action): List<Effect<Action>>
+    fun reduce(state: MutableValue<State>, action: Action): List<Effect<Action>>
 }
 
 interface HigherOrderReducer<State, Action> : Reducer<State, Action> {
@@ -16,7 +16,7 @@ fun <State, Action> combine(vararg reducers: Reducer<State, Action>) =
 
 class CombinedReducer<State, Action>(private val reducers: List<Reducer<State, Action>>)
     : Reducer<State, Action> {
-    override fun reduce(state: SettableValue<State>, action: Action): List<Effect<Action>> =
+    override fun reduce(state: MutableValue<State>, action: Action): List<Effect<Action>> =
         reducers.flatMap { it.reduce(state, action) }
 }
 
@@ -37,7 +37,7 @@ class PullbackReducer<LocalState, GlobalState, LocalAction, GlobalAction>(
     private val mapToGlobalAction: (LocalAction) -> GlobalAction
 ) : Reducer<GlobalState, GlobalAction> {
     override fun reduce(
-        state: SettableValue<GlobalState>,
+        state: MutableValue<GlobalState>,
         action: GlobalAction
     ): List<Effect<GlobalAction>> {
         val localAction = mapToLocalAction(action)

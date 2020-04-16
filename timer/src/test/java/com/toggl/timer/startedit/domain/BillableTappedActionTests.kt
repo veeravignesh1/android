@@ -3,7 +3,7 @@ package com.toggl.timer.startedit.domain
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.properties.Gen
 import io.kotlintest.shouldBe
 import io.mockk.mockk
@@ -20,9 +20,9 @@ class BillableTappedActionTests : FreeCoroutineSpec() {
                 Gen.bool().constants().forEach { originalBillableValue ->
                     var state = StartEditState.editableTimeEntry
                         .modify(createInitialState()) { it.copy(billable = originalBillableValue) }
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
 
-                    val effects = reducer.reduce(settableValue, StartEditAction.BillableTapped)
+                    val effects = reducer.reduce(mutableValue, StartEditAction.BillableTapped)
                     effects shouldBe noEffect()
                     state.editableTimeEntry!!.billable shouldBe !originalBillableValue
                 }

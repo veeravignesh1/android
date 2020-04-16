@@ -5,7 +5,7 @@ import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
@@ -33,9 +33,9 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
                 "should continue the swiped time entries" {
                     val initialState = createInitialState(listOf(entryInDatabase))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
                     val action = TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(1, 2), SwipeDirection.Right)
-                    val effects = reducer.reduce(settableValue, action)
+                    val effects = reducer.reduce(mutableValue, action)
                     val startedTimeEntry =
                         (effects.single().execute() as TimeEntriesLogAction.TimeEntryStarted).startedTimeEntry
                     startedTimeEntry shouldBe entryToBeStarted
@@ -44,11 +44,11 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
                 "should throw when there are no matching TEs" {
                     val initialState = createInitialState(listOf(entryInDatabase))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
                     val action = TimeEntriesLogAction.TimeEntryGroupSwiped(listOf(2, 3), SwipeDirection.Right)
 
                     shouldThrow<IllegalStateException> {
-                        reducer.reduce(settableValue, action)
+                        reducer.reduce(mutableValue, action)
                     }
                 }
             }
@@ -63,11 +63,11 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
 
                     val initialState = createInitialState(timeEntries, entriesPendingDeletion = setOf(8, 9, 11))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
                     val action =
                         TimeEntriesLogAction.TimeEntryGroupSwiped(timeEntriesToSwipe.map { it.id }, SwipeDirection.Left)
 
-                    val effectActions = reducer.reduce(settableValue, action)
+                    val effectActions = reducer.reduce(mutableValue, action)
                     val deletedTimeEntryIds = effectActions.dropLast(1)
                         .map { it.execute() as TimeEntriesLogAction.TimeEntryDeleted }
                         .map { it.deletedTimeEntry.id }
@@ -101,11 +101,11 @@ class TimeEntryGroupSwipedActionTests : FreeCoroutineSpec() {
 
                     val initialState = createInitialState(timeEntries)
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
                     val action =
                         TimeEntriesLogAction.TimeEntryGroupSwiped(timeEntriesToSwipe.map { it.id }, SwipeDirection.Left)
 
-                    val effectActions = reducer.reduce(settableValue, action)
+                    val effectActions = reducer.reduce(mutableValue, action)
                     val waitForUndoEffect = effectActions[0]
 
                     effectActions.size shouldBe 1

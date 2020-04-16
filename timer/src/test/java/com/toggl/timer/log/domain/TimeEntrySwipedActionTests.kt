@@ -5,7 +5,7 @@ import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -35,10 +35,10 @@ class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
                 "should continue the swiped time entry" {
                     val initialState = createInitialState(listOf(entryInDatabase))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
                     val action = TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Right)
                     val effectAction = reducer.reduce(
-                        settableValue,
+                        mutableValue,
                         action
                     ).single().execute() as TimeEntriesLogAction.TimeEntryStarted
                     val startedTimeEntry = effectAction.startedTimeEntry
@@ -49,11 +49,11 @@ class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
             "should throw if there are no TEs matching in state" {
                 val initialState = createInitialState(listOf(entryInDatabase))
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntrySwiped(1337, SwipeDirection.Right)
 
                 shouldThrow<IllegalStateException> {
-                    reducer.reduce(settableValue, action)
+                    reducer.reduce(mutableValue, action)
                 }
             }
         }
@@ -65,10 +65,10 @@ class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
                     entriesPendingDeletion = setOf(1, 4)
                 )
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntrySwiped(2, SwipeDirection.Left)
 
-                val effectActions = reducer.reduce(settableValue, action)
+                val effectActions = reducer.reduce(mutableValue, action)
                 val deletedEntry = effectActions[0].execute() as TimeEntriesLogAction.TimeEntryDeleted
 
                 deletedEntry.deletedTimeEntry shouldBe entryInDatabase.copy(isDeleted = true)
@@ -83,10 +83,10 @@ class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
             "should just put the swiped TEs to pending deletion in state if there's nothing pending deletion" {
                 val initialState = createInitialState(listOf(entryInDatabase, entryInDatabase.copy(id = 2)))
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntrySwiped(2, SwipeDirection.Left)
 
-                val effectActions = reducer.reduce(settableValue, action)
+                val effectActions = reducer.reduce(mutableValue, action)
 
                 effectActions.size shouldBe 1
                 state.entriesPendingDeletion shouldBe setOf(2L)

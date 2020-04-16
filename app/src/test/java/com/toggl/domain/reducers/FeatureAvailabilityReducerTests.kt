@@ -25,7 +25,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
         "The FeatureAvailabilityReducer" - {
             "For non premium actions" - {
                 val state = AppState()
-                val settableValue = state.toSettableValue { }
+                val mutableValue = state.toMutableValue { }
                 val nonPremiumActions = allActions.filterNot(::actionIsPremium)
 
                 "forwards the action to the child reducer" - {
@@ -33,9 +33,9 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
                         val spyReducer = spyk<Reducer<AppState, AppAction>>()
                         val featureAvailabilityReducer = FeatureAvailabilityReducer(spyReducer)
 
-                        featureAvailabilityReducer.reduce(settableValue, appAction)
+                        featureAvailabilityReducer.reduce(mutableValue, appAction)
 
-                        verify { spyReducer.reduce(settableValue, appAction) }
+                        verify { spyReducer.reduce(mutableValue, appAction) }
                     }
                 }
             }
@@ -51,26 +51,26 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
                     val state = AppState().copy(
                         workspaces = mapOf(1L to Workspace(1, "Auto created workspace", listOf(WorkspaceFeature.Pro)))
                     )
-                    val settableValue = state.toSettableValue { }
+                    val mutableValue = state.toMutableValue { }
                     val spyReducer = spyk<Reducer<AppState, AppAction>>()
                     val featureAvailabilityReducer = FeatureAvailabilityReducer(spyReducer)
 
-                    featureAvailabilityReducer.reduce(settableValue, toggleBillableAction)
+                    featureAvailabilityReducer.reduce(mutableValue, toggleBillableAction)
 
-                    verify { spyReducer.reduce(settableValue, toggleBillableAction) }
+                    verify { spyReducer.reduce(mutableValue, toggleBillableAction) }
                 }
 
                 "does not forward the action when the edited TE is in a non-premium workspace" - {
                     val state = AppState().copy(
                         workspaces = mapOf(1L to Workspace(1, "Auto created workspace", listOf()))
                     )
-                    val settableValue = state.toSettableValue { }
+                    val mutableValue = state.toMutableValue { }
                     val spyReducer = spyk<Reducer<AppState, AppAction>>()
                     val featureAvailabilityReducer = FeatureAvailabilityReducer(spyReducer)
 
-                    featureAvailabilityReducer.reduce(settableValue, toggleBillableAction)
+                    featureAvailabilityReducer.reduce(mutableValue, toggleBillableAction)
 
-                    verify(exactly = 0) { spyReducer.reduce(settableValue, toggleBillableAction) }
+                    verify(exactly = 0) { spyReducer.reduce(mutableValue, toggleBillableAction) }
                 }
             }
         }

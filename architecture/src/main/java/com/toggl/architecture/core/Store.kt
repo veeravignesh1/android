@@ -65,9 +65,9 @@ class FlowStore<State, Action : Any> private constructor(
             dispatch = { actions ->
                 storeScope.launch {
                     var tempState = stateChannel.value
-                    val settableValue = SettableValue({ tempState }) { tempState = it }
+                    val mutableValue = MutableValue({ tempState }) { tempState = it }
 
-                    val effects = actions.flatMap { reducer.reduce(settableValue, it) }
+                    val effects = actions.flatMap { reducer.reduce(mutableValue, it) }
                     stateChannel.send(tempState)
 
                     val effectActions = effects.mapNotNull { it.execute() }

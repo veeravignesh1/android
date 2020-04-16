@@ -4,7 +4,7 @@ import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -29,10 +29,10 @@ class ContinueButtonTappedActionTests : FreeCoroutineSpec() {
                 "with the matching id" {
                     val initialState = createInitialState(listOf(testTe))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
 
                     shouldThrow<IllegalStateException> {
-                        reducer.reduce(settableValue, TimeEntriesLogAction.ContinueButtonTapped(2))
+                        reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(2))
                     }
                 }
 
@@ -41,10 +41,10 @@ class ContinueButtonTappedActionTests : FreeCoroutineSpec() {
 
                     assertAll(fn = { id: Long ->
                         var state = initialState
-                        val settableValue = state.toSettableValue { state = it }
+                        val mutableValue = state.toMutableValue { state = it }
                         shouldThrow<IllegalStateException> {
                             reducer.reduce(
-                                settableValue,
+                                mutableValue,
                                 TimeEntriesLogAction.ContinueButtonTapped(id)
                             )
                         }
@@ -54,18 +54,18 @@ class ContinueButtonTappedActionTests : FreeCoroutineSpec() {
             "should start a new time entry" {
                 val initialState = createInitialState(timeEntries = listOf(testTe))
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 val effect =
-                    reducer.reduce(settableValue, TimeEntriesLogAction.ContinueButtonTapped(1))
+                    reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(1))
                 val (started, _) = (effect.single().execute() as TimeEntriesLogAction.TimeEntryStarted)
                 started shouldBe testTe
             }
             "should stop the previously running time entry" {
                 val initialState = createInitialState(timeEntries = listOf(testTe))
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 val effect =
-                    reducer.reduce(settableValue, TimeEntriesLogAction.ContinueButtonTapped(1))
+                    reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(1))
                 val (_, stopped) = (effect.single().execute() as TimeEntriesLogAction.TimeEntryStarted)
                 stopped shouldBe stoppedTe
             }

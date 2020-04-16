@@ -1,11 +1,11 @@
 package com.toggl.timer.running.domain
 
+import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.effect
-import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
@@ -21,36 +21,35 @@ class RunningTimeEntryReducer @Inject constructor(
 ) : Reducer<RunningTimeEntryState, RunningTimeEntryAction> {
 
     override fun reduce(
-        state: SettableValue<RunningTimeEntryState>,
+        state: MutableValue<RunningTimeEntryState>,
         action: RunningTimeEntryAction
     ): List<Effect<RunningTimeEntryAction>> =
         when (action) {
             RunningTimeEntryAction.StartButtonTapped -> startTimeEntry(EditableTimeEntry.empty(1), repository)
             RunningTimeEntryAction.StopButtonTapped -> stopTimeEntry(repository)
-            RunningTimeEntryAction.CardTapped -> {
-                val entryToOpen = state.value.timeEntries.runningTimeEntryOrNull()
-                    ?.run(EditableTimeEntry.Companion::fromSingle)
-                    ?: EditableTimeEntry.empty(state.value.defaultWorkspaceId())
+            RunningTimeEntryAction.CardTapped ->
+                state.mutateWithoutEffects {
+                    val entryToOpen = timeEntries.runningTimeEntryOrNull()
+                        ?.run(EditableTimeEntry.Companion::fromSingle)
+                        ?: EditableTimeEntry.empty(defaultWorkspaceId())
 
-                state.value = state.value.copy(editableTimeEntry = entryToOpen)
-                noEffect()
-            }
-            is RunningTimeEntryAction.TimeEntryUpdated -> {
-                val newTimeEntries = state.value.timeEntries
-                    .replaceTimeEntryWithId(action.id, action.timeEntry)
-                state.value = state.value.copy(timeEntries = newTimeEntries)
-                noEffect()
-            }
-            is RunningTimeEntryAction.TimeEntryStarted -> {
-                state.value = state.value.copy(
-                    timeEntries = handleTimeEntryCreationStateChanges(
-                        state.value.timeEntries,
-                        action.startedTimeEntry,
-                        action.stoppedTimeEntry
+                    copy(editableTimeEntry = entryToOpen)
+                }
+            is RunningTimeEntryAction.TimeEntryUpdated ->
+                state.mutateWithoutEffects {
+                    val newTimeEntries = timeEntries.replaceTimeEntryWithId(action.id, action.timeEntry)
+                    copy(timeEntries = newTimeEntries)
+                }
+            is RunningTimeEntryAction.TimeEntryStarted ->
+                state.mutateWithoutEffects {
+                    copy(
+                        timeEntries = handleTimeEntryCreationStateChanges(
+                            timeEntries,
+                            action.startedTimeEntry,
+                            action.stoppedTimeEntry
+                        )
                     )
-                )
-                noEffect()
-            }
+                }
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =

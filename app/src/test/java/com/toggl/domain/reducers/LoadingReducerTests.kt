@@ -6,7 +6,7 @@ import com.toggl.domain.extensions.createProject
 import com.toggl.domain.extensions.createTag
 import com.toggl.domain.extensions.createTask
 import com.toggl.domain.extensions.createTimeEntry
-import com.toggl.domain.extensions.toSettableValue
+import com.toggl.domain.extensions.toMutableValue
 import com.toggl.domain.loading.LoadClientsEffect
 import com.toggl.domain.loading.LoadProjectsEffect
 import com.toggl.domain.loading.LoadTagsEffect
@@ -54,16 +54,16 @@ class LoadingReducerTests : FreeCoroutineSpec() {
 
                 "does not update the state" {
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.StartLoading)
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.StartLoading)
 
                     initialState shouldBe emptyState
                 }
 
                 "returns a list of effects that load entities" {
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    val effects = reducer.reduce(settableValue, LoadingAction.StartLoading)
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    val effects = reducer.reduce(mutableValue, LoadingAction.StartLoading)
 
                     effects.map { it.javaClass.kotlin } shouldContainExactlyInAnyOrder listOf(
                         LoadWorkspacesEffect::class,
@@ -81,8 +81,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 "updates the state to add the loaded time entries" - {
                     val entries = listOf(createTimeEntry(1), createTimeEntry(2), createTimeEntry(3))
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.TimeEntriesLoaded(entries))
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.TimeEntriesLoaded(entries))
 
                     initialState shouldBe emptyState.copy(timeEntries = entries)
                 }
@@ -97,8 +97,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                         Workspace(3, "3", listOf())
                     )
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.WorkspacesLoaded(workspaces))
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.WorkspacesLoaded(workspaces))
 
                     initialState shouldBe emptyState.copy(workspaces = workspaces)
                 }
@@ -109,8 +109,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 "updates the state to add the loaded projects" - {
                     val projects = (1L..10L).map { createProject(it) }
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.ProjectsLoaded(projects))
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.ProjectsLoaded(projects))
 
                     initialState shouldBe emptyState.copy(projects = projects)
                 }
@@ -121,8 +121,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 "updates the state to add the loaded clients" - {
                     val clients = (1L..10L).map { createClient(it) }
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.ClientsLoaded(clients))
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.ClientsLoaded(clients))
 
                     initialState shouldBe emptyState.copy(clients = clients)
                 }
@@ -133,8 +133,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 "updates the state to add the loaded tags" - {
                     val tags = (1L..10L).map { createTag(it) }
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.TagsLoaded(tags))
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.TagsLoaded(tags))
 
                     initialState shouldBe emptyState.copy(tags = tags)
                 }
@@ -145,8 +145,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 "updates the state to add the loaded tasks" - {
                     val tasks = (1L..10L).map { createTask(it) }
                     var initialState = emptyState
-                    val settableValue = initialState.toSettableValue { initialState = it }
-                    reducer.reduce(settableValue, LoadingAction.TasksLoaded(tasks))
+                    val mutableValue = initialState.toMutableValue { initialState = it }
+                    reducer.reduce(mutableValue, LoadingAction.TasksLoaded(tasks))
 
                     initialState shouldBe emptyState.copy(tasks = tasks)
                 }

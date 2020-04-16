@@ -6,7 +6,7 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -16,6 +16,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.lang.IllegalStateException
 
 @ExperimentalCoroutinesApi
 class DoneButtonTappedActionTests : FreeCoroutineSpec() {
@@ -37,18 +38,18 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
         "The DoneButtonTapped action" - {
             "should throw when there's no editable entry" {
                 var initialState = state.copy(editableTimeEntry = null)
-                val settableValue = initialState.toSettableValue { initialState = it }
+                val mutableValue = initialState.toMutableValue { initialState = it }
 
-                shouldThrow<NullPointerException> {
-                    reducer.reduce(settableValue, StartEditAction.DoneButtonTapped)
+                shouldThrow<IllegalStateException> {
+                    reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
                 }
             }
 
             "should start the TE if the editable has no ids" {
                 var initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf()))
-                val settableValue = initialState.toSettableValue { initialState = it }
+                val mutableValue = initialState.toMutableValue { initialState = it }
 
-                val result = reducer.reduce(settableValue, StartEditAction.DoneButtonTapped)
+                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
                 result[0].execute()
 
                 result.size shouldBe 1
@@ -59,9 +60,9 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
 
             "should update the TE if the editable has one id" {
                 var initialState = state.copy()
-                val settableValue = initialState.toSettableValue { initialState = it }
+                val mutableValue = initialState.toMutableValue { initialState = it }
 
-                val result = reducer.reduce(settableValue, StartEditAction.DoneButtonTapped)
+                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
                 result[0].execute()
 
                 result.size shouldBe 1
@@ -72,9 +73,9 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
 
             "should update each TE in a group if the editable has several ids" {
                 var initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf(1L, 2L)))
-                val settableValue = initialState.toSettableValue { initialState = it }
+                val mutableValue = initialState.toMutableValue { initialState = it }
 
-                val result = reducer.reduce(settableValue, StartEditAction.DoneButtonTapped)
+                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
                 result.forEach { it.execute() }
 
                 result.size shouldBe 2
@@ -86,9 +87,9 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
 
             "should update no TEs if they're not in state" {
                 var initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf(3L, 4L)))
-                val settableValue = initialState.toSettableValue { initialState = it }
+                val mutableValue = initialState.toMutableValue { initialState = it }
 
-                val result = reducer.reduce(settableValue, StartEditAction.DoneButtonTapped)
+                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
                 result.forEach { it.execute() }
 
                 result.size shouldBe 0

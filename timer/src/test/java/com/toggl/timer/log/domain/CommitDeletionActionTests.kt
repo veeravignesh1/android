@@ -5,7 +5,7 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.DeleteTimeEntryEffect
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
 import io.mockk.coEvery
@@ -24,10 +24,10 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                 "there are no ids pending deletion" {
                     val initialState = createInitialState(entriesPendingDeletion = setOf())
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
 
                     val effect = reducer.reduce(
-                        settableValue,
+                        mutableValue,
                         TimeEntriesLogAction.CommitDeletion(listOf())
                     )
 
@@ -38,10 +38,10 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                 "the ids pending deletion in action don't match those in state" {
                     val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
 
                     val effect = reducer.reduce(
-                        settableValue,
+                        mutableValue,
                         TimeEntriesLogAction.CommitDeletion(listOf(4, 5, 1337))
                     )
 
@@ -52,10 +52,10 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                 "the ids pending deletion in action are a subset of those in state" {
                     val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
 
                     val effect = reducer.reduce(
-                        settableValue,
+                        mutableValue,
                         TimeEntriesLogAction.CommitDeletion(listOf(1, 3))
                     )
 
@@ -66,10 +66,10 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                 "the ids pending deletion in action are a superset of those in state" {
                     val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
 
                     val effect = reducer.reduce(
-                        settableValue,
+                        mutableValue,
                         TimeEntriesLogAction.CommitDeletion(listOf(1, 2, 3, 1337))
                     )
 
@@ -81,10 +81,10 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
             "should delete nothing but clear the pending list if the time entries are not in state" - {
                 val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
 
                 val effect = reducer.reduce(
-                    settableValue,
+                    mutableValue,
                     TimeEntriesLogAction.CommitDeletion(listOf(1, 2, 3))
                 )
 
@@ -101,10 +101,10 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                     entriesPendingDeletion = setOf(1, 2, 3)
                 )
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 coEvery { repository.deleteTimeEntry(any()) } returns mockk()
                 val effect = reducer.reduce(
-                    settableValue,
+                    mutableValue,
                     TimeEntriesLogAction.CommitDeletion(listOf(1, 2, 3))
                 )
 

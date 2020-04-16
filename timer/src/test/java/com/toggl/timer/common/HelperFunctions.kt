@@ -2,7 +2,7 @@ package com.toggl.timer.common
 
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import org.threeten.bp.Duration
@@ -29,8 +29,8 @@ fun createTimeEntry(
         emptyList()
     )
 
-fun <T> T.toSettableValue(setFunction: (T) -> Unit) =
-    SettableValue({ this }, setFunction)
+fun <T> T.toMutableValue(setFunction: (T) -> Unit) =
+    MutableValue({ this }, setFunction)
 
 suspend fun <State, Action> Reducer<State, Action>.testReduce(
     initialState: State,
@@ -38,8 +38,8 @@ suspend fun <State, Action> Reducer<State, Action>.testReduce(
     testCase: suspend (State, List<Effect<Action>>) -> Unit
 ) {
     var state = initialState
-    val settableValue = state.toSettableValue { state = it }
-    val effect = reduce(settableValue, action)
+    val mutableValue = state.toMutableValue { state = it }
+    val effect = reduce(mutableValue, action)
     testCase(state, effect)
 }
 

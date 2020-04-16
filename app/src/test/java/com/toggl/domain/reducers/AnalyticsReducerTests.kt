@@ -1,6 +1,6 @@
 package com.toggl.domain.reducers
 
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -24,48 +24,48 @@ class AnalyticsReducerTests : FreeSpec({
 
         "does not change the state" - {
             var state = initialState
-            val settableValue = state.toSettableValue { state = it }
+            val mutableValue = state.toMutableValue { state = it }
             val appAction = mockk<AppAction>()
 
-            analyticsReducer.reduce(settableValue, appAction)
+            analyticsReducer.reduce(mutableValue, appAction)
 
             initialState shouldBe state
         }
 
         "does not produce any effect" - {
             var state = initialState
-            val settableValue = state.toSettableValue { state = it }
+            val mutableValue = state.toMutableValue { state = it }
             val appAction = mockk<AppAction>()
 
-            val effect = analyticsReducer.reduce(settableValue, appAction)
+            val effect = analyticsReducer.reduce(mutableValue, appAction)
 
             effect shouldBe noEffect()
         }
 
         "does not call the AnalyticsService's track method if the event is null" - {
             var state = initialState
-            val settableValue = state.toSettableValue { state = it }
+            val mutableValue = state.toMutableValue { state = it }
             val appAction = mockk<AppAction>()
             every { appAction.toEvent() } returns null
 
-            analyticsReducer.reduce(settableValue, appAction)
+            analyticsReducer.reduce(mutableValue, appAction)
 
             verify { analyticsService wasNot Called }
         }
 
         "calls the AnalyticsService's track method if the event is not null" - {
             var state = initialState
-            val settableValue = state.toSettableValue { state = it }
+            val mutableValue = state.toMutableValue { state = it }
             val appAction = mockk<AppAction>()
             val expectedEvent = Event("suchEvent", mapOf())
             every { appAction.toEvent() } returns expectedEvent
 
-            analyticsReducer.reduce(settableValue, appAction)
+            analyticsReducer.reduce(mutableValue, appAction)
 
             verify(exactly = 1) { analyticsService.track(expectedEvent) }
         }
     }
 })
 
-fun AppState.toSettableValue(setFunction: (AppState) -> Unit) =
-    SettableValue({ this }, setFunction)
+fun AppState.toMutableValue(setFunction: (AppState) -> Unit) =
+    MutableValue({ this }, setFunction)

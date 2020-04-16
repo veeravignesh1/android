@@ -1,11 +1,11 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.effect
-import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
@@ -21,54 +21,49 @@ class StartEditReducer @Inject constructor(
 ) : Reducer<StartEditState, StartEditAction> {
 
     override fun reduce(
-        state: SettableValue<StartEditState>,
+        state: MutableValue<StartEditState>,
         action: StartEditAction
     ): List<Effect<StartEditAction>> =
         when (action) {
-            StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed -> {
-                state.value = state.value.copy(editableTimeEntry = null)
-                noEffect()
-            }
-            is StartEditAction.DescriptionEntered -> {
-                state.value = StartEditState.editableTimeEntry.modify(state.value) {
-                    it.copy(description = action.description)
+            StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed ->
+                state.mutateWithoutEffects { copy(editableTimeEntry = null) }
+            is StartEditAction.DescriptionEntered ->
+                state.mutateWithoutEffects {
+                    StartEditState.editableTimeEntry.modify(this) {
+                        it.copy(description = action.description)
+                    }
                 }
-                noEffect()
-            }
-            is StartEditAction.TimeEntryUpdated -> {
-                val newTimeEntries = state.value.timeEntries
-                    .replaceTimeEntryWithId(action.id, action.timeEntry)
-                state.value = state.value.copy(
-                    timeEntries = newTimeEntries,
-                    editableTimeEntry = null
-                )
-                noEffect()
-            }
-            is StartEditAction.TimeEntryStarted -> {
-                state.value = state.value.copy(
-                    timeEntries = handleTimeEntryCreationStateChanges(
-                        state.value.timeEntries,
-                        action.startedTimeEntry,
-                        action.stoppedTimeEntry
-                    ),
-                    editableTimeEntry = null
-                )
-                noEffect()
-            }
-            StartEditAction.BillableTapped -> {
-                state.value = StartEditState.editableTimeEntry.modify(state.value) {
-                    it.copy(billable = !it.billable)
+            is StartEditAction.TimeEntryUpdated ->
+                state.mutateWithoutEffects {
+                    copy(
+                        timeEntries = timeEntries.replaceTimeEntryWithId(action.id, action.timeEntry),
+                        editableTimeEntry = null
+                    )
                 }
-
-                noEffect()
-            }
+            is StartEditAction.TimeEntryStarted ->
+                state.mutateWithoutEffects {
+                    copy(
+                        timeEntries = handleTimeEntryCreationStateChanges(
+                            timeEntries,
+                            action.startedTimeEntry,
+                            action.stoppedTimeEntry
+                        ),
+                        editableTimeEntry = null
+                    )
+                }
+            StartEditAction.BillableTapped ->
+                state.mutateWithoutEffects {
+                    StartEditState.editableTimeEntry.modify(this) {
+                        it.copy(billable = !it.billable)
+                    }
+                }
             StartEditAction.DoneButtonTapped -> {
-                val editableTimeEntry = state.value.editableTimeEntry!!
-                state.value = state.value.copy(editableTimeEntry = null)
+                val editableTimeEntry = state().editableTimeEntry ?: throw IllegalStateException()
+                state.mutate { copy(editableTimeEntry = null) }
                 if (editableTimeEntry.shouldStart()) {
                     startTimeEntry(editableTimeEntry)
                 } else {
-                    val timeEntriesToEdit = editableTimeEntry.ids.mapNotNull { state.value.timeEntries[it] }
+                    val timeEntriesToEdit = editableTimeEntry.ids.mapNotNull { state().timeEntries[it] }
                     timeEntriesToEdit.map {
                         saveTimeEntry(it.copy(
                             description = editableTimeEntry.description,
@@ -77,10 +72,8 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             }
-            is StartEditAction.AutocompleteSuggestionsUpdated -> {
-                state.value = state.value.copy(autocompleteSuggestions = action.autocompleteSuggestions)
-                noEffect()
-            }
+            is StartEditAction.AutocompleteSuggestionsUpdated ->
+                state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =

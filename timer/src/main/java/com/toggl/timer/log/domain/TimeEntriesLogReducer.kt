@@ -1,9 +1,10 @@
 package com.toggl.timer.log.domain
 
+import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.common.SwipeDirection
@@ -23,37 +24,37 @@ class TimeEntriesLogReducer @Inject constructor(
 ) : Reducer<TimeEntriesLogState, TimeEntriesLogAction> {
 
     override fun reduce(
-        state: SettableValue<TimeEntriesLogState>,
+        state: MutableValue<TimeEntriesLogState>,
         action: TimeEntriesLogAction
     ): List<Effect<TimeEntriesLogAction>> =
             when (action) {
                 is TimeEntriesLogAction.ContinueButtonTapped -> {
-                    val timeEntryToContinue = state.value.timeEntries[action.id]
+                    val timeEntryToContinue = state().timeEntries[action.id]
                         ?.let(EditableTimeEntry.Companion::fromSingle)
                         ?: throw IllegalStateException()
 
                     startTimeEntry(timeEntryToContinue, repository)
                 }
-                is TimeEntriesLogAction.TimeEntryTapped -> {
-                    val entryToEdit = state.value.timeEntries[action.id]
-                        ?.run(EditableTimeEntry.Companion::fromSingle)
-                        ?: throw IllegalStateException()
+                is TimeEntriesLogAction.TimeEntryTapped ->
+                    state.mutateWithoutEffects {
+                        val entryToEdit = timeEntries[action.id]
+                            ?.run(EditableTimeEntry.Companion::fromSingle)
+                            ?: throw IllegalStateException()
 
-                    state.value = state.value.copy(editableTimeEntry = entryToEdit)
-                    noEffect()
-                }
+                        copy(editableTimeEntry = entryToEdit)
+                    }
 
-                is TimeEntriesLogAction.TimeEntryGroupTapped -> {
-                    val entryToEdit = state.value.timeEntries[action.ids.first()]
-                        ?.run { EditableTimeEntry.fromGroup(action.ids, this) }
-                        ?: throw IllegalStateException()
+                is TimeEntriesLogAction.TimeEntryGroupTapped ->
+                    state.mutateWithoutEffects {
+                        val entryToEdit = state().timeEntries[action.ids.first()]
+                            ?.run { EditableTimeEntry.fromGroup(action.ids, this) }
+                            ?: throw IllegalStateException()
 
-                    state.value = state.value.copy(editableTimeEntry = entryToEdit)
-                    noEffect()
-                }
+                        copy(editableTimeEntry = entryToEdit)
+                    }
 
                 is TimeEntriesLogAction.TimeEntrySwiped -> {
-                    val swipedEntry = state.value.timeEntries[action.id]
+                    val swipedEntry = state().timeEntries[action.id]
                         ?: throw IllegalStateException()
 
                     when (action.direction) {
@@ -70,7 +71,7 @@ class TimeEntriesLogReducer @Inject constructor(
                         SwipeDirection.Left ->
                             handleDeletingSwipe(state, action.ids)
                         SwipeDirection.Right -> {
-                            val timeEntryToStart = state.value.timeEntries[action.ids.first()]
+                            val timeEntryToStart = state().timeEntries[action.ids.first()]
                                 ?.let { EditableTimeEntry.fromGroup(action.ids, it) }
                                 ?: throw IllegalStateException()
                             startTimeEntry(timeEntryToStart, repository)
@@ -78,53 +79,55 @@ class TimeEntriesLogReducer @Inject constructor(
                     }
                 }
 
-                is TimeEntriesLogAction.TimeEntryStarted -> {
-                    state.value = state.value.copy(
-                        timeEntries = handleTimeEntryCreationStateChanges(
-                            state.value.timeEntries,
-                            action.startedTimeEntry,
-                            action.stoppedTimeEntry
+                is TimeEntriesLogAction.TimeEntryStarted ->
+                    state.mutateWithoutEffects {
+                        copy(
+                            timeEntries = handleTimeEntryCreationStateChanges(
+                                timeEntries,
+                                action.startedTimeEntry,
+                                action.stoppedTimeEntry
+                            )
                         )
-                    )
-                    noEffect()
-                }
+                    }
 
-                is TimeEntriesLogAction.TimeEntryDeleted -> {
-                    state.value = state.value.copy(
-                        timeEntries = handleTimeEntryDeletionStateChanges(
-                            state.value.timeEntries,
-                            action.deletedTimeEntry
+                is TimeEntriesLogAction.TimeEntryDeleted ->
+                    state.mutateWithoutEffects {
+                        copy(
+                            timeEntries = handleTimeEntryDeletionStateChanges(
+                                timeEntries,
+                                action.deletedTimeEntry
+                            )
                         )
-                    )
-                    noEffect()
-                }
-                is TimeEntriesLogAction.ToggleTimeEntryGroupTapped -> {
-                    val newUngroupedTimeEntries =
-                        if (state.value.expandedGroupIds.contains(action.groupId)) state.value.expandedGroupIds - action.groupId
-                        else state.value.expandedGroupIds + action.groupId
-                    state.value = state.value.copy(expandedGroupIds = newUngroupedTimeEntries)
-                    noEffect()
-                }
+                    }
+
+                is TimeEntriesLogAction.ToggleTimeEntryGroupTapped ->
+                    state.mutateWithoutEffects {
+                        val newUngroupedTimeEntries =
+                            if (expandedGroupIds.contains(action.groupId)) expandedGroupIds - action.groupId
+                            else expandedGroupIds + action.groupId
+                        copy(expandedGroupIds = newUngroupedTimeEntries)
+                    }
                 is TimeEntriesLogAction.CommitDeletion -> {
+                    val currentState = state()
                     val timeEntryIdsToDelete =
-                        if (state.value.entriesPendingDeletion.containsExactly(action.ids)) action.ids
+                        if (currentState.entriesPendingDeletion.containsExactly(action.ids)) action.ids
                         else listOf()
 
                     if (timeEntryIdsToDelete.none()) {
                         noEffect()
                     } else {
-                        val timeEntriesToDelete =
-                            timeEntryIdsToDelete.mapNotNull { state.value.timeEntries[it] }
 
-                        val updatedTimeEntries = markDeletedTimeEntries(state.value.timeEntries, timeEntryIdsToDelete)
-                        state.value = state.value.copy(timeEntries = updatedTimeEntries, entriesPendingDeletion = setOf())
-                        timeEntriesToDelete.map { delete(it, repository) }
+                        state.mutate {
+                            val updatedTimeEntries = markDeletedTimeEntries(timeEntries, timeEntryIdsToDelete)
+                            copy(timeEntries = updatedTimeEntries, entriesPendingDeletion = setOf())
+                        }
+                        timeEntryIdsToDelete
+                            .mapNotNull { currentState.timeEntries[it] }
+                            .map(::delete)
                     }
                 }
-                is TimeEntriesLogAction.UndoButtonTapped -> {
-                    state.value = state.value.copy(entriesPendingDeletion = emptySet())
-                    noEffect()
-                }
+                is TimeEntriesLogAction.UndoButtonTapped ->
+                    state.mutateWithoutEffects { copy(entriesPendingDeletion = emptySet()) }
             }
 
     private fun startTimeEntry(timeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
@@ -134,16 +137,20 @@ class TimeEntriesLogReducer @Inject constructor(
             }
         )
 
-    private fun delete(timeEntry: TimeEntry, repository: TimeEntryRepository) =
+    private fun delete(timeEntry: TimeEntry) =
         DeleteTimeEntryEffect(repository, timeEntry, dispatcherProvider, TimeEntriesLogAction::TimeEntryDeleted)
 
     private fun handleDeletingSwipe(
-        state: SettableValue<TimeEntriesLogState>,
+        state: MutableValue<TimeEntriesLogState>,
         entriesToDelete: List<Long>
     ): List<Effect<TimeEntriesLogAction>> {
-        val entriesToCommitDeletion = state.value.entriesPendingDeletion
-        val updatedEntries = markDeletedTimeEntries(state.value.timeEntries, entriesToCommitDeletion)
-        state.value = state.value.copy(timeEntries = updatedEntries, entriesPendingDeletion = entriesToDelete.toSet())
+
+        val entriesToCommitDeletion = state().entriesPendingDeletion
+
+        state.mutate {
+            val updatedEntries = markDeletedTimeEntries(timeEntries, entriesToCommitDeletion)
+            copy(timeEntries = updatedEntries, entriesPendingDeletion = entriesToDelete.toSet())
+        }
 
         val deleteEffects = prepareDeleteEffects(state, entriesToCommitDeletion)
         deleteEffects.add(WaitForUndoEffect(entriesToDelete))
@@ -152,12 +159,12 @@ class TimeEntriesLogReducer @Inject constructor(
     }
 
     private fun prepareDeleteEffects(
-        state: SettableValue<TimeEntriesLogState>,
+        state: MutableValue<TimeEntriesLogState>,
         idsToDelete: Collection<Long>
     ): MutableList<Effect<TimeEntriesLogAction>> =
         idsToDelete
-            .mapNotNull { state.value.timeEntries[it] }
-            .map { delete(it, repository) }
+            .mapNotNull { state().timeEntries[it] }
+            .map(::delete)
             .toMutableList()
 
     private fun markDeletedTimeEntries(

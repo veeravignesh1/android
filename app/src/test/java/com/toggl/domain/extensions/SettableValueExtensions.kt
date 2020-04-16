@@ -1,6 +1,6 @@
 package com.toggl.domain.extensions
 
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 
-fun <T> T.toSettableValue(setFunction: (T) -> Unit) =
-    SettableValue({ this }, setFunction)
+fun <T> T.toMutableValue(setFunction: (T) -> Unit) =
+    MutableValue({ this }, setFunction)

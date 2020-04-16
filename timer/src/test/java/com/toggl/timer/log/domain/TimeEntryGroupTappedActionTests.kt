@@ -3,7 +3,7 @@ package com.toggl.timer.log.domain
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.toSettableValue
+import com.toggl.timer.common.toMutableValue
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -22,10 +22,10 @@ class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
                 "with the matching id" {
                     val initialState = createInitialState(listOf(testTe))
                     var state = initialState
-                    val settableValue = state.toSettableValue { state = it }
+                    val mutableValue = state.toMutableValue { state = it }
                     shouldThrow<IllegalStateException> {
                         reducer.reduce(
-                            settableValue,
+                            mutableValue,
                             TimeEntriesLogAction.TimeEntryGroupTapped(listOf(2))
                         )
                     }
@@ -35,10 +35,10 @@ class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
                     val initialState = createInitialState()
                     assertAll(fn = { id: Long ->
                         var state = initialState
-                        val settableValue = state.toSettableValue { state = it }
+                        val mutableValue = state.toMutableValue { state = it }
                         shouldThrow<IllegalStateException> {
                             reducer.reduce(
-                                settableValue,
+                                mutableValue,
                                 TimeEntriesLogAction.TimeEntryGroupTapped(listOf(id))
                             )
                         }
@@ -50,9 +50,9 @@ class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
                 val initialState = createInitialState(listOf(testTe))
 
                 var state = initialState
-                val settableValue = state.toSettableValue { state = it }
+                val mutableValue = state.toMutableValue { state = it }
                 val idsToEdit = listOf(1L, 2L)
-                reducer.reduce(settableValue, TimeEntriesLogAction.TimeEntryGroupTapped(idsToEdit))
+                reducer.reduce(mutableValue, TimeEntriesLogAction.TimeEntryGroupTapped(idsToEdit))
                 state.editableTimeEntry!!.ids shouldBe idsToEdit
             }
         }

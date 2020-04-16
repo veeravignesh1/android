@@ -2,7 +2,7 @@ package com.toggl.domain.reducers
 
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.HigherOrderReducer
-import com.toggl.architecture.core.SettableValue
+import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -14,19 +14,22 @@ import com.toggl.timer.startedit.domain.StartEditAction
 class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
     : HigherOrderReducer<AppState, AppAction> {
     override fun reduce(
-        state: SettableValue<AppState>,
+        state: MutableValue<AppState>,
         action: AppAction
-    ): List<Effect<AppAction>> {
+    ): List<Effect<AppAction>> =
+        when {
+            action.isToggleBillableAction() -> state.mapState {
+                val workspaceId = timerLocalState
+                    .getRunningTimeEntryWorkspaceId()
+                    ?: return@mapState noEffect<AppAction>()
 
-        if (action.isToggleBillableAction()) {
-            val workspaceId = state.value.timerLocalState.getRunningTimeEntryWorkspaceId() ?: return noEffect()
-            return state.value.workspaces[workspaceId]?.let { workspace ->
+                val workspace = workspaces[workspaceId]
+                    ?: return@mapState noEffect<AppAction>()
+
                 if (workspace.isPro()) innerReducer.reduce(state, action)
                 else noEffect()
-            } ?: noEffect()
-        }
-
-        return innerReducer.reduce(state, action)
+            }
+            else -> innerReducer.reduce(state, action)
     }
 }
 
