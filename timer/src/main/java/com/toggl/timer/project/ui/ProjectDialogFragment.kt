@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
@@ -36,4 +38,10 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_dialog_project, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
 }

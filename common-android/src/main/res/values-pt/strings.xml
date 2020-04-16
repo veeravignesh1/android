@@ -17,4 +17,8 @@
         <item quantity="one" tools:ignore="ImpliedQuantity">Registro de tempo removido</item>
         <item quantity="other">%d registros de tempos removidos</item>
     </plurals>
+    <string name="private_project">Projet privé</string>
+    <string name="add_client">Ajouter un client</string>
+    <string name="new_project">Novo Projeto</string>
+    <string name="create">Criar</string>
 </resources>

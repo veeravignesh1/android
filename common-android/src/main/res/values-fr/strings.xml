@@ -17,4 +17,8 @@
         <item quantity="one" tools:ignore="ImpliedQuantity">L\'entrée de temps est supprimé</item>
         <item quantity="other">%d entrées de temps supprimées</item>
     </plurals>
+    <string name="private_project">Projeto privado</string>
+    <string name="add_client">Adicionar cliente</string>
+    <string name="new_project">Nouveau projet</string>
+    <string name="create">Créer</string>
 </resources>

@@ -4,6 +4,142 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/project_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/grid_1">
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/start_vertical_gridline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/grid_2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/end_vertical_gridline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/grid_2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_gridline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/grid_1" />
+
+    <ImageView
+        android:id="@+id/close_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:background="?selectableItemBackgroundBorderless"
+        android:tint="@color/text_on_surface"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
+        app:layout_constraintTop_toTopOf="@id/top_gridline"
+        app:srcCompat="@drawable/ic_close" />
+
+    <TextView
+        android:id="@+id/add_project_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:text="@string/new_project"
+        app:layout_constraintEnd_toStartOf="@id/close_action"
+        app:layout_constraintStart_toEndOf="@+id/create_button"
+        app:layout_constraintTop_toTopOf="@id/top_gridline" />
+
+    <TextView
+        android:id="@+id/create_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/grid_1"
+        android:text="@string/create"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
+        app:layout_constraintTop_toTopOf="@id/top_gridline" />
+
+    <EditText
+        android:id="@+id/project_name_edit_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/project_name_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/project_name_edit_text" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/private_chip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:checkable="true"
+        android:text="@string/private_project"
+        app:chipIcon="@drawable/ic_private"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
+        app:layout_constraintTop_toBottomOf="@id/project_name_divider" />
+
+    <View
+        android:id="@+id/private_chip_divider"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/private_chip" />
+
+    <HorizontalScrollView
+        android:id="@+id/client_workspace_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/project_color_indicator"
+        app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
+        app:layout_constraintTop_toBottomOf="@id/private_chip_divider"
+        app:layout_constraintVertical_bias="0">
+
+        <com.google.android.material.chip.ChipGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/client_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_client"
+                app:chipIcon="@drawable/ic_client" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/workspace_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:chipIcon="@drawable/ic_workspace"
+                app:chipIconSize="20dp" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <FrameLayout
+        android:id="@+id/project_color_indicator"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:background="@drawable/circle_shape"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:layout_constraintBottom_toBottomOf="@id/client_workspace_container"
+        app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
+        app:layout_constraintTop_toTopOf="@id/client_workspace_container" />
 </androidx.constraintlayout.widget.ConstraintLayout>
