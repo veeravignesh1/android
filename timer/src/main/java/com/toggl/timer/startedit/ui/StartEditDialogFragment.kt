@@ -27,6 +27,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.sheet.OnStateChangedAction
@@ -213,6 +214,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             }
 
             done_action.setOnClickListener {
+                context.performClickHapticFeedback()
                 store.dispatch(StartEditAction.DoneButtonTapped)
             }
         }

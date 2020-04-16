@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
 import com.toggl.common.Constants.timeEntryDeletionDelayMs
 import com.toggl.common.deepLinks
+import com.toggl.common.performClickHapticFeedback
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
 import com.toggl.timer.R
@@ -96,6 +97,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
                 .distinctUntilChanged()
                 .onEach { isEditViewExpanded ->
                     if (isEditViewExpanded) {
+                        this@TimeEntriesLogFragment.context?.performClickHapticFeedback()
                         findNavController().navigate(deepLinks.timeEntriesStartEditDialog)
                     }
                 }
