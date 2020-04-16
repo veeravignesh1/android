@@ -9,6 +9,9 @@ import com.toggl.timer.common.domain.TimerState
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogReducer
 import com.toggl.timer.log.domain.TimeEntriesLogState
+import com.toggl.timer.project.domain.ProjectAction
+import com.toggl.timer.project.domain.ProjectReducer
+import com.toggl.timer.project.domain.ProjectState
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.RunningTimeEntryReducer
 import com.toggl.timer.running.domain.RunningTimeEntryState
@@ -17,9 +20,9 @@ import com.toggl.timer.startedit.domain.StartEditReducer
 import com.toggl.timer.startedit.domain.StartEditState
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import javax.inject.Singleton
 
 @Module(subcomponents = [TimerComponent::class])
 class TimerModule {
@@ -49,13 +52,22 @@ class TimerModule {
         )
 
     @ExperimentalCoroutinesApi
+    @Provides
+    internal fun projectStore(store: Store<TimerState, TimerAction>): Store<ProjectState, ProjectAction> =
+        store.view(
+            mapToLocalState = ProjectState.Companion::fromTimerState,
+            mapToGlobalAction = ProjectAction.Companion::toTimerAction
+        )
+
+    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton
     internal fun timerReducer(
         timeEntriesLogReducer: TimeEntriesLogReducer,
         startEditReducer: StartEditReducer,
-        runningTimeEntryReducer: RunningTimeEntryReducer
+        runningTimeEntryReducer: RunningTimeEntryReducer,
+        projectReducer: ProjectReducer
     ): TimerReducer {
 
         return combine(
@@ -76,6 +88,12 @@ class TimerModule {
                 mapToLocalAction = RunningTimeEntryAction.Companion::fromTimerAction,
                 mapToGlobalState = RunningTimeEntryState.Companion::toTimerState,
                 mapToGlobalAction = RunningTimeEntryAction.Companion::toTimerAction
+            ),
+            projectReducer.pullback(
+                mapToLocalState = ProjectState.Companion::fromTimerState,
+                mapToLocalAction = ProjectAction.Companion::fromTimerAction,
+                mapToGlobalState = ProjectState.Companion::toTimerState,
+                mapToGlobalAction = ProjectAction.Companion::toTimerAction
             )
         )
     }
