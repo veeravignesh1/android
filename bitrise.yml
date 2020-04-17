@@ -69,6 +69,20 @@ workflows:
     steps:
     - cache-push@2.2.3: {}
     - deploy-to-bitrise-io@1.9.6: {}
+  nightly-builds:
+    steps:
+    - change-android-versioncode-and-versionname@1: {}
+    - android-build@0.10.0:
+        inputs:
+        - variant: release
+    - sign-apk@1: {}
+    - google-play-deploy@3:
+        inputs:
+        - service_account_json_key_path: "$BITRISEIO_SERVICE_ACCOUNT_JSON_KEY_URL_URL"
+        - package_name: com.toggl.aurora
+        - track: internal
+    before_run:
+    - setup
 app:
   envs:
   - opts:
