@@ -1,9 +1,11 @@
 package com.toggl.timer.project.domain
 
+import arrow.optics.optics
 import com.toggl.models.domain.Project
 import com.toggl.timer.common.domain.EditableProject
 import com.toggl.timer.common.domain.TimerState
 
+@optics
 data class ProjectState(
     val editableProject: EditableProject?,
     val projects: Map<Long, Project>

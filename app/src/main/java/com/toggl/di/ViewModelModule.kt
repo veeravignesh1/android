@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.toggl.onboarding.ui.LoginViewModel
 import com.toggl.timer.log.ui.TimeEntriesLogStoreViewModel
+import com.toggl.timer.project.ui.ProjectStoreViewModel
 import com.toggl.timer.running.ui.RunningTimeEntryStoreViewModel
 import com.toggl.timer.startedit.ui.StartEditStoreViewModel
 import dagger.Binds
@@ -32,6 +33,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(RunningTimeEntryStoreViewModel::class)
     abstract fun bindRunningTimeEntryStoreViewModel(viewModel: RunningTimeEntryStoreViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProjectStoreViewModel::class)
+    abstract fun bindProjectStoreViewModel(viewModel: ProjectStoreViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: TogglViewModelFactory): ViewModelProvider.Factory
