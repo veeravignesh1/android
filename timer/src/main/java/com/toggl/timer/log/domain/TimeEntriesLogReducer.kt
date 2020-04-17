@@ -15,6 +15,7 @@ import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.common.domain.handleTimeEntryDeletionStateChanges
+import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
 import com.toggl.timer.extensions.containsExactly
 import javax.inject.Inject
 
@@ -31,7 +32,7 @@ class TimeEntriesLogReducer @Inject constructor(
                 is TimeEntriesLogAction.ContinueButtonTapped -> {
                     val timeEntryToContinue = state().timeEntries[action.id]
                         ?.let(EditableTimeEntry.Companion::fromSingle)
-                        ?: throw IllegalStateException()
+                        ?: throw TimeEntryDoesNotExistException()
 
                     startTimeEntry(timeEntryToContinue, repository)
                 }
@@ -39,7 +40,7 @@ class TimeEntriesLogReducer @Inject constructor(
                     state.mutateWithoutEffects {
                         val entryToEdit = timeEntries[action.id]
                             ?.run(EditableTimeEntry.Companion::fromSingle)
-                            ?: throw IllegalStateException()
+                            ?: throw TimeEntryDoesNotExistException()
 
                         copy(editableTimeEntry = entryToEdit)
                     }
@@ -48,14 +49,14 @@ class TimeEntriesLogReducer @Inject constructor(
                     state.mutateWithoutEffects {
                         val entryToEdit = state().timeEntries[action.ids.first()]
                             ?.run { EditableTimeEntry.fromGroup(action.ids, this) }
-                            ?: throw IllegalStateException()
+                            ?: throw TimeEntryDoesNotExistException()
 
                         copy(editableTimeEntry = entryToEdit)
                     }
 
                 is TimeEntriesLogAction.TimeEntrySwiped -> {
                     val swipedEntry = state().timeEntries[action.id]
-                        ?: throw IllegalStateException()
+                        ?: throw TimeEntryDoesNotExistException()
 
                     when (action.direction) {
                         SwipeDirection.Left ->
@@ -73,7 +74,7 @@ class TimeEntriesLogReducer @Inject constructor(
                         SwipeDirection.Right -> {
                             val timeEntryToStart = state().timeEntries[action.ids.first()]
                                 ?.let { EditableTimeEntry.fromGroup(action.ids, it) }
-                                ?: throw IllegalStateException()
+                                ?: throw TimeEntryDoesNotExistException()
                             startTimeEntry(timeEntryToStart, repository)
                         }
                     }

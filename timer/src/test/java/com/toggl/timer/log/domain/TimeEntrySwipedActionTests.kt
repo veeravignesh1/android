@@ -6,6 +6,7 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.toMutableValue
+import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -52,7 +53,7 @@ class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
                 val mutableValue = state.toMutableValue { state = it }
                 val action = TimeEntriesLogAction.TimeEntrySwiped(1337, SwipeDirection.Right)
 
-                shouldThrow<IllegalStateException> {
+                shouldThrow<TimeEntryDoesNotExistException> {
                     reducer.reduce(mutableValue, action)
                 }
             }

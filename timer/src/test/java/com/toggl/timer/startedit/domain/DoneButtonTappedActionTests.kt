@@ -7,6 +7,7 @@ import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.toMutableValue
+import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.TestCase
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -16,19 +17,18 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import java.lang.IllegalStateException
 
 @ExperimentalCoroutinesApi
 class DoneButtonTappedActionTests : FreeCoroutineSpec() {
-    val repository = mockk<TimeEntryRepository>()
-    val startTimeEntryResult = mockk<StartTimeEntryResult>()
-    val timeEntry = createTimeEntry(1, "old description")
-    val timeEntry2 = createTimeEntry(2, "old description")
-    val workspace = mockk<Workspace>()
-    val editableTimeEntry =
+    private val repository = mockk<TimeEntryRepository>()
+    private val startTimeEntryResult = mockk<StartTimeEntryResult>()
+    private val timeEntry = createTimeEntry(1, "old description")
+    private val timeEntry2 = createTimeEntry(2, "old description")
+    private val workspace = mockk<Workspace>()
+    private val editableTimeEntry =
         EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-    val state = StartEditState(mapOf(1L to timeEntry, 2L to timeEntry2), mapOf(1L to workspace), editableTimeEntry, listOf())
-    val reducer = StartEditReducer(repository, dispatcherProvider)
+    private val state = StartEditState(mapOf(1L to timeEntry, 2L to timeEntry2), mapOf(1L to workspace), editableTimeEntry, listOf())
+    private val reducer = StartEditReducer(repository, dispatcherProvider)
 
     init {
         coEvery { workspace.id } returns 1
@@ -40,7 +40,7 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
                 var initialState = state.copy(editableTimeEntry = null)
                 val mutableValue = initialState.toMutableValue { initialState = it }
 
-                shouldThrow<IllegalStateException> {
+                shouldThrow<EditableTimeEntryShouldNotBeNullException> {
                     reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
                 }
             }

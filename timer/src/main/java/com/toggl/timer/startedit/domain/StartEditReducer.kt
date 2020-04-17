@@ -12,6 +12,7 @@ import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
+import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 import javax.inject.Inject
 
@@ -58,7 +59,7 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             StartEditAction.DoneButtonTapped -> {
-                val editableTimeEntry = state().editableTimeEntry ?: throw IllegalStateException()
+                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 state.mutate { copy(editableTimeEntry = null) }
                 if (editableTimeEntry.shouldStart()) {
                     startTimeEntry(editableTimeEntry)
