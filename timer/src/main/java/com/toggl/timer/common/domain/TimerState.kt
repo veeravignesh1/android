@@ -1,5 +1,6 @@
 package com.toggl.timer.common.domain
 
+import arrow.optics.Lens
 import arrow.optics.optics
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
@@ -17,20 +18,23 @@ data class TimerState(
 ) {
     data class LocalState internal constructor(
         internal val editableTimeEntry: EditableTimeEntry?,
-        internal val editableProject: EditableProject?,
         internal val expandedGroupIds: Set<Long>,
         internal val entriesPendingDeletion: Set<Long>,
         internal val autocompleteSuggestions: List<AutocompleteSuggestion>
     ) {
         constructor() : this(
             editableTimeEntry = null,
-            editableProject = null,
             expandedGroupIds = setOf(),
             entriesPendingDeletion = setOf(),
             autocompleteSuggestions = emptyList()
         )
 
-        companion object
+        companion object {
+            internal val editableTimeEntry: Lens<LocalState, EditableTimeEntry> = Lens(
+                get = { it.editableTimeEntry!! },
+                set = { localState, editableTimeEntry -> localState.copy(editableTimeEntry = editableTimeEntry) }
+            )
+        }
     }
 
     companion object

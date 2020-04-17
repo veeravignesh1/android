@@ -9,18 +9,19 @@ data class ProjectState(
     val projects: Map<Long, Project>
 ) {
     companion object {
+
         fun fromTimerState(timerState: TimerState) =
             ProjectState(
-                editableProject = timerState.localState.editableProject,
+                editableProject = timerState.localState.editableTimeEntry?.editableProject,
                 projects = timerState.projects
             )
 
         fun toTimerState(timerState: TimerState, projectState: ProjectState) =
             timerState.copy(
                 projects = projectState.projects,
-                localState = timerState.localState.copy(
-                    editableProject = projectState.editableProject
-                )
+                localState = TimerState.LocalState.editableTimeEntry.modify(timerState.localState) {
+                    it.copy(editableProject = projectState.editableProject)
+                }
             )
     }
 }
