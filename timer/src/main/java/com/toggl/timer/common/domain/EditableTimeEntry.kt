@@ -8,17 +8,19 @@ data class EditableTimeEntry(
     val ids: List<Long>,
     val workspaceId: Long,
     val description: String,
-    val billable: Boolean
+    val billable: Boolean,
+    val editableProject: EditableProject?
 ) {
     companion object {
-        fun empty(workspaceId: Long) = EditableTimeEntry(listOf(), workspaceId, "", false)
+        fun empty(workspaceId: Long) = EditableTimeEntry(listOf(), workspaceId, "", false, null)
 
         fun fromSingle(timeEntry: TimeEntry) =
             EditableTimeEntry(
                 ids = listOf(timeEntry.id),
                 workspaceId = timeEntry.workspaceId,
                 description = timeEntry.description,
-                billable = timeEntry.billable
+                billable = timeEntry.billable,
+                editableProject = null
             )
 
         fun fromGroup(ids: List<Long>, groupSample: TimeEntry) =
@@ -26,7 +28,8 @@ data class EditableTimeEntry(
                 ids = ids,
                 workspaceId = groupSample.workspaceId,
                 description = groupSample.description,
-                billable = groupSample.billable
+                billable = groupSample.billable,
+                editableProject = null
             )
     }
 }

@@ -5,6 +5,7 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.toMutableValue
+import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
@@ -31,7 +32,7 @@ class ContinueButtonTappedActionTests : FreeCoroutineSpec() {
                     var state = initialState
                     val mutableValue = state.toMutableValue { state = it }
 
-                    shouldThrow<IllegalStateException> {
+                    shouldThrow<TimeEntryDoesNotExistException> {
                         reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(2))
                     }
                 }
@@ -42,7 +43,7 @@ class ContinueButtonTappedActionTests : FreeCoroutineSpec() {
                     assertAll(fn = { id: Long ->
                         var state = initialState
                         val mutableValue = state.toMutableValue { state = it }
-                        shouldThrow<IllegalStateException> {
+                        shouldThrow<TimeEntryDoesNotExistException> {
                             reducer.reduce(
                                 mutableValue,
                                 TimeEntriesLogAction.ContinueButtonTapped(id)

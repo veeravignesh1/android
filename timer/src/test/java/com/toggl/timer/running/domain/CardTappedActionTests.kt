@@ -1,8 +1,8 @@
 package com.toggl.timer.running.domain
 
-import com.toggl.architecture.DispatcherProvider
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -11,23 +11,15 @@ import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.threeten.bp.Duration
 
 @ExperimentalCoroutinesApi
 @DisplayName("The CardTapped action")
-class CardTappedActionTests {
-    private val testDispatcher = TestCoroutineDispatcher()
-    private val dispatcherProvider = DispatcherProvider(testDispatcher, testDispatcher, Dispatchers.Main)
+class CardTappedActionTests : CoroutineTest() {
     private val repository = mockk<TimeEntryRepository>()
     private val workspace = mockk<Workspace>()
     private val reducer = RunningTimeEntryReducer(repository, dispatcherProvider)
@@ -77,16 +69,5 @@ class CardTappedActionTests {
             action = RunningTimeEntryAction.CardTapped,
             testCase = ::assertNoEffectsWereReturned
         )
-    }
-
-    @BeforeEach
-    fun beforeTest() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @AfterEach
-    fun afterTest() {
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 }

@@ -11,7 +11,7 @@
         "mobilesdk_app_id": "$TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID",
         "android_client_info": {
           // the package_name should be updated to com.toggl.giskard.toggl to match the current production app
-          "package_name": "com.toggl"
+          "package_name": "com.toggl.aurora"
         }
       },
       "oauth_client": [
@@ -43,7 +43,7 @@
         "mobilesdk_app_id": "$TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING",
         "android_client_info": {
           // the package_name should be updated to com.toggl.giskard.debug to match the current production app
-          "package_name": "com.toggl.debug"
+          "package_name": "com.toggl.aurora.debug"
         }
       },
       "oauth_client": [],
@@ -70,7 +70,7 @@
         "mobilesdk_app_id": "$TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING",
         "android_client_info": {
           // the package_name should be updated to com.toggl.giskard.adhoc to match the current production app
-          "package_name": "com.toggl.adhoc"
+          "package_name": "com.toggl.aurora.adhoc"
         }
       },
       "oauth_client": [],

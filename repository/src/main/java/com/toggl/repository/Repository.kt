@@ -20,6 +20,7 @@ import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
+import com.toggl.repository.dto.CreateProjectDTO
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
@@ -42,6 +43,22 @@ class Repository(
 
     override suspend fun loadProjects(): List<Project> =
         projectDao.getAll().map(DatabaseProject::toModel)
+
+    override suspend fun createProject(project: CreateProjectDTO): Project {
+        val databaseProject = DatabaseProject(
+            name = project.name,
+            color = project.color,
+            active = project.active,
+            isPrivate = project.isPrivate,
+            billable = project.billable,
+            workspaceId = project.workspaceId,
+            clientId = project.clientId
+        )
+
+        return projectDao.insert(databaseProject)
+            .run(projectDao::getOne)
+            .run(DatabaseProject::toModel)
+    }
 
     override suspend fun loadTimeEntries(): List<TimeEntry> =
         timeEntryDao.getAllTimeEntriesWithTags().map(DatabaseTimeEntryWithTags::toModel)

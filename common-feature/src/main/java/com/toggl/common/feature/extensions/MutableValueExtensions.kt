@@ -8,3 +8,5 @@ fun <T, Action> MutableValue<T>.mutateWithoutEffects(mutateFn: T.() -> T): List<
     this.mutate(mutateFn)
     return noEffect()
 }
+
+infix fun <T, Action> T.returnEffect(effects: List<Effect<Action>>) = effects
