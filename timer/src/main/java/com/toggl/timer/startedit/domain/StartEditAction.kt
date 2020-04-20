@@ -9,6 +9,7 @@ sealed class StartEditAction {
     object CloseButtonTapped : StartEditAction()
     object DialogDismissed : StartEditAction()
     object DoneButtonTapped : StartEditAction()
+    object ProjectButtonTapped : StartEditAction()
     data class DescriptionEntered(val description: String) : StartEditAction()
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartEditAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : StartEditAction()
@@ -31,6 +32,7 @@ fun StartEditAction.formatForDebug() =
         StartEditAction.CloseButtonTapped -> "Close button tapped"
         StartEditAction.DialogDismissed -> "Dialog dismissed"
         StartEditAction.DoneButtonTapped -> "Done button tapped"
+        StartEditAction.ProjectButtonTapped -> "Project button tapped"
         is StartEditAction.DescriptionEntered -> "Description changed to $description"
         is StartEditAction.TimeEntryUpdated -> "Time entry with id $id updated"
         is StartEditAction.TimeEntryStarted -> "Time entry started with id $startedTimeEntry.id"
