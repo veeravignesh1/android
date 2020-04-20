@@ -5,6 +5,7 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.toMutableValue
+import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.shouldBe
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,7 @@ internal class ProjectButtonTappedActionTests {
 
     @Test
     fun `should throw if editableTimeEntry is null`() {
-        assertThrows<IllegalStateException> {
+        assertThrows<EditableTimeEntryShouldNotBeNullException> {
             var state = initialState.copy(editableTimeEntry = null)
             val mutableValue = state.toMutableValue { state = it }
             reducer.reduce(mutableValue, StartEditAction.ProjectButtonTapped)

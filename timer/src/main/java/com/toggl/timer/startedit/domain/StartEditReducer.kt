@@ -30,7 +30,7 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects { copy(editableTimeEntry = null) }
             is StartEditAction.DescriptionEntered ->
                 state.mutateWithoutEffects {
-                    editableTimeEntry ?: throw IllegalStateException("Editable time entry must not be null")
+                    editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
                         it.copy(description = action.description)
                     }
@@ -61,7 +61,7 @@ class StartEditReducer @Inject constructor(
                 }
             StartEditAction.ProjectButtonTapped ->
                 state.mutateWithoutEffects {
-                    editableTimeEntry ?: throw IllegalStateException("Editable time entry must not be null")
+                    editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
                         it.copy(description = it.description + " @")
                     }
