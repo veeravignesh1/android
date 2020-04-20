@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -60,6 +61,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var descriptionChangeListener: TextWatcher? = null
+    private var lastDispatchedDescription: String? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -132,6 +134,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             requestFocus()
             descriptionChangeListener = time_entry_description.addTextChangedListener {
                 val action = StartEditAction.DescriptionEntered(text.toString())
+                lastDispatchedDescription = action.description
                 store.dispatch(action)
             }
         }
@@ -142,10 +145,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         store.state
             .filterNot { it.editableTimeEntry?.ids.isNullOrEmpty() }
-            .map { it.editableTimeEntry?.description }
-            .filter { !it.isNullOrEmpty() }
-            .take(1)
-            .onEach { time_entry_description.setText(it) }
+            .mapNotNull { it.editableTimeEntry?.description }
+            .onEach {
+                if (lastDispatchedDescription == null || lastDispatchedDescription == it) {
+                    time_entry_description.setTextIfDifferentAndUpdateSelection(it)
+                    lastDispatchedDescription = null
+                }
+            }
             .launchIn(lifecycleScope)
 
         store.state
@@ -217,6 +223,10 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 context.performClickHapticFeedback()
                 store.dispatch(StartEditAction.DoneButtonTapped)
             }
+
+            project_action.setOnClickListener {
+                store.dispatch(StartEditAction.ProjectButtonTapped)
+            }
         }
     }
 
@@ -233,6 +243,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 startEditState.editableTimeEntry!!,
                 startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
             )
+        }
+    }
+
+    private fun EditText.setTextIfDifferentAndUpdateSelection(newText: String) {
+        if (newText != this.text.toString()) {
+            this.setText(newText)
+            this.setSelection(newText.length)
         }
     }
 }
