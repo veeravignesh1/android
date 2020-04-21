@@ -6,6 +6,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
@@ -75,6 +76,8 @@ class StartEditReducer @Inject constructor(
             }
             is StartEditAction.AutocompleteSuggestionsUpdated ->
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
+            is StartEditAction.AutocompleteSuggestionTapped ->
+                noEffect()
         }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
