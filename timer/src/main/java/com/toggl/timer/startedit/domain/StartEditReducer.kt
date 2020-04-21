@@ -67,6 +67,13 @@ class StartEditReducer @Inject constructor(
                         it.copy(description = if (it.description.isEmpty()) "@" else it.description + " @")
                     }
                 }
+            StartEditAction.TagButtonTapped ->
+                state.mutateWithoutEffects {
+                    editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                    StartEditState.editableTimeEntry.modify(this) {
+                        it.copy(description = if (it.description.isEmpty()) "#" else it.description + " #")
+                    }
+                }
             StartEditAction.DoneButtonTapped -> {
                 val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 state.mutate { copy(editableTimeEntry = null) }
