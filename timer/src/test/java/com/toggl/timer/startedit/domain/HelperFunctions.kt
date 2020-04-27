@@ -20,5 +20,6 @@ fun createInitialState(
         workspaces = workspaces.associateBy { it.id },
         timeEntries = timeEntries.associateBy { it.id },
         editableTimeEntry = editableTimeEntry,
-        autocompleteSuggestions = autoCompleteSuggestions
+        autocompleteSuggestions = autoCompleteSuggestions,
+        dateTimePickMode = DateTimePickMode.None
     )

@@ -20,7 +20,8 @@ data class StartEditState(
     val workspaces: Map<Long, Workspace>,
     val timeEntries: Map<Long, TimeEntry>,
     val editableTimeEntry: EditableTimeEntry?,
-    val autocompleteSuggestions: List<AutocompleteSuggestion>
+    val autocompleteSuggestions: List<AutocompleteSuggestion>,
+    val dateTimePickMode: DateTimePickMode
 ) {
     companion object {
         fun fromTimerState(timerState: TimerState) =
@@ -32,7 +33,8 @@ data class StartEditState(
                 workspaces = timerState.workspaces,
                 timeEntries = timerState.timeEntries,
                 editableTimeEntry = timerState.localState.editableTimeEntry,
-                autocompleteSuggestions = timerState.localState.autocompleteSuggestions
+                autocompleteSuggestions = timerState.localState.autocompleteSuggestions,
+                dateTimePickMode = timerState.localState.dateTimePickMode
             )
 
         fun toTimerState(timerState: TimerState, startEditState: StartEditState) =
@@ -40,7 +42,8 @@ data class StartEditState(
                 timeEntries = startEditState.timeEntries,
                 localState = timerState.localState.copy(
                     editableTimeEntry = startEditState.editableTimeEntry,
-                    autocompleteSuggestions = startEditState.autocompleteSuggestions
+                    autocompleteSuggestions = startEditState.autocompleteSuggestions,
+                    dateTimePickMode = startEditState.dateTimePickMode
                 )
             )
     }
