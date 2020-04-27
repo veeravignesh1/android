@@ -10,24 +10,25 @@ import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.threeten.bp.Duration
 
 @ExperimentalCoroutinesApi
 class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
         val reducer = TimeEntriesLogReducer(repository, dispatcherProvider)
-        val testTe = createTimeEntry(1, "test")
+        val testTimeEntries = listOf(createTimeEntry(1, "test"), createTimeEntry(2, "test"))
 
         "The TimeEntryGroupTapped action" - {
             "should thrown when there are no time entries" - {
                 "with the matching id" {
-                    val initialState = createInitialState(listOf(testTe))
+                    val initialState = createInitialState(testTimeEntries)
                     var state = initialState
                     val mutableValue = state.toMutableValue { state = it }
                     shouldThrow<TimeEntryDoesNotExistException> {
                         reducer.reduce(
                             mutableValue,
-                            TimeEntriesLogAction.TimeEntryGroupTapped(listOf(2))
+                            TimeEntriesLogAction.TimeEntryGroupTapped(listOf(3))
                         )
                     }
                 }
@@ -48,13 +49,14 @@ class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
             }
 
             "set the editing time entry property when the time entry exists" {
-                val initialState = createInitialState(listOf(testTe))
+                val initialState = createInitialState(testTimeEntries)
 
                 var state = initialState
                 val mutableValue = state.toMutableValue { state = it }
                 val idsToEdit = listOf(1L, 2L)
                 reducer.reduce(mutableValue, TimeEntriesLogAction.TimeEntryGroupTapped(idsToEdit))
                 state.editableTimeEntry!!.ids shouldBe idsToEdit
+                state.editableTimeEntry!!.duration shouldBe Duration.ofMinutes(4)
             }
         }
     }
