@@ -21,10 +21,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/grid_1"
+        android:background="?selectableItemBackgroundBorderless"
         android:tint="@color/text_on_surface"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="?selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_close" />
 
     <com.google.android.material.chip.Chip
@@ -32,82 +32,189 @@
         style="@style/Widget.MaterialComponents.Chip.Action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="0:00:24"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="0:00:24" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/time_entry_description_input_layout"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/description"
+        android:paddingBottom="@dimen/bottom_control_panel_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_indicator">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/time_entry_description"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:inputType="text"
-            tools:ignore="Autofill" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time_entry_description_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/time_entry_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:inputType="text"
+                    tools:ignore="Autofill" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <HorizontalScrollView
+                android:id="@+id/chip_group_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chip_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleLine="true">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/add_project"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_project"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-    <HorizontalScrollView
-        android:id="@+id/chip_group_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout">
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/add_tag"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_tags"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:singleLine="true">
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+            <View
+                android:id="@+id/extended_options_divider"
+                style="@style/Divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/chip_group_scroll_view" />
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/add_project"
-                style="@style/Widget.MaterialComponents.Chip.Action"
+                android:id="@+id/billable_chip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add a Project"
+                android:text="@string/billable"
+                app:chipIcon="@drawable/ic_billable"
+                app:chipIconVisible="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/extended_options_divider" />
+
+            <View
+                android:id="@+id/billable_divider"
+                style="@style/Divider"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/billable_chip" />
 
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/add_tag"
-                style="@style/Widget.MaterialComponents.Chip.Action"
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/center_guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Add Tags"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <TextView
+                android:id="@+id/start_header"
+                style="@style/StartEditHeaderText"
+                android:layout_marginTop="@dimen/edit_elements_margin"
+                android:drawableStart="@drawable/ic_play_small"
+                android:text="@string/start_time"
+                app:layout_constraintEnd_toStartOf="@+id/center_guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+
+            <TextView
+                android:id="@+id/start_time_label"
+                style="@style/ClickableTextPrimary"
+                android:text="12:00 PM"
+                app:layout_constraintEnd_toStartOf="@id/start_divider"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_header" />
+
+            <View
+                android:id="@+id/start_divider"
+                style="@style/CircleDivider"
+                app:layout_constraintBottom_toBottomOf="@id/start_time_label"
+                app:layout_constraintEnd_toStartOf="@id/start_date_label"
+                app:layout_constraintStart_toEndOf="@id/start_time_label"
+                app:layout_constraintTop_toTopOf="@id/start_time_label" />
+
+            <TextView
+                android:id="@+id/start_date_label"
+                style="@style/ClickableTextSecondary"
+                android:text="02/22"
+                app:layout_constraintBottom_toBottomOf="@id/start_time_label"
+                app:layout_constraintEnd_toStartOf="@id/center_guideline"
+                app:layout_constraintStart_toEndOf="@id/start_divider"
+                app:layout_constraintTop_toTopOf="@id/start_time_label" />
+
+            <TextView
+                android:id="@+id/stop_header"
+                style="@style/StartEditHeaderText"
+                android:drawableStart="@drawable/ic_stop_small"
+                android:text="@string/end_time"
+                app:layout_constraintBaseline_toBaselineOf="@id/start_header"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/center_guideline"
+                app:layout_constraintTop_toBottomOf="@id/billable_divider" />
 
-        </com.google.android.material.chip.ChipGroup>
-    </HorizontalScrollView>
 
-    <View
-        android:id="@+id/bottom_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chip_group_scroll_view" />
+            <TextView
+                android:id="@+id/stop_time_label"
+                style="@style/ClickableTextPrimary"
+                android:text="Stop timer"
+                app:layout_constraintEnd_toStartOf="@id/stop_divider"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toEndOf="@id/center_guideline"
+                app:layout_constraintTop_toBottomOf="@id/stop_header" />
 
-    <TextView
-        android:id="@+id/extended_options"
-        android:layout_width="wrap_content"
-        android:layout_height="400dp"
-        android:gravity="center"
-        android:text="Extended Start/Edit features"
-        android:textSize="23dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chip_group_scroll_view" />
+            <View
+                android:id="@+id/stop_divider"
+                style="@style/CircleDivider"
+                app:layout_constraintBottom_toBottomOf="@id/stop_time_label"
+                app:layout_constraintEnd_toStartOf="@id/stop_date_label"
+                app:layout_constraintStart_toEndOf="@id/stop_time_label"
+                app:layout_constraintTop_toTopOf="@id/stop_time_label" />
 
+            <TextView
+                android:id="@+id/stop_date_label"
+                style="@style/ClickableTextSecondary"
+                android:text="02/22"
+                app:layout_constraintBottom_toBottomOf="@id/stop_time_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/stop_divider"
+                app:layout_constraintTop_toTopOf="@id/stop_time_label" />
+
+            <View
+                android:id="@+id/wheel_placeholder"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="@dimen/edit_elements_margin"
+                android:background="@color/button_active"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/start_time_label" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,7 +17,6 @@ import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -28,12 +27,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
+import com.toggl.common.addInterceptingOnClickListener
 import com.toggl.common.doSafeAfterTextChanged
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
-import com.toggl.common.sheet.OnStateChangedAction
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
@@ -41,6 +40,8 @@ import com.toggl.timer.R
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
+import com.toggl.timer.extensions.formatForDisplayingDate
+import com.toggl.timer.extensions.formatForDisplayingTime
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
@@ -58,6 +59,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
 import com.toggl.common.R as CommonR
 
@@ -77,6 +79,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val bottomSheetCallback = BottomSheetCallback()
 
     private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
+    private lateinit var hideableStopViews: List<View>
+    private lateinit var extentedTimeOptions: List<View>
+    private lateinit var billableOptions: List<View>
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
@@ -104,7 +109,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).also { bottomSheetDialog: BottomSheetDialog ->
             store.state
                 .filter { it.editableTimeEntry != null }
-                .map { BottomControlPanelParams.fromState(it) }
+                .map { BottomControlPanelParams(it.editableTimeEntry!!, it.isEditableInProWorkspace()) }
                 .take(1)
                 .onEach {
                     bottomSheetDialog.setOnShowListener { dialogInterface ->
@@ -120,13 +125,28 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        bottomSheetCallback.addOnSlideAction(AlphaSlideAction(extended_options, false))
-        bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
-            override fun onStateChanged(sheet: View, newState: Int) {
-                extended_options.isInvisible =
-                    newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN
-            }
-        })
+        hideableStopViews = listOf(stop_divider, stop_date_label)
+        extentedTimeOptions = listOf(
+            start_header,
+            start_time_label,
+            start_divider,
+            start_date_label,
+            stop_header,
+            stop_time_label,
+            stop_divider,
+            stop_date_label,
+            wheel_placeholder
+        )
+        billableOptions = listOf(billable_chip, billable_divider)
+
+        extentedTimeOptions
+            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+        billableOptions
+            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+
+        billable_chip.addInterceptingOnClickListener {
+            store.dispatch(StartEditAction.BillableTapped)
+        }
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
         with(bottomSheetBehavior) {
@@ -162,8 +182,23 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         store.state
             .mapNotNull { it.editableTimeEntry }
-            .distinctUntilChanged { old, new -> old.ids == new.ids }
-            .onEach { scheduleTimeEntryIndicatorUpdate(it) }
+            .distinctUntilChanged { old, new -> old.ids == new.ids && old.startTime == new.startTime }
+            .onEach {
+                scheduleTimeEntryIndicatorAndLabelUpdate(it)
+                handleStartStopElementsState(it)
+            }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.isEditableInProWorkspace() }
+            .distinctUntilChanged()
+            .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow } }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.editableTimeEntry?.billable ?: false }
+            .distinctUntilChanged()
+            .onEach { billable_chip.isChecked = it }
             .launchIn(lifecycleScope)
 
         lifecycleScope.launchWhenStarted {
@@ -253,39 +288,70 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomControlPanelAnimator.animateColorFilter(billableButton, isBillable)
     }
 
-    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean) {
-        companion object {
-            private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
-
-            fun fromState(startEditState: StartEditState) = BottomControlPanelParams(
-                startEditState.editableTimeEntry!!,
-                startEditState.workspaces[startEditState.editableTimeEntry.workspaceId]?.isPro() ?: false
-            )
-        }
-    }
-
-    private fun TextView.setDurationIfDifferent(duration: Duration) {
-        val newDurationText = duration.formatForDisplaying()
-        if (this.text != newDurationText) {
-            this.text = newDurationText
-        }
-    }
-
-    private fun EditableTimeEntry.getDurationForDisplaying() =
-        when {
-            this.duration != null -> this.duration
-            this.ids.isEmpty() -> Duration.ZERO
-            this.startTime != null -> Duration.between(this.startTime, timeService.now())
-            else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
-        }
-
-    private fun scheduleTimeEntryIndicatorUpdate(editableTimeEntry: EditableTimeEntry) {
+    private fun scheduleTimeEntryIndicatorAndLabelUpdate(editableTimeEntry: EditableTimeEntry) {
         timeIndicatorScheduledUpdate?.cancel()
         timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {
             while (true) {
-                time_indicator.setDurationIfDifferent(editableTimeEntry.getDurationForDisplaying())
+                time_indicator.setTextIfDifferent(editableTimeEntry.getDurationForDisplaying().formatForDisplaying())
+
+                if (!editableTimeEntry.isRepresentingGroup() && editableTimeEntry.startTime == null) {
+                    setTextOnStartTimeLabels(timeService.now())
+                }
+
                 delay(elapsedTimeIndicatorUpdateDelayMs)
             }
         }
     }
+
+    private fun setTextOnTimeDateLabels(timeLabel: TextView, dateLabel: TextView, time: OffsetDateTime) {
+        timeLabel.setTextIfDifferent(time.formatForDisplayingTime())
+        dateLabel.setTextIfDifferent(time.formatForDisplayingDate())
+    }
+
+    private fun setTextOnStartTimeLabels(startTime: OffsetDateTime?) =
+        setTextOnTimeDateLabels(start_time_label, start_date_label, startTime ?: timeService.now())
+
+    private fun handleStartStopElementsState(editableTimeEntry: EditableTimeEntry) {
+        with(editableTimeEntry) {
+
+            if (isRepresentingGroup()) {
+                extentedTimeOptions.forEach { it.isVisible = false }
+                return
+            }
+
+            setTextOnStartTimeLabels(startTime)
+
+            hideableStopViews.forEach { it.isVisible = duration != null }
+            when (duration) {
+                null -> stop_time_label.text =
+                    if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
+                else -> {
+                    val endTime = startTime!!.plus(duration)
+                    setTextOnTimeDateLabels(stop_time_label, stop_date_label, endTime)
+                }
+            }
+        }
+    }
+
+    private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
+    private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
+        this@isEditableInProWorkspace.workspaces[this]?.isPro()
+    } ?: false
+    private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
+    private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
+    private fun EditableTimeEntry.getDurationForDisplaying() =
+        when {
+            this.duration != null -> this.duration
+            this.isNotStarted() && this.startTime == null -> Duration.ZERO
+            this.startTime != null -> Duration.between(this.startTime, timeService.now())
+            else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
+        }
+
+    private fun TextView.setTextIfDifferent(newText: String) {
+        if (this.text != newText) {
+            this.text = newText
+        }
+    }
+
+    private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
 }
