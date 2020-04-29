@@ -10,12 +10,12 @@ import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 @EpoxyModelClass
 abstract class TimeEntryGroupModel : EpoxyModelWithHolder<TimeEntryHolder>() {
 
-    override fun getDefaultLayout(): Int = R.layout.time_entries_log_item
-
     @EpoxyAttribute lateinit var timeEntryGroup: TimeEntryGroupViewModel
     @EpoxyAttribute(DoNotHash) lateinit var onTappedListener: (List<Long>) -> Unit
     @EpoxyAttribute(DoNotHash) lateinit var onContinueTappedListener: (Long) -> Unit
     @EpoxyAttribute(DoNotHash) lateinit var onExpandTappedListener: (Long) -> Unit
+
+    override fun getDefaultLayout(): Int = R.layout.time_entries_log_item
 
     override fun bind(holder: TimeEntryHolder) {
         timeEntryGroup.bind(holder)

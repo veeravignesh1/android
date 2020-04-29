@@ -12,10 +12,10 @@ import org.threeten.bp.Duration
 @EpoxyModelClass
 abstract class TimeEntryHeaderModel : EpoxyModelWithHolder<HeaderHolder>() {
 
-    override fun getDefaultLayout(): Int = R.layout.time_entries_log_header
-
     @EpoxyAttribute lateinit var text: CharSequence
     @EpoxyAttribute lateinit var duration: Duration
+
+    override fun getDefaultLayout(): Int = R.layout.time_entries_log_header
 
     override fun bind(holder: HeaderHolder) {
         holder.titleLabel.text = text
