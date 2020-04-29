@@ -56,6 +56,8 @@ dependencies {
     implementation Libs.Arrow.optics
     implementation Libs.Arrow.syntax
     kapt Libs.Arrow.meta
+    implementation Libs.Epoxy.epoxy
+    kapt Libs.Epoxy.processor
 
     testImplementation (Libs.threeTen) {
         exclude group:'com.jakewharton.threetenabp', module:'threetenabp'

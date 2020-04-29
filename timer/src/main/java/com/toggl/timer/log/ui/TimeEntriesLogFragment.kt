@@ -3,21 +3,19 @@ package com.toggl.timer.log.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
 import com.google.android.material.snackbar.Snackbar
 import com.toggl.common.Constants.timeEntryDeletionDelayMs
 import com.toggl.common.deepLinks
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.environment.services.time.TimeService
-import com.toggl.models.common.SwipeDirection
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
+import com.toggl.timer.log.domain.DayHeaderViewModel
 import com.toggl.timer.log.domain.FlatTimeEntryViewModel
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogState
@@ -43,13 +41,6 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
 
     private val store: TimeEntriesLogStoreViewModel by viewModels { viewModelFactory }
 
-    private val adapter = TimeEntriesLogAdapter(
-        { store.dispatch(TimeEntriesLogAction.TimeEntryTapped(it)) },
-        { store.dispatch(TimeEntriesLogAction.TimeEntryGroupTapped(it)) },
-        { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) },
-        { store.dispatch(TimeEntriesLogAction.ToggleTimeEntryGroupTapped(it)) }
-    )
-
     private var snackbar: Snackbar? = null
 
     override fun onAttach(context: Context) {
@@ -62,11 +53,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_view.adapter = adapter
         val context = requireContext()
-        val swipeCallback = createSwipeActionCallback(requireContext())
-        val itemTouchHelper = ItemTouchHelper(swipeCallback)
-        itemTouchHelper.attachToRecyclerView(recycler_view)
 
         val todayString = context.getString(R.string.today)
         val yesterdayString = context.getString(R.string.yesterday)
@@ -89,7 +76,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             store.state
                 .map(curriedTimeEntriesSelector)
                 .distinctUntilChanged()
-                .onEach { adapter.submitList(it) }
+                .onEach(::updateList)
                 .launchIn(this)
 
             store.state
@@ -108,6 +95,33 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
                 .distinctUntilChanged()
                 .onEach { showUndoDeletionSnackbar(it) }
                 .launchIn(this)
+        }
+    }
+
+    private suspend fun updateList(items: List<TimeEntryViewModel>) {
+        recycler_view.withModels {
+            for (i in items) {
+                when(i) {
+                    is DayHeaderViewModel -> timeEntryHeader {
+                        id(i.dayTitle)
+                        text(i.dayTitle)
+                        duration(i.totalDuration)
+                    }
+                    is FlatTimeEntryViewModel -> timeEntryItem {
+                        id(i.id)
+                        timeEntry(i)
+                        onContinueTappedListener { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
+                        onTappedListener { store.dispatch(TimeEntriesLogAction.TimeEntryTapped(it)) }
+                    }
+                    is TimeEntryGroupViewModel -> timeEntryGroup {
+                        id(i.groupId)
+                        timeEntryGroup(i)
+                        onContinueTappedListener { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
+                        onTappedListener { store.dispatch(TimeEntriesLogAction.TimeEntryGroupTapped(it)) }
+                        onExpandTappedListener { store.dispatch(TimeEntriesLogAction.ToggleTimeEntryGroupTapped(it)) }
+                    }
+                }
+            }
         }
     }
 
@@ -130,52 +144,5 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             }
             show()
         }
-    }
-
-    private fun onLogItemSwiped(adapterPosition: Int, swipeDirection: SwipeDirection) {
-        val currentItems: List<TimeEntryViewModel> = adapter.currentList
-        if (adapterPosition >= currentItems.size) {
-            adapter.notifyDataSetChanged()
-            return
-        }
-
-        when (val item = currentItems[adapterPosition]) {
-            is FlatTimeEntryViewModel -> TimeEntriesLogAction.TimeEntrySwiped(item.id, swipeDirection)
-            is TimeEntryGroupViewModel -> TimeEntriesLogAction.TimeEntryGroupSwiped(item.timeEntryIds, swipeDirection)
-            else -> null
-        }?.let(store::dispatch)
-
-        if (swipeDirection == SwipeDirection.Right) {
-            adapter.notifyItemChanged(adapterPosition)
-        }
-    }
-
-    private fun createSwipeActionCallback(context: Context): SwipeActionCallback {
-        val leftSwipeColor = ContextCompat.getColor(context, R.color.stop_time_entry_button_background)
-        val rightSwipeColor = ContextCompat.getColor(context, R.color.start_time_entry_button_background)
-        val actionTextColor = ContextCompat.getColor(context, R.color.text_on_surface)
-        val actionFontSize = resources.getDimension(R.dimen.swipe_action_font_size)
-        val actionPadding = resources.getDimension(R.dimen.swipe_action_text_padding)
-
-        val swipeLeftParams = SwipeActionParams(
-            text = getString(R.string.delete),
-            backgroundColor = leftSwipeColor,
-            textColor = actionTextColor,
-            fontSize = actionFontSize,
-            textPadding = actionPadding
-        )
-        val swipeRightParams = SwipeActionParams(
-            text = getString(R.string.continue_this),
-            backgroundColor = rightSwipeColor,
-            textColor = actionTextColor,
-            fontSize = actionFontSize,
-            textPadding = actionPadding
-        )
-
-        return SwipeActionCallback(
-            swipeLeftParams = swipeLeftParams,
-            swipeRightParams = swipeRightParams,
-            onSwipeActionListener = ::onLogItemSwiped
-        )
     }
 }

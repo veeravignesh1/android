@@ -3,6 +3,7 @@ import com.toggl.buildsrc.Libs
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -45,6 +46,8 @@ dependencies {
     api Libs.AndroidX.Lifecycle.viewModel
     api Libs.Google.material
     api Libs.threeTenAndroid
+    api Libs.Epoxy.epoxy
+    kapt Libs.Epoxy.processor
 
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore

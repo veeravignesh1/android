@@ -104,6 +104,12 @@ object Libs {
         const val compiler = "com.google.dagger:dagger-compiler:$version"
     }
 
+    object Epoxy {
+        private const val version = "3.9.0"
+        const val epoxy = "com.airbnb.android:epoxy:$version"
+        const val processor = "com.airbnb.android:epoxy-processor:$version"
+    }
+
     object Microsoft {
         const val appCenterAnalytics = "com.microsoft.appcenter:appcenter-analytics:3.1.0"
     }
