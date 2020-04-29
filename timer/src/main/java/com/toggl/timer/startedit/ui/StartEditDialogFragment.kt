@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +27,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
 import com.toggl.common.addInterceptingOnClickListener
-import com.toggl.common.doSafeAfterTextChanged
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
@@ -47,6 +45,7 @@ import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
@@ -70,11 +69,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     @Inject
     lateinit var timeService: TimeService
+    private var timeIndicatorScheduledUpdate: Job? = null
 
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
-
-    private var descriptionChangeListener: TextWatcher? = null
-    private var timeIndicatorScheduledUpdate: Job? = null
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -144,36 +141,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         billableOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
-        billable_chip.addInterceptingOnClickListener {
-            store.dispatch(StartEditAction.BillableTapped)
-        }
-
-        val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
-        with(bottomSheetBehavior) {
-            addBottomSheetCallback(bottomSheetCallback)
-            skipCollapsed = false
-            peekHeight = resources.getDimension(R.dimen.time_entry_edit_half_expanded_height).toInt()
-            state = BottomSheetBehavior.STATE_COLLAPSED
-        }
-
-        with(time_entry_description) {
-            setOnFocusChangeListener { _, _ ->
-                post {
-                    activity?.getSystemService<InputMethodManager>()
-                        ?.showSoftInput(time_entry_description, InputMethodManager.SHOW_IMPLICIT)
-                }
-            }
-            requestFocus()
-            descriptionChangeListener = time_entry_description.doSafeAfterTextChanged {
-                val action = StartEditAction.DescriptionEntered(text.toString(), this.selectionEnd)
-                store.dispatch(action)
-            }
-        }
-
-        close_action.setOnClickListener {
-            store.dispatch(StartEditAction.CloseButtonTapped)
-        }
-
         store.state
             .filterNot { it.editableTimeEntry == null }
             .mapNotNull { it.editableTimeEntry?.description }
@@ -201,6 +168,12 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .onEach { billable_chip.isChecked = it }
             .launchIn(lifecycleScope)
 
+        time_entry_description
+            .onDescriptionChanged
+            .distinctUntilChanged()
+            .onEach { store.dispatch(it) }
+            .launchIn(lifecycleScope)
+
         lifecycleScope.launchWhenStarted {
             store.state
                 .filter { it.editableTimeEntry == null }
@@ -212,12 +185,37 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 }
                 .collect()
         }
+
+        billable_chip.addInterceptingOnClickListener {
+            store.dispatch(StartEditAction.BillableTapped)
+        }
+
+        val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
+        with(bottomSheetBehavior) {
+            addBottomSheetCallback(bottomSheetCallback)
+            skipCollapsed = false
+            peekHeight = resources.getDimension(R.dimen.time_entry_edit_half_expanded_height).toInt()
+            state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        with(time_entry_description) {
+            requestFocus {
+                activity?.getSystemService<InputMethodManager>()
+                    ?.showSoftInput(time_entry_description, InputMethodManager.SHOW_IMPLICIT)
+            }
+        }
+
+        close_action.setOnClickListener {
+            store.dispatch(StartEditAction.CloseButtonTapped)
+        }
     }
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun onDestroyView() {
         bottomSheetCallback.clear()
         store.dispatch(StartEditAction.DialogDismissed)
-        time_entry_description.removeTextChangedListener(descriptionChangeListener)
+        time_entry_description.clearDescriptionChangedListeners()
         super.onDestroyView()
     }
 
@@ -253,9 +251,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomControlPanel.layoutParams = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.WRAP_CONTENT
-        ).apply {
-            gravity = Gravity.BOTTOM
-        }
+        ).apply { gravity = Gravity.BOTTOM }
         containerLayout?.addView(bottomControlPanel)
 
         bottomControlPanel.post {
