@@ -46,6 +46,12 @@ class ProjectReducer @Inject constructor(
             }
             is ProjectAction.ProjectCreated ->
                 state.mutateWithoutEffects { copy(projects = projects + (action.project.id to action.project)) }
+            ProjectAction.PrivateProjectSwitchTapped ->
+                state.mutateWithoutEffects {
+                    ProjectState.editableProject.modify(this) {
+                        it.copy(isPrivate = !it.isPrivate)
+                    }
+                }
         }
 
     private fun createProject(editableProject: EditableProject) = effect(

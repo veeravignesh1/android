@@ -79,12 +79,13 @@
 
     <com.google.android.material.chip.Chip
         android:id="@+id/private_chip"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:checkable="true"
         android:text="@string/private_project"
         app:chipIcon="@drawable/ic_private"
+        app:chipIconVisible="true"
         app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
         app:layout_constraintTop_toBottomOf="@id/project_name_divider" />
 

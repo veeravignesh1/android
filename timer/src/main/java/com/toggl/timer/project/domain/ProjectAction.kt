@@ -7,6 +7,7 @@ sealed class ProjectAction {
     data class NameEntered(val name: String) : ProjectAction()
     object DoneButtonTapped : ProjectAction()
     data class ProjectCreated(val project: Project) : ProjectAction()
+    object PrivateProjectSwitchTapped : ProjectAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): ProjectAction? =
@@ -23,4 +24,5 @@ fun ProjectAction.formatForDebug() =
         is ProjectAction.NameEntered -> "Project name entered: $name"
         is ProjectAction.DoneButtonTapped -> "Project creation confirmed"
         is ProjectAction.ProjectCreated -> "Project created with id ${project.id}"
+        is ProjectAction.PrivateProjectSwitchTapped -> "Private project switch tapped"
     }

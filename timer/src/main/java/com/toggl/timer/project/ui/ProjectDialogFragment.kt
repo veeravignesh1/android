@@ -10,13 +10,20 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.toggl.common.addInterceptingOnClickListener
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.project.domain.ProjectAction
 import kotlinx.android.synthetic.main.fragment_dialog_project.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 class ProjectDialogFragment : BottomSheetDialogFragment() {
@@ -45,6 +52,7 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_dialog_project, container, false)
 
+    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -52,6 +60,16 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             val action = ProjectAction.NameEntered(it.toString())
             store.dispatch(action)
         }
+
+        private_chip.addInterceptingOnClickListener {
+            store.dispatch(ProjectAction.PrivateProjectSwitchTapped)
+        }
+
+        store.state
+            .mapNotNull { it.editableProject?.isPrivate }
+            .distinctUntilChanged()
+            .onEach { private_chip.isChecked = it }
+            .launchIn(lifecycleScope)
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
