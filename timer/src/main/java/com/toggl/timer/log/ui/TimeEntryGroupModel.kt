@@ -1,6 +1,5 @@
 package com.toggl.timer.log.ui
 
-
 import com.airbnb.epoxy.EpoxyAttribute
 import com.airbnb.epoxy.EpoxyAttribute.Option.DoNotHash
 import com.airbnb.epoxy.EpoxyModelClass

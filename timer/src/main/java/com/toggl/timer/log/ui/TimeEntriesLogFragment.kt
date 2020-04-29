@@ -101,7 +101,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     private suspend fun updateList(items: List<TimeEntryViewModel>) {
         recycler_view.withModels {
             for (i in items) {
-                when(i) {
+                when (i) {
                     is DayHeaderViewModel -> timeEntryHeader {
                         id(i.dayTitle)
                         text(i.dayTitle)

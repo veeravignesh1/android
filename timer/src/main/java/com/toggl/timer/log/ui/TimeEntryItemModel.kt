@@ -27,4 +27,3 @@ abstract class TimeEntryItemModel : EpoxyModelWithHolder<TimeEntryHolder>() {
         }
     }
 }
-
