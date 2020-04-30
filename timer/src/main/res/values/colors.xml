@@ -6,6 +6,7 @@
     <color name="default_wheel_foreground_cap_icon_color">#328FFF</color>
     <color name="default_wheel_foreground_cap_background_color">#FFFFFF</color>
     <color name="default_wheel_foreground_cap_shadow_color">#66000000</color>
+    <color name="default_wheel_duration_input_faded_text_color">#FF888888</color>
     <array name="default_wheel_rainbow_colors">
         <item>#F1F2F3</item>
         <item>#DFC3E6</item>

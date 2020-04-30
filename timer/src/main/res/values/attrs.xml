@@ -11,6 +11,7 @@
         <attr name="textSize" format="dimension" />
         <attr name="extraTextDistanceFromArc" format="dimension" />
     </declare-styleable>
+
     <declare-styleable name="WheelForegroundView">
         <attr name="arcWidth" />
         <attr name="capWidth" />
@@ -20,10 +21,14 @@
         <attr name="capBorderColor" format="color" />
         <attr name="capIconColor" format="color" />
         <attr name="capBackgroundColor" format="color" />
-        <attr name="capShadowColor" format="color"/>
+        <attr name="capShadowColor" format="color" />
         <attr name="startCapIcon" format="reference" />
         <attr name="endCapIcon" format="reference" />
         <attr name="wheelHandleDotIndicatorRadius" format="dimension" />
         <attr name="wheelRainbowColors" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="WheelDurationInputView">
+        <attr name="fadedTextColor" format="color" />
     </declare-styleable>
 </resources>
