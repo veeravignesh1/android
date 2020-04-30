@@ -1,8 +1,6 @@
 package com.toggl.timer.log.ui
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat

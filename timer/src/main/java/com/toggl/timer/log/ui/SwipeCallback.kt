@@ -1,13 +1,10 @@
 package com.toggl.timer.log.ui
 
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
-import android.util.Log
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.core.graphics.withTranslation
