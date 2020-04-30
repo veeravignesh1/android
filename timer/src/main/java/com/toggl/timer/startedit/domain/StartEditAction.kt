@@ -17,6 +17,8 @@ sealed class StartEditAction {
     data class AutocompleteSuggestionsUpdated(val autocompleteSuggestions: List<AutocompleteSuggestion>) : StartEditAction()
     data class AutocompleteSuggestionTapped(val autocompleteSuggestion: AutocompleteSuggestion) : StartEditAction()
 
+    object DateTimePickingCancelled : StartEditAction()
+
     companion object {
         fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
             if (timerAction !is TimerAction.StartTimeEntry) null
@@ -42,4 +44,5 @@ fun StartEditAction.formatForDebug() =
         StartEditAction.BillableTapped -> "Billable toggled in the running time entry"
         is StartEditAction.AutocompleteSuggestionsUpdated -> "AutocompleteSuggestions updated with $autocompleteSuggestions"
         is StartEditAction.AutocompleteSuggestionTapped -> "AutocompleteSuggestion tapped: $autocompleteSuggestion"
+        StartEditAction.DateTimePickingCancelled -> "Picker was cancelled"
     }
