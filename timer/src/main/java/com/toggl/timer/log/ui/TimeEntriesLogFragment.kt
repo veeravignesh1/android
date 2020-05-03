@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.airbnb.epoxy.EpoxyModel
 import com.airbnb.epoxy.EpoxyTouchHelper
 import com.google.android.material.snackbar.Snackbar
@@ -37,6 +38,9 @@ import java.util.Locale
 import javax.inject.Inject
 
 class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
+
+    private var touchHelper: ItemTouchHelper? = null
+
     @Inject
     lateinit var timeService: TimeService
 
@@ -94,10 +98,11 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             .onEach { showUndoDeletionSnackbar(it) }
             .launchIn(lifecycleScope)
 
-        EpoxyTouchHelper.initSwiping(recycler_view)
+        touchHelper = EpoxyTouchHelper.initSwiping(recycler_view)
             .leftAndRight()
             .withTargets(TimeEntryItemModel_::class.java, TimeEntryGroupModel_::class.java)
             .andCallbacks(createSwipeActionCallback(requireContext()))
+
     }
 
     private suspend fun updateList(items: List<TimeEntryViewModel>) {
@@ -135,8 +140,8 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         }.let(store::dispatch)
 
         if (swipeDirection == SwipeDirection.Right) {
-            // recycler_view.adapter?.notifyItemChanged(position) we need this to revert continue animation but it's it is forbidden to call this in epoxy
-            recycler_view.requestModelBuild()
+            touchHelper?.attachToRecyclerView(null)
+            touchHelper?.attachToRecyclerView(recycler_view)
         }
     }
 
