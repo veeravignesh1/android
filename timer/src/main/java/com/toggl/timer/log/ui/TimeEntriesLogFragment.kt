@@ -102,7 +102,6 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             .leftAndRight()
             .withTargets(TimeEntryItemModel_::class.java, TimeEntryGroupModel_::class.java)
             .andCallbacks(createSwipeActionCallback(requireContext()))
-
     }
 
     private suspend fun updateList(items: List<TimeEntryViewModel>) {
