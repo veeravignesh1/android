@@ -2,4 +2,25 @@
 <resources>
     <color name="default_wheel_background_wheel_color">#F3F3F3</color>
     <color name="default_wheel_background_text_color">#959595</color>
+    <color name="default_wheel_foreground_cap_border_color">#CECECE</color>
+    <color name="default_wheel_foreground_cap_icon_color">#328FFF</color>
+    <color name="default_wheel_foreground_cap_background_color">#FFFFFF</color>
+    <color name="default_wheel_foreground_cap_shadow_color">#66000000</color>
+    <color name="default_wheel_duration_input_faded_text_color">#FF888888</color>
+    <array name="default_wheel_rainbow_colors">
+        <item>#F1F2F3</item>
+        <item>#DFC3E6</item>
+        <item>#CA99D7</item>
+        <item>#8799E5</item>
+        <item>#5168C5</item>
+        <item>#55BBDF</item>
+        <item>#95D0E5</item>
+        <item>#BFDBD7</item>
+        <item>#7FC5BC</item>
+        <item>#E5F0BA</item>
+        <item>#F8DAB8</item>
+        <item>#F0D06C</item>
+        <item>#EFBA7A</item>
+        <item>#F1ACAE</item>
+    </array>
 </resources>

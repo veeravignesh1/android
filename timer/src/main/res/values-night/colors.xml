@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="default_wheel_rainbow_colors">
+        <item>#B4F1F2F3</item>
+        <item>#B4DFC3E6</item>
+        <item>#B4CA99D7</item>
+        <item>#B48799E5</item>
+        <item>#B45168C5</item>
+        <item>#B455BBDF</item>
+        <item>#B495D0E5</item>
+        <item>#B4BFDBD7</item>
+        <item>#B47FC5BC</item>
+        <item>#B4E5F0BA</item>
+        <item>#B4F8DAB8</item>
+        <item>#B4F0D06C</item>
+        <item>#B4EFBA7A</item>
+        <item>#B4F1ACAE</item>
+    </array>
+</resources>

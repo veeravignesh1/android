@@ -95,10 +95,17 @@ task prepareGooglePlayServices(type: Copy) {
     googleProps.put('TOGGL_DROID_GOOGLE_SERVICES_API_KEY', System.getenv('TOGGL_DROID_GOOGLE_SERVICES_API_KEY') ?: 'TOGGL_DROID_GOOGLE_SERVICES_API_KEY')
     googleProps.put('TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING', System.getenv('TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING') ?: 'TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING')
     googleProps.put('TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING', System.getenv('TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING') ?: 'TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING')
+    googleProps.put('TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID', System.getenv('TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID') ?: 'TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID')
+
+    def CommentsFilter = {
+        line -> line.trim().startsWith("//") ? null : line
+    }
 
     expand(googleProps)
     filter(FixCrLfFilter)
     filter(ReplaceTokens, tokens: googleProps)
+    filter(CommentsFilter)
+
     filteringCharset = 'UTF-8'
 
     doLast {
@@ -111,7 +118,7 @@ task prepareGooglePlayServices(type: Copy) {
 }
 
 tasks.whenTaskAdded { task ->
-    if(task.name.matches("\\.*process\\w+GoogleServices\$")){
+    if (task.name.matches("\\.*process\\w+GoogleServices\$")) {
         task.dependsOn prepareGooglePlayServices
     }
 }

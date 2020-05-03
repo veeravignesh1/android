@@ -47,5 +47,8 @@ data class TimerState(
     companion object
 }
 
+fun TimerState.LocalState.isEditingGroup() =
+    this.editableTimeEntry?.run { ids.size > 1 } ?: false
+
 fun TimerState.LocalState.getRunningTimeEntryWorkspaceId() =
     this.editableTimeEntry?.workspaceId

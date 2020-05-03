@@ -17,7 +17,8 @@ object MathConstants {
 
 fun Duration.toAngleOnTheDial(): Double = this.toAngle() - quarterOfCircle
 
-fun Duration.toAngle(): Double = this.seconds / (minutesInAnHour * secondsInAMinute).toDouble() * fullCircle
+fun Duration.toAngle(): Double =
+    this.minusHours(this.toHours()).seconds / (minutesInAnHour * secondsInAMinute).toDouble() * fullCircle
 
 fun Double.toPositiveAngle(): Double {
     var angle = this

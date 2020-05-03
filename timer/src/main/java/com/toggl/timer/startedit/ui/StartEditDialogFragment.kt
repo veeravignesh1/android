@@ -40,6 +40,7 @@ import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.extensions.formatForDisplayingDate
 import com.toggl.timer.extensions.formatForDisplayingTime
+import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
@@ -315,12 +316,25 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 return
             }
 
+            mapOf(
+                start_time_label to DateTimePickMode.StartTime,
+                stop_time_label to DateTimePickMode.EndTime,
+                start_date_label to DateTimePickMode.StartDate,
+                stop_date_label to DateTimePickMode.EndDate
+            ).onEach { it.setPickerTappedActionOnLabel() }
+
             setTextOnStartTimeLabels(startTime)
 
             hideableStopViews.forEach { it.isVisible = duration != null }
             when (duration) {
-                null -> stop_time_label.text =
-                    if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
+                null -> {
+                    stop_time_label.text =
+                        if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
+
+                    stop_time_label.setOnClickListener {
+                        // this is where 'set stop time' or 'stop' press should be handled
+                    }
+                }
                 else -> {
                     val endTime = startTime!!.plus(duration)
                     setTextOnTimeDateLabels(stop_time_label, stop_date_label, endTime)
@@ -333,6 +347,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
         this@isEditableInProWorkspace.workspaces[this]?.isPro()
     } ?: false
+
     private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
     private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
     private fun EditableTimeEntry.getDurationForDisplaying() =
@@ -346,6 +361,13 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private fun TextView.setTextIfDifferent(newText: String) {
         if (this.text != newText) {
             this.text = newText
+        }
+    }
+
+    private fun Map.Entry<TextView, DateTimePickMode>.setPickerTappedActionOnLabel() {
+        val (label, action) = this
+        label.setOnClickListener {
+            store.dispatch(StartEditAction.PickerTapped(action))
         }
     }
 

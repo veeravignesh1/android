@@ -4,12 +4,14 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
+import com.toggl.domain.loading.LoadingAction
 import com.toggl.environment.services.analytics.AnalyticsService
 import com.toggl.environment.services.analytics.Event
+import com.toggl.timer.common.domain.TimerAction
+import com.toggl.timer.log.domain.TimeEntriesLogAction
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import io.mockk.Called
-import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkStatic
 import io.mockk.verify
@@ -45,8 +47,7 @@ class AnalyticsReducerTests : FreeSpec({
         "does not call the AnalyticsService's track method if the event is null" - {
             var state = initialState
             val mutableValue = state.toMutableValue { state = it }
-            val appAction = mockk<AppAction>()
-            every { appAction.toEvent() } returns null
+            val appAction = AppAction.Loading(LoadingAction.StartLoading)
 
             analyticsReducer.reduce(mutableValue, appAction)
 
@@ -56,9 +57,8 @@ class AnalyticsReducerTests : FreeSpec({
         "calls the AnalyticsService's track method if the event is not null" - {
             var state = initialState
             val mutableValue = state.toMutableValue { state = it }
-            val appAction = mockk<AppAction>()
-            val expectedEvent = Event("suchEvent", mapOf())
-            every { appAction.toEvent() } returns expectedEvent
+            val appAction = AppAction.Timer(TimerAction.TimeEntriesLog(TimeEntriesLogAction.UndoButtonTapped))
+            val expectedEvent = Event.undoTapped()
 
             analyticsReducer.reduce(mutableValue, appAction)
 

@@ -30,8 +30,19 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "$TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID",
+              "client_type": 3
+            },
+            {
+              "client_id": "$TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.toggl.aurora"
+              }
+            }
+          ]
         },
         "ads_service": {
           "status": 2

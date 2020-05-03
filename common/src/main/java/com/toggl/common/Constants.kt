@@ -7,5 +7,9 @@ object Constants {
     object Vibration {
         const val defaultDurationInMillis = 10L
         val oldApisVibrationPattern = longArrayOf(0, 10)
+
+        const val tickDurationInMillis = 5L
+        const val tickAmplitude = 5
+        val oldApisTickVibrationPattern = longArrayOf(0, 5)
     }
 }
