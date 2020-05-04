@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<template
+    name="Feature"
+    description="Creates a new, aurora feature">
+
+    <category value="Aurora" />
+
+    <parameter
+        id="featureName"
+        name="Feature name"
+        type="string"
+        constraints="unique|nonempty"
+        default="Empty"
+        help="The name of the feature"/>
+
+    <parameter
+        id="layoutName"
+        name="Layout Name"
+        type="string"
+        constraints="layout|unique|nonempty"
+        default="fragment_${featureName?lower_case}"
+        help="The name of the layout to create for the fragment"/>
+
+    <parameter
+        id="packageName"
+        name="Package name"
+        type="string"
+        constraints="package"
+        default="com.toggl.timer" />
+
+    <globals file="globals.xml.ftl" />
+    <execute file="recipe.xml.ftl" />
+
+</template>
