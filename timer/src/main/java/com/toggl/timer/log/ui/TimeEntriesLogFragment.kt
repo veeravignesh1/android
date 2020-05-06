@@ -51,6 +51,8 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
 
     private var snackbar: Snackbar? = null
 
+    private val controller: TimeEntryController by lazy { TimeEntryController(store) }
+
     private val curriedTimeEntriesSelector: suspend (TimeEntriesLogState) -> List<TimeEntryViewModel> = {
         timeEntriesLogSelector(
             it.timeEntries,
@@ -78,7 +80,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         store.state
             .map(curriedTimeEntriesSelector)
             .distinctUntilChanged()
-            .onEach(::updateList)
+            .onEach { controller.items = it }
             .launchIn(lifecycleScope)
 
         store.state
@@ -98,37 +100,12 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             .onEach { showUndoDeletionSnackbar(it) }
             .launchIn(lifecycleScope)
 
+        recycler_view.setController(controller)
+
         touchHelper = EpoxyTouchHelper.initSwiping(recycler_view)
             .leftAndRight()
             .withTargets(TimeEntryItemModel_::class.java, TimeEntryGroupModel_::class.java)
             .andCallbacks(createSwipeActionCallback(requireContext()))
-    }
-
-    private suspend fun updateList(items: List<TimeEntryViewModel>) {
-        recycler_view.withModels {
-            for (i in items) {
-                when (i) {
-                    is DayHeaderViewModel -> timeEntryHeader {
-                        id(i.dayTitle)
-                        text(i.dayTitle)
-                        duration(i.totalDuration)
-                    }
-                    is FlatTimeEntryViewModel -> timeEntryItem {
-                        id(i.id)
-                        timeEntry(i)
-                        onContinueTappedListener { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
-                        onTappedListener { store.dispatch(TimeEntriesLogAction.TimeEntryTapped(it)) }
-                    }
-                    is TimeEntryGroupViewModel -> timeEntryGroup {
-                        id(i.groupId)
-                        timeEntryGroup(i)
-                        onContinueTappedListener { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) }
-                        onTappedListener { store.dispatch(TimeEntriesLogAction.TimeEntryGroupTapped(it)) }
-                        onExpandTappedListener { store.dispatch(TimeEntriesLogAction.ToggleTimeEntryGroupTapped(it)) }
-                    }
-                }
-            }
-        }
     }
 
     private fun onLogItemSwiped(model: EpoxyModel<Any>, swipeDirection: SwipeDirection) {
@@ -139,8 +116,9 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         }.let(store::dispatch)
 
         if (swipeDirection == SwipeDirection.Right) {
-            touchHelper?.attachToRecyclerView(null)
-            touchHelper?.attachToRecyclerView(recycler_view)
+            controller.continueSwiped = model.id()
+            controller.requestModelBuild()
+            recycler_view.invalidate()
         }
     }
 

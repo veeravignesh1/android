@@ -13,6 +13,7 @@ abstract class TimeEntryItemModel : EpoxyModelWithHolder<TimeEntryHolder>() {
     @EpoxyAttribute lateinit var timeEntry: FlatTimeEntryViewModel
     @EpoxyAttribute(DoNotHash) lateinit var onTappedListener: (Long) -> Unit
     @EpoxyAttribute(DoNotHash) lateinit var onContinueTappedListener: (Long) -> Unit
+    @JvmField @EpoxyAttribute var isSwiped: Boolean = false
 
     override fun getDefaultLayout(): Int = R.layout.time_entries_log_item
 
