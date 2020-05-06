@@ -1,6 +1,8 @@
 package com.toggl.timer.startedit.ui
 
+import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -73,6 +75,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private var timeIndicatorScheduledUpdate: Job? = null
 
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
+
+    private var editDialog: Dialog? = null
+    private val dispatchingCancelListener: DialogInterface.OnCancelListener = DialogInterface.OnCancelListener {
+        store.dispatch(StartEditAction.DateTimePickingCancelled)
+    }
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -158,6 +165,14 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
+            .filter { it.editableTimeEntry != null }
+            .distinctUntilChanged { old, new -> old.dateTimePickMode == new.dateTimePickMode }
+            .onEach {
+                startEditingTimeDate(it.dateTimePickMode, it.editableTimeEntry!!)
+            }
+            .launchIn(lifecycleScope)
+
+        store.state
             .map { it.isEditableInProWorkspace() }
             .distinctUntilChanged()
             .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow } }
@@ -217,6 +232,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomSheetCallback.clear()
         store.dispatch(StartEditAction.DialogDismissed)
         time_entry_description.clearDescriptionChangedListeners()
+        dismissEditDialog()
         super.onDestroyView()
     }
 
@@ -278,6 +294,50 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 store.dispatch(StartEditAction.TagButtonTapped)
             }
         }
+    }
+
+    private fun startEditingTimeDate(dateTimePickMode: DateTimePickMode, editableTimeEntry: EditableTimeEntry) {
+        when (dateTimePickMode) {
+            DateTimePickMode.None -> dismissEditDialog()
+            DateTimePickMode.StartTime -> startEditingTime(editableTimeEntry.startTimeOrNow())
+            DateTimePickMode.StartDate -> startEditingDate(
+                editableTimeEntry.startTimeOrNow(),
+                maxTime = editableTimeEntry.endTimeOrNow()
+            )
+            DateTimePickMode.EndTime -> startEditingTime(editableTimeEntry.endTimeOrNow()!!)
+            DateTimePickMode.EndDate -> startEditingDate(
+                editableTimeEntry.endTimeOrNow()!!,
+                minTime = editableTimeEntry.startTime!!
+            )
+        }
+    }
+
+    private fun dismissEditDialog() {
+        editDialog?.dismiss()
+        editDialog = null
+    }
+
+    private fun startEditingTime(initialTime: OffsetDateTime) = with(
+        TimePickerDialog(requireContext(), null, initialTime.hour, initialTime.minute, true)
+    ) {
+        setOnCancelListener(dispatchingCancelListener)
+        show()
+        editDialog = this
+    }
+
+    private fun startEditingDate(
+        initialTime: OffsetDateTime,
+        minTime: OffsetDateTime? = null,
+        maxTime: OffsetDateTime? = null
+    ) = with(
+        DatePickerDialog(requireContext(), null, initialTime.year, initialTime.monthValue - 1, initialTime.dayOfMonth)
+    ) {
+        maxTime?.let { datePicker.maxDate = maxTime.toEpochMillisecond() }
+        minTime?.let { datePicker.minDate = minTime.toEpochMillisecond() }
+
+        setOnCancelListener(dispatchingCancelListener)
+        show()
+        editDialog = this
     }
 
     private fun setBillableButtonColor(billableButton: ImageView, isBillable: Boolean) {
@@ -350,15 +410,23 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
     private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
-    private fun EditableTimeEntry.getDurationForDisplaying() =
-        when {
-            this.duration != null -> this.duration
-            this.isNotStarted() && this.startTime == null -> Duration.ZERO
-            this.startTime != null -> Duration.between(this.startTime, timeService.now())
-            else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
-        }
+    private fun EditableTimeEntry.isRunning() = this.ids.size == 1 && this.startTime != null && this.duration == null
+    private fun EditableTimeEntry.isStopped() = this.startTime != null && this.duration != null
+    private fun EditableTimeEntry.getDurationForDisplaying() = when {
+        this.duration != null -> this.duration
+        this.isNotStarted() && this.startTime == null -> Duration.ZERO
+        this.startTime != null -> Duration.between(this.startTime, timeService.now())
+        else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
+    }
 
-    private fun TextView.setTextIfDifferent(newText: String) {
+    private fun EditableTimeEntry.startTimeOrNow(): OffsetDateTime = this.startTime ?: timeService.now()
+    private fun EditableTimeEntry.endTimeOrNow(): OffsetDateTime? = when {
+        this.isStopped() -> this.startTime!!.plus(this.duration)
+        this.isRunning() || this.isNotStarted() -> timeService.now()
+        else -> null
+    }
+
+    fun TextView.setTextIfDifferent(newText: String) {
         if (this.text != newText) {
             this.text = newText
         }
@@ -370,6 +438,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             store.dispatch(StartEditAction.PickerTapped(action))
         }
     }
+
+    private fun OffsetDateTime.toEpochMillisecond() = this.toEpochSecond() * 1000
 
     private data class BottomControlPanelParams(val editableTimeEntry: EditableTimeEntry, val isProWorkspace: Boolean)
 }
