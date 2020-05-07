@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.CoroutineTest
@@ -18,7 +19,8 @@ import org.junit.jupiter.api.Test
 internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
     val repository = mockk<TimeEntryRepository>()
     val initialState = createInitialState()
-    val reducer = StartEditReducer(repository, dispatcherProvider)
+    val timeService = mockk<TimeService>()
+    val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
 
     @Test
     fun `should update the list of Autocomplete suggestions`() = runBlockingTest {

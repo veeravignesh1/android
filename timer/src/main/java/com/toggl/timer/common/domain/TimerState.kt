@@ -10,6 +10,7 @@ import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.startedit.domain.DateTimePickMode
+import com.toggl.timer.startedit.domain.TemporalInconsistency
 
 @optics
 data class TimerState(
@@ -26,14 +27,16 @@ data class TimerState(
         internal val expandedGroupIds: Set<Long>,
         internal val entriesPendingDeletion: Set<Long>,
         internal val autocompleteSuggestions: List<AutocompleteSuggestion>,
-        internal val dateTimePickMode: DateTimePickMode
+        internal val dateTimePickMode: DateTimePickMode,
+        internal val temporalInconsistency: TemporalInconsistency
     ) {
         constructor() : this(
             editableTimeEntry = null,
             expandedGroupIds = setOf(),
             entriesPendingDeletion = setOf(),
             autocompleteSuggestions = emptyList(),
-            dateTimePickMode = DateTimePickMode.None
+            dateTimePickMode = DateTimePickMode.None,
+            temporalInconsistency = TemporalInconsistency.None
         )
 
         companion object {

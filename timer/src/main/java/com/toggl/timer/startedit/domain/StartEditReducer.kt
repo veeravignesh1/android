@@ -8,18 +8,29 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
+import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
+import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
+import com.toggl.timer.extensions.absoluteDurationBetween
 import com.toggl.timer.extensions.replaceTimeEntryWithId
+import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
+import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
+import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
+import com.toggl.timer.startedit.domain.TemporalInconsistency.StopTimeBeforeStartTime
+import org.threeten.bp.Duration
+import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
 
 class StartEditReducer @Inject constructor(
     private val repository: TimeEntryRepository,
+    private val timeService: TimeService,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<StartEditState, StartEditAction> {
 
@@ -77,7 +88,7 @@ class StartEditReducer @Inject constructor(
                 }
             is StartEditAction.PickerTapped ->
                 state.mutateWithoutEffects {
-                    copy(dateTimePickMode = action.pickerMode)
+                    copy(dateTimePickMode = action.pickerMode, temporalInconsistency = TemporalInconsistency.None)
                 }
             StartEditAction.DoneButtonTapped -> {
                 val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
@@ -103,7 +114,127 @@ class StartEditReducer @Inject constructor(
             StartEditAction.DateTimePickingCancelled -> {
                 state.mutateWithoutEffects { copy(dateTimePickMode = DateTimePickMode.None) }
             }
+            is StartEditAction.DateTimePicked -> {
+                val mode = state().dateTimePickMode
+                if (mode == DateTimePickMode.None) {
+                    noEffect()
+                } else {
+                    val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                    val temporalInconsistency = detectTemporalInconsistencies(editableTimeEntry, mode, action.dateTime)
+                    if (temporalInconsistency == TemporalInconsistency.None) {
+                        state.mutateWithoutEffects {
+                            when (mode) {
+                                DateTimePickMode.StartTime, DateTimePickMode.StartDate ->
+                                    handleStartTimeEdition(editableTimeEntry, action)
+                                DateTimePickMode.EndTime, DateTimePickMode.EndDate ->
+                                    handleEndTimeEdition(editableTimeEntry, action)
+                                else -> this
+                            }
+                        }
+                    } else {
+                        state.mutate {
+                            copy(dateTimePickMode = DateTimePickMode.None, temporalInconsistency = temporalInconsistency)
+                        }
+                        effect(ReopenPickerEffect(mode))
+                    }
+                }
+            }
         }
+
+    private fun StartEditState.handleEndTimeEdition(
+        editableTimeEntry: EditableTimeEntry,
+        action: StartEditAction.DateTimePicked
+    ): StartEditState {
+        val startTime = editableTimeEntry.startTime ?: throw EditableTimeEntryDoesNotHaveAStartTimeSetException()
+        return copy(
+            dateTimePickMode = DateTimePickMode.None,
+            temporalInconsistency = TemporalInconsistency.None,
+            editableTimeEntry = editableTimeEntry.copy(
+                duration = startTime.absoluteDurationBetween(action.dateTime)
+            )
+        )
+    }
+
+    private fun StartEditState.handleStartTimeEdition(
+        editableTimeEntry: EditableTimeEntry,
+        action: StartEditAction.DateTimePicked
+    ): StartEditState {
+        val originalDuration = editableTimeEntry.duration
+        return if (originalDuration == null) {
+            copy(
+                dateTimePickMode = DateTimePickMode.None,
+                temporalInconsistency = TemporalInconsistency.None,
+                editableTimeEntry = editableTimeEntry.copy(
+                    startTime = action.dateTime
+                )
+            )
+        } else {
+            val originalStartTime = editableTimeEntry.startTime ?: throw EditableTimeEntryDoesNotHaveAStartTimeSetException()
+            copy(
+                dateTimePickMode = DateTimePickMode.None,
+                temporalInconsistency = TemporalInconsistency.None,
+                editableTimeEntry = editableTimeEntry.copy(
+                    startTime = action.dateTime,
+                    duration = action.dateTime.absoluteDurationBetween(originalStartTime + originalDuration)
+                )
+            )
+        }
+    }
+
+    private fun detectTemporalInconsistencies(
+        editableTimeEntry: EditableTimeEntry,
+        mode: DateTimePickMode,
+        newDateTime: OffsetDateTime
+    ): TemporalInconsistency {
+        val maxDuration = Duration.ofHours(999)
+        val now = timeService.now()
+        val startTime = editableTimeEntry.startTime
+        val duration = editableTimeEntry.duration
+        val endTime = (startTime ?: now) + (duration ?: Duration.ZERO)
+
+        return when {
+            startTime == null -> detectTemporalInconsistenciesOnEmptyTimeEntry(mode, newDateTime, now, maxDuration)
+            duration == null -> detectTemporalInconsistenciesOnRunningTimeEntry(mode, newDateTime, now, maxDuration)
+            else -> detectTemporalInconsistenciesOnStoppedTimeEntry(mode, startTime, endTime, newDateTime, maxDuration)
+        }
+    }
+
+    private fun detectTemporalInconsistenciesOnStoppedTimeEntry(
+        mode: DateTimePickMode,
+        startTime: OffsetDateTime,
+        endTime: OffsetDateTime,
+        newDateTime: OffsetDateTime,
+        maxDuration: Duration
+    ): TemporalInconsistency = when {
+        mode.targetsStart() && newDateTime > endTime -> StartTimeAfterStopTime
+        mode.targetsStart() && endTime.absoluteDurationBetween(newDateTime) > maxDuration -> DurationTooLong
+        mode.targetsEnd() && newDateTime < startTime -> StopTimeBeforeStartTime
+        mode.targetsEnd() && newDateTime.absoluteDurationBetween(startTime) > maxDuration -> DurationTooLong
+        else -> TemporalInconsistency.None
+    }
+
+    private fun detectTemporalInconsistenciesOnRunningTimeEntry(
+        mode: DateTimePickMode,
+        newDateTime: OffsetDateTime,
+        now: OffsetDateTime,
+        maxDuration: Duration
+    ): TemporalInconsistency = when {
+        mode.targetsStart() && now.absoluteDurationBetween(newDateTime) > maxDuration -> DurationTooLong
+        mode.targetsStart() && newDateTime > now -> StartTimeAfterCurrentTime
+        mode.targetsEnd() -> throw EditableTimeEntryDoesNotHaveADurationSetException()
+        else -> TemporalInconsistency.None
+    }
+
+    private fun detectTemporalInconsistenciesOnEmptyTimeEntry(
+        mode: DateTimePickMode,
+        newDateTime: OffsetDateTime,
+        now: OffsetDateTime,
+        maxDuration: Duration
+    ): TemporalInconsistency = when {
+        mode.targetsStart() && now.absoluteDurationBetween(newDateTime) > maxDuration -> DurationTooLong
+        mode.targetsEnd() -> throw EditableTimeEntryDoesNotHaveAStartTimeSetException()
+        else -> TemporalInconsistency.None
+    }
 
     private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
         effect(
@@ -135,4 +266,7 @@ class StartEditReducer @Inject constructor(
         )
 
     private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
+
+    private fun DateTimePickMode.targetsStart() = this == DateTimePickMode.StartDate || this == DateTimePickMode.StartTime
+    private fun DateTimePickMode.targetsEnd() = this == DateTimePickMode.EndDate || this == DateTimePickMode.EndTime
 }

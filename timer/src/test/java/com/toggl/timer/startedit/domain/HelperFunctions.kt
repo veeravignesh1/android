@@ -21,5 +21,6 @@ fun createInitialState(
         timeEntries = timeEntries.associateBy { it.id },
         editableTimeEntry = editableTimeEntry,
         autocompleteSuggestions = autoCompleteSuggestions,
-        dateTimePickMode = DateTimePickMode.None
+        dateTimePickMode = DateTimePickMode.None,
+        temporalInconsistency = TemporalInconsistency.None
     )

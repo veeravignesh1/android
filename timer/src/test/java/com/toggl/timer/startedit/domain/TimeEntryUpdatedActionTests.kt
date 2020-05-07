@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.CoroutineTest
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test
 class TimeEntryUpdatedActionTests : CoroutineTest() {
 
     private val repository = mockk<TimeEntryRepository>()
+    val timeService = mockk<TimeService>()
     private val workspace = mockk<Workspace> { every { id } returns 1 }
     private val timeEntries = listOf(
         createTimeEntry(1, "first"),
@@ -34,7 +36,7 @@ class TimeEntryUpdatedActionTests : CoroutineTest() {
         editableTimeEntry = editableTimeEntry
     )
     private val updated = timeEntries[1].copy(description = "second updated")
-    private val reducer = StartEditReducer(repository, dispatcherProvider)
+    private val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
 
     @Test
     fun `should update updated time entry`() = runBlockingTest {

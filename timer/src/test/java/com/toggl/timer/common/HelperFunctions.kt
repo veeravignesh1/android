@@ -1,10 +1,13 @@
 package com.toggl.timer.common
 
 import com.toggl.architecture.core.Effect
-import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.MutableValue
+import com.toggl.architecture.core.Reducer
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.Assertions
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -41,6 +44,19 @@ suspend fun <State, Action> Reducer<State, Action>.testReduce(
     val mutableValue = state.toMutableValue { state = it }
     val effect = reduce(mutableValue, action)
     testCase(state, effect)
+}
+
+@ExperimentalCoroutinesApi
+fun <State, Action, EX : Exception> Reducer<State, Action>.testReduceException(
+    initialState: State,
+    action: Action,
+    exception: Class<EX>
+) {
+    Assertions.assertThrows(exception) {
+        runBlockingTest {
+            testReduce(initialState, action) { _, _ -> }
+        }
+    }
 }
 
 suspend fun <State, Action> Reducer<State, Action>.testReduceState(

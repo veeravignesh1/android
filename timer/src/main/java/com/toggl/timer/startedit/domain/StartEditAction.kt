@@ -3,6 +3,7 @@ package com.toggl.timer.startedit.domain
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerAction
+import org.threeten.bp.OffsetDateTime
 
 sealed class StartEditAction {
     object BillableTapped : StartEditAction()
@@ -19,6 +20,7 @@ sealed class StartEditAction {
     data class AutocompleteSuggestionTapped(val autocompleteSuggestion: AutocompleteSuggestion) : StartEditAction()
 
     object DateTimePickingCancelled : StartEditAction()
+    data class DateTimePicked(val dateTime: OffsetDateTime) : StartEditAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
@@ -47,4 +49,5 @@ fun StartEditAction.formatForDebug() =
         is StartEditAction.AutocompleteSuggestionsUpdated -> "AutocompleteSuggestions updated with $autocompleteSuggestions"
         is StartEditAction.AutocompleteSuggestionTapped -> "AutocompleteSuggestion tapped: $autocompleteSuggestion"
         StartEditAction.DateTimePickingCancelled -> "Picker was cancelled"
+        is StartEditAction.DateTimePicked -> "date time picked: $dateTime"
     }

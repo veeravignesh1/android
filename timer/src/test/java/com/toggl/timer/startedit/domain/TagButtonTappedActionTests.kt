@@ -1,6 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.architecture.DispatcherProvider
+import com.toggl.environment.services.time.TimeService
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -20,10 +21,11 @@ import org.junit.jupiter.api.assertThrows
 @DisplayName("The TagButtonTapped action")
 internal class TagButtonTappedActionTests {
     val testDispatcher = TestCoroutineDispatcher()
+    val timeService = mockk<TimeService>()
     val dispatcherProvider = DispatcherProvider(testDispatcher, testDispatcher, Dispatchers.Main)
     val repository = mockk<TimeEntryRepository>()
     val initialState = createInitialState()
-    val reducer = StartEditReducer(repository, dispatcherProvider)
+    val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
 
     @Test
     fun `should throw if editableTimeEntry is null`() {

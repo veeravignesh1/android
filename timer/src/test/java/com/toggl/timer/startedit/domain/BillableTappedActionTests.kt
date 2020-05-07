@@ -1,6 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.environment.services.time.TimeService
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.toMutableValue
@@ -13,7 +14,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class BillableTappedActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
-        val reducer = StartEditReducer(repository, dispatcherProvider)
+        val timeService = mockk<TimeService>()
+        val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
 
         "The BillableTapped action" - {
             "should invert the values of the editable time entry" - {
