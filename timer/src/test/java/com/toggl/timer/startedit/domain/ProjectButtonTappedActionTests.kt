@@ -1,17 +1,11 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.architecture.DispatcherProvider
-import com.toggl.environment.services.time.TimeService
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.toMutableValue
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.shouldBe
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -20,12 +14,8 @@ import org.junit.jupiter.api.assertThrows
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 @DisplayName("The ProjectButtonTapped action")
 internal class ProjectButtonTappedActionTests {
-    val testDispatcher = TestCoroutineDispatcher()
-    val timeService = mockk<TimeService>()
-    val dispatcherProvider = DispatcherProvider(testDispatcher, testDispatcher, Dispatchers.Main)
-    val repository = mockk<TimeEntryRepository>()
     val initialState = createInitialState()
-    val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
+    val reducer = createReducer()
 
     @Test
     fun `should throw if editableTimeEntry is null`() {

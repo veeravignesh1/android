@@ -1,8 +1,6 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -18,10 +16,7 @@ import org.threeten.bp.Duration
 @ExperimentalCoroutinesApi
 class TimeEntryStartedActionTests : FreeCoroutineSpec() {
     init {
-        val repository = mockk<TimeEntryRepository>()
         val workspace = mockk<Workspace>()
-        val timeService = mockk<TimeService>()
-
         coEvery { workspace.id } returns 1
         val timeEntries = listOf(
             createTimeEntry(1, "first", duration = Duration.ofHours(1)),
@@ -35,7 +30,7 @@ class TimeEntryStartedActionTests : FreeCoroutineSpec() {
         )
         val started = createTimeEntry(3, "started", duration = null)
         val stopped = timeEntries[1].copy(duration = Duration.ofHours(2))
-        val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
+        val reducer = createReducer(dispatcherProvider = dispatcherProvider)
 
         "The TimeEntryStarted action" - {
             "with stopped entry" - {

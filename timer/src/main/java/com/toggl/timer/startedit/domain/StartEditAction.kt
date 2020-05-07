@@ -3,6 +3,7 @@ package com.toggl.timer.startedit.domain
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerAction
+import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
 sealed class StartEditAction {
@@ -13,14 +14,14 @@ sealed class StartEditAction {
     data class DescriptionEntered(val description: String, val cursorPosition: Int) : StartEditAction()
     object ProjectButtonTapped : StartEditAction()
     object TagButtonTapped : StartEditAction()
-    data class PickerTapped(val pickerMode: DateTimePickMode) : StartEditAction()
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartEditAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : StartEditAction()
     data class AutocompleteSuggestionsUpdated(val autocompleteSuggestions: List<AutocompleteSuggestion>) : StartEditAction()
     data class AutocompleteSuggestionTapped(val autocompleteSuggestion: AutocompleteSuggestion) : StartEditAction()
-
-    object DateTimePickingCancelled : StartEditAction()
+    data class PickerTapped(val pickerMode: DateTimePickMode) : StartEditAction()
     data class DateTimePicked(val dateTime: OffsetDateTime) : StartEditAction()
+    data class DurationInputted(val duration: Duration) : StartEditAction()
+    object DateTimePickingCancelled : StartEditAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
@@ -50,4 +51,5 @@ fun StartEditAction.formatForDebug() =
         is StartEditAction.AutocompleteSuggestionTapped -> "AutocompleteSuggestion tapped: $autocompleteSuggestion"
         StartEditAction.DateTimePickingCancelled -> "Picker was cancelled"
         is StartEditAction.DateTimePicked -> "date time picked: $dateTime"
+        is StartEditAction.DurationInputted -> "Duration manually inputted: $duration"
     }

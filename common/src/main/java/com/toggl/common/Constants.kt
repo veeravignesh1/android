@@ -12,4 +12,8 @@ object Constants {
         const val tickAmplitude = 5
         val oldApisTickVibrationPattern = longArrayOf(0, 5)
     }
+
+    object TimeEntry {
+        const val maxDurationInHours = 999L
+    }
 }

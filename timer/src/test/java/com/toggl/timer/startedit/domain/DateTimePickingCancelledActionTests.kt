@@ -1,23 +1,18 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.environment.services.time.TimeService
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
 import io.kotlintest.shouldBe
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
 class DateTimePickingCancelledActionTests : CoroutineTest() {
-    val repository = mockk<TimeEntryRepository>()
-    val timeService = mockk<TimeService>()
     val initialState = createInitialState()
-    val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
+    val reducer = createReducer(dispatcherProvider = dispatcherProvider)
 
     @Test
     fun `should return no effect`() = runBlockingTest {

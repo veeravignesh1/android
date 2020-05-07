@@ -1,7 +1,5 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.environment.services.time.TimeService
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
@@ -14,10 +12,8 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The AutocompleteSuggestionsUpdated action")
 internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
-    val repository = mockk<TimeEntryRepository>()
     val initialState = createInitialState()
-    val timeService = mockk<TimeService>()
-    val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
+    val reducer = createReducer()
 
     @Test
     fun `should return no effect`() = runBlockingTest {

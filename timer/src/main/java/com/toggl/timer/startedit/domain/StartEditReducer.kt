@@ -6,6 +6,7 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.environment.services.time.TimeService
@@ -37,8 +38,8 @@ class StartEditReducer @Inject constructor(
     override fun reduce(
         state: MutableValue<StartEditState>,
         action: StartEditAction
-    ): List<Effect<StartEditAction>> =
-        when (action) {
+    ): List<Effect<StartEditAction>> {
+        return when (action) {
             StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed ->
                 state.mutateWithoutEffects { copy(editableTimeEntry = null) }
             is StartEditAction.DescriptionEntered ->
@@ -139,7 +140,22 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             }
+            is StartEditAction.DurationInputted -> {
+                val maxDuration = Duration.ofHours(maxDurationInHours)
+                if (action.duration < Duration.ZERO || action.duration > maxDuration)
+                    return noEffect()
+
+                state.mutateWithoutEffects {
+                    val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+
+                    StartEditState.editableTimeEntry.modify(this) {
+                        if (editableTimeEntry.isRunningOrNew()) it.copy(startTime = timeService.now() - action.duration)
+                        else it.copy(duration = action.duration)
+                    }
+                }
+            }
         }
+    }
 
     private fun StartEditState.handleEndTimeEdition(
         editableTimeEntry: EditableTimeEntry,
@@ -266,7 +282,7 @@ class StartEditReducer @Inject constructor(
         )
 
     private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
-
+    private fun EditableTimeEntry.isRunningOrNew() = this.startTime == null || this.duration == null
     private fun DateTimePickMode.targetsStart() = this == DateTimePickMode.StartDate || this == DateTimePickMode.StartTime
     private fun DateTimePickMode.targetsEnd() = this == DateTimePickMode.EndDate || this == DateTimePickMode.EndTime
 }
