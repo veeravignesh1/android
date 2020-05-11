@@ -157,6 +157,24 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             }
+            is StartEditAction.WheelChangedStartTime -> {
+                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                val maxDuration = Duration.ofHours(maxDurationInHours)
+                val now = timeService.now()
+                val endTime = editableTimeEntry.endTime(now)
+                val newDuration = action.startTime.absoluteDurationBetween(endTime)
+                if (action.startTime > endTime || newDuration > maxDuration)
+                    return noEffect()
+
+                state.mutateWithoutEffects {
+                    StartEditState.editableTimeEntry.modify(this) {
+                        if (editableTimeEntry.isRunningOrNew())
+                            it.copy(startTime = action.startTime)
+                        else
+                            it.copy(startTime = action.startTime, duration = newDuration)
+                    }
+                }
+            }
             is StartEditAction.WheelChangedEndTime -> {
                 val maxDuration = Duration.ofHours(maxDurationInHours)
                 if (action.duration < Duration.ZERO || action.duration > maxDuration)
@@ -300,6 +318,13 @@ class StartEditReducer @Inject constructor(
         )
 
     private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
+    private fun EditableTimeEntry.endTime(now: OffsetDateTime): OffsetDateTime {
+        if (startTime == null)
+            return now
+
+        val relativeDuration = duration ?: startTime.absoluteDurationBetween(now)
+        return startTime + relativeDuration
+    }
     private fun DateTimePickMode.targetsStart() = this == DateTimePickMode.StartDate || this == DateTimePickMode.StartTime
     private fun DateTimePickMode.targetsEnd() = this == DateTimePickMode.EndDate || this == DateTimePickMode.EndTime
 }
