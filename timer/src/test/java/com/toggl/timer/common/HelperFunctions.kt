@@ -71,6 +71,11 @@ suspend fun <State, Action> Reducer<State, Action>.testReduceEffects(
     testCase: suspend (List<Effect<Action>>) -> Unit
 ) = testReduce(initialState, action) { _, effects -> testCase(effects) }
 
+suspend fun <State, Action> Reducer<State, Action>.testReduceNoEffects(
+    initialState: State,
+    action: Action
+) = testReduce(initialState, action, ::assertNoEffectsWereReturned)
+
 @Suppress("UNUSED_PARAMETER")
 suspend fun <State, Action> assertNoEffectsWereReturned(state: State, effect: List<Effect<Action>>) {
     effect.shouldBeEmpty()
