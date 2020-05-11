@@ -15,6 +15,9 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.StartTimeEntryEffect
+import com.toggl.timer.common.domain.extensions.isNew
+import com.toggl.timer.common.domain.extensions.isRunning
+import com.toggl.timer.common.domain.extensions.isRunningOrNew
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
@@ -154,6 +157,21 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             }
+            is StartEditAction.WheelChangedEndTime -> {
+                val maxDuration = Duration.ofHours(maxDurationInHours)
+                if (action.duration < Duration.ZERO || action.duration > maxDuration)
+                    return noEffect()
+
+                state.mutateWithoutEffects {
+                    val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                    if (editableTimeEntry.isNew()) throw EditableTimeEntryDoesNotHaveAStartTimeSetException()
+                    if (editableTimeEntry.isRunning()) throw EditableTimeEntryDoesNotHaveADurationSetException()
+
+                    StartEditState.editableTimeEntry.modify(this) {
+                        it.copy(duration = action.duration)
+                    }
+                }
+            }
         }
     }
 
@@ -282,7 +300,6 @@ class StartEditReducer @Inject constructor(
         )
 
     private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
-    private fun EditableTimeEntry.isRunningOrNew() = this.startTime == null || this.duration == null
     private fun DateTimePickMode.targetsStart() = this == DateTimePickMode.StartDate || this == DateTimePickMode.StartTime
     private fun DateTimePickMode.targetsEnd() = this == DateTimePickMode.EndDate || this == DateTimePickMode.EndTime
 }

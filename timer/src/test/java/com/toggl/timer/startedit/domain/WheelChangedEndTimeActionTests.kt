@@ -1,11 +1,14 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.common.Constants.TimeEntry.maxDurationInHours
+import com.toggl.common.Constants
 import com.toggl.environment.services.time.TimeService
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
+import com.toggl.timer.common.testReduceException
 import com.toggl.timer.common.testReduceState
+import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
+import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -22,8 +25,8 @@ import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.ZoneOffset
 
 @ExperimentalCoroutinesApi
-@DisplayName("The DurationInputted action")
-internal class DurationInputtedActionTests {
+@DisplayName("The WheelChangedEndTime action")
+class WheelChangedEndTimeActionTests {
     val initialState = createInitialState()
     val timeService = mockk<TimeService>()
     val now = OffsetDateTime.of(2020, 1, 1, 10, 0, 0, 0, ZoneOffset.UTC)
@@ -37,43 +40,27 @@ internal class DurationInputtedActionTests {
         EditableTimeEntry.empty(1).copy(startTime = startTime, duration = duration)
 
     @Test
-    fun `sets the duration inputted to the editableTimeEntry's startTime when the time entry is new`() = runBlockingTest {
+    fun `throws EditableTimeEntryDoesNotHaveAStartTimeSetException the time entry is new`() = runBlockingTest {
         val initialTimeEntry = createEditableTimeEntry(null, null)
         val durationInputted = Duration.ofMinutes(30)
-        val expectedStartTime = now - durationInputted
-        val initialState = initialState.copy(editableTimeEntry = initialTimeEntry)
 
-        reducer.testReduceState(
-            initialState,
-            action = StartEditAction.DurationInputted(durationInputted)
-        ) {
-            it shouldBe initialState.copy(
-                editableTimeEntry = initialTimeEntry.copy(
-                    startTime = expectedStartTime,
-                    duration = null
-                )
-            )
-        }
+        reducer.testReduceException(
+            initialState.copy(editableTimeEntry = initialTimeEntry),
+            StartEditAction.WheelChangedEndTime(durationInputted),
+            EditableTimeEntryDoesNotHaveAStartTimeSetException::class.java
+        )
     }
 
     @Test
-    fun `sets the duration inputted to the editableTimeEntry's startTime when the time entry is running`() = runBlockingTest {
+    fun `throws EditableTimeEntryDoesNotHaveADurationSetException the time entry is new when the time entry is running`() = runBlockingTest {
         val initialTimeEntry = createEditableTimeEntry(now - Duration.ofSeconds(10), null)
         val durationInputted = Duration.ofMinutes(30)
-        val expectedStartTime = now - durationInputted
-        val initialState = initialState.copy(editableTimeEntry = initialTimeEntry)
 
-        reducer.testReduceState(
-            initialState,
-            action = StartEditAction.DurationInputted(durationInputted)
-        ) {
-            it shouldBe initialState.copy(
-                editableTimeEntry = initialTimeEntry.copy(
-                    startTime = expectedStartTime,
-                    duration = null
-                )
-            )
-        }
+        reducer.testReduceException(
+            initialState.copy(editableTimeEntry = initialTimeEntry),
+            StartEditAction.WheelChangedEndTime(durationInputted),
+            EditableTimeEntryDoesNotHaveADurationSetException::class.java
+        )
     }
 
     @Test
@@ -86,7 +73,7 @@ internal class DurationInputtedActionTests {
 
         reducer.testReduceState(
             initialState,
-            action = StartEditAction.DurationInputted(durationInputted)
+            action = StartEditAction.WheelChangedEndTime(durationInputted)
         ) {
             it shouldBe initialState.copy(
                 editableTimeEntry = initialTimeEntry.copy(
@@ -107,7 +94,7 @@ internal class DurationInputtedActionTests {
 
         reducer.testReduceState(
             initialState,
-            action = StartEditAction.DurationInputted(durationInputted)
+            action = StartEditAction.WheelChangedEndTime(durationInputted)
         ) {
             it shouldBe initialState
         }
@@ -118,12 +105,12 @@ internal class DurationInputtedActionTests {
         val initialStartTime = now - Duration.ofHours(1)
         val initialDuration = Duration.ofMinutes(30)
         val initialTimeEntry = createEditableTimeEntry(initialStartTime, initialDuration)
-        val durationInputted = Duration.ofHours(maxDurationInHours).plusSeconds(1)
+        val durationInputted = Duration.ofHours(Constants.TimeEntry.maxDurationInHours).plusSeconds(1)
         val initialState = initialState.copy(editableTimeEntry = initialTimeEntry)
 
         reducer.testReduceState(
             initialState,
-            action = StartEditAction.DurationInputted(durationInputted)
+            action = StartEditAction.WheelChangedEndTime(durationInputted)
         ) {
             it shouldBe initialState
         }
@@ -139,7 +126,7 @@ internal class DurationInputtedActionTests {
 
             reducer.testReduce(
                 initialState.copy(editableTimeEntry = initialTimeEntry),
-                action = StartEditAction.DurationInputted(durationInputted),
+                action = StartEditAction.WheelChangedEndTime(durationInputted),
                 testCase = ::assertNoEffectsWereReturned
             )
         }
@@ -154,7 +141,7 @@ internal class DurationInputtedActionTests {
 
             reducer.testReduce(
                 initialState.copy(editableTimeEntry = initialTimeEntry),
-                action = StartEditAction.DurationInputted(durationInputted),
+                action = StartEditAction.WheelChangedEndTime(durationInputted),
                 testCase = ::assertNoEffectsWereReturned
             )
         }
