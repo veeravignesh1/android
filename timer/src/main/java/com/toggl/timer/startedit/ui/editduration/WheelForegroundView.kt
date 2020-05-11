@@ -90,11 +90,10 @@ class WheelForegroundView @JvmOverloads constructor(
     private lateinit var startCap: HandleCap
     private lateinit var wheelHandleDotIndicator: Dot
 
-    private var isDragging: Boolean = false
     private var updateType: WheelUpdateType = WheelUpdateType.None
     private var editBothAtOnceStartTimeAngleOffset = 0.0
 
-    private var isRunning: Boolean = false
+    var isRunning: Boolean = false
         set(value) {
             if (field == value) return
             field = value
@@ -143,6 +142,11 @@ class WheelForegroundView @JvmOverloads constructor(
     private val endTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>()
     val startTimeFlow = startTimeChannel.asFlow()
     val endTimeFlow = endTimeChannel.asFlow()
+
+    private val isEditingChannel = ConflatedBroadcastChannel(false)
+    val isEditingFlow = isEditingChannel.asFlow()
+
+    fun isEditing() = isEditingChannel.value
 
     init {
         hapticFeedbackProvider = context.getSystemService()
@@ -299,12 +303,12 @@ class WheelForegroundView @JvmOverloads constructor(
 
     private fun touchesBegan() {
         if (touchInteractionIsValid()) {
-            isDragging = true
+            isEditingChannel.offer(true)
         }
     }
 
     private fun touchesMoved() {
-        if (!isDragging) return
+        if (!isEditingChannel.value) return
 
         val previousAngle = when (updateType) {
             WheelUpdateType.EditStartTime -> startTimeAngle
@@ -329,7 +333,7 @@ class WheelForegroundView @JvmOverloads constructor(
     }
 
     private fun finishTouchEditing() {
-        isDragging = false
+        isEditingChannel.offer(false)
     }
 
     private fun touchInteractionIsValid(): Boolean {

@@ -6,8 +6,9 @@
     <dimen name="time_entry_log_side_padding">16dp</dimen>
     <dimen name="time_entry_edit_half_expanded_height">164dp</dimen>
     <dimen name="edit_elements_margin">24dp</dimen>
+    <dimen name="wheel_numeric_input_text_size">28dp</dimen>
 
-    <!-- Wheel dimensions -->
+    <!-- Wheel default dimensions -->
     <dimen name="default_wheel_background_arc_width">8dp</dimen>
     <dimen name="default_wheel_background_cap_width">28dp</dimen>
     <dimen name="default_wheel_background_text_size">15sp</dimen>

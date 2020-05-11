@@ -10,6 +10,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -17,7 +19,6 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -42,6 +43,8 @@ import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.extensions.formatForDisplayingDate
 import com.toggl.timer.extensions.formatForDisplayingTime
+import com.toggl.timer.extensions.tryHidingKeyboard
+import com.toggl.timer.extensions.tryShowingKeyboardFor
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
@@ -140,7 +143,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             stop_time_label,
             stop_divider,
             stop_date_label,
-            wheel_placeholder
+            wheel_background,
+            wheel_foreground,
+            wheel_duration_input
         )
         billableOptions = listOf(billable_chip, billable_divider)
 
@@ -159,7 +164,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .mapNotNull { it.editableTimeEntry }
             .distinctUntilChanged { old, new -> old.ids == new.ids && old.startTime == new.startTime }
             .onEach {
-                scheduleTimeEntryIndicatorAndLabelUpdate(it)
+                scheduleTimeEntryStartTimeAndDurationIndicators(it)
                 handleStartStopElementsState(it)
             }
             .launchIn(lifecycleScope)
@@ -202,6 +207,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 .collect()
         }
 
+        wheel_foreground.isEditingFlow
+            .distinctUntilChanged()
+            .onEach { nested_scrollview.requestDisallowInterceptTouchEvent(it) }
+            .launchIn(lifecycleScope)
+
         billable_chip.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
         }
@@ -216,13 +226,36 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         with(time_entry_description) {
             requestFocus {
-                activity?.getSystemService<InputMethodManager>()
-                    ?.showSoftInput(time_entry_description, InputMethodManager.SHOW_IMPLICIT)
+                activity?.tryShowingKeyboardFor(time_entry_description)
             }
         }
 
         close_action.setOnClickListener {
             store.dispatch(StartEditAction.CloseButtonTapped)
+        }
+
+        val clearNumericInputFocusBottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    wheel_duration_input.clearFocus()
+                }
+            }
+        }
+
+        wheel_duration_input.setOnFocusChangeListener { numericInput, hasFocus ->
+            if (hasFocus) {
+                dialog?.window?.setSoftInputMode(SOFT_INPUT_ADJUST_PAN)
+                bottomSheetBehavior.addBottomSheetCallback(clearNumericInputFocusBottomSheetCallback)
+                activity?.tryShowingKeyboardFor(numericInput, InputMethodManager.SHOW_FORCED)
+            } else {
+                dialog?.window?.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
+                bottomSheetBehavior.removeBottomSheetCallback(clearNumericInputFocusBottomSheetCallback)
+                activity?.tryHidingKeyboard(numericInput)
+            }
+            this.isCancelable = !hasFocus
         }
     }
 
@@ -345,14 +378,29 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomControlPanelAnimator.animateColorFilter(billableButton, isBillable)
     }
 
-    private fun scheduleTimeEntryIndicatorAndLabelUpdate(editableTimeEntry: EditableTimeEntry) {
+    @ExperimentalCoroutinesApi
+    @FlowPreview
+    private fun scheduleTimeEntryStartTimeAndDurationIndicators(editableTimeEntry: EditableTimeEntry) {
         timeIndicatorScheduledUpdate?.cancel()
         timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {
             while (true) {
-                time_indicator.setTextIfDifferent(editableTimeEntry.getDurationForDisplaying().formatForDisplaying())
+                val durationForDisplaying = editableTimeEntry.getDurationForDisplaying()
+                time_indicator.setTextIfDifferent(durationForDisplaying.formatForDisplaying())
 
                 if (!editableTimeEntry.isRepresentingGroup() && editableTimeEntry.startTime == null) {
                     setTextOnStartTimeLabels(timeService.now())
+                }
+
+                if (!wheel_foreground.isEditing()) {
+                    val startTime = editableTimeEntry.startTime ?: timeService.now()
+                    val endTime = startTime + durationForDisplaying
+                    wheel_foreground.startTime = editableTimeEntry.startTime ?: timeService.now()
+                    wheel_foreground.endTime = endTime
+                    wheel_foreground.isRunning = editableTimeEntry.duration == null
+                }
+
+                if (!wheel_duration_input.hasFocus()) {
+                    wheel_duration_input.setDuration(durationForDisplaying)
                 }
 
                 delay(elapsedTimeIndicatorUpdateDelayMs)
