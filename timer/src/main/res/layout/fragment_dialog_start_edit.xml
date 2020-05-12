@@ -67,46 +67,22 @@
                     tools:ignore="Autofill" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <HorizontalScrollView
-                android:id="@+id/chip_group_scroll_view"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/chip_recycler_view"
+                android:orientation="horizontal"
+                tools:itemCount="2"
+                tools:listitem="@layout/fragment_dialog_start_edit_chip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chip_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:singleLine="true">
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/add_project"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_project"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/add_tag"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/add_tags"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </com.google.android.material.chip.ChipGroup>
-            </HorizontalScrollView>
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout" />
 
             <View
                 android:id="@+id/extended_options_divider"
                 style="@style/Divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chip_group_scroll_view" />
+                app:layout_constraintTop_toBottomOf="@id/chip_recycler_view" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/billable_chip"

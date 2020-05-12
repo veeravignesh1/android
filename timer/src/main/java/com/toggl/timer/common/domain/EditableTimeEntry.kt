@@ -13,6 +13,8 @@ data class EditableTimeEntry(
     val startTime: OffsetDateTime? = null,
     val duration: Duration? = null,
     val billable: Boolean = false,
+    val projectId: Long? = null,
+    val tagIds: List<Long> = listOf(),
     val editableProject: EditableProject? = null
 ) {
     companion object {
@@ -26,17 +28,23 @@ data class EditableTimeEntry(
                 startTime = timeEntry.startTime,
                 duration = timeEntry.duration,
                 billable = timeEntry.billable,
+                projectId = timeEntry.projectId,
+                tagIds = timeEntry.tagIds,
                 editableProject = null
             )
 
-        fun fromGroup(timeEntries: Collection<TimeEntry>) =
-            EditableTimeEntry(
+        fun fromGroup(timeEntries: Collection<TimeEntry>): EditableTimeEntry {
+            val sample = timeEntries.first()
+            return EditableTimeEntry(
                 ids = timeEntries.map { it.id },
-                workspaceId = timeEntries.first().workspaceId,
-                description = timeEntries.first().description,
+                workspaceId = sample.workspaceId,
+                description = sample.description,
                 duration = timeEntries.fold(Duration.ZERO) { totalTime, timeEntry -> totalTime + timeEntry.duration },
-                billable = timeEntries.first().billable,
+                billable = sample.billable,
+                projectId = sample.projectId,
+                tagIds = sample.tagIds,
                 editableProject = null
             )
+        }
     }
 }

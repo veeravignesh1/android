@@ -111,7 +111,7 @@ class WheelChangedStartTimeActionTests {
     }
 
     @Test
-    fun `does not change anything when the inputted DateTime is past "now" for a running time entry`() = runBlockingTest {
+    fun `does not change anything when the inputted DateTime is past now for a running time entry`() = runBlockingTest {
         val initialStartTime = now - Duration.ofHours(1)
         val initialTimeEntry = createEditableTimeEntry(initialStartTime, null)
         val startTimeInputted = now.plusSeconds(1)

@@ -40,6 +40,7 @@ import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
+import com.toggl.timer.exceptions.EditableProjectShouldNotBeNullException
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.extensions.formatForDisplayingDate
 import com.toggl.timer.extensions.formatForDisplayingTime
@@ -48,6 +49,9 @@ import com.toggl.timer.extensions.tryShowingKeyboardFor
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
+import com.toggl.timer.startedit.domain.projectTagChipSelector
+import com.toggl.timer.startedit.ui.chips.ChipAdapter
+import com.toggl.timer.startedit.ui.chips.ChipViewModel
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -83,6 +87,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private val dispatchingCancelListener: DialogInterface.OnCancelListener = DialogInterface.OnCancelListener {
         store.dispatch(StartEditAction.DateTimePickingCancelled)
     }
+
+    private val adapter = ChipAdapter(::onChipTapped)
 
     private val bottomSheetCallback = BottomSheetCallback()
 
@@ -133,6 +139,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        chip_recycler_view.adapter = adapter
         hideableStopViews = listOf(stop_divider, stop_date_label)
         extentedTimeOptions = listOf(
             start_header,
@@ -167,6 +174,21 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 scheduleTimeEntryStartTimeAndDurationIndicators(it)
                 handleStartStopElementsState(it)
             }
+            .launchIn(lifecycleScope)
+
+        val context = requireContext()
+        val addTagLabel = context.getString(R.string.add_tags)
+        val addProjectLabel = context.getString(R.string.add_project)
+        val curriedTagChipSelector: suspend (StartEditState) -> List<ChipViewModel> = {
+            val editableTimeEntry = it.editableTimeEntry ?: throw EditableProjectShouldNotBeNullException()
+            projectTagChipSelector(addProjectLabel, addTagLabel, editableTimeEntry, it.projects, it.tags)
+        }
+
+        store.state
+            .filterNot { it.editableTimeEntry == null }
+            .distinctUntilChanged(::projectsOrTagsChanged)
+            .map(curriedTagChipSelector)
+            .onEach { adapter.submitList(it) }
             .launchIn(lifecycleScope)
 
         store.state
@@ -259,6 +281,14 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun projectsOrTagsChanged(old: StartEditState, new: StartEditState): Boolean {
+        val oldEditableTimeEntry = old.editableTimeEntry ?: return false
+        val newEditableTimeEntry = new.editableTimeEntry ?: return false
+
+        return oldEditableTimeEntry.projectId == newEditableTimeEntry.projectId &&
+            oldEditableTimeEntry.tagIds == newEditableTimeEntry.tagIds
+    }
+
     @FlowPreview
     @ExperimentalCoroutinesApi
     override fun onDestroyView() {
@@ -327,6 +357,17 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 store.dispatch(StartEditAction.TagButtonTapped)
             }
         }
+    }
+
+    private fun onChipTapped(chip: ChipViewModel) {
+        store.dispatch(
+            when (chip) {
+                is ChipViewModel.AddTag -> StartEditAction.AddTagChipTapped
+                is ChipViewModel.AddProject -> StartEditAction.AddProjectChipTapped
+                is ChipViewModel.Tag -> TODO()
+                is ChipViewModel.Project -> TODO()
+            }
+        )
     }
 
     private fun startEditingTimeDate(dateTimePickMode: DateTimePickMode, editableTimeEntry: EditableTimeEntry) {

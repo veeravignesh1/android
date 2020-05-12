@@ -13,7 +13,9 @@ sealed class StartEditAction {
     object DoneButtonTapped : StartEditAction()
     data class DescriptionEntered(val description: String, val cursorPosition: Int) : StartEditAction()
     object ProjectButtonTapped : StartEditAction()
+    object AddProjectChipTapped : StartEditAction()
     object TagButtonTapped : StartEditAction()
+    object AddTagChipTapped : StartEditAction()
     data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartEditAction()
     data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : StartEditAction()
     data class AutocompleteSuggestionsUpdated(val autocompleteSuggestions: List<AutocompleteSuggestion>) : StartEditAction()
@@ -45,7 +47,9 @@ fun StartEditAction.formatForDebug() =
         StartEditAction.DialogDismissed -> "Dialog dismissed"
         StartEditAction.DoneButtonTapped -> "Done button tapped"
         StartEditAction.ProjectButtonTapped -> "Project button tapped"
+        StartEditAction.AddProjectChipTapped -> "Add Project chip tapped"
         StartEditAction.TagButtonTapped -> "Tag button tapped"
+        StartEditAction.AddTagChipTapped -> "Add tag chip tapped"
         is StartEditAction.PickerTapped -> "Picker tapped with mode $pickerMode"
         is StartEditAction.DescriptionEntered -> "Description changed to $description with cursor at position $cursorPosition"
         is StartEditAction.TimeEntryUpdated -> "Time entry with id $id updated"

@@ -77,6 +77,7 @@ class StartEditReducer @Inject constructor(
                         it.copy(billable = !it.billable)
                     }
                 }
+            StartEditAction.AddProjectChipTapped,
             StartEditAction.ProjectButtonTapped ->
                 state.mutateWithoutEffects {
                     editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
@@ -84,6 +85,7 @@ class StartEditReducer @Inject constructor(
                         it.copy(description = if (it.description.isEmpty()) "@" else it.description + " @")
                     }
                 }
+            StartEditAction.AddTagChipTapped,
             StartEditAction.TagButtonTapped ->
                 state.mutateWithoutEffects {
                     editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()

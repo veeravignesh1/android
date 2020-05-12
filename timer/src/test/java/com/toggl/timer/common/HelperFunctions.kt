@@ -17,7 +17,8 @@ fun createTimeEntry(
     startTime: OffsetDateTime = OffsetDateTime.now(),
     duration: Duration? = Duration.ofMinutes(2),
     billable: Boolean = false,
-    projectId: Long? = null
+    projectId: Long? = null,
+    tags: List<Long> = emptyList()
 ) =
     TimeEntry(
         id,
@@ -29,7 +30,7 @@ fun createTimeEntry(
         projectId,
         null,
         false,
-        emptyList()
+        tags
     )
 
 fun <T> T.toMutableValue(setFunction: (T) -> Unit) =

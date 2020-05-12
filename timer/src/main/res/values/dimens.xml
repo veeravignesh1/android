@@ -19,4 +19,5 @@
     <dimen name="default_wheel_foreground_cap_shadow_width">2dp</dimen>
     <dimen name="default_wheel_foreground_cap_border_stroke_width">1dp</dimen>
     <dimen name="default_wheel_foreground_handle_dot_indicator_radius">2dp</dimen>
+    <dimen name="chip_padding">10dp</dimen>
 </resources>
