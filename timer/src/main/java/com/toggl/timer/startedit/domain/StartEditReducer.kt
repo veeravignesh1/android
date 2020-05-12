@@ -18,6 +18,7 @@ import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.extensions.isNew
 import com.toggl.timer.common.domain.extensions.isRunning
 import com.toggl.timer.common.domain.extensions.isRunningOrNew
+import com.toggl.timer.common.domain.extensions.isStopped
 import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
@@ -198,6 +199,35 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects {
                     StartEditState.editableTimeEntry.modify(this) {
                         it.copy(startTime = action.startTime)
+                    }
+                }
+            }
+            StartEditAction.StopButtonTapped -> {
+                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                if (editableTimeEntry.isStopped())
+                    return noEffect()
+
+                val startTime = editableTimeEntry.startTime
+                val now = timeService.now()
+
+                if (startTime == null)
+                    return state.mutateWithoutEffects {
+                        StartEditState.editableTimeEntry.modify(this) {
+                            it.copy(
+                                startTime = now,
+                                duration = Duration.ZERO
+                            )
+                        }
+                    }
+
+                val maxDuration = Duration.ofHours(maxDurationInHours)
+                val durationUntilNow = startTime.absoluteDurationBetween(now)
+                if (startTime > now || durationUntilNow > maxDuration)
+                    return noEffect()
+
+                state.mutateWithoutEffects {
+                    StartEditState.editableTimeEntry.modify(this) {
+                        it.copy(duration = durationUntilNow)
                     }
                 }
             }

@@ -440,7 +440,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                         if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
 
                     stop_time_label.setOnClickListener {
-                        // this is where 'set stop time' or 'stop' press should be handled
+                        store.dispatch(StartEditAction.StopButtonTapped)
                     }
                 }
                 else -> {
