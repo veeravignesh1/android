@@ -10,6 +10,7 @@ import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -116,8 +117,18 @@ class StartEditReducer @Inject constructor(
             }
             is StartEditAction.AutocompleteSuggestionsUpdated ->
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
-            is StartEditAction.AutocompleteSuggestionTapped ->
-                noEffect()
+            is StartEditAction.AutocompleteSuggestionTapped -> {
+                state.mutateWithoutEffects {
+                    when (action.autocompleteSuggestion) {
+                        is AutocompleteSuggestion.TimeEntry -> modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
+                        is AutocompleteSuggestion.Project -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.Task -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.Tag -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.CreateProject -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.CreateTag -> TODO("Not implemented yet")
+                    }
+                }
+            }
             StartEditAction.DateTimePickingCancelled -> {
                 state.mutateWithoutEffects { copy(dateTimePickMode = DateTimePickMode.None) }
             }
@@ -235,6 +246,19 @@ class StartEditReducer @Inject constructor(
             }
         }
     }
+
+    private fun StartEditState.modifyWithTimeEntrySuggestion(autocompleteSuggestion: AutocompleteSuggestion.TimeEntry): StartEditState =
+        StartEditState.editableTimeEntry.modify(this) {
+            val timeEntrySuggestion = autocompleteSuggestion.timeEntry
+            it.copy(
+                workspaceId = timeEntrySuggestion.workspaceId,
+                description = timeEntrySuggestion.description,
+                projectId = timeEntrySuggestion.projectId,
+                tagIds = timeEntrySuggestion.tagIds,
+                billable = timeEntrySuggestion.billable,
+                taskId = timeEntrySuggestion.taskId
+            )
+        }
 
     private fun StartEditState.handleEndTimeEdition(
         editableTimeEntry: EditableTimeEntry,
@@ -368,6 +392,7 @@ class StartEditReducer @Inject constructor(
         val relativeDuration = duration ?: startTime.absoluteDurationBetween(now)
         return startTime + relativeDuration
     }
+
     private fun DateTimePickMode.targetsStart() = this == DateTimePickMode.StartDate || this == DateTimePickMode.StartTime
     private fun DateTimePickMode.targetsEnd() = this == DateTimePickMode.EndDate || this == DateTimePickMode.EndTime
 }
