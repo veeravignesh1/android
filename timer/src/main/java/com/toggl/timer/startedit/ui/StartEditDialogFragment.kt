@@ -391,27 +391,52 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         editDialog = null
     }
 
-    private fun startEditingTime(initialTime: OffsetDateTime) = with(
-        TimePickerDialog(requireContext(), null, initialTime.hour, initialTime.minute, true)
-    ) {
-        setOnCancelListener(dispatchingCancelListener)
-        show()
-        editDialog = this
+    private fun startEditingTime(initialTime: OffsetDateTime) {
+        val onTimeSetListener = TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+            val changedTime = initialTime
+                .withHour(hourOfDay)
+                .withMinute(minute)
+            store.dispatch(StartEditAction.DateTimePicked(changedTime))
+        }
+        TimePickerDialog(
+            requireContext(),
+            onTimeSetListener,
+            initialTime.hour,
+            initialTime.minute,
+            true
+        ).run {
+            setOnCancelListener(dispatchingCancelListener)
+            show()
+            editDialog = this
+        }
     }
 
     private fun startEditingDate(
         initialTime: OffsetDateTime,
         minTime: OffsetDateTime? = null,
         maxTime: OffsetDateTime? = null
-    ) = with(
-        DatePickerDialog(requireContext(), null, initialTime.year, initialTime.monthValue - 1, initialTime.dayOfMonth)
     ) {
-        maxTime?.let { datePicker.maxDate = maxTime.toEpochMillisecond() }
-        minTime?.let { datePicker.minDate = minTime.toEpochMillisecond() }
+        val onDateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            val changedTime = initialTime
+                .withYear(year)
+                .withMonth(month + 1)
+                .withDayOfMonth(dayOfMonth)
+            store.dispatch(StartEditAction.DateTimePicked(changedTime))
+        }
+        DatePickerDialog(
+            requireContext(),
+            onDateSetListener,
+            initialTime.year,
+            initialTime.monthValue - 1,
+            initialTime.dayOfMonth
+        ).run {
+            maxTime?.let { datePicker.maxDate = maxTime.toEpochMillisecond() }
+            minTime?.let { datePicker.minDate = minTime.toEpochMillisecond() }
 
-        setOnCancelListener(dispatchingCancelListener)
-        show()
-        editDialog = this
+            setOnCancelListener(dispatchingCancelListener)
+            show()
+            editDialog = this
+        }
     }
 
     private fun setBillableButtonColor(billableButton: ImageView, isBillable: Boolean) {
