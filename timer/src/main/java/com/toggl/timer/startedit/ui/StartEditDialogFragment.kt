@@ -30,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
 import com.toggl.common.addInterceptingOnClickListener
+import com.toggl.common.deepLinks
 import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
@@ -167,6 +168,12 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .filterNot { it.editableTimeEntry == null }
             .mapNotNull { it.editableTimeEntry?.description }
             .onEach { time_entry_description.setSafeText(it) }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .mapNotNull { it.editableTimeEntry?.editableProject }
+            .distinctUntilChanged()
+            .onEach { findNavController().navigate(deepLinks.timeEntriesProjectDialog) }
             .launchIn(lifecycleScope)
 
         store.state

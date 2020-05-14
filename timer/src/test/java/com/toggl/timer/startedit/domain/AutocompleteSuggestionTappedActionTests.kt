@@ -4,6 +4,7 @@ import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
+import com.toggl.timer.common.domain.EditableProject
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
@@ -12,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
@@ -54,6 +56,38 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         fun `should return no effect`(timeEntrySuggestion: TimeEntry) = runBlockingTest {
             val suggestion = AutocompleteSuggestion.TimeEntry(timeEntrySuggestion)
 
+            reducer.testReduceNoEffects(
+                initialState,
+                action = StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            )
+        }
+    }
+
+    @Nested
+    @DisplayName("When the Create Project suggestion is tapped")
+    inner class CreateProjectSuggestions {
+
+        private val projectName = "Project name"
+        private val suggestion = AutocompleteSuggestion.CreateProject(projectName)
+
+        @Test
+        fun `The editableProject should be initialized`() = runBlockingTest {
+            val initialEditableTimeEntry = EditableTimeEntry.empty(1)
+
+            reducer.testReduceState(
+                initialState,
+                StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            ) {
+                it shouldBe initialState.copy(
+                    editableTimeEntry = initialEditableTimeEntry.copy(
+                        editableProject = EditableProject(name = projectName, workspaceId = 1)
+                    )
+                )
+            }
+        }
+
+        @Test
+        fun `should return no effect`() = runBlockingTest {
             reducer.testReduceNoEffects(
                 initialState,
                 action = StartEditAction.AutocompleteSuggestionTapped(suggestion)

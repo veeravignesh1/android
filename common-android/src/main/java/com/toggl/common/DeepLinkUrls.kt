@@ -9,6 +9,7 @@ class DeepLinkUrls(resources: Resources) {
     val main = resources.getString(R.string.deep_link_main).toUri()
     val timeEntriesLog = resources.getString(R.string.deep_link_time_entries_log).toUri()
     val timeEntriesStartEditDialog = resources.getString(R.string.deep_link_start_edit_dialog).toUri()
+    val timeEntriesProjectDialog = resources.getString(R.string.deep_link_project_dialog).toUri()
     val calendar = resources.getString(R.string.deep_link_calendar).toUri()
     val reports = resources.getString(R.string.deep_link_reports).toUri()
 }

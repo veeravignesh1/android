@@ -13,9 +13,11 @@ import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.timer.common.domain.EditableProject
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.StartTimeEntryEffect
+import com.toggl.timer.common.domain.editableProject
 import com.toggl.timer.common.domain.extensions.isNew
 import com.toggl.timer.common.domain.extensions.isRunning
 import com.toggl.timer.common.domain.extensions.isRunningOrNew
@@ -124,7 +126,7 @@ class StartEditReducer @Inject constructor(
                         is AutocompleteSuggestion.Project -> TODO("Not implemented yet")
                         is AutocompleteSuggestion.Task -> TODO("Not implemented yet")
                         is AutocompleteSuggestion.Tag -> TODO("Not implemented yet")
-                        is AutocompleteSuggestion.CreateProject -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.CreateProject -> modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
                         is AutocompleteSuggestion.CreateTag -> TODO("Not implemented yet")
                     }
                 }
@@ -247,6 +249,11 @@ class StartEditReducer @Inject constructor(
                 billable = timeEntrySuggestion.billable,
                 taskId = timeEntrySuggestion.taskId
             )
+        }
+
+    private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState =
+        StartEditState.editableTimeEntry.modify(this) {
+            it.copy(editableProject = EditableProject(name = autocompleteSuggestion.name, workspaceId = 1))
         }
 
     private fun StartEditState.handleEndTimeEdition(

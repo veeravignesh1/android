@@ -17,6 +17,13 @@
         <deepLink app:uri="@string/deep_link_start_edit_dialog" />
     </dialog>
 
+    <dialog
+        android:id="@+id/project_dialog"
+        android:name="com.toggl.timer.project.ui.ProjectDialogFragment"
+        android:label="ProjectDialogFragment">
+        <deepLink app:uri="@string/deep_link_project_dialog" />
+    </dialog>
+
     <fragment
         android:id="@+id/reports"
         android:name="com.toggl.reports.ui.ReportsFragment"
