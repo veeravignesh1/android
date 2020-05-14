@@ -204,17 +204,6 @@ class StartEditReducer @Inject constructor(
                     }
                 }
             }
-            is StartEditAction.WheelOffsettedStartTime -> {
-                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
-                if (editableTimeEntry.isRunningOrNew())
-                    return noEffect()
-
-                state.mutateWithoutEffects {
-                    StartEditState.editableTimeEntry.modify(this) {
-                        it.copy(startTime = action.startTime)
-                    }
-                }
-            }
             StartEditAction.StopButtonTapped -> {
                 val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 if (editableTimeEntry.isStopped())

@@ -26,7 +26,6 @@ sealed class StartEditAction {
     object DateTimePickingCancelled : StartEditAction()
     data class WheelChangedStartTime(val startTime: OffsetDateTime) : StartEditAction()
     data class WheelChangedEndTime(val duration: Duration) : StartEditAction()
-    data class WheelOffsettedStartTime(val startTime: OffsetDateTime) : StartEditAction()
     object StopButtonTapped : StartEditAction()
 
     companion object {
@@ -62,6 +61,5 @@ fun StartEditAction.formatForDebug() =
         is StartEditAction.DurationInputted -> "Duration manually inputted: $duration"
         is StartEditAction.WheelChangedStartTime -> "Wheel changed start time: $startTime"
         is StartEditAction.WheelChangedEndTime -> "Wheel changed duration: $duration"
-        is StartEditAction.WheelOffsettedStartTime -> "Wheel offsetted to start time: $startTime"
         StartEditAction.StopButtonTapped -> "Stop button tapped"
     }

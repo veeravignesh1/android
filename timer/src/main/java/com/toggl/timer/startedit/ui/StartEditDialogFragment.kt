@@ -232,10 +232,23 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 .collect()
         }
 
-        wheel_foreground.isEditingFlow
-            .distinctUntilChanged()
-            .onEach { nested_scrollview.requestDisallowInterceptTouchEvent(it) }
-            .launchIn(lifecycleScope)
+        with(wheel_foreground) {
+            isEditingFlow
+                .distinctUntilChanged()
+                .onEach { nested_scrollview.requestDisallowInterceptTouchEvent(it) }
+                .launchIn(lifecycleScope)
+
+            startTimeFlow
+                .distinctUntilChanged()
+                .onEach { store.dispatch(StartEditAction.WheelChangedStartTime(it)) }
+                .launchIn(lifecycleScope)
+
+            endTimeFlow
+                .distinctUntilChanged()
+                .map { Duration.between(wheel_foreground.startTime, it) }
+                .onEach { store.dispatch(StartEditAction.WheelChangedEndTime(it)) }
+                .launchIn(lifecycleScope)
+        }
 
         billable_chip.addInterceptingOnClickListener {
             store.dispatch(StartEditAction.BillableTapped)
@@ -270,17 +283,24 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             }
         }
 
-        wheel_duration_input.setOnFocusChangeListener { numericInput, hasFocus ->
-            if (hasFocus) {
-                dialog?.window?.setSoftInputMode(SOFT_INPUT_ADJUST_PAN)
-                bottomSheetBehavior.addBottomSheetCallback(clearNumericInputFocusBottomSheetCallback)
-                activity?.tryShowingKeyboardFor(numericInput, InputMethodManager.SHOW_FORCED)
-            } else {
-                dialog?.window?.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
-                bottomSheetBehavior.removeBottomSheetCallback(clearNumericInputFocusBottomSheetCallback)
-                activity?.tryHidingKeyboard(numericInput)
+        with(wheel_duration_input) {
+            durationFlow
+                .distinctUntilChanged()
+                .onEach { store.dispatch(StartEditAction.DurationInputted(it)) }
+                .launchIn(lifecycleScope)
+
+            setOnFocusChangeListener { numericInput, hasFocus ->
+                if (hasFocus) {
+                    dialog?.window?.setSoftInputMode(SOFT_INPUT_ADJUST_PAN)
+                    bottomSheetBehavior.addBottomSheetCallback(clearNumericInputFocusBottomSheetCallback)
+                    activity?.tryShowingKeyboardFor(numericInput, InputMethodManager.SHOW_FORCED)
+                } else {
+                    dialog?.window?.setSoftInputMode(SOFT_INPUT_ADJUST_RESIZE)
+                    bottomSheetBehavior.removeBottomSheetCallback(clearNumericInputFocusBottomSheetCallback)
+                    activity?.tryHidingKeyboard(numericInput)
+                }
+                this@StartEditDialogFragment.isCancelable = !hasFocus
             }
-            this.isCancelable = !hasFocus
         }
     }
 

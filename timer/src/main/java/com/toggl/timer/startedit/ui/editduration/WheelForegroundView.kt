@@ -100,16 +100,19 @@ class WheelForegroundView @JvmOverloads constructor(
             invalidate()
         }
 
-    var minimumStartTime: OffsetDateTime = OffsetDateTime.MIN
-    var maximumStartTime: OffsetDateTime = OffsetDateTime.now()
-    var minimumEndTime: OffsetDateTime = OffsetDateTime.now()
-    var maximumEndTime: OffsetDateTime = OffsetDateTime.MAX
+    private var minimumStartTime: OffsetDateTime = OffsetDateTime.MIN
+    private var maximumStartTime: OffsetDateTime = OffsetDateTime.now()
+    private var minimumEndTime: OffsetDateTime = OffsetDateTime.now()
+    private var maximumEndTime: OffsetDateTime = OffsetDateTime.MAX
 
+    private val startTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>(OffsetDateTime.now())
     private var startTimeAngle = 0.0
-    var startTime: OffsetDateTime = OffsetDateTime.now()
+    val startTimeFlow = startTimeChannel.asFlow()
+    var startTime: OffsetDateTime
+        get() = startTimeChannel.value
         set(value) {
-            if (field == value) return
-            field = value.coerceIn(minimumStartTime, maximumStartTime)
+            if (startTimeChannel.value == value) return
+            startTimeChannel.offer(value.coerceIn(minimumStartTime, maximumStartTime))
 
             if (center.x.isNaN()) return
 
@@ -117,16 +120,17 @@ class WheelForegroundView @JvmOverloads constructor(
             startTimePosition.updateWithPointOnCircumference(center, startTimeAngle, handleCapsPositionRadius)
             arc.update(startTimeAngle, endTimeAngle)
             wheelHandleDotIndicator.update(startTimeAngle, endTimeAngle)
-            startTimeChannel.offer(startTime)
             invalidate()
         }
 
+    private val endTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>(OffsetDateTime.now())
     private var endTimeAngle = 0.0
-    var endTime: OffsetDateTime = OffsetDateTime.now()
-        get() = if (field < startTime) startTime else field
+    val endTimeFlow = endTimeChannel.asFlow()
+    var endTime: OffsetDateTime
+        get() = if (endTimeChannel.value < startTime) startTime else endTimeChannel.value
         set(value) {
-            if (field == value) return
-            field = value.coerceIn(minimumEndTime, maximumEndTime)
+            if (endTimeChannel.value == value) return
+            endTimeChannel.offer(value.coerceIn(minimumEndTime, maximumEndTime))
 
             if (center.x.isNaN()) return
 
@@ -134,14 +138,8 @@ class WheelForegroundView @JvmOverloads constructor(
             endTimePosition.updateWithPointOnCircumference(center, endTimeAngle, handleCapsPositionRadius)
             arc.update(startTimeAngle, endTimeAngle)
             wheelHandleDotIndicator.update(startTimeAngle, endTimeAngle)
-            endTimeChannel.offer(endTime)
             invalidate()
         }
-
-    private val startTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>()
-    private val endTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>()
-    val startTimeFlow = startTimeChannel.asFlow()
-    val endTimeFlow = endTimeChannel.asFlow()
 
     private val isEditingChannel = ConflatedBroadcastChannel(false)
     val isEditingFlow = isEditingChannel.asFlow()
