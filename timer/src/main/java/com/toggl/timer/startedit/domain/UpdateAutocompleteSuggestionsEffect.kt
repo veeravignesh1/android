@@ -8,6 +8,7 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
+import com.toggl.timer.startedit.util.lastSubstringFromAnyTokenToPosition
 import kotlinx.coroutines.withContext
 
 class UpdateAutocompleteSuggestionsEffect(
@@ -22,15 +23,23 @@ class UpdateAutocompleteSuggestionsEffect(
 ) : Effect<StartEditAction.AutocompleteSuggestionsUpdated> {
 
     private val wordSeparator = " "
+    private val projectShortCut = '@'
+    private val shortcutTokens = charArrayOf(projectShortCut)
 
     override suspend fun execute(): StartEditAction.AutocompleteSuggestionsUpdated? =
         withContext(dispatcherProvider.computation) {
-            val words = query.split(wordSeparator)
-            val suggestions = fetchTimeEntrySuggestionsFor(words)
+            if (query.isBlank())
+                return@withContext StartEditAction.AutocompleteSuggestionsUpdated(emptyList())
+
+            val (token, actualQuery) = query.lastSubstringFromAnyTokenToPosition(shortcutTokens, cursorPosition)
+            val suggestions = when (token) {
+                projectShortCut -> fetchProjectSuggestionsFor(actualQuery) + fetchTasksSuggestionsFor(actualQuery)
+                else -> fetchTimeEntrySuggestionsFor(actualQuery)
+            }
             StartEditAction.AutocompleteSuggestionsUpdated(suggestions)
         }
 
-    private fun fetchTimeEntrySuggestionsFor(words: List<String>): List<AutocompleteSuggestion> {
+    private fun fetchTimeEntrySuggestionsFor(query: String): List<AutocompleteSuggestion> {
 
         fun TimeEntry.projectOrClientNameContains(word: String): Boolean {
             val project = projectId?.run(projects::get) ?: return false
@@ -53,13 +62,41 @@ class UpdateAutocompleteSuggestionsEffect(
             return task.name.contains(word, true)
         }
 
-        return words.fold(timeEntries.values) { timeEntries, word ->
-            timeEntries.filter { timeEntry ->
-                timeEntry.description.contains(word, true) ||
+        return fetchSuggestionsFor(query, timeEntries.values, AutocompleteSuggestion::TimeEntry) { timeEntry, word ->
+            timeEntry.description.contains(word, true) ||
                 timeEntry.projectOrClientNameContains(word) ||
                 timeEntry.tagNamesContain(word) ||
                 timeEntry.taskNameContains(word)
+        }
+    }
+
+    private fun fetchProjectSuggestionsFor(query: String): List<AutocompleteSuggestion> {
+        fun Project.clientNameContains(word: String): Boolean {
+            val client = clientId?.run(clients::get) ?: return false
+            return client.name.contains(word, true)
+        }
+
+        return listOf(AutocompleteSuggestion.CreateProject(query)) +
+            fetchSuggestionsFor(query, projects.values, AutocompleteSuggestion::Project) { project, word ->
+                project.name.contains(word, true) ||
+                    project.clientNameContains(word)
             }
-        }.map(AutocompleteSuggestion::TimeEntry)
+    }
+
+    private fun fetchTasksSuggestionsFor(query: String): List<AutocompleteSuggestion> =
+        fetchSuggestionsFor(query, tasks.values, AutocompleteSuggestion::Task) { task, word ->
+            task.name.contains(word, true)
+        }
+
+    private fun <T> fetchSuggestionsFor(
+        query: String,
+        possibleSuggestions: Collection<T>,
+        toSuggestion: (T) -> AutocompleteSuggestion,
+        predicate: (T, String) -> Boolean
+    ): List<AutocompleteSuggestion> {
+        val words = query.split(wordSeparator)
+        return words.fold(possibleSuggestions) { remainingPossibleSuggestions, word ->
+            remainingPossibleSuggestions.filter { predicate(it, word) }
+        }.map(toSuggestion)
     }
 }

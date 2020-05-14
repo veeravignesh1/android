@@ -1,6 +1,7 @@
 package com.toggl.timer.project.domain
 
 import com.toggl.models.domain.Project
+import com.toggl.models.domain.Task
 import com.toggl.timer.common.domain.EditableProject
 
 fun createInitialState(
@@ -29,6 +30,22 @@ fun createProject(
     billable,
     workspaceId,
     clientId
+)
+
+fun createTask(
+    id: Long,
+    name: String = "Task",
+    active: Boolean = true,
+    projectId: Long = 1,
+    workspaceId: Long = 1,
+    userId: Long? = null
+) = Task(
+    id,
+    name,
+    active,
+    projectId,
+    workspaceId,
+    userId
 )
 
 fun EditableProject.Companion.createInvalid() =
