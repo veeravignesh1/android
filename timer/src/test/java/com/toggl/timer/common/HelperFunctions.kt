@@ -3,6 +3,7 @@ package com.toggl.timer.common
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,6 +34,23 @@ fun createTimeEntry(
         taskId,
         false,
         tags
+    )
+
+fun createTask(
+    id: Long,
+    name: String = "",
+    active: Boolean = true,
+    projectId: Long = 1,
+    workspaceId: Long = 1,
+    userId: Long? = null
+) =
+    Task(
+        id,
+        name,
+        active,
+        projectId,
+        workspaceId,
+        userId
     )
 
 fun <T> T.toMutableValue(setFunction: (T) -> Unit) =

@@ -26,6 +26,7 @@ import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
+import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.extensions.absoluteDurationBetween
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
@@ -128,7 +129,7 @@ class StartEditReducer @Inject constructor(
                     when (action.autocompleteSuggestion) {
                         is AutocompleteSuggestion.TimeEntry -> modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
                         is AutocompleteSuggestion.Project -> modifyWithProjectSuggestion(action.autocompleteSuggestion)
-                        is AutocompleteSuggestion.Task -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.Task -> modifyWithTaskSuggestion(action.autocompleteSuggestion)
                         is AutocompleteSuggestion.Tag -> TODO("Not implemented yet")
                         is AutocompleteSuggestion.CreateProject -> modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
                         is AutocompleteSuggestion.CreateTag -> TODO("Not implemented yet")
@@ -282,6 +283,20 @@ class StartEditReducer @Inject constructor(
     private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             it.copy(editableProject = EditableProject(name = autocompleteSuggestion.name, workspaceId = 1))
+        }
+
+    private fun StartEditState.modifyWithTaskSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Task): StartEditState =
+        StartEditState.editableTimeEntry.modify(this) {
+            val taskSuggestion = autocompleteSuggestion.task
+            if (this.projects[taskSuggestion.projectId] == null) throw ProjectDoesNotExistException()
+            val (token, currentQuery) = it.description.lastSubstringFromAnyTokenToPosition(charArrayOf(projectToken), cursorPosition)
+            val delimiter = "$token$currentQuery"
+            it.copy(
+                description = it.description.substringBefore(delimiter) + it.description.substringAfter(delimiter, ""),
+                projectId = taskSuggestion.projectId,
+                taskId = taskSuggestion.id,
+                workspaceId = taskSuggestion.workspaceId
+            )
         }
 
     private fun StartEditState.handleEndTimeEdition(
