@@ -36,6 +36,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -107,7 +108,7 @@ class WheelForegroundView @JvmOverloads constructor(
 
     private val startTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>(OffsetDateTime.now())
     private var startTimeAngle = 0.0
-    val startTimeFlow = startTimeChannel.asFlow()
+    val startTimeFlow = startTimeChannel.asFlow().filter { isEditing() }
     var startTime: OffsetDateTime
         get() = startTimeChannel.value
         set(value) {
@@ -125,7 +126,7 @@ class WheelForegroundView @JvmOverloads constructor(
 
     private val endTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>(OffsetDateTime.now())
     private var endTimeAngle = 0.0
-    val endTimeFlow = endTimeChannel.asFlow()
+    val endTimeFlow = endTimeChannel.asFlow().filter { isEditing() }
     var endTime: OffsetDateTime
         get() = if (endTimeChannel.value < startTime) startTime else endTimeChannel.value
         set(value) {
