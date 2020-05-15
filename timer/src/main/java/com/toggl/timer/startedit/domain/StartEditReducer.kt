@@ -17,7 +17,6 @@ import com.toggl.timer.common.domain.EditableProject
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.StartTimeEntryEffect
-import com.toggl.timer.common.domain.editableProject
 import com.toggl.timer.common.domain.extensions.isNew
 import com.toggl.timer.common.domain.extensions.isRunning
 import com.toggl.timer.common.domain.extensions.isRunningOrNew
@@ -233,6 +232,17 @@ class StartEditReducer @Inject constructor(
                     StartEditState.editableTimeEntry.modify(this) {
                         it.copy(duration = durationUntilNow)
                     }
+                }
+            }
+            is StartEditAction.TagCreated -> {
+                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                state.mutateWithoutEffects {
+                    copy(
+                        tags = tags + (action.tag.id to action.tag),
+                        editableTimeEntry = editableTimeEntry.copy(
+                            tagIds = editableTimeEntry.tagIds + action.tag.id
+                        )
+                    )
                 }
             }
         }

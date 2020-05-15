@@ -1,6 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.domain.Tag
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerAction
 import org.threeten.bp.Duration
@@ -27,6 +28,7 @@ sealed class StartEditAction {
     data class WheelChangedStartTime(val startTime: OffsetDateTime) : StartEditAction()
     data class WheelChangedEndTime(val duration: Duration) : StartEditAction()
     object StopButtonTapped : StartEditAction()
+    data class TagCreated(val tag: Tag) : StartEditAction()
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
@@ -62,4 +64,5 @@ fun StartEditAction.formatForDebug() =
         is StartEditAction.WheelChangedStartTime -> "Wheel changed start time: $startTime"
         is StartEditAction.WheelChangedEndTime -> "Wheel changed duration: $duration"
         StartEditAction.StopButtonTapped -> "Stop button tapped"
+        is StartEditAction.TagCreated -> "Tag created $tag"
     }
