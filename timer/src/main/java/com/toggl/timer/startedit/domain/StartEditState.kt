@@ -22,7 +22,8 @@ data class StartEditState(
     val editableTimeEntry: EditableTimeEntry?,
     val autocompleteSuggestions: List<AutocompleteSuggestion>,
     val dateTimePickMode: DateTimePickMode,
-    val temporalInconsistency: TemporalInconsistency
+    val temporalInconsistency: TemporalInconsistency,
+    val cursorPosition: Int
 ) {
     companion object {
         fun fromTimerState(timerState: TimerState) =
@@ -36,7 +37,8 @@ data class StartEditState(
                 editableTimeEntry = timerState.localState.editableTimeEntry,
                 autocompleteSuggestions = timerState.localState.autocompleteSuggestions,
                 dateTimePickMode = timerState.localState.dateTimePickMode,
-                temporalInconsistency = timerState.localState.temporalInconsistency
+                temporalInconsistency = timerState.localState.temporalInconsistency,
+                cursorPosition = timerState.localState.cursorPosition
             )
 
         fun toTimerState(timerState: TimerState, startEditState: StartEditState) =
@@ -46,7 +48,8 @@ data class StartEditState(
                     editableTimeEntry = startEditState.editableTimeEntry,
                     autocompleteSuggestions = startEditState.autocompleteSuggestions,
                     dateTimePickMode = startEditState.dateTimePickMode,
-                    temporalInconsistency = startEditState.temporalInconsistency
+                    temporalInconsistency = startEditState.temporalInconsistency,
+                    cursorPosition = startEditState.cursorPosition
                 )
             )
     }

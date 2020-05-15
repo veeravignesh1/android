@@ -6,6 +6,7 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
@@ -31,6 +32,7 @@ import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StopTimeBeforeStartTime
+import com.toggl.timer.startedit.util.lastSubstringFromAnyTokenToPosition
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
@@ -51,9 +53,12 @@ class StartEditReducer @Inject constructor(
             is StartEditAction.DescriptionEntered ->
                 state.mutate {
                     editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
-                    StartEditState.editableTimeEntry.modify(this) {
-                        it.copy(description = action.description)
-                    }
+                    copy(
+                        cursorPosition = action.cursorPosition,
+                        editableTimeEntry = editableTimeEntry.copy(
+                            description = action.description
+                        )
+                    )
                 } returnEffect updateAutocompleteSuggestions(action, state())
             is StartEditAction.TimeEntryUpdated ->
                 state.mutateWithoutEffects {
@@ -122,7 +127,7 @@ class StartEditReducer @Inject constructor(
                 state.mutateWithoutEffects {
                     when (action.autocompleteSuggestion) {
                         is AutocompleteSuggestion.TimeEntry -> modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
-                        is AutocompleteSuggestion.Project -> TODO("Not implemented yet")
+                        is AutocompleteSuggestion.Project -> modifyWithProjectSuggestion(action.autocompleteSuggestion)
                         is AutocompleteSuggestion.Task -> TODO("Not implemented yet")
                         is AutocompleteSuggestion.Tag -> TODO("Not implemented yet")
                         is AutocompleteSuggestion.CreateProject -> modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
@@ -247,6 +252,19 @@ class StartEditReducer @Inject constructor(
             }
         }
     }
+
+    private fun StartEditState.modifyWithProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Project): StartEditState =
+        StartEditState.editableTimeEntry.modify(this) {
+            val projectSuggestion = autocompleteSuggestion.project
+            val (token, currentQuery) = it.description.lastSubstringFromAnyTokenToPosition(charArrayOf(projectToken), cursorPosition)
+            val delimiter = "$token$currentQuery"
+            it.copy(
+                description = it.description.substringBefore(delimiter) + it.description.substringAfter(delimiter, ""),
+                projectId = projectSuggestion.id,
+                workspaceId = projectSuggestion.workspaceId,
+                editableProject = null
+            )
+        }
 
     private fun StartEditState.modifyWithTimeEntrySuggestion(autocompleteSuggestion: AutocompleteSuggestion.TimeEntry): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {

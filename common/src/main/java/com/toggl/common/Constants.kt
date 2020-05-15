@@ -16,4 +16,8 @@ object Constants {
     object TimeEntry {
         const val maxDurationInHours = 999L
     }
+
+    object AutoCompleteSuggestions {
+        const val projectToken: Char = '@'
+    }
 }

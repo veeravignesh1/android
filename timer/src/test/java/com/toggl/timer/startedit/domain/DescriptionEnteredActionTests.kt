@@ -30,6 +30,14 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
     }
 
     @Test
+    fun `should change the state's cursorPosition`() = runBlockingTest {
+        reducer.testReduce(
+            initialState = state,
+            action = StartEditAction.DescriptionEntered("new description", 5)
+        ) { state, _ -> state.cursorPosition shouldBe 5 }
+    }
+
+    @Test
     fun `returns the effect that updates the autocomplete suggestions`() = runBlockingTest {
         reducer.testReduce(
             initialState = state,

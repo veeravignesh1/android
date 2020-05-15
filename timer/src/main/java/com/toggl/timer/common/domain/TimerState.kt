@@ -28,7 +28,8 @@ data class TimerState(
         internal val entriesPendingDeletion: Set<Long>,
         internal val autocompleteSuggestions: List<AutocompleteSuggestion>,
         internal val dateTimePickMode: DateTimePickMode,
-        internal val temporalInconsistency: TemporalInconsistency
+        internal val temporalInconsistency: TemporalInconsistency,
+        internal val cursorPosition: Int
     ) {
         constructor() : this(
             editableTimeEntry = null,
@@ -36,7 +37,8 @@ data class TimerState(
             entriesPendingDeletion = setOf(),
             autocompleteSuggestions = emptyList(),
             dateTimePickMode = DateTimePickMode.None,
-            temporalInconsistency = TemporalInconsistency.None
+            temporalInconsistency = TemporalInconsistency.None,
+            cursorPosition = 0
         )
 
         companion object {

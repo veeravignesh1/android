@@ -26,7 +26,8 @@ fun createInitialState(
         editableTimeEntry = editableTimeEntry,
         autocompleteSuggestions = autoCompleteSuggestions,
         dateTimePickMode = DateTimePickMode.None,
-        temporalInconsistency = TemporalInconsistency.None
+        temporalInconsistency = TemporalInconsistency.None,
+        cursorPosition = 0
     )
 
 fun createReducer(
