@@ -1,8 +1,8 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.models.domain.Workspace
+import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.StartTimeEntryResult
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -20,7 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 class DoneButtonTappedActionTests : FreeCoroutineSpec() {
-    private val repository = mockk<TimeEntryRepository>()
+    private val repository = mockk<Repository>()
     private val startTimeEntryResult = mockk<StartTimeEntryResult>()
     private val timeEntry = createTimeEntry(1, "old description")
     private val timeEntry2 = createTimeEntry(2, "old description")

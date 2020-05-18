@@ -1,7 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.environment.services.time.TimeService
-import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.repository.Repository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.domain.EditableTimeEntry
@@ -32,7 +32,7 @@ import java.util.stream.Stream
 @ExperimentalCoroutinesApi
 @DisplayName("The DateTimePicked action")
 internal class DateTimePickedActionTests : CoroutineTest() {
-    val repository = mockk<TimeEntryRepository>()
+    val repository = mockk<Repository>()
     val timeService = mockk<TimeService>()
     val reducer = StartEditReducer(repository, timeService, dispatcherProvider)
 

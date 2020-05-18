@@ -63,6 +63,17 @@ class Repository(
     override suspend fun loadTimeEntries(): List<TimeEntry> =
         timeEntryDao.getAllTimeEntriesWithTags().map(DatabaseTimeEntryWithTags::toModel)
 
+    override suspend fun createTag(tag: Tag): Tag {
+        val databaseTag = DatabaseTag(
+            name = tag.name,
+            workspaceId = tag.workspaceId
+        )
+
+        return tagDao.insert(databaseTag)
+            .run(tagDao::getOne)
+            .run(DatabaseTag::toModel)
+    }
+
     override suspend fun loadTags(): List<Tag> =
         tagDao.getAll().map(DatabaseTag::toModel)
 

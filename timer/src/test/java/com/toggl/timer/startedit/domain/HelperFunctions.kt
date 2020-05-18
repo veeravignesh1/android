@@ -6,7 +6,7 @@ import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
-import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.repository.Repository
 import com.toggl.timer.common.domain.EditableTimeEntry
 import io.mockk.mockk
 
@@ -31,7 +31,7 @@ fun createInitialState(
     )
 
 fun createReducer(
-    repository: TimeEntryRepository = mockk(),
+    repository: Repository = mockk(),
     timeService: TimeService = mockk(),
     dispatcherProvider: DispatcherProvider = mockk()
 ): StartEditReducer = StartEditReducer(repository, timeService, dispatcherProvider)

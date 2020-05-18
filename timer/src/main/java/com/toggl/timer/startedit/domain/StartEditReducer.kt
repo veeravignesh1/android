@@ -7,13 +7,14 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
+import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
-import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.repository.Repository
 import com.toggl.timer.common.domain.EditableProject
 import com.toggl.timer.common.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
@@ -39,7 +40,7 @@ import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
 
 class StartEditReducer @Inject constructor(
-    private val repository: TimeEntryRepository,
+    private val repository: Repository,
     private val timeService: TimeService,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<StartEditState, StartEditAction> {
@@ -125,14 +126,27 @@ class StartEditReducer @Inject constructor(
             is StartEditAction.AutocompleteSuggestionsUpdated ->
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
             is StartEditAction.AutocompleteSuggestionTapped -> {
-                state.mutateWithoutEffects {
-                    when (action.autocompleteSuggestion) {
-                        is AutocompleteSuggestion.TimeEntry -> modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
-                        is AutocompleteSuggestion.Project -> modifyWithProjectSuggestion(action.autocompleteSuggestion)
-                        is AutocompleteSuggestion.Task -> modifyWithTaskSuggestion(action.autocompleteSuggestion)
-                        is AutocompleteSuggestion.Tag -> TODO("Not implemented yet")
-                        is AutocompleteSuggestion.CreateProject -> modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
-                        is AutocompleteSuggestion.CreateTag -> TODO("Not implemented yet")
+                when (action.autocompleteSuggestion) {
+                    is AutocompleteSuggestion.TimeEntry -> state.mutateWithoutEffects {
+                        modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
+                    }
+                    is AutocompleteSuggestion.Project -> state.mutateWithoutEffects {
+                        modifyWithProjectSuggestion(action.autocompleteSuggestion)
+                    }
+                    is AutocompleteSuggestion.Task -> state.mutateWithoutEffects {
+                        modifyWithTaskSuggestion(action.autocompleteSuggestion)
+                    }
+                    is AutocompleteSuggestion.Tag -> state.mutateWithoutEffects {
+                        TODO("Not implemented yet")
+                    }
+                    is AutocompleteSuggestion.CreateProject -> state.mutateWithoutEffects {
+                        modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
+                    }
+                    is AutocompleteSuggestion.CreateTag -> {
+                        val tagCreationSuggestion = action.autocompleteSuggestion
+                        state.mutate {
+                            modifyWithCreateTagSuggestion()
+                        } returnEffect effect(CreateTagEffect(dispatcherProvider, repository, tagCreationSuggestion.name, 1))
                     }
                 }
             }
@@ -253,6 +267,16 @@ class StartEditReducer @Inject constructor(
             }
         }
     }
+
+    private fun StartEditState.modifyWithCreateTagSuggestion(): StartEditState =
+        StartEditState.editableTimeEntry.modify(this) {
+            val (token, currentQuery) = it.description.lastSubstringFromAnyTokenToPosition(
+                charArrayOf(tagToken),
+                cursorPosition
+            )
+            val delimiter = "$token$currentQuery"
+            it.copy(description = it.description.substringBeforeLast(delimiter))
+        }
 
     private fun StartEditState.modifyWithProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Project): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {

@@ -19,5 +19,6 @@ object Constants {
 
     object AutoCompleteSuggestions {
         const val projectToken: Char = '@'
+        const val tagToken: Char = '#'
     }
 }

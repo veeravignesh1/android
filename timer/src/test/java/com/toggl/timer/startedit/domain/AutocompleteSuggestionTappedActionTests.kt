@@ -9,11 +9,14 @@ import com.toggl.timer.common.createTask
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.domain.EditableProject
 import com.toggl.timer.common.domain.EditableTimeEntry
+import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceException
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
 import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
+import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -365,6 +368,64 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 it.editableTimeEntry?.description shouldBe "Such # @ # @ # Description"
             }
         }
+    }
+
+    @Nested
+    @DisplayName("When the Create Tag suggestion is tapped")
+    inner class CreateTagSuggestions {
+
+        @Test
+        fun `The TagCreated effect is emitted`() = runBlockingTest {
+            val createTagSuggestion = AutocompleteSuggestion.CreateTag("01234")
+
+            reducer.testReduceEffects(
+                initialState,
+                StartEditAction.AutocompleteSuggestionTapped(createTagSuggestion)
+            ) {
+                it shouldHaveSize 1
+                it.single()
+                    .shouldBeTypeOf<CreateTagEffect>()
+            }
+        }
+
+        @Test
+        fun `The substring that starts with an '#' should be removed from the description`() = runBlockingTest {
+            val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
+                description = "Such #tag"
+            )
+            val suggestion = AutocompleteSuggestion.CreateTag("tag")
+            val initialState = initialState.copy(
+                editableTimeEntry = initialEditableTimeEntry,
+                cursorPosition = initialEditableTimeEntry.description.length
+            )
+
+            reducer.testReduceState(
+                initialState,
+                StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            ) {
+                it.editableTimeEntry?.description shouldBe "Such "
+            }
+        }
+
+        @Test
+        fun `should remove the last substring that starts with an '#' from the description when multiple tokens are in place up to the cursor position`() =
+            runBlockingTest {
+                val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
+                    description = "Such #tag #tag #tag much"
+                )
+                val suggestion = AutocompleteSuggestion.CreateTag("tag much")
+                val initialState = initialState.copy(
+                    editableTimeEntry = initialEditableTimeEntry,
+                    cursorPosition = initialEditableTimeEntry.description.length
+                )
+
+                reducer.testReduceState(
+                    initialState,
+                    StartEditAction.AutocompleteSuggestionTapped(suggestion)
+                ) {
+                    it.editableTimeEntry?.description shouldBe "Such #tag #tag "
+                }
+            }
     }
 
     interface TheoryHolder {
