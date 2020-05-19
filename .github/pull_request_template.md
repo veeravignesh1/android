@@ -24,6 +24,7 @@ Closes #
 - [ ] The code does not hinder the app's performance
 - [ ] The code does not introduce regressions
 - [ ] The code in this PR is tested thoroughly enough that changing the behavior to an incorrect one breaks tests
+- [ ] One of our [live or file custom templates](https://github.com/toggl/android/tree/master/.idea/templates) was used in this PR
 
 ## Reviewing
 
