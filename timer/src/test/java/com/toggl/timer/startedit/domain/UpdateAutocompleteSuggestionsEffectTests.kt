@@ -2,13 +2,16 @@ package com.toggl.timer.startedit.domain
 
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
+import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
+import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.project.domain.createTask
 import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -29,15 +32,10 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
 
             val timeEntries = (1L..10L).map { createTimeEntry(it, description = if (it % 2 == 0L) "Even $it" else "Odd $it") }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "even",
                 0,
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                timeEntries.associateBy { it.id }
+                timeEntries = timeEntries.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -51,15 +49,11 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             val projects = listOf(createProject(1, name = "project"))
             val timeEntries = (1L..10L).map { createTimeEntry(it, projectId = if (it % 2 == 0L) null else 1L) }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "proj",
                 0,
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                projects.associateBy { it.id },
-                timeEntries.associateBy { it.id }
+                projects = projects.associateBy { it.id },
+                timeEntries = timeEntries.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -74,15 +68,12 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             val clients = listOf(Client(1, "client", 1))
             val timeEntries = (1L..10L).map { createTimeEntry(it, projectId = if (it % 2 == 0L) null else 1L) }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "clien",
                 0,
-                mapOf(),
-                mapOf(),
-                clients.associateBy { it.id },
-                projects.associateBy { it.id },
-                timeEntries.associateBy { it.id }
+                clients = clients.associateBy { it.id },
+                projects = projects.associateBy { it.id },
+                timeEntries = timeEntries.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -96,15 +87,11 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             val tasks = listOf(Task(1, "task", true, 1, 1, 1))
             val timeEntries = (1L..10L).map { createTimeEntry(it, taskId = if (it % 2 == 0L) null else 1L) }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "tas",
                 0,
-                mapOf(),
-                tasks.associateBy { it.id },
-                mapOf(),
-                mapOf(),
-                timeEntries.associateBy { it.id }
+                tasks = tasks.associateBy { it.id },
+                timeEntries = timeEntries.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -125,15 +112,10 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
                 createTimeEntry(7, description = "Meetings")
             )
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "an ap dev",
                 0,
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                timeEntries.associateBy { it.id }
+                timeEntries = timeEntries.associateBy { it.id }
             )
 
             val expectedEntries = timeEntries.take(4)
@@ -183,15 +165,14 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
                 createTimeEntry(7, description = "Meetings")
             )
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "an ap dev",
                 0,
-                tags.associateBy { it.id },
-                tasks.associateBy { it.id },
-                clients.associateBy { it.id },
-                projects.associateBy { it.id },
-                timeEntries.associateBy { it.id }
+                tags = tags.associateBy { it.id },
+                tasks = tasks.associateBy { it.id },
+                clients = clients.associateBy { it.id },
+                projects = projects.associateBy { it.id },
+                timeEntries = timeEntries.associateBy { it.id }
             )
 
             val expectedEntries = timeEntries.take(5)
@@ -211,15 +192,10 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
         fun `returns projects & a create project suggestion when the project name matches the query`() = runBlockingTest {
             val projects = (1L..10L).map { createProject(it, name = if (it % 2 == 0L) "Even $it" else "Odd $it") }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "@even",
                 5,
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                projects.associateBy { it.id },
-                mapOf()
+                projects = projects.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -232,15 +208,10 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
         fun `returns tasks when the task name matches the query`() = runBlockingTest {
             val tasks = (1L..10L).map { createTask(it, name = if (it % 2 == 0L) "Even $it" else "Odd $it") }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "@even",
                 5,
-                mapOf(),
-                tasks.associateBy { it.id },
-                mapOf(),
-                mapOf(),
-                mapOf()
+                tasks = tasks.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -253,15 +224,10 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
         fun `returns a create project suggestion with the query as the suggestion name`() = runBlockingTest {
             val projects = (1L..10L).map { createProject(it, name = if (it % 2 == 0L) "Even $it" else "Odd $it") }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "@even",
                 5,
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                projects.associateBy { it.id },
-                mapOf()
+                projects = projects.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -281,15 +247,10 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
                 createProject(7, name = "Meetings")
             )
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "@an ap dev",
                 10,
-                mapOf(),
-                mapOf(),
-                mapOf(),
-                projects.associateBy { it.id },
-                mapOf()
+                projects = projects.associateBy { it.id }
             )
 
             val expectedEntries = projects.take(4)
@@ -309,15 +270,11 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
             val projects = (1L..10L).map { createProject(it, name = "Project $it", clientId = it % 2 + 1) }
 
-            val effect = UpdateAutocompleteSuggestionsEffect(
-                dispatcherProvider,
+            val effect = createEffect(
                 "@bo",
                 4,
-                mapOf(),
-                mapOf(),
-                clients.associateBy { it.id },
-                projects.associateBy { it.id },
-                mapOf()
+                clients = clients.associateBy { it.id },
+                projects = projects.associateBy { it.id }
             )
 
             val result = effect.execute()
@@ -325,4 +282,103 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.Project>().size shouldBe 5
         }
     }
+
+    @Nested
+    @DisplayName("When a tag query shortcut is used")
+    inner class TagQueryTests {
+        @Test
+        fun `returns tag suggestions when the tag name matches the query`() = runBlockingTest {
+            val tags = (1L..10L).map { Tag(it, name = if (it % 2 == 0L) "Even $it" else "Odd $it", workspaceId = 1) }
+
+            val effect = createEffect(
+                "#even",
+                5,
+                tags = tags.associateBy { it.id }
+            )
+
+            val result = effect.execute()
+            result.shouldNotBeNull()
+            result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.Tag>().size shouldBe 5
+        }
+
+        @Test
+        fun `returns a create tag suggestion when the tag name matches the query but not exactly`() = runBlockingTest {
+            val tags = (1L..10L).map { Tag(it, name = if (it % 2 == 0L) "Even $it" else "Odd $it", workspaceId = 1) }
+
+            val effect = createEffect(
+                "#eve",
+                5,
+                tags = tags.associateBy { it.id }
+            )
+
+            val result = effect.execute()
+            result.shouldNotBeNull()
+            result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.CreateTag>().single().name shouldBe "eve"
+        }
+
+        @Test
+        fun `does not return a create tag suggestion when the tag name matches the query exactly`() = runBlockingTest {
+            val tags = listOf(Tag(1, name = "Even", workspaceId = 1))
+
+            val effect = createEffect(
+                "#even",
+                5,
+                tags = tags.associateBy { it.id }
+            )
+
+            val result = effect.execute()
+            result.shouldNotBeNull()
+            result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.CreateTag>().shouldBeEmpty()
+        }
+
+        @Test
+        fun `only considers tags in the current workspace`() = runBlockingTest {
+            val tags = (1L..10L).map { Tag(it, name = if (it % 2 == 0L) "Even $it" else "Odd $it", workspaceId = 2) }
+
+            val effect = createEffect(
+                "#even",
+                5,
+                tags = tags.associateBy { it.id }
+            )
+
+            val result = effect.execute()
+            result.shouldNotBeNull()
+            result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.Tag>().shouldBeEmpty()
+        }
+
+        @Test
+        fun `returns a create tag suggestion if the query matches exactly a tag in a different workspace`() = runBlockingTest {
+            val tags = listOf(Tag(1, name = "Even", workspaceId = 2))
+
+            val effect = createEffect(
+                "#even",
+                5,
+                tags = tags.associateBy { it.id }
+            )
+
+            val result = effect.execute()
+            result.shouldNotBeNull()
+            result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.CreateTag>().single().name shouldBe "even"
+        }
+    }
+
+    private fun createEffect(
+        query: String,
+        cursorPosition: Int,
+        currentWorkspaceId: Long = 1,
+        tags: Map<Long, Tag> = mapOf(),
+        tasks: Map<Long, Task> = mapOf(),
+        clients: Map<Long, Client> = mapOf(),
+        projects: Map<Long, Project> = mapOf(),
+        timeEntries: Map<Long, TimeEntry> = mapOf()
+    ) = UpdateAutocompleteSuggestionsEffect(
+        dispatcherProvider,
+        query,
+        cursorPosition,
+        currentWorkspaceId,
+        tags,
+        tasks,
+        clients,
+        projects,
+        timeEntries)
 }

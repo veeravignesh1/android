@@ -449,6 +449,7 @@ class StartEditReducer @Inject constructor(
                 dispatcherProvider,
                 action.description,
                 action.cursorPosition,
+                state.editableTimeEntry?.workspaceId ?: throw EditableTimeEntryShouldNotBeNullException(),
                 state.tags,
                 state.tasks,
                 state.clients,
