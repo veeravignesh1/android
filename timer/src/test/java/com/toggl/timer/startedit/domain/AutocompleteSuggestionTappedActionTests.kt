@@ -3,6 +3,7 @@ package com.toggl.timer.startedit.domain
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Task
+import com.toggl.models.domain.Tag
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTask
@@ -15,8 +16,11 @@ import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
 import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
+import com.toggl.timer.exceptions.TagDoesNotExistException
+import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldBeTypeOf
+import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -209,6 +213,92 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 action = StartEditAction.AutocompleteSuggestionTapped(suggestion)
             )
         }
+    }
+
+    @Nested
+    @DisplayName("When a Tag suggestion is tapped")
+    inner class TagSuggestions : TheoryHolder {
+
+        @ParameterizedTest
+        @MethodSource("tags")
+        fun `The editableTimeEntry details should be updated`(tagTestData: TheoryHolder.TagTestData) = runBlockingTest {
+            val tag = tagTestData.tag
+            val suggestion = AutocompleteSuggestion.Tag(tag)
+
+            reducer.testReduceState(
+                initialState.copy(tags = tagTestData.tags),
+                StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            ) {
+                it.editableTimeEntry.shouldNotBeNull()
+                it.editableTimeEntry!!.tagIds shouldContain tag.id
+            }
+        }
+
+        @ParameterizedTest
+        @MethodSource("tags")
+        fun `should return no effect`(tagTestData: TheoryHolder.TagTestData) = runBlockingTest {
+            val tag = tagTestData.tag
+            val suggestion = AutocompleteSuggestion.Tag(tag)
+
+            reducer.testReduceNoEffects(
+                initialState.copy(tags = tagTestData.tags),
+                action = StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            )
+        }
+
+        @Test
+        fun `should throw exception when adding non existing tag`() = runBlockingTest {
+            val suggestion = AutocompleteSuggestion.Tag(Tag(1L, "Tag 1", 1))
+
+            reducer.testReduceException(
+                initialState.copy(tags = emptyMap()),
+                action = StartEditAction.AutocompleteSuggestionTapped(suggestion),
+                exception = TagDoesNotExistException::class.java
+            )
+        }
+
+        @Test
+        fun `The substring that starts with an '#' should be removed from the description`() = runBlockingTest {
+            val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
+                description = "Such #tag"
+            )
+            val tag = Tag(1L, "Tag 1", 1)
+            val suggestion = AutocompleteSuggestion.Tag(tag)
+            val initialState = initialState.copy(
+                editableTimeEntry = initialEditableTimeEntry,
+                cursorPosition = initialEditableTimeEntry.description.length,
+                tags = mapOf(1L to tag)
+            )
+
+            reducer.testReduceState(
+                initialState,
+                StartEditAction.AutocompleteSuggestionTapped(suggestion)
+            ) {
+                it.editableTimeEntry?.description shouldBe "Such "
+            }
+        }
+
+        @Test
+        fun `should remove the last substring that starts with an '#' from the description when multiple tokens are in place up to the cursor position`() =
+            runBlockingTest {
+                val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
+                    description = "Such #tag #tag #tag much"
+                )
+                val tag = Tag(1L, "Tag 1", 1)
+                val suggestion = AutocompleteSuggestion.Tag(tag)
+                val initialState = initialState.copy(
+                    editableTimeEntry = initialEditableTimeEntry,
+                    cursorPosition = initialEditableTimeEntry.description.length,
+                    tags = mapOf(1L to tag)
+                )
+
+                reducer.testReduceState(
+                    initialState,
+                    StartEditAction.AutocompleteSuggestionTapped(suggestion)
+                ) {
+                    it.editableTimeEntry?.description shouldBe "Such #tag #tag "
+                }
+            }
     }
 
     @Nested
@@ -507,9 +597,29 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     )
                 )
             )
+
+            @JvmStatic
+            fun tags(): Stream<TagTestData> {
+                val tag1 = Tag(1L, "Tag 1", 1)
+                val tag2 = Tag(2L, "Tag 2", 1)
+                val tag3 = Tag(3L, "Tag 3", 1)
+
+                val tags = mapOf(
+                    1L to tag1,
+                    2L to tag2,
+                    3L to tag3
+                )
+
+                return Stream.of(
+                    TagTestData(tag1, tags),
+                    TagTestData(tag2, tags),
+                    TagTestData(tag3, tags)
+                )
+            }
         }
 
         data class TaskTestData(val task: Task, val projects: Map<Long, Project>)
         data class TaskWithNonExistingProjectTestData(val task: Task, val projects: Map<Long, Project>)
+        data class TagTestData(val tag: Tag, val tags: Map<Long, Tag>)
     }
 }

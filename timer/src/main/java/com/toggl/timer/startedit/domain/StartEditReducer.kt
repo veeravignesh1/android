@@ -28,13 +28,14 @@ import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetExcept
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
+import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.timer.extensions.absoluteDurationBetween
 import com.toggl.timer.extensions.replaceTimeEntryWithId
 import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StopTimeBeforeStartTime
-import com.toggl.timer.startedit.util.lastSubstringFromAnyTokenToPosition
+import com.toggl.timer.startedit.util.lastSubstringFromTokenToPosition
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 import javax.inject.Inject
@@ -137,7 +138,7 @@ class StartEditReducer @Inject constructor(
                         modifyWithTaskSuggestion(action.autocompleteSuggestion)
                     }
                     is AutocompleteSuggestion.Tag -> state.mutateWithoutEffects {
-                        TODO("Not implemented yet")
+                        modifyWithTagSuggestion(action.autocompleteSuggestion)
                     }
                     is AutocompleteSuggestion.CreateProject -> state.mutateWithoutEffects {
                         modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
@@ -270,10 +271,7 @@ class StartEditReducer @Inject constructor(
 
     private fun StartEditState.modifyWithCreateTagSuggestion(): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
-            val (token, currentQuery) = it.description.lastSubstringFromAnyTokenToPosition(
-                charArrayOf(tagToken),
-                cursorPosition
-            )
+            val (token, currentQuery) = it.description.lastSubstringFromTokenToPosition(tagToken, cursorPosition)
             val delimiter = "$token$currentQuery"
             it.copy(description = it.description.substringBeforeLast(delimiter))
         }
@@ -281,7 +279,7 @@ class StartEditReducer @Inject constructor(
     private fun StartEditState.modifyWithProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Project): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             val projectSuggestion = autocompleteSuggestion.project
-            val (token, currentQuery) = it.description.lastSubstringFromAnyTokenToPosition(charArrayOf(projectToken), cursorPosition)
+            val (token, currentQuery) = it.description.lastSubstringFromTokenToPosition(projectToken, cursorPosition)
             val delimiter = "$token$currentQuery"
             it.copy(
                 description = it.description.substringBefore(delimiter) + it.description.substringAfter(delimiter, ""),
@@ -304,6 +302,18 @@ class StartEditReducer @Inject constructor(
             )
         }
 
+    private fun StartEditState.modifyWithTagSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Tag): StartEditState =
+        StartEditState.editableTimeEntry.modify(this) {
+            val tagSuggestion = autocompleteSuggestion.tag
+            if (tags[tagSuggestion.id] == null) throw TagDoesNotExistException()
+            val (token, currentQuery) = it.description.lastSubstringFromTokenToPosition(tagToken, cursorPosition)
+            val delimiter = "$token$currentQuery"
+            it.copy(
+                description = it.description.substringBeforeLast(delimiter),
+                tagIds = it.tagIds + tagSuggestion.id
+            )
+        }
+
     private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             it.copy(editableProject = EditableProject(name = autocompleteSuggestion.name, workspaceId = 1))
@@ -313,7 +323,7 @@ class StartEditReducer @Inject constructor(
         StartEditState.editableTimeEntry.modify(this) {
             val taskSuggestion = autocompleteSuggestion.task
             if (this.projects[taskSuggestion.projectId] == null) throw ProjectDoesNotExistException()
-            val (token, currentQuery) = it.description.lastSubstringFromAnyTokenToPosition(charArrayOf(projectToken), cursorPosition)
+            val (token, currentQuery) = it.description.lastSubstringFromTokenToPosition(projectToken, cursorPosition)
             val delimiter = "$token$currentQuery"
             it.copy(
                 description = it.description.substringBefore(delimiter) + it.description.substringAfter(delimiter, ""),

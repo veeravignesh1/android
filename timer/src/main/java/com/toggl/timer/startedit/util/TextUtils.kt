@@ -1,5 +1,8 @@
 package com.toggl.timer.startedit.util
 
+fun String.lastSubstringFromTokenToPosition(token: Char, position: Int = this.length): Pair<Char?, String> =
+    this.lastSubstringFromAnyTokenToPosition(charArrayOf(token), position)
+
 fun String.lastSubstringFromAnyTokenToPosition(tokens: CharArray, position: Int = this.length): Pair<Char?, String> {
     return this.findLastIndexOfSubstringFromAnyTokenToPosition(tokens, position)
         .let { (startIndex, endIndex) ->
