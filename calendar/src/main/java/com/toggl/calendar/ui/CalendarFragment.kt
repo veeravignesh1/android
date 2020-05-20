@@ -1,20 +1,34 @@
 package com.toggl.calendar.ui
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
+import com.toggl.calendar.R
+import com.toggl.calendar.di.CalendarComponentProvider
+import com.toggl.calendar.domain.CalendarAction
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
-class CalendarFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? =
-        View(context).apply {
-            background = ColorDrawable(Color.parseColor("#FFFF00"))
-        }
+class CalendarFragment : Fragment(R.layout.fragment_calendar) {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val store: CalendarStoreViewModel by viewModels { viewModelFactory }
+
+    override fun onAttach(context: Context) {
+        (requireActivity().applicationContext as CalendarComponentProvider)
+            .provideCalendarComponent().inject(this)
+        super.onAttach(context)
+    }
+
+    @ExperimentalCoroutinesApi
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        store.dispatch(CalendarAction.ExampleAction)
+    }
 }

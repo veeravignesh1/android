@@ -1,6 +1,7 @@
 package com.toggl.di
 
 import com.toggl.architecture.core.Reducer
+import com.toggl.calendar.domain.CalendarReducer
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.reducers.AnalyticsReducer
@@ -28,12 +29,14 @@ class ReducerModule {
         loadingReducer: LoadingReducer,
         onboardingReducer: OnboardingReducer,
         timerReducer: TimerReducer,
+        calendarReducer: CalendarReducer,
         analyticsReducer: AnalyticsReducer
     ): Reducer<AppState, AppAction> =
         createAppReducer(
             loadingReducer,
             onboardingReducer,
             timerReducer,
+            calendarReducer,
             analyticsReducer
         )
 

@@ -2,6 +2,7 @@ package com.toggl.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.toggl.calendar.ui.CalendarStoreViewModel
 import com.toggl.onboarding.ui.LoginViewModel
 import com.toggl.timer.log.ui.TimeEntriesLogStoreViewModel
 import com.toggl.timer.project.ui.ProjectStoreViewModel
@@ -38,6 +39,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ProjectStoreViewModel::class)
     abstract fun bindProjectStoreViewModel(viewModel: ProjectStoreViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CalendarStoreViewModel::class)
+    abstract fun bindCalendarStoreViewModel(viewModel: CalendarStoreViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: TogglViewModelFactory): ViewModelProvider.Factory

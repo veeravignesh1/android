@@ -2,6 +2,8 @@ package com.toggl.di
 
 import com.toggl.TogglApplication
 import com.toggl.architecture.StoreScopeProvider
+import com.toggl.calendar.di.CalendarComponent
+import com.toggl.calendar.di.CalendarModule
 import com.toggl.database.DatabaseModule
 import com.toggl.environment.di.EnvironmentModule
 import com.toggl.onboarding.di.OnboardingComponent
@@ -22,6 +24,7 @@ import javax.inject.Singleton
         ViewModelModule::class,
         OnboardingModule::class,
         TimerModule::class,
+        CalendarModule::class,
         EnvironmentModule::class,
         DatabaseModule::class,
         RepositoryModule::class
@@ -46,4 +49,7 @@ interface AppComponent {
 
     @Singleton
     fun timerComponent(): TimerComponent.Factory
+
+    @Singleton
+    fun calendarComponent(): CalendarComponent.Factory
 }

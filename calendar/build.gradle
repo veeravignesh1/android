@@ -2,7 +2,14 @@ import com.toggl.buildsrc.Libs
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'de.mannodermaus.android-junit5'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -17,8 +24,23 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
     }
 
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
     buildTypes {
         adhoc {}
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -26,6 +48,27 @@ dependencies {
     api project(':common-feature')
 
     implementation Libs.Kotlin.stdlib
-    implementation Libs.AndroidX.appcompat
-    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.Lifecycle.extensions
+    implementation Libs.AndroidX.Lifecycle.viewModel
+    implementation Libs.Dagger.dagger
+    kapt Libs.Dagger.compiler
+    implementation Libs.Arrow.optics
+    implementation Libs.Arrow.syntax
+    kapt Libs.Arrow.meta
+
+    testImplementation (Libs.threeTen) {
+        exclude group:'com.jakewharton.threetenabp', module:'threetenabp'
+    }
+    testImplementation Libs.Test.Jupiter.api
+    testRuntimeOnly Libs.Test.Jupiter.engine
+    testImplementation Libs.Test.Jupiter.params
+    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.kotlinTest
+    testImplementation Libs.Test.kotlinTestJunit
+    testImplementation Libs.Test.kotlinCoroutineTest
+
+    androidTestImplementation Libs.AndroidX.Test.runner
+    androidTestImplementation Libs.AndroidX.Test.espressoCore
 }

@@ -7,10 +7,14 @@ import com.toggl.architecture.StoreScopeProvider
 import com.toggl.architecture.core.FlowStore
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
+import com.toggl.calendar.domain.CalendarAction
+import com.toggl.calendar.domain.CalendarState
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
+import com.toggl.domain.mappings.mapAppStateToCalendarState
 import com.toggl.domain.mappings.mapAppStateToOnboardingState
 import com.toggl.domain.mappings.mapAppStateToTimerState
+import com.toggl.domain.mappings.mapCalendarActionToAppAction
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
 import com.toggl.onboarding.domain.actions.OnboardingAction
@@ -63,6 +67,14 @@ class AppModule {
         store.view(
             mapToLocalState = ::mapAppStateToTimerState,
             mapToGlobalAction = ::mapTimerActionToAppAction
+        )
+
+    @Provides
+    @ExperimentalCoroutinesApi
+    fun calendarStore(store: Store<AppState, AppAction>): Store<CalendarState, CalendarAction> =
+        store.view(
+            mapToLocalState = ::mapAppStateToCalendarState,
+            mapToGlobalAction = ::mapCalendarActionToAppAction
         )
 
     @Provides

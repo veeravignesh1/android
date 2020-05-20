@@ -3,6 +3,8 @@ package com.toggl
 import android.app.Application
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.StoreScopeProvider
+import com.toggl.calendar.di.CalendarComponent
+import com.toggl.calendar.di.CalendarComponentProvider
 import com.toggl.di.DaggerAppComponent
 import com.toggl.initializers.AppInitializers
 import com.toggl.onboarding.di.OnboardingComponent
@@ -17,6 +19,7 @@ class TogglApplication : Application(),
     CoroutineScope,
     OnboardingComponentProvider,
     TimerComponentProvider,
+    CalendarComponentProvider,
     StoreScopeProvider {
 
     @Inject
@@ -46,4 +49,7 @@ class TogglApplication : Application(),
 
     override fun getStoreScope(): CoroutineScope =
         this
+
+    override fun provideCalendarComponent(): CalendarComponent =
+        appComponent.calendarComponent().create()
 }
