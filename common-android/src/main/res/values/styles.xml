@@ -36,4 +36,9 @@
         <item name="android:textColor">@color/clickable_text_secondary</item>
     </style>
 
+    <style name="PopupAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
 </resources>

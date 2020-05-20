@@ -35,6 +35,8 @@ import com.toggl.common.performClickHapticFeedback
 import com.toggl.common.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
+import com.toggl.common.above
+import com.toggl.common.showTooltip
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
@@ -55,6 +57,7 @@ import com.toggl.timer.startedit.ui.chips.ChipAdapter
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
+import kotlinx.android.synthetic.main.fragment_dialog_start_edit.close_action
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -348,14 +351,18 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         val billableButton = bottomControlPanel.findViewById<ImageView>(R.id.billable_action)
         billableButton.isVisible = bottomControlPanelParams.isProWorkspace
-        billableButton.setOnClickListener {
-            store.dispatch(StartEditAction.BillableTapped)
-        }
 
         store.state
             .mapNotNull { it.editableTimeEntry?.billable }
             .distinctUntilChanged()
             .onEach { setBillableButtonColor(billableButton, it) }
+            .map { if (it) R.string.non_billable else R.string.billable }
+            .onEach { tooltipText ->
+                billableButton.setOnClickListener {
+                    store.dispatch(StartEditAction.BillableTapped)
+                    showTooltip(tooltipText).above(billableButton)
+                }
+            }
             .launchIn(lifecycleScope)
 
         bottomControlPanel.layoutParams = FrameLayout.LayoutParams(

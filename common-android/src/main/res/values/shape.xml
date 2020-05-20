@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Shape-->
+
+    <style name="ShapeAppearance.Toggl.SmallComponent" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/small_component_corner_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.Toggl.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/medium_component_corner_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.Toggl.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/large_component_corner_radius</item>
+    </style>
+
+    <style name="ShapeAppearanceOverlay.Toggl.MediumComponent.Bound.Bottom" parent="">
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <dimen name="small_component_corner_radius">12dp</dimen>
+    <dimen name="medium_component_corner_radius">8dp</dimen>
+    <dimen name="large_component_corner_radius">6dp</dimen>
+
+</resources>

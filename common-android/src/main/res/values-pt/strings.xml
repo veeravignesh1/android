@@ -15,6 +15,7 @@
     <string name="undo">Desfazer</string>
     <string name="add_tags">Adicionar tags</string>
     <string name="billable">Faturável</string>
+    <string name="non_billable">Não faturável</string>
     <string name="start_time">Horário de início</string>
     <string name="end_time">Horário de termino</string>
     <string name="stop">Parar</string>

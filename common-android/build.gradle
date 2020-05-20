@@ -48,6 +48,7 @@ dependencies {
     api Libs.AndroidX.coreKtx
     api Libs.AndroidX.constraintlayout
     api Libs.AndroidX.Lifecycle.extensions
+    api Libs.AndroidX.Lifecycle.commonJava8
     api Libs.AndroidX.Lifecycle.viewModel
     api Libs.Google.material
     api Libs.threeTenAndroid

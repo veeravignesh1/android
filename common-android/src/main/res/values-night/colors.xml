@@ -3,6 +3,7 @@
     <color name="surface">#FF2c1338</color>
     <color name="transparent_surface">#002c1338</color>
     <color name="background">#412a4c</color>
+    <color name="tooltip_background">#FF2c1338</color>
     <color name="text_on_surface">#FFFFFFFF</color>
     <color name="divider">#55FFFFFF</color>
     <color name="error">#FFFF453A</color>

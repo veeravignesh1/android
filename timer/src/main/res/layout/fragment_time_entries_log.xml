@@ -42,6 +42,7 @@
         android:layout_height="80dp"
         android:layout_gravity="bottom"
         android:background="@color/surface"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Toggl.MediumComponent.Bound.Bottom"
         app:elevation="@dimen/plane_02">
 
         <androidx.fragment.app.FragmentContainerView
