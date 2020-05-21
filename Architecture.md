@@ -26,7 +26,7 @@ reducer.
 
 ## Differences between platforms
 
-Since the architecture as a whole is agnostic to frameworks, we don't necessarily need to use the same set of frameworks for both apps. While the iOS app is using Rxkotlin for their implementation, we are using Kotlin coroutines and [Flow](https://kotlinlang.org/docs/reference/coroutines/flow.html) in the Android app. Whenever one uses an `Observable<T>` on iOS, on Android it'd be an `Flow<T>`. Similarly, `Single<T>` maps to `suspend fun foo() : T?`.
+Since the architecture as a whole is agnostic to frameworks, we don't necessarily need to use the same set of frameworks for both apps. While the iOS app is using RxSwift for their implementation, we are using Kotlin coroutines and [Flow](https://kotlinlang.org/docs/reference/coroutines/flow.html) in the Android app. Whenever one uses an `Observable<T>` on iOS, on Android it'd be an `Flow<T>`. Similarly, `Single<T>` maps to `suspend fun foo() : T?`.
 
 Effects are classes that implement the `Effect` interface, while on iOS they are wrappers around `Single<T>`. We did so to ensure the contract of having `suspend fun`s for effects.
 
