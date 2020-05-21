@@ -149,7 +149,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @ParameterizedTest
         @MethodSource("projects")
-        fun `should remove the last substring that starts with an '@' from the description when multiple tokens are in place`(
+        fun `should remove the last substring that starts with a word beginning with an '@' from the description when multiple tokens are in place`(
             project: Project
         ) = runBlockingTest {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
@@ -177,11 +177,11 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @ParameterizedTest
         @MethodSource("projects")
-        fun `should remove the last substring that starts with an '@' from the description when multiple tokens are in place up to the cursor position`(
+        fun `should remove the last substring that starts with a word beginning with an '@' from the description when multiple tokens are in place up to the cursor position`(
             project: Project
         ) = runBlockingTest {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
-                description = "Such # @ # @ #@${project.name} Description"
+                description = "Such # @ # @ @${project.name} Description"
             )
             val suggestion = AutocompleteSuggestion.Project(project)
             val initialState = initialState.copy(
@@ -195,7 +195,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             ) {
                 it shouldBe initialState.copy(
                     editableTimeEntry = initialEditableTimeEntry.copy(
-                        description = "Such # @ # @ # Description",
+                        description = "Such # @ # @ ",
                         projectId = project.id,
                         workspaceId = project.workspaceId
                     )
@@ -343,7 +343,9 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val testTask = taskTestData.task
             val testProjects = taskTestData.projects
 
-            val initialEditableTimeEntry = EditableTimeEntry.empty(1)
+            val initialEditableTimeEntry = EditableTimeEntry.empty(1).copy(
+                description = "@${testTask.name}"
+            )
             val initialStateWithProjects = initialState.copy(projects = testProjects)
             val suggestion = AutocompleteSuggestion.Task(testTask)
 
@@ -413,7 +415,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @ParameterizedTest
         @MethodSource("tasks")
-        fun `should remove the last substring that starts with an '@' from the description when multiple tokens are in place`(
+        fun `should remove the last substring that starts with a word beginning with '@' from the description when multiple tokens are in place`(
             taskTestData: TheoryHolder.TaskTestData
         ) = runBlockingTest {
             val task = taskTestData.task
@@ -437,12 +439,12 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @ParameterizedTest
         @MethodSource("tasks")
-        fun `should remove the last substring that starts with an '@' from the description when multiple tokens are in place up to the cursor position`(
+        fun `should remove the last substring that starts with a word beginning with an '@' from the description when multiple tokens are in place up to the cursor position`(
             taskTestData: TheoryHolder.TaskTestData
         ) = runBlockingTest {
             val task = taskTestData.task
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
-                description = "Such # @ # @ #@${task.name} Description"
+                description = "Such # @ # @ @${task.name} Description"
             )
             val suggestion = AutocompleteSuggestion.Task(task)
             val initialState = initialState.copy(
@@ -455,7 +457,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.description shouldBe "Such # @ # @ # Description"
+                it.editableTimeEntry?.description shouldBe "Such # @ # @ "
             }
         }
     }
@@ -498,7 +500,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         }
 
         @Test
-        fun `should remove the last substring that starts with an '#' from the description when multiple tokens are in place up to the cursor position`() =
+        fun `should remove the last substring that starts with a word beginning with a '#' from the description when multiple tokens are in place up to the cursor position`() =
             runBlockingTest {
                 val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                     description = "Such #tag #tag #tag much"

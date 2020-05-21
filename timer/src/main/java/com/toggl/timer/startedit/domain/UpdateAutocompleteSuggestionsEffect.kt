@@ -10,7 +10,7 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
-import com.toggl.timer.startedit.util.lastSubstringFromAnyTokenToPosition
+import com.toggl.timer.startedit.util.findTokenAndQueryMatchesForAutocomplete
 import kotlinx.coroutines.withContext
 
 class UpdateAutocompleteSuggestionsEffect(
@@ -33,7 +33,7 @@ class UpdateAutocompleteSuggestionsEffect(
             if (query.isBlank())
                 return@withContext StartEditAction.AutocompleteSuggestionsUpdated(emptyList())
 
-            val (token, actualQuery) = query.lastSubstringFromAnyTokenToPosition(shortcutTokens, cursorPosition)
+            val (token, actualQuery) = query.findTokenAndQueryMatchesForAutocomplete(shortcutTokens, cursorPosition)
             val suggestions = when (token) {
                 projectToken -> fetchProjectSuggestionsFor(actualQuery) + fetchTaskSuggestionsFor(actualQuery)
                 tagToken -> fetchTagSuggestionsFor(actualQuery)

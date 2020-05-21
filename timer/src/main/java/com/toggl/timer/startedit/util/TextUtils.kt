@@ -1,19 +1,21 @@
 package com.toggl.timer.startedit.util
 
-fun String.lastSubstringFromTokenToPosition(token: Char, position: Int = this.length): Pair<Char?, String> =
-    this.lastSubstringFromAnyTokenToPosition(charArrayOf(token), position)
+fun String.findTokenAndQueryMatchesForAutocomplete(token: Char, cursorPosition: Int = this.length): Pair<Char?, String> =
+    findTokenAndQueryMatchesForAutocomplete(charArrayOf(token), cursorPosition)
 
-fun String.lastSubstringFromAnyTokenToPosition(tokens: CharArray, position: Int = this.length): Pair<Char?, String> {
-    return this.findLastIndexOfSubstringFromAnyTokenToPosition(tokens, position)
-        .let { (startIndex, endIndex) ->
-            if (startIndex == -1) null to this
-            else this.elementAt(startIndex) to this.substring(startIndex + 1, endIndex)
-        }
-}
+fun String.findTokenAndQueryMatchesForAutocomplete(tokens: CharArray, cursorPosition: Int = this.length): Pair<Char?, String> {
+    val endIndex = cursorPosition.coerceIn(0, this.length)
 
-private fun String.findLastIndexOfSubstringFromAnyTokenToPosition(tokens: CharArray, position: Int = this.length): Pair<Int, Int> {
-    val endIndex = position.coerceIn(0, this.length)
-    return substring(0, endIndex)
-        .lastIndexOfAny(tokens)
-        .let { index -> index to endIndex }
+    val joinedTokens = tokens.joinToString("|")
+
+    // This regular expression matches when tokens appear at the beginning of words
+    // (IOW, tokens preceded by a space) or if they appear at the beginning of the query
+    val regex = "(^| )($joinedTokens)".toRegex()
+    val substring = substring(0, endIndex)
+
+    val startIndex = regex.findAll(substring).lastOrNull()?.let {
+        substring.indexOfAny(tokens, it.range.first)
+    } ?: return null to this
+
+    return elementAt(startIndex) to substring(startIndex + 1)
 }
