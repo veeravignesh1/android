@@ -15,8 +15,8 @@ import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.Repository
-import com.toggl.timer.common.domain.EditableProject
-import com.toggl.timer.common.domain.EditableTimeEntry
+import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.SaveTimeEntryEffect
 import com.toggl.timer.common.domain.StartTimeEntryEffect
 import com.toggl.timer.common.domain.extensions.isNew
@@ -318,7 +318,12 @@ class StartEditReducer @Inject constructor(
 
     private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
-            it.copy(editableProject = EditableProject(name = autocompleteSuggestion.name, workspaceId = 1))
+            it.copy(
+                editableProject = EditableProject(
+                    name = autocompleteSuggestion.name,
+                    workspaceId = 1
+                )
+            )
         }
 
     private fun StartEditState.modifyWithTaskSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Task): StartEditState =
@@ -461,13 +466,11 @@ class StartEditReducer @Inject constructor(
         )
 
     private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
-    private fun EditableTimeEntry.endTime(now: OffsetDateTime): OffsetDateTime {
-        if (startTime == null)
-            return now
-
-        val relativeDuration = duration ?: startTime.absoluteDurationBetween(now)
-        return startTime + relativeDuration
-    }
+    private fun EditableTimeEntry.endTime(now: OffsetDateTime): OffsetDateTime =
+        startTime?.let { startTime ->
+            val relativeDuration = duration ?: startTime.absoluteDurationBetween(now)
+            startTime + relativeDuration
+        } ?: now
 
     private fun DateTimePickMode.targetsStart() = this == DateTimePickMode.StartDate || this == DateTimePickMode.StartTime
     private fun DateTimePickMode.targetsEnd() = this == DateTimePickMode.EndDate || this == DateTimePickMode.EndTime
