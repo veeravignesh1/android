@@ -19,7 +19,7 @@ import org.threeten.bp.OffsetDateTime
 @DisplayName("The ItemTappedActionTests action")
 internal class ItemTappedActionTests {
 
-    private val state = CalendarDayState(mapOf(), null, OffsetDateTime.now())
+    private val state = CalendarDayState(mapOf(), mapOf(), null, OffsetDateTime.now())
     private val reducer = CalendarDayReducer()
 
     private val timeEntry = createTimeEntry(1)

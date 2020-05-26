@@ -1,29 +1,36 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.models.domain.Project
-import com.toggl.models.domain.Tag
-import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.architecture.core.Selector
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
+import javax.inject.Singleton
 
-fun projectTagChipSelector(
-    addProjectLabel: String,
-    addTagLabel: String,
-    editableTimeEntry: EditableTimeEntry,
-    projects: Map<Long, Project>,
-    tags: Map<Long, Tag>
-): List<ChipViewModel> = sequence {
+@Singleton
+class ProjectTagChipSelector(
+    private val addProjectLabel: String,
+    private val addTagLabel: String
+) : Selector<StartEditState, List<ChipViewModel>> {
 
-    editableTimeEntry.projectId?.let { projectId ->
-        val project = projects[projectId] ?: throw ProjectDoesNotExistException()
-        yield(ChipViewModel.Project(project))
-    } ?: yield(ChipViewModel.AddProject(addProjectLabel))
+    override suspend fun select(state: StartEditState): List<ChipViewModel> {
 
-    for (tagId in editableTimeEntry.tagIds) {
-        val tag = tags[tagId] ?: throw TagDoesNotExistException()
-        yield(ChipViewModel.Tag(tag))
+        val editableTimeEntry = state.editableTimeEntry ?: return emptyList()
+
+        return sequence {
+            val projectId = editableTimeEntry.projectId
+            if (projectId != null) {
+                val project = state.projects[projectId] ?: throw ProjectDoesNotExistException()
+                yield(ChipViewModel.Project(project))
+            } else {
+                yield(ChipViewModel.AddProject(addProjectLabel))
+            }
+
+            for (tagId in editableTimeEntry.tagIds) {
+                val tag = state.tags[tagId] ?: throw TagDoesNotExistException()
+                yield(ChipViewModel.Tag(tag))
+            }
+
+            yield(ChipViewModel.AddTag(addTagLabel))
+        }.toList()
     }
-
-    yield(ChipViewModel.AddTag(addTagLabel))
-}.toList()
+}

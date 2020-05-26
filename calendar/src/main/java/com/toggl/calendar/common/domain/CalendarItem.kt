@@ -46,7 +46,7 @@ fun CalendarItem.toSelectedCalendarItem(): SelectedCalendarItem = when (this) {
     is CalendarItem.CalendarEvent -> SelectedCalendarItem.SelectedCalendarEvent(this.calendarEvent)
 }
 
-sealed class SelectedCalendarItem() {
+sealed class SelectedCalendarItem {
     data class SelectedTimeEntry(val editableTimeEntry: EditableTimeEntry) : SelectedCalendarItem()
     data class SelectedCalendarEvent(val calendarEvent: CalendarEventItem) : SelectedCalendarItem()
 }

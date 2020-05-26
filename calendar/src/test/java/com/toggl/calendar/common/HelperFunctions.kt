@@ -1,5 +1,7 @@
 package com.toggl.calendar.common
 
+import com.toggl.calendar.calendarday.domain.CalendarDayState
+import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
@@ -8,7 +10,6 @@ import io.kotlintest.matchers.collections.shouldBeEmpty
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
-import com.toggl.environment.services.calendar.CalendarEvent
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
 
@@ -50,6 +51,17 @@ fun createCalendarEvent(
     description,
     color,
     calendarId
+)
+
+fun createInitialState(
+    timeEntries: List<TimeEntry> = listOf(),
+    calendarEvents: List<CalendarEvent> = listOf(),
+    date: OffsetDateTime = OffsetDateTime.now()
+) = CalendarDayState(
+    timeEntries.associateBy { it.id },
+    calendarEvents.associateBy { it.id },
+    null,
+    date
 )
 
 fun <T> T.toMutableValue(setFunction: (T) -> Unit) =
