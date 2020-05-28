@@ -1,14 +1,11 @@
 package com.toggl.architecture.core
 
-import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.StoreScopeProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -48,27 +45,19 @@ class FlowStore<State, Action : Any> private constructor(
         fun <State, Action : Any> create(
             initialState: State,
             reducer: Reducer<State, Action>,
-            dispatcherProvider: DispatcherProvider,
             storeScopeProvider: StoreScopeProvider
         ): Store<State, Action> {
             val storeScope = storeScopeProvider.getStoreScope()
-            val stateChannel = ConflatedBroadcastChannel<State>()
-            storeScope.launch {
-                stateChannel.send(initialState)
-            }
-
-            val state = stateChannel
-                .asFlow()
-                .flowOn(dispatcherProvider.main)
+            val stateFlow = MutableStateFlow(initialState)
 
             lateinit var dispatch: (List<Action>) -> Unit
             dispatch = { actions ->
                 storeScope.launch {
-                    var tempState = stateChannel.value
+                    var tempState = stateFlow.value
                     val mutableValue = MutableValue({ tempState }) { tempState = it }
 
                     val effects = actions.flatMap { reducer.reduce(mutableValue, it) }
-                    stateChannel.send(tempState)
+                    stateFlow.value = tempState
 
                     val effectActions = effects.mapNotNull { it.execute() }
                     if (effectActions.isEmpty()) return@launch
@@ -76,7 +65,7 @@ class FlowStore<State, Action : Any> private constructor(
                 }
             }
 
-            return FlowStore(state, dispatch)
+            return FlowStore(stateFlow, dispatch)
         }
     }
 

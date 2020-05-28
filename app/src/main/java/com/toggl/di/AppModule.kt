@@ -42,13 +42,11 @@ class AppModule {
     @Singleton
     fun appStore(
         @ProvideLoggingReducer reducer: Reducer<AppState, AppAction>,
-        dispatcherProvider: DispatcherProvider,
         storeScopeProvider: StoreScopeProvider
     ): Store<AppState, AppAction> {
         return FlowStore.create(
             initialState = AppState(),
             reducer = reducer,
-            dispatcherProvider = dispatcherProvider,
             storeScopeProvider = storeScopeProvider
         )
     }
