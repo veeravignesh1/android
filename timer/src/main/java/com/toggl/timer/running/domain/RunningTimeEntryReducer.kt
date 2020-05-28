@@ -1,35 +1,36 @@
 package com.toggl.timer.running.domain
 
-import com.toggl.common.feature.extensions.mutateWithoutEffects
-import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
-import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.MutableValue
+import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.noEffect
+import com.toggl.architecture.extensions.toEffect
+import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
+import com.toggl.common.feature.timeentry.TimeEntryAction.StopRunningTimeEntry
+import com.toggl.common.feature.timeentry.extensions.runningTimeEntryOrNull
 import com.toggl.environment.services.time.TimeService
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.models.domain.EditableTimeEntry
-import com.toggl.timer.common.domain.StartTimeEntryEffect
-import com.toggl.timer.common.domain.StopTimeEntryEffect
-import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
-import com.toggl.timer.extensions.replaceTimeEntryWithId
-import com.toggl.timer.extensions.runningTimeEntryOrNull
+import com.toggl.repository.extensions.toStartDto
+import com.toggl.timer.running.domain.RunningTimeEntryAction.CardTapped
+import com.toggl.timer.running.domain.RunningTimeEntryAction.StartButtonTapped
+import com.toggl.timer.running.domain.RunningTimeEntryAction.StopButtonTapped
+import com.toggl.timer.running.domain.RunningTimeEntryAction.TimeEntryHandling
 import javax.inject.Inject
 
-class RunningTimeEntryReducer @Inject constructor(
-    private val repository: TimeEntryRepository,
-    private val dispatcherProvider: DispatcherProvider,
-    private val timeService: TimeService
-) : Reducer<RunningTimeEntryState, RunningTimeEntryAction> {
+class RunningTimeEntryReducer @Inject constructor(val timeService: TimeService) : Reducer<RunningTimeEntryState, RunningTimeEntryAction> {
 
     override fun reduce(
         state: MutableValue<RunningTimeEntryState>,
         action: RunningTimeEntryAction
     ): List<Effect<RunningTimeEntryAction>> =
         when (action) {
-            RunningTimeEntryAction.StartButtonTapped -> startTimeEntry(EditableTimeEntry.empty(1), repository)
-            RunningTimeEntryAction.StopButtonTapped -> stopTimeEntry(repository)
-            RunningTimeEntryAction.CardTapped ->
+            StartButtonTapped -> effect(
+                TimeEntryHandling(StartTimeEntry(EditableTimeEntry.empty(1L).toStartDto(timeService.now()))).toEffect()
+            )
+            StopButtonTapped -> effect(TimeEntryHandling(StopRunningTimeEntry).toEffect())
+            CardTapped ->
                 state.mutateWithoutEffects {
                     val entryToOpen = timeEntries.runningTimeEntryOrNull()
                         ?.run(EditableTimeEntry.Companion::fromSingle)
@@ -37,39 +38,8 @@ class RunningTimeEntryReducer @Inject constructor(
 
                     copy(editableTimeEntry = entryToOpen)
                 }
-            is RunningTimeEntryAction.TimeEntryUpdated ->
-                state.mutateWithoutEffects {
-                    val newTimeEntries = timeEntries.replaceTimeEntryWithId(action.id, action.timeEntry)
-                    copy(timeEntries = newTimeEntries)
-                }
-            is RunningTimeEntryAction.TimeEntryStarted ->
-                state.mutateWithoutEffects {
-                    copy(
-                        timeEntries = handleTimeEntryCreationStateChanges(
-                            timeEntries,
-                            action.startedTimeEntry,
-                            action.stoppedTimeEntry
-                        )
-                    )
-                }
+            is TimeEntryHandling -> noEffect()
         }
-
-    private fun startTimeEntry(editableTimeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
-        effect(
-            StartTimeEntryEffect(repository, editableTimeEntry, dispatcherProvider) {
-                RunningTimeEntryAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
-            }
-        )
-
-    private fun stopTimeEntry(repository: TimeEntryRepository) =
-        effect(
-            StopTimeEntryEffect(repository, dispatcherProvider) { stoppedTimeEntry ->
-                    RunningTimeEntryAction.TimeEntryUpdated(
-                        stoppedTimeEntry.id,
-                        stoppedTimeEntry
-                    )
-            }
-        )
 
     private fun RunningTimeEntryState.defaultWorkspaceId() = 1L
 }

@@ -21,6 +21,8 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.dto.CreateProjectDTO
+import com.toggl.repository.dto.CreateTimeEntryDTO
+import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
@@ -97,17 +99,34 @@ class Repository(
 
     override suspend fun loadTasks(): List<Task> = taskDao.getAll().map(DatabaseTask::toModel)
 
-    override suspend fun startTimeEntry(
-        workspaceId: Long,
-        description: String
-    ): StartTimeEntryResult {
-        return timeEntryDao.startTimeEntry(workspaceId, description, timeService.now())
-            .let { (started, stopped) ->
+    override suspend fun startTimeEntry(startTimeEntryDTO: StartTimeEntryDTO): StartTimeEntryResult {
+        return timeEntryDao.startTimeEntry(
+            startTimeEntryDTO.description,
+            startTimeEntryDTO.startTime,
+            startTimeEntryDTO.billable,
+            startTimeEntryDTO.workspaceId,
+            startTimeEntryDTO.projectId,
+            startTimeEntryDTO.taskId
+        ).let { (started, stopped) ->
                 StartTimeEntryResult(
                     started.let(DatabaseTimeEntry::toModel),
                     stopped.firstOrNull()?.let(DatabaseTimeEntry::toModel)
                 )
             }
+    }
+
+    override suspend fun createTimeEntry(createTimeEntryDTO: CreateTimeEntryDTO): TimeEntry {
+        val insertedId = timeEntryDao.insertTimeEntry(DatabaseTimeEntry(
+            description = createTimeEntryDTO.description,
+            startTime = createTimeEntryDTO.startTime,
+            duration = createTimeEntryDTO.duration,
+            billable = createTimeEntryDTO.billable,
+            workspaceId = createTimeEntryDTO.workspaceId,
+            projectId = createTimeEntryDTO.projectId,
+            taskId = createTimeEntryDTO.taskId,
+            isDeleted = false
+        ))
+        return timeEntryDao.getOneTimeEntry(insertedId).let(DatabaseTimeEntry::toModel)
     }
 
     override suspend fun stopRunningTimeEntry(): TimeEntry? {

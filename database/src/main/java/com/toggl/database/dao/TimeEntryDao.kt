@@ -20,17 +20,17 @@ interface TimeEntryDao {
     // TimeEntries only
 
     @Transaction
-    fun startTimeEntry(workspaceId: Long, description: String, now: OffsetDateTime): StartTimeEntryDatabaseResult {
-        val stoppedTimeEntries = stopRunningTimeEntries(now)
+    fun startTimeEntry(description: String, startTime: OffsetDateTime, billable: Boolean, workspaceId: Long, projectId: Long?, taskId: Long?): StartTimeEntryDatabaseResult {
+        val stoppedTimeEntries = stopRunningTimeEntries(startTime)
         val id = insertTimeEntry(
             DatabaseTimeEntry(
                 description = description,
-                startTime = now,
+                startTime = startTime,
                 duration = null,
-                billable = false,
+                billable = billable,
                 workspaceId = workspaceId,
-                projectId = null,
-                taskId = null,
+                projectId = projectId,
+                taskId = taskId,
                 isDeleted = false
             )
         )

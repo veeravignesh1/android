@@ -1,10 +1,10 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.repository.Repository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceException
@@ -13,7 +13,7 @@ import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetExcept
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -362,7 +362,7 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it shouldHaveSize 1
+                it.shouldBeSingleton()
                 (it.first() as ReopenPickerEffect).dateTimePickMode shouldBe initialState.dateTimePickMode
             }
         }

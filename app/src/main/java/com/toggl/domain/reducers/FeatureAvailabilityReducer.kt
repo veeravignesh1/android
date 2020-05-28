@@ -21,10 +21,10 @@ class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
             action.isToggleBillableAction() -> state.mapState {
                 val workspaceId = timerLocalState
                     .getRunningTimeEntryWorkspaceId()
-                    ?: return@mapState noEffect<AppAction>()
+                    ?: return@mapState noEffect()
 
                 val workspace = workspaces[workspaceId]
-                    ?: return@mapState noEffect<AppAction>()
+                    ?: return@mapState noEffect()
 
                 if (workspace.isPro()) innerReducer.reduce(state, action)
                 else noEffect()

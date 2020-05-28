@@ -1,15 +1,17 @@
 package com.toggl.timer.log.domain
 
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.domain.DeleteTimeEntryEffect
+import com.toggl.timer.common.shouldEmitTimeEntryAction
+import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.toMutableValue
-import io.kotlintest.matchers.types.shouldBeTypeOf
+import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -17,36 +19,30 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class CommitDeletionActionTests : FreeCoroutineSpec() {
     init {
         val repository = mockk<TimeEntryRepository>()
-        val reducer = TimeEntriesLogReducer(repository, dispatcherProvider)
+        val reducer = TimeEntriesLogReducer()
 
         "The CommitDeletion action" - {
             "should do nothing if" - {
                 "there are no ids pending deletion" {
                     val initialState = createInitialState(entriesPendingDeletion = setOf())
-                    var state = initialState
-                    val mutableValue = state.toMutableValue { state = it }
-
-                    val effect = reducer.reduce(
-                        mutableValue,
+                    reducer.testReduce(
+                        initialState,
                         TimeEntriesLogAction.CommitDeletion(listOf())
-                    )
-
-                    state shouldBe initialState
-                    effect shouldBe noEffect()
+                    ) { state, effects ->
+                        state shouldBe initialState
+                        effects.shouldBeEmpty()
+                    }
                 }
 
                 "the ids pending deletion in action don't match those in state" {
                     val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
-                    var state = initialState
-                    val mutableValue = state.toMutableValue { state = it }
-
-                    val effect = reducer.reduce(
-                        mutableValue,
+                    reducer.testReduce(
+                        initialState,
                         TimeEntriesLogAction.CommitDeletion(listOf(4, 5, 1337))
-                    )
-
-                    state shouldBe initialState
-                    effect shouldBe noEffect()
+                    ) { state, effects ->
+                        state shouldBe initialState
+                        effects.shouldBeEmpty()
+                    }
                 }
 
                 "the ids pending deletion in action are a subset of those in state" {
@@ -80,16 +76,17 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
 
             "should delete nothing but clear the pending list if the time entries are not in state" - {
                 val initialState = createInitialState(entriesPendingDeletion = setOf(1, 2, 3))
-                var state = initialState
-                val mutableValue = state.toMutableValue { state = it }
 
-                val effect = reducer.reduce(
-                    mutableValue,
+                reducer.testReduce(
+                    initialState,
                     TimeEntriesLogAction.CommitDeletion(listOf(1, 2, 3))
-                )
-
-                state shouldBe initialState.copy(entriesPendingDeletion = setOf())
-                effect shouldBe listOf()
+                ) { state, effects ->
+                    state shouldBe initialState.copy(entriesPendingDeletion = setOf())
+                    effects shouldHaveSize 3
+                    effects.forEach {
+                        it.shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry>()
+                    }
+                }
             }
 
             "should delete time entries" - {
@@ -121,15 +118,7 @@ class CommitDeletionActionTests : FreeCoroutineSpec() {
                 }
 
                 effect.forEach {
-                    it.shouldBeTypeOf<DeleteTimeEntryEffect<TimeEntriesLogAction.TimeEntryDeleted>>()
-                    it.execute()
-                }
-
-                // the following doesn't test the effect, it tests the right arguments were passed to the constructor
-                coVerify {
-                    repository.deleteTimeEntry(te1)
-                    repository.deleteTimeEntry(te2)
-                    repository.deleteTimeEntry(te3)
+                    it.shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry>()
                 }
             }
         }

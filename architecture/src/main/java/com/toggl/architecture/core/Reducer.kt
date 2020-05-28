@@ -20,6 +20,15 @@ class CombinedReducer<State, Action>(private val reducers: List<Reducer<State, A
         reducers.flatMap { it.reduce(state, action) }
 }
 
+fun <LocalState, GlobalState, LocalAction, GlobalAction> Reducer<GlobalState, GlobalAction>.decorateWith(
+    reducer: Reducer<LocalState, LocalAction>,
+    mapToLocalState: (GlobalState) -> LocalState,
+    mapToLocalAction: (GlobalAction) -> LocalAction?,
+    mapToGlobalState: (GlobalState, LocalState) -> GlobalState,
+    mapToGlobalAction: (LocalAction) -> GlobalAction
+): Reducer<GlobalState, GlobalAction> =
+    combine(this, reducer.pullback(mapToLocalState, mapToLocalAction, mapToGlobalState, mapToGlobalAction))
+
 fun <LocalState, GlobalState, LocalAction, GlobalAction>
     Reducer<LocalState, LocalAction>.pullback(
         mapToLocalState: (GlobalState) -> LocalState,

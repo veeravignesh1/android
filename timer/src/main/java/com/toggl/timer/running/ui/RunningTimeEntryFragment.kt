@@ -13,7 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
-import com.toggl.timer.extensions.runningTimeEntryOrNull
+import com.toggl.common.feature.timeentry.extensions.runningTimeEntryOrNull
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import kotlinx.android.synthetic.main.fragment_running_time_entry.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi

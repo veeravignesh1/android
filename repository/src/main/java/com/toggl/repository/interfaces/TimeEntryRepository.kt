@@ -1,6 +1,8 @@
 package com.toggl.repository.interfaces
 
 import com.toggl.models.domain.TimeEntry
+import com.toggl.repository.dto.CreateTimeEntryDTO
+import com.toggl.repository.dto.StartTimeEntryDTO
 
 data class StartTimeEntryResult(
     val startedTimeEntry: TimeEntry,
@@ -9,7 +11,8 @@ data class StartTimeEntryResult(
 
 interface TimeEntryRepository {
     suspend fun loadTimeEntries(): List<TimeEntry>
-    suspend fun startTimeEntry(workspaceId: Long, description: String): StartTimeEntryResult
+    suspend fun startTimeEntry(startTimeEntryDTO: StartTimeEntryDTO): StartTimeEntryResult
+    suspend fun createTimeEntry(createTimeEntryDTO: CreateTimeEntryDTO): TimeEntry
     suspend fun stopRunningTimeEntry(): TimeEntry?
     suspend fun editTimeEntry(timeEntry: TimeEntry): TimeEntry
     suspend fun deleteTimeEntry(timeEntry: TimeEntry): TimeEntry

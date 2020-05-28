@@ -1,22 +1,27 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.timer.common.shouldEmitTimeEntryAction
+import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.toMutableValue
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
-import io.kotlintest.TestCase
+import io.kotlintest.matchers.collections.shouldBeSingleton
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.mockk.clearMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.threeten.bp.OffsetDateTime
 
 @ExperimentalCoroutinesApi
 class DoneButtonTappedActionTests : FreeCoroutineSpec() {
@@ -25,9 +30,10 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
     private val timeEntry = createTimeEntry(1, "old description")
     private val timeEntry2 = createTimeEntry(2, "old description")
     private val workspace = mockk<Workspace> { every { id } returns 1 }
+    private val timeService = mockk<TimeService> { every { now() } returns OffsetDateTime.MAX }
     private val editableTimeEntry =
         EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-    private val reducer = createReducer(repository = repository, dispatcherProvider = dispatcherProvider)
+    private val reducer = createReducer(repository = repository, timeService = timeService, dispatcherProvider = dispatcherProvider)
     private val state = createInitialState(
         workspaces = listOf(workspace),
         timeEntries = listOf(timeEntry, timeEntry2),
@@ -50,42 +56,35 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
             }
 
             "should start the TE if the editable has no ids" {
-                var initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf()))
-                val mutableValue = initialState.toMutableValue { initialState = it }
+                val initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf()))
 
-                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-                result[0].execute()
-
-                result.size shouldBe 1
-                coVerify {
-                    repository.startTimeEntry(1, "Test")
+                reducer.testReduceEffects(
+                    initialState,
+                    StartEditAction.DoneButtonTapped
+                ) { effects ->
+                    effects.shouldBeSingleton()
+                    effects.first().shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.StartTimeEntry>()
                 }
             }
 
             "should update the TE if the editable has one id" {
-                var initialState = state.copy()
-                val mutableValue = initialState.toMutableValue { initialState = it }
-
-                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-                result[0].execute()
-
-                result.size shouldBe 1
-                coVerify {
-                    repository.editTimeEntry(timeEntry.copy(description = "Test"))
+                reducer.testReduceEffects(
+                    state.copy(),
+                    StartEditAction.DoneButtonTapped
+                ) { effects ->
+                    effects.shouldBeSingleton()
+                    effects.first().shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry>()
                 }
             }
 
             "should update each TE in a group if the editable has several ids" {
-                var initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf(1L, 2L)))
-                val mutableValue = initialState.toMutableValue { initialState = it }
-
-                val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-                result.forEach { it.execute() }
-
-                result.size shouldBe 2
-                coVerify {
-                    repository.editTimeEntry(timeEntry.copy(description = "Test"))
-                    repository.editTimeEntry(timeEntry2.copy(description = "Test"))
+                val initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf(1L, 2L)))
+                reducer.testReduceEffects(
+                    initialState,
+                    StartEditAction.DoneButtonTapped
+                ) { effects ->
+                    effects shouldHaveSize 2
+                    effects.forEach { it.shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry>() }
                 }
             }
 
@@ -102,12 +101,5 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
                 }
             }
         }
-    }
-
-    override fun beforeTest(testCase: TestCase) {
-        super.beforeTest(testCase)
-        clearMocks(repository)
-        coEvery { repository.startTimeEntry(any(), any()) } returns startTimeEntryResult
-        coEvery { repository.editTimeEntry(any()) } returns timeEntry
     }
 }

@@ -13,11 +13,17 @@ private class MapEffect<T, R>(
         innerEffect.execute()?.run(mapFn)
 }
 
+fun <Action> Collection<Action>.toEffects() = map { it.toEffect() }
+
+fun <Action> Action.toEffect(): Effect<Action> = object : Effect<Action> {
+    override suspend fun execute(): Action? = this@toEffect
+}
+
 fun <Action> effect(effect: Effect<Action>) = listOf(effect)
 
 fun <Action> effects(vararg effects: Effect<Action>) = effects.toList()
 
 infix operator fun <Action> Effect<Action>.plus(otherEffect: Effect<Action>) = listOf(this, otherEffect)
 
-fun <T> noEffect(): List<Effect<T>> =
+fun noEffect(): List<Effect<Nothing>> =
     emptyList()

@@ -1,42 +1,40 @@
 package com.toggl.timer.log.domain
 
-import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.architecture.extensions.toEffect
+import com.toggl.architecture.extensions.toEffects
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.TimeEntryAction.DeleteTimeEntry
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
 import com.toggl.models.common.SwipeDirection
-import com.toggl.models.domain.TimeEntry
-import com.toggl.repository.interfaces.TimeEntryRepository
-import com.toggl.timer.common.domain.DeleteTimeEntryEffect
 import com.toggl.models.domain.EditableTimeEntry
-import com.toggl.timer.common.domain.StartTimeEntryEffect
-import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
-import com.toggl.timer.common.domain.handleTimeEntryDeletionStateChanges
-import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
+import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.extensions.containsExactly
+import com.toggl.timer.log.domain.TimeEntriesLogAction.CommitDeletion
+import com.toggl.timer.log.domain.TimeEntriesLogAction.ContinueButtonTapped
+import com.toggl.timer.log.domain.TimeEntriesLogAction.TimeEntryGroupSwiped
+import com.toggl.timer.log.domain.TimeEntriesLogAction.TimeEntryGroupTapped
+import com.toggl.timer.log.domain.TimeEntriesLogAction.TimeEntryHandling
+import com.toggl.timer.log.domain.TimeEntriesLogAction.TimeEntrySwiped
+import com.toggl.timer.log.domain.TimeEntriesLogAction.TimeEntryTapped
+import com.toggl.timer.log.domain.TimeEntriesLogAction.ToggleTimeEntryGroupTapped
+import com.toggl.timer.log.domain.TimeEntriesLogAction.UndoButtonTapped
 import javax.inject.Inject
 
-class TimeEntriesLogReducer @Inject constructor(
-    private val repository: TimeEntryRepository,
-    private val dispatcherProvider: DispatcherProvider
-) : Reducer<TimeEntriesLogState, TimeEntriesLogAction> {
+class TimeEntriesLogReducer @Inject constructor() : Reducer<TimeEntriesLogState, TimeEntriesLogAction> {
 
     override fun reduce(
         state: MutableValue<TimeEntriesLogState>,
         action: TimeEntriesLogAction
     ): List<Effect<TimeEntriesLogAction>> =
         when (action) {
-            is TimeEntriesLogAction.ContinueButtonTapped -> {
-                val timeEntryToContinue = state().timeEntries[action.id]
-                    ?.let(EditableTimeEntry.Companion::fromSingle)
-                    ?: throw TimeEntryDoesNotExistException()
-
-                startTimeEntry(timeEntryToContinue, repository)
-            }
-            is TimeEntriesLogAction.TimeEntryTapped ->
+            is ContinueButtonTapped -> effect(TimeEntryHandling(TimeEntryAction.ContinueTimeEntry(action.id)).toEffect())
+            is TimeEntryTapped ->
                 state.mutateWithoutEffects {
                     val entryToEdit = timeEntries[action.id]
                         ?.run(EditableTimeEntry.Companion::fromSingle)
@@ -45,67 +43,44 @@ class TimeEntriesLogReducer @Inject constructor(
                     copy(editableTimeEntry = entryToEdit)
                 }
 
-            is TimeEntriesLogAction.TimeEntryGroupTapped ->
+            is TimeEntryGroupTapped ->
                 state.mutateWithoutEffects {
                     val entryToEdit = EditableTimeEntry.fromGroup(state().getAllTimeEntriesWithIds(action.ids))
-
                     copy(editableTimeEntry = entryToEdit)
                 }
 
-            is TimeEntriesLogAction.TimeEntrySwiped -> {
+            is TimeEntrySwiped -> {
                 val swipedEntry = state().timeEntries[action.id]
                     ?: throw TimeEntryDoesNotExistException()
 
                 when (action.direction) {
                     SwipeDirection.Left ->
                         handleDeletingSwipe(state, listOf(swipedEntry.id))
-                    SwipeDirection.Right ->
-                        startTimeEntry(EditableTimeEntry.fromSingle(swipedEntry), repository)
+                    SwipeDirection.Right -> {
+                        effect(TimeEntryHandling(TimeEntryAction.ContinueTimeEntry(action.id)).toEffect())
+                    }
                 }
             }
 
-            is TimeEntriesLogAction.TimeEntryGroupSwiped -> {
-
+            is TimeEntryGroupSwiped -> {
                 when (action.direction) {
                     SwipeDirection.Left ->
                         handleDeletingSwipe(state, action.ids)
                     SwipeDirection.Right -> {
                         val timeEntryToStart = EditableTimeEntry.fromGroup(state().getAllTimeEntriesWithIds(action.ids))
-
-                        startTimeEntry(timeEntryToStart, repository)
+                        effect(TimeEntryHandling(TimeEntryAction.ContinueTimeEntry(timeEntryToStart.ids.first())).toEffect())
                     }
                 }
             }
 
-            is TimeEntriesLogAction.TimeEntryStarted ->
-                state.mutateWithoutEffects {
-                    copy(
-                        timeEntries = handleTimeEntryCreationStateChanges(
-                            timeEntries,
-                            action.startedTimeEntry,
-                            action.stoppedTimeEntry
-                        )
-                    )
-                }
-
-            is TimeEntriesLogAction.TimeEntryDeleted ->
-                state.mutateWithoutEffects {
-                    copy(
-                        timeEntries = handleTimeEntryDeletionStateChanges(
-                            timeEntries,
-                            action.deletedTimeEntry
-                        )
-                    )
-                }
-
-            is TimeEntriesLogAction.ToggleTimeEntryGroupTapped ->
+            is ToggleTimeEntryGroupTapped ->
                 state.mutateWithoutEffects {
                     val newUngroupedTimeEntries =
                         if (expandedGroupIds.contains(action.groupId)) expandedGroupIds - action.groupId
                         else expandedGroupIds + action.groupId
                     copy(expandedGroupIds = newUngroupedTimeEntries)
                 }
-            is TimeEntriesLogAction.CommitDeletion -> {
+            is CommitDeletion -> {
                 val currentState = state()
                 val timeEntryIdsToDelete =
                     if (currentState.entriesPendingDeletion.containsExactly(action.ids)) action.ids
@@ -114,29 +89,19 @@ class TimeEntriesLogReducer @Inject constructor(
                 if (timeEntryIdsToDelete.none()) {
                     noEffect()
                 } else {
-
                     state.mutate {
                         val updatedTimeEntries = markDeletedTimeEntries(timeEntries, timeEntryIdsToDelete)
                         copy(timeEntries = updatedTimeEntries, entriesPendingDeletion = setOf())
                     }
                     timeEntryIdsToDelete
-                        .mapNotNull { currentState.timeEntries[it] }
-                        .map(::delete)
+                        .map { TimeEntryHandling(DeleteTimeEntry(it)) }
+                        .toEffects()
                 }
             }
-            is TimeEntriesLogAction.UndoButtonTapped ->
+            is UndoButtonTapped ->
                 state.mutateWithoutEffects { copy(entriesPendingDeletion = emptySet()) }
+            is TimeEntryHandling -> noEffect()
         }
-
-    private fun startTimeEntry(timeEntry: EditableTimeEntry, repository: TimeEntryRepository) =
-        effect(
-            StartTimeEntryEffect(repository, timeEntry, dispatcherProvider) {
-                TimeEntriesLogAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
-            }
-        )
-
-    private fun delete(timeEntry: TimeEntry) =
-        DeleteTimeEntryEffect(repository, timeEntry, dispatcherProvider, TimeEntriesLogAction::TimeEntryDeleted)
 
     private fun handleDeletingSwipe(
         state: MutableValue<TimeEntriesLogState>,
@@ -150,20 +115,17 @@ class TimeEntriesLogReducer @Inject constructor(
             copy(timeEntries = updatedEntries, entriesPendingDeletion = entriesToDelete.toSet())
         }
 
-        val deleteEffects = prepareDeleteEffects(state, entriesToCommitDeletion)
-        deleteEffects.add(WaitForUndoEffect(entriesToDelete))
-
-        return deleteEffects
+        return prepareDeleteEffects(state, entriesToCommitDeletion) + WaitForUndoEffect(entriesToDelete)
     }
 
     private fun prepareDeleteEffects(
         state: MutableValue<TimeEntriesLogState>,
         idsToDelete: Collection<Long>
-    ): MutableList<Effect<TimeEntriesLogAction>> =
+    ): List<Effect<TimeEntriesLogAction>> =
         idsToDelete
             .mapNotNull { state().timeEntries[it] }
-            .map(::delete)
-            .toMutableList()
+            .map { TimeEntryHandling(DeleteTimeEntry(it.id)) }
+            .toEffects()
 
     private fun markDeletedTimeEntries(
         timeEntries: Map<Long, TimeEntry>,

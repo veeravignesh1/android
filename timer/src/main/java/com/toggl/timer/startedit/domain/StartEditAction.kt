@@ -1,8 +1,9 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Tag
-import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.domain.TimerAction
 import org.threeten.bp.Duration
 import org.threeten.bp.OffsetDateTime
@@ -17,8 +18,6 @@ sealed class StartEditAction {
     object AddProjectChipTapped : StartEditAction()
     object TagButtonTapped : StartEditAction()
     object AddTagChipTapped : StartEditAction()
-    data class TimeEntryUpdated(val id: Long, val timeEntry: TimeEntry) : StartEditAction()
-    data class TimeEntryStarted(val startedTimeEntry: TimeEntry, val stoppedTimeEntry: TimeEntry?) : StartEditAction()
     data class AutocompleteSuggestionsUpdated(val autocompleteSuggestions: List<AutocompleteSuggestion>) : StartEditAction()
     data class AutocompleteSuggestionTapped(val autocompleteSuggestion: AutocompleteSuggestion) : StartEditAction()
     data class PickerTapped(val pickerMode: DateTimePickMode) : StartEditAction()
@@ -29,6 +28,7 @@ sealed class StartEditAction {
     data class WheelChangedEndTime(val duration: Duration) : StartEditAction()
     object StopButtonTapped : StartEditAction()
     data class TagCreated(val tag: Tag) : StartEditAction()
+    data class TimeEntryHandling(override val timeEntryAction: TimeEntryAction) : StartEditAction(), TimeEntryActionHolder
 
     companion object {
         fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
@@ -53,8 +53,6 @@ fun StartEditAction.formatForDebug() =
         StartEditAction.AddTagChipTapped -> "Add tag chip tapped"
         is StartEditAction.PickerTapped -> "Picker tapped with mode $pickerMode"
         is StartEditAction.DescriptionEntered -> "Description changed to $description with cursor at position $cursorPosition"
-        is StartEditAction.TimeEntryUpdated -> "Time entry with id $id updated"
-        is StartEditAction.TimeEntryStarted -> "Time entry started with id $startedTimeEntry.id"
         StartEditAction.BillableTapped -> "Billable toggled in the running time entry"
         is StartEditAction.AutocompleteSuggestionsUpdated -> "AutocompleteSuggestions updated with $autocompleteSuggestions"
         is StartEditAction.AutocompleteSuggestionTapped -> "AutocompleteSuggestion tapped: $autocompleteSuggestion"
@@ -65,4 +63,5 @@ fun StartEditAction.formatForDebug() =
         is StartEditAction.WheelChangedEndTime -> "Wheel changed duration: $duration"
         StartEditAction.StopButtonTapped -> "Stop button tapped"
         is StartEditAction.TagCreated -> "Tag created $tag"
+        is StartEditAction.TimeEntryHandling -> "Time entry action $timeEntryAction"
     }

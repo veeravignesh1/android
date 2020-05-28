@@ -6,31 +6,32 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.architecture.extensions.toEffect
+import com.toggl.architecture.extensions.toEffects
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
+import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
+import com.toggl.common.feature.timeentry.TimeEntryAction.TimeEntryUpdated
+import com.toggl.common.feature.timeentry.TimeEntryAction.EditTimeEntry
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
-import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.Repository
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
-import com.toggl.timer.common.domain.SaveTimeEntryEffect
-import com.toggl.timer.common.domain.StartTimeEntryEffect
-import com.toggl.timer.common.domain.extensions.isNew
-import com.toggl.timer.common.domain.extensions.isRunning
-import com.toggl.timer.common.domain.extensions.isRunningOrNew
-import com.toggl.timer.common.domain.extensions.isStopped
-import com.toggl.timer.common.domain.handleTimeEntryCreationStateChanges
+import com.toggl.common.feature.timeentry.extensions.isNew
+import com.toggl.common.feature.timeentry.extensions.isRunning
+import com.toggl.common.feature.timeentry.extensions.isRunningOrNew
+import com.toggl.common.feature.timeentry.extensions.isStopped
+import com.toggl.repository.extensions.toStartDto
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.timer.extensions.absoluteDurationBetween
-import com.toggl.timer.extensions.replaceTimeEntryWithId
 import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
@@ -63,24 +64,7 @@ class StartEditReducer @Inject constructor(
                         )
                     )
                 } returnEffect updateAutocompleteSuggestions(action, state())
-            is StartEditAction.TimeEntryUpdated ->
-                state.mutateWithoutEffects {
-                    copy(
-                        timeEntries = timeEntries.replaceTimeEntryWithId(action.id, action.timeEntry),
-                        editableTimeEntry = null
-                    )
-                }
-            is StartEditAction.TimeEntryStarted ->
-                state.mutateWithoutEffects {
-                    copy(
-                        timeEntries = handleTimeEntryCreationStateChanges(
-                            timeEntries,
-                            action.startedTimeEntry,
-                            action.stoppedTimeEntry
-                        ),
-                        editableTimeEntry = null
-                    )
-                }
+
             StartEditAction.BillableTapped ->
                 state.mutateWithoutEffects {
                     StartEditState.editableTimeEntry.modify(this) {
@@ -113,17 +97,25 @@ class StartEditReducer @Inject constructor(
                 val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 state.mutate { copy(editableTimeEntry = null) }
                 if (editableTimeEntry.shouldStart()) {
-                    startTimeEntry(editableTimeEntry)
+                    effect(
+                        StartEditAction.TimeEntryHandling(
+                            StartTimeEntry(
+                                editableTimeEntry.toStartDto(timeService.now())
+                            )
+                        ).toEffect()
+                    )
                 } else {
                     val timeEntriesToEdit = editableTimeEntry.ids.mapNotNull { state().timeEntries[it] }
                     timeEntriesToEdit.map {
-                        saveTimeEntry(
-                            it.copy(
-                                description = editableTimeEntry.description,
-                                billable = editableTimeEntry.billable
-                            )
+                        it.copy(
+                            description = editableTimeEntry.description,
+                            billable = editableTimeEntry.billable
                         )
-                    }
+                    }.map {
+                        StartEditAction.TimeEntryHandling(
+                            EditTimeEntry(it)
+                        )
+                    }.toEffects()
                 }
             }
             is StartEditAction.AutocompleteSuggestionsUpdated ->
@@ -266,6 +258,14 @@ class StartEditReducer @Inject constructor(
                             tagIds = editableTimeEntry.tagIds + action.tag.id
                         )
                     )
+                }
+            }
+            is StartEditAction.TimeEntryHandling -> {
+                when (action.timeEntryAction) {
+                    is TimeEntryUpdated -> state.mutateWithoutEffects {
+                        copy(editableTimeEntry = null)
+                    }
+                    else -> noEffect()
                 }
             }
         }
@@ -434,18 +434,6 @@ class StartEditReducer @Inject constructor(
         mode.targetsEnd() -> throw EditableTimeEntryDoesNotHaveAStartTimeSetException()
         else -> TemporalInconsistency.None
     }
-
-    private fun startTimeEntry(editableTimeEntry: EditableTimeEntry) =
-        effect(
-            StartTimeEntryEffect(repository, editableTimeEntry, dispatcherProvider) {
-                StartEditAction.TimeEntryStarted(it.startedTimeEntry, it.stoppedTimeEntry)
-            }
-        )
-
-    private fun saveTimeEntry(timeEntry: TimeEntry) =
-        SaveTimeEntryEffect(repository, dispatcherProvider, timeEntry) { updatedTimeEntry ->
-            StartEditAction.TimeEntryUpdated(updatedTimeEntry.id, updatedTimeEntry)
-        }
 
     private fun updateAutocompleteSuggestions(
         action: StartEditAction.DescriptionEntered,

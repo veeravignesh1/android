@@ -1,49 +1,39 @@
 package com.toggl.timer.log.domain
 
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
 import com.toggl.models.common.SwipeDirection
-import com.toggl.repository.interfaces.StartTimeEntryResult
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
+import com.toggl.timer.common.shouldEmitTimeEntryAction
+import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.toMutableValue
-import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
+import io.kotlintest.matchers.collections.shouldBeSingleton
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 
 @ExperimentalCoroutinesApi
 class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
     init {
-        val repository = mockk<TimeEntryRepository>()
         val entryInDatabase = createTimeEntry(1, "test")
-        val entryToBeStarted = createTimeEntry(2, "test")
-        coEvery { repository.startTimeEntry(1, "test") } returns StartTimeEntryResult(
-            entryToBeStarted,
-            null
-        )
-        coEvery { repository.deleteTimeEntry(entryInDatabase) } returns entryInDatabase.copy(
-            isDeleted = true
-        )
-        val reducer = TimeEntriesLogReducer(repository, dispatcherProvider)
+        val reducer = TimeEntriesLogReducer()
 
         "The TimeEntrySwiped action" - {
 
             "when swiping right" - {
                 "should continue the swiped time entry" {
                     val initialState = createInitialState(listOf(entryInDatabase))
-                    var state = initialState
-                    val mutableValue = state.toMutableValue { state = it }
-                    val action = TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Right)
-                    val effectAction = reducer.reduce(
-                        mutableValue,
-                        action
-                    ).single().execute() as TimeEntriesLogAction.TimeEntryStarted
-                    val startedTimeEntry = effectAction.startedTimeEntry
-                    startedTimeEntry shouldBe entryToBeStarted
+                    reducer.testReduceEffects(
+                        initialState,
+                        TimeEntriesLogAction.TimeEntrySwiped(1, SwipeDirection.Right)
+                    ) { effect ->
+                        effect.shouldBeSingleton()
+                        effect.first().shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry>()
+                    }
                 }
             }
 
@@ -65,19 +55,14 @@ class TimeEntrySwipedActionTests : FreeCoroutineSpec() {
                     listOf(entryInDatabase, entryInDatabase.copy(id = 2)),
                     entriesPendingDeletion = setOf(1, 4)
                 )
-                var state = initialState
-                val mutableValue = state.toMutableValue { state = it }
-                val action = TimeEntriesLogAction.TimeEntrySwiped(2, SwipeDirection.Left)
 
-                val effectActions = reducer.reduce(mutableValue, action)
-                val deletedEntry = effectActions[0].execute() as TimeEntriesLogAction.TimeEntryDeleted
-
-                deletedEntry.deletedTimeEntry shouldBe entryInDatabase.copy(isDeleted = true)
-                state.entriesPendingDeletion shouldBe setOf(2L)
-                effectActions[1].shouldBeTypeOf<WaitForUndoEffect>()
-                runBlockingTest {
-                    val executedUndo = effectActions[1].execute()
-                    executedUndo shouldBe TimeEntriesLogAction.CommitDeletion(listOf(2))
+                reducer.testReduceEffects(
+                    initialState,
+                    TimeEntriesLogAction.TimeEntrySwiped(2, SwipeDirection.Left)
+                ) { effects ->
+                    effects shouldHaveSize 2
+                    effects.first()
+                        .shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry>()
                 }
             }
 

@@ -2,7 +2,6 @@ package com.toggl.timer.running.domain
 
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.createTimeEntry
@@ -23,10 +22,9 @@ import org.threeten.bp.OffsetDateTime
 @ExperimentalCoroutinesApi
 @DisplayName("The CardTapped action")
 class CardTappedActionTests : CoroutineTest() {
-    private val repository = mockk<TimeEntryRepository>()
     private val workspace = mockk<Workspace>()
     private val timeService = mockk<TimeService>()
-    private val reducer = RunningTimeEntryReducer(repository, dispatcherProvider, timeService)
+    private val reducer = RunningTimeEntryReducer(timeService)
     private val editableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
 
     @Test

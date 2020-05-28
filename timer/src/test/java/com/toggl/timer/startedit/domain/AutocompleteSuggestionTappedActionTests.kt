@@ -1,24 +1,24 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
-import com.toggl.models.domain.Task
 import com.toggl.models.domain.Tag
+import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTask
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.models.domain.EditableProject
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceException
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
-import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
+import com.toggl.timer.project.domain.createProject
+import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
@@ -473,7 +473,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(createTagSuggestion)
             ) {
-                it shouldHaveSize 1
+                it.shouldBeSingleton()
                 it.single()
                     .shouldBeTypeOf<CreateTagEffect>()
             }

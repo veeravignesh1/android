@@ -3,7 +3,11 @@ package com.toggl.timer.di
 import android.content.Context
 import com.toggl.architecture.core.Store
 import com.toggl.architecture.core.combine
+import com.toggl.architecture.core.decorateWith
 import com.toggl.architecture.core.pullback
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.TimeEntryReducer
+import com.toggl.common.feature.timeentry.TimeEntryState
 import com.toggl.environment.services.time.TimeService
 import com.toggl.timer.R
 import com.toggl.timer.common.domain.TimerAction
@@ -91,6 +95,7 @@ class TimerModule {
     @Provides
     @Singleton
     internal fun timerReducer(
+        timeEntryReducer: TimeEntryReducer,
         timeEntriesLogReducer: TimeEntriesLogReducer,
         startEditReducer: StartEditReducer,
         runningTimeEntryReducer: RunningTimeEntryReducer,
@@ -98,19 +103,34 @@ class TimerModule {
     ): TimerReducer {
 
         return combine(
-            timeEntriesLogReducer.pullback(
+            timeEntriesLogReducer.decorateWith(timeEntryReducer,
+                mapToLocalState = { TimeEntryState(it.timeEntries) },
+                mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+                mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+                mapToGlobalAction = { localAction -> TimeEntriesLogAction.TimeEntryHandling(localAction) }
+            ).pullback(
                 mapToLocalState = TimeEntriesLogState.Companion::fromTimerState,
                 mapToLocalAction = TimeEntriesLogAction.Companion::fromTimerAction,
                 mapToGlobalState = TimeEntriesLogState.Companion::toTimerState,
                 mapToGlobalAction = TimeEntriesLogAction.Companion::toTimerAction
             ),
-            startEditReducer.pullback(
+            startEditReducer.decorateWith(timeEntryReducer,
+                mapToLocalState = { TimeEntryState(it.timeEntries) },
+                mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+                mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+                mapToGlobalAction = { localAction -> StartEditAction.TimeEntryHandling(localAction) }
+            ).pullback(
                 mapToLocalState = StartEditState.Companion::fromTimerState,
                 mapToLocalAction = StartEditAction.Companion::fromTimerAction,
                 mapToGlobalState = StartEditState.Companion::toTimerState,
                 mapToGlobalAction = StartEditAction.Companion::toTimerAction
             ),
-            runningTimeEntryReducer.pullback(
+            runningTimeEntryReducer.decorateWith(timeEntryReducer,
+                mapToLocalState = { TimeEntryState(it.timeEntries) },
+                mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+                mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+                mapToGlobalAction = { localAction -> RunningTimeEntryAction.TimeEntryHandling(localAction) }
+            ).pullback(
                 mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
                 mapToLocalAction = RunningTimeEntryAction.Companion::fromTimerAction,
                 mapToGlobalState = RunningTimeEntryState.Companion::toTimerState,

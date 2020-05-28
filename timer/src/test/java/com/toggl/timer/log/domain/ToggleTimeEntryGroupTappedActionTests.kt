@@ -1,19 +1,16 @@
 package com.toggl.timer.log.domain
 
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldContain
 import io.kotlintest.matchers.collections.shouldNotContain
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 class ToggleTimeEntryGroupTappedActionTests : FreeCoroutineSpec() {
     init {
-        val repository = mockk<TimeEntryRepository>()
-        val reducer = TimeEntriesLogReducer(repository, dispatcherProvider)
+        val reducer = TimeEntriesLogReducer()
 
         "The ToggleTimeEntryGroupTappedAction action" - {
             "should add groupId to expandedGroupId if it wasn't there before" {

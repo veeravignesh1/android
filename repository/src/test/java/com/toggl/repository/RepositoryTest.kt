@@ -11,6 +11,7 @@ import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.WorkspaceFeature
+import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
 import com.toggl.repository.interfaces.StartTimeEntryResult
@@ -237,12 +238,27 @@ class RepositoryTest : StringSpec() {
                 false
             )
             every { timeService.now() } returns nowTime
-            every { timeEntryDao.startTimeEntry(any(), any(), any()) } returns (startedTimeEntry to stoppedTimeEntries)
+            every { timeEntryDao.startTimeEntry(any(), any(), any(), any(), any(), any()) } returns (startedTimeEntry to stoppedTimeEntries)
 
-            val result = repository.startTimeEntry(startedTimeEntry.id, startedTimeEntry.description)
+            val result = repository.startTimeEntry(StartTimeEntryDTO(
+                startedTimeEntry.description,
+                startedTimeEntry.startTime,
+                startedTimeEntry.billable,
+                startedTimeEntry.workspaceId,
+                startedTimeEntry.projectId,
+                startedTimeEntry.taskId,
+                listOf()
+            ))
 
             verify(exactly = 1) {
-                timeEntryDao.startTimeEntry(startedTimeEntry.id, startedTimeEntry.description, nowTime)
+                timeEntryDao.startTimeEntry(
+                    startedTimeEntry.description,
+                    startedTimeEntry.startTime,
+                    startedTimeEntry.billable,
+                    startedTimeEntry.workspaceId,
+                    startedTimeEntry.projectId,
+                    startedTimeEntry.taskId
+                )
             }
             verify {
                 workspaceDao wasNot called

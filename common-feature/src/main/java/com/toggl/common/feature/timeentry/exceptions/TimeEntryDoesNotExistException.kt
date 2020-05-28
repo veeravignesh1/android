@@ -1,4 +1,4 @@
-package com.toggl.timer.exceptions
+package com.toggl.common.feature.timeentry.exceptions
 
 import java.lang.IllegalStateException
 

@@ -1,21 +1,18 @@
 package com.toggl.timer.log.domain
 
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.toMutableValue
-import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
 import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
 class TimeEntryTappedActionTests : FreeCoroutineSpec() {
     init {
-        val repository = mockk<TimeEntryRepository>()
-        val reducer = TimeEntriesLogReducer(repository, dispatcherProvider)
+        val reducer = TimeEntriesLogReducer()
         val testTe = createTimeEntry(1, "test")
 
         "The TimeEntryTapped action" - {

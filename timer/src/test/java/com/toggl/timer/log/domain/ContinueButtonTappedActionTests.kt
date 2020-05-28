@@ -1,75 +1,30 @@
 package com.toggl.timer.log.domain
 
-import com.toggl.repository.interfaces.StartTimeEntryResult
-import com.toggl.repository.interfaces.TimeEntryRepository
-import com.toggl.timer.common.FreeCoroutineSpec
-import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.toMutableValue
-import com.toggl.timer.exceptions.TimeEntryDoesNotExistException
-import io.kotlintest.properties.assertAll
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
-import io.mockk.coEvery
-import io.mockk.mockk
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.timer.common.CoroutineTest
+import com.toggl.timer.common.shouldEmitTimeEntryAction
+import com.toggl.timer.common.testReduceEffects
+import io.kotlintest.matchers.collections.shouldBeSingleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
-class ContinueButtonTappedActionTests : FreeCoroutineSpec() {
-    init {
-        val repository = mockk<TimeEntryRepository>()
-        val reducer = TimeEntriesLogReducer(repository, dispatcherProvider)
-        val testTe = createTimeEntry(1, "test")
-        val stoppedTe = createTimeEntry(2, "stopped")
-        coEvery { repository.startTimeEntry(1, "test") } returns StartTimeEntryResult(
-            testTe,
-            stoppedTe
-        )
+@DisplayName("The ContinueButtonTappedAction")
+class ContinueButtonTappedActionTests : CoroutineTest() {
 
-        "The ContinueButtonTapped action" - {
-            "should throw when there are no time entries" - {
-                "with the matching id" {
-                    val initialState = createInitialState(listOf(testTe))
-                    var state = initialState
-                    val mutableValue = state.toMutableValue { state = it }
+    private val reducer = TimeEntriesLogReducer()
 
-                    shouldThrow<TimeEntryDoesNotExistException> {
-                        reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(2))
-                    }
-                }
-
-                "at all" {
-                    val initialState = createInitialState()
-
-                    assertAll(fn = { id: Long ->
-                        var state = initialState
-                        val mutableValue = state.toMutableValue { state = it }
-                        shouldThrow<TimeEntryDoesNotExistException> {
-                            reducer.reduce(
-                                mutableValue,
-                                TimeEntriesLogAction.ContinueButtonTapped(id)
-                            )
-                        }
-                    })
-                }
-            }
-            "should start a new time entry" {
-                val initialState = createInitialState(timeEntries = listOf(testTe))
-                var state = initialState
-                val mutableValue = state.toMutableValue { state = it }
-                val effect =
-                    reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(1))
-                val (started, _) = (effect.single().execute() as TimeEntriesLogAction.TimeEntryStarted)
-                started shouldBe testTe
-            }
-            "should stop the previously running time entry" {
-                val initialState = createInitialState(timeEntries = listOf(testTe))
-                var state = initialState
-                val mutableValue = state.toMutableValue { state = it }
-                val effect =
-                    reducer.reduce(mutableValue, TimeEntriesLogAction.ContinueButtonTapped(1))
-                val (_, stopped) = (effect.single().execute() as TimeEntriesLogAction.TimeEntryStarted)
-                stopped shouldBe stoppedTe
-            }
+    @Test
+    fun `should emit start time entry effect`() = runBlockingTest {
+        reducer.testReduceEffects(
+            createInitialState(),
+            TimeEntriesLogAction.ContinueButtonTapped(1)
+        ) { effects ->
+            effects.shouldBeSingleton()
+            effects.single()
+                .shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry>()
         }
     }
 }

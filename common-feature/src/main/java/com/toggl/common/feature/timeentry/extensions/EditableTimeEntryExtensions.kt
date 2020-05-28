@@ -1,4 +1,4 @@
-package com.toggl.timer.common.domain.extensions
+package com.toggl.common.feature.timeentry.extensions
 
 import com.toggl.models.domain.EditableTimeEntry
 

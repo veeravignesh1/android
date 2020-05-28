@@ -1,22 +1,24 @@
 package com.toggl.timer.running.domain
 
-import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.models.domain.EditableTimeEntry
-import com.toggl.timer.common.domain.StartTimeEntryEffect
+import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.threeten.bp.OffsetDateTime
 
 @ExperimentalCoroutinesApi
 class StartButtonTappedActionTests : FreeCoroutineSpec() {
     init {
-        val repository = mockk<TimeEntryRepository>()
-        val reducer = RunningTimeEntryReducer(repository, dispatcherProvider, mockk())
+        val timeService = mockk<TimeService> { every { now() } returns OffsetDateTime.MAX }
+        val reducer = RunningTimeEntryReducer(timeService)
         val editableTimeEntry =
             EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
         val initialState = createInitialState(editableTimeEntry = editableTimeEntry)
@@ -31,8 +33,8 @@ class StartButtonTappedActionTests : FreeCoroutineSpec() {
                 }
                 "should emit StartTimeEntry effect" {
                     effect.shouldBeSingleton()
-                    effect.single()
-                        .shouldBeTypeOf<StartTimeEntryEffect<RunningTimeEntryAction.TimeEntryStarted>>()
+                    effect.first()
+                        .shouldEmitTimeEntryAction<RunningTimeEntryAction.TimeEntryHandling, TimeEntryAction.StartTimeEntry>()
                 }
             }
         }

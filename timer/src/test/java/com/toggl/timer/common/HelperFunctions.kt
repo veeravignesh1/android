@@ -3,9 +3,12 @@ package com.toggl.timer.common
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.types.shouldBeTypeOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
@@ -52,6 +55,14 @@ fun createTask(
         workspaceId,
         userId
     )
+
+suspend inline fun <reified Holder : TimeEntryActionHolder, reified TimeEntryActionType : TimeEntryAction> Effect<Any>.shouldEmitTimeEntryAction(additionalTestBlock: (TimeEntryActionType) -> Unit = {}) {
+    this.execute().shouldBeTypeOf<Holder> {
+        it.timeEntryAction.shouldBeTypeOf<TimeEntryActionType> { timeEntryAction ->
+            additionalTestBlock(timeEntryAction)
+        }
+    }
+}
 
 fun <T> T.toMutableValue(setFunction: (T) -> Unit) =
     MutableValue({ this }, setFunction)
