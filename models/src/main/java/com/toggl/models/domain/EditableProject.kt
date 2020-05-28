@@ -5,7 +5,7 @@ import arrow.optics.optics
 @optics
 data class EditableProject(
     val name: String = "",
-    val color: String = "",
+    val color: String = Project.defaultColors.random(),
     val active: Boolean = true,
     val isPrivate: Boolean = true,
     val billable: Boolean? = null,

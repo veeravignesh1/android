@@ -310,20 +310,16 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @Test
         fun `The editableProject should be initialized`() = runBlockingTest {
-            val initialEditableTimeEntry = EditableTimeEntry.empty(1)
 
             reducer.testReduceState(
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it shouldBe initialState.copy(
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        editableProject = EditableProject(
-                            name = projectName,
-                            workspaceId = 1
-                        )
-                    )
-                )
+                it.editableTimeEntry?.editableProject.shouldNotBeNull()
+
+                it.editableTimeEntry?.editableProject?.name shouldBe projectName
+                it.editableTimeEntry?.editableProject?.workspaceId shouldBe 1
+                Project.defaultColors.shouldContain(it.editableTimeEntry!!.editableProject!!.color)
             }
         }
 
