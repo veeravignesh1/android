@@ -15,6 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.common.addInterceptingOnClickListener
+import com.toggl.common.performClickHapticFeedback
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.project.domain.ProjectAction
@@ -63,6 +64,11 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
 
         private_chip.addInterceptingOnClickListener {
             store.dispatch(ProjectAction.PrivateProjectSwitchTapped)
+        }
+
+        create_button.setOnClickListener {
+            context?.performClickHapticFeedback()
+            store.dispatch(ProjectAction.DoneButtonTapped)
         }
 
         store.state
