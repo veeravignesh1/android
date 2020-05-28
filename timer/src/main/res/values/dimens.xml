@@ -20,4 +20,6 @@
     <dimen name="default_wheel_foreground_cap_border_stroke_width">1dp</dimen>
     <dimen name="default_wheel_foreground_handle_dot_indicator_radius">2dp</dimen>
     <dimen name="chip_padding">10dp</dimen>
+    <dimen name="log_item_horizontal_margin">8dp</dimen>
+    <dimen name="log_item_vertical_margin">2dp</dimen>
 </resources>

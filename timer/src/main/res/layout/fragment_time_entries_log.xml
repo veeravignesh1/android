@@ -24,16 +24,10 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
+            android:background="@color/toolbar"
             android:layout_height="?android:actionBarSize"
-            android:background="@color/surface"
-            app:layout_scrollFlags="scroll|enterAlways">
-
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:layout_gravity="start"
-                android:src="@drawable/ic_toggl_logo" />
-        </com.google.android.material.appbar.MaterialToolbar>
+            app:title="@string/timer"
+            app:layout_scrollFlags="scroll|enterAlways"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.card.MaterialCardView
@@ -41,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="bottom"
-        android:background="@color/surface"
+        app:cardBackgroundColor="@color/toolbar"
         app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Toggl.MediumComponent.Bound.Bottom"
         app:elevation="@dimen/plane_02">
 
@@ -50,7 +44,7 @@
             android:name="com.toggl.timer.running.ui.RunningTimeEntryFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout="@layout/fragment_dialog_start_edit" />
+            tools:layout="@layout/fragment_running_time_entry" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

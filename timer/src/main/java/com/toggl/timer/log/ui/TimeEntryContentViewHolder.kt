@@ -22,9 +22,12 @@ abstract class TimeEntryContentViewHolder<in T : TimeEntryContentViewModel>(item
         val hasDescription = item.description.isNotBlank()
         addDescriptionLabel.isVisible = !hasDescription
         description.isVisible = hasDescription
+
         description.text = item.description
 
-        project.text = item.project.formatForDisplay()
+        val formattedProjectText = item.project.formatForDisplay()
+        project.text = formattedProjectText
+        project.isVisible = formattedProjectText.isNotBlank()
 
         billableIcon.isVisible = item.billable
         tagsIcon.isVisible = item.hasTags

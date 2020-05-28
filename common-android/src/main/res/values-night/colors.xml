@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="surface">#FF2c1338</color>
-    <color name="transparent_surface">#002c1338</color>
-    <color name="background">#412a4c</color>
+    <color name="surface">#FF231D24</color>
+    <color name="transparent_surface">#00231D24</color>
+    <color name="background">#FF0D0E11</color>
+    <color name="transparent_background">#000D0E11</color>
     <color name="tooltip_background">#FF2c1338</color>
-    <color name="text_on_surface">#FFFFFFFF</color>
+    <color name="toolbar">#FF0D0E11</color>
+    <color name="text_on_surface">#FFD5D0D8</color>
+    <color name="text_on_background">#FFABA0AF</color>
     <color name="divider">#55FFFFFF</color>
     <color name="error">#FFFF453A</color>
-    <color name="start_time_entry_button_background">#FF32D74B</color>
-    <color name="stop_time_entry_button_background">#FFFF453A</color>
+    <color name="start_time_entry_button_background">#FFDC6ED0</color>
+    <color name="stop_time_entry_button_background">#FFFF8879</color>
     <color name="icon">#FFB1B1B5</color>
 </resources>
