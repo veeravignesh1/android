@@ -52,6 +52,26 @@ class ProjectReducer @Inject constructor(
                         it.copy(isPrivate = !it.isPrivate)
                     }
                 }
+            ProjectAction.CloseButtonTapped,
+            ProjectAction.DialogDismissed -> state.mutateWithoutEffects { copy(editableProject = null) }
+            is ProjectAction.ColorPicked -> state.mutateWithoutEffects {
+                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
+                ProjectState.editableProject.modify(this) {
+                    it.copy(color = action.color)
+                }
+            }
+            is ProjectAction.WorkspacePicked -> state.mutateWithoutEffects {
+                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
+                ProjectState.editableProject.modify(this) {
+                    it.copy(workspaceId = action.workspace.id)
+                }
+            }
+            is ProjectAction.ClientPicked -> state.mutateWithoutEffects {
+                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
+                ProjectState.editableProject.modify(this) {
+                    it.copy(clientId = action.client.id)
+                }
+            }
         }
 
     private fun createProject(editableProject: EditableProject) = effect(
