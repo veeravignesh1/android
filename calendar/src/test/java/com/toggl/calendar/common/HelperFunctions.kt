@@ -5,6 +5,7 @@ import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.environment.services.calendar.Calendar
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,12 +57,14 @@ fun createCalendarEvent(
 fun createInitialState(
     timeEntries: List<TimeEntry> = listOf(),
     calendarEvents: List<CalendarEvent> = listOf(),
-    date: OffsetDateTime = OffsetDateTime.now()
+    date: OffsetDateTime = OffsetDateTime.now(),
+    calendars: List<Calendar> = listOf()
 ) = CalendarDayState(
     timeEntries.associateBy { it.id },
     calendarEvents.associateBy { it.id },
     null,
-    date
+    date,
+    calendars
 )
 
 fun <T> T.toMutableValue(setFunction: (T) -> Unit) =

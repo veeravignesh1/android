@@ -4,6 +4,7 @@ import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.environment.services.calendar.Calendar
 import com.toggl.models.domain.TimeEntry
 import java.time.OffsetDateTime
 
@@ -12,7 +13,8 @@ data class CalendarDayState(
     val timeEntries: Map<Long, TimeEntry>,
     val events: Map<String, CalendarEvent>,
     val selectedItem: SelectedCalendarItem?,
-    val date: OffsetDateTime
+    val date: OffsetDateTime,
+    val calendars: List<Calendar>
 ) {
     companion object {
         fun fromCalendarState(calendarState: CalendarState) =
@@ -20,7 +22,8 @@ data class CalendarDayState(
                 calendarState.timeEntries,
                 calendarState.localState.calendarEvents,
                 calendarState.localState.selectedItem,
-                calendarState.localState.selectedDate
+                calendarState.localState.selectedDate,
+                calendarState.localState.calendars
             )
 
         fun toCalendarState(calendarState: CalendarState, calendarDayState: CalendarDayState) =
@@ -29,7 +32,8 @@ data class CalendarDayState(
                 localState = calendarState.localState.copy(
                     calendarEvents = calendarDayState.events,
                     selectedItem = calendarDayState.selectedItem,
-                    selectedDate = calendarDayState.date
+                    selectedDate = calendarDayState.date,
+                    calendars = calendarDayState.calendars
                 )
             )
     }

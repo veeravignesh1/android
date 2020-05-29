@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createTimeEntry
 import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.calendar.common.domain.SelectedCalendarItem
@@ -8,6 +9,7 @@ import com.toggl.calendar.common.testReduceState
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -17,10 +19,10 @@ import java.time.OffsetDateTime
 
 @ExperimentalCoroutinesApi
 @DisplayName("The ItemTappedActionTests action")
-internal class ItemTappedActionTests {
+internal class ItemTappedActionTests : CoroutineTest() {
 
-    private val state = CalendarDayState(mapOf(), mapOf(), null, OffsetDateTime.now())
-    private val reducer = CalendarDayReducer()
+    private val state = createCalendarDayState()
+    private val reducer = CalendarDayReducer(mockk(), dispatcherProvider)
 
     private val timeEntry = createTimeEntry(1)
     private val calendarEvent = CalendarEvent("1", OffsetDateTime.now(), Duration.ofSeconds(10), "", "", "")
