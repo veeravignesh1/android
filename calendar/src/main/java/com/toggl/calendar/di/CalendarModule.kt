@@ -3,6 +3,7 @@ package com.toggl.calendar.di
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
 import com.toggl.architecture.core.combine
+import com.toggl.architecture.core.decorateWith
 import com.toggl.architecture.core.pullback
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarDayReducer
@@ -15,6 +16,9 @@ import com.toggl.calendar.contextualmenu.domain.ContextualMenuState
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerAction
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerReducer
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerState
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.TimeEntryReducer
+import com.toggl.common.feature.timeentry.TimeEntryState
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,6 +59,7 @@ class CalendarModule {
     @Provides
     @Singleton
     internal fun calendarReducer(
+        timeEntryReducer: TimeEntryReducer,
         calendarDayReducer: CalendarDayReducer,
         datePickerReducer: CalendarDatePickerReducer,
         contextualMenuReducer: ContextualMenuReducer
@@ -73,7 +78,12 @@ class CalendarModule {
                 mapToGlobalState = CalendarDatePickerState.Companion::toCalendarState,
                 mapToGlobalAction = CalendarDatePickerAction.Companion::toCalendarAction
             ),
-            contextualMenuReducer.pullback(
+            contextualMenuReducer.decorateWith(timeEntryReducer,
+                mapToLocalState = { TimeEntryState(it.timeEntries) },
+                mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+                mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+                mapToGlobalAction = { ContextualMenuAction.TimeEntryHandling(it) }
+            ).pullback(
                 mapToLocalState = ContextualMenuState.Companion::fromCalendarState,
                 mapToLocalAction = ContextualMenuAction.Companion::fromCalendarAction,
                 mapToGlobalState = ContextualMenuState.Companion::toCalendarState,

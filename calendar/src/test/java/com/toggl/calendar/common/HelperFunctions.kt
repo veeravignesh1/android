@@ -5,9 +5,12 @@ import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.common.feature.timeentry.TimeEntryAction
+import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.environment.services.calendar.Calendar
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
+import io.kotlintest.matchers.types.shouldBeTypeOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
@@ -114,4 +117,12 @@ suspend fun <State, Action> Reducer<State, Action>.testReduceNoEffects(
 @Suppress("UNUSED_PARAMETER")
 suspend fun <State, Action> assertNoEffectsWereReturned(state: State, effect: List<Effect<Action>>) {
     effect.shouldBeEmpty()
+}
+
+suspend inline fun <reified Holder : TimeEntryActionHolder, reified TimeEntryActionType : TimeEntryAction> Effect<Any>.shouldEmitTimeEntryAction(additionalTestBlock: (TimeEntryActionType) -> Unit = {}) {
+    this.execute().shouldBeTypeOf<Holder> {
+        it.timeEntryAction.shouldBeTypeOf<TimeEntryActionType> { timeEntryAction ->
+            additionalTestBlock(timeEntryAction)
+        }
+    }
 }
