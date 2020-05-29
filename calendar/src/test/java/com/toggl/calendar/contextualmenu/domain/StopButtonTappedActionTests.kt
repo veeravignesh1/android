@@ -12,8 +12,11 @@ import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
+import io.mockk.every
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -25,7 +28,8 @@ import java.time.OffsetDateTime
 @DisplayName("The StopButtonTapped action")
 internal class StopButtonTappedActionTests {
 
-    private val reducer = ContextualMenuReducer()
+    private val timeService = mockk<TimeService> { every { now() } returns OffsetDateTime.now() }
+    private val reducer = ContextualMenuReducer(timeService)
 
     @Test
     fun `throws if executed on a calendar item`() = runBlockingTest {
