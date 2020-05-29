@@ -8,7 +8,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.toggl.calendar.R
-import com.toggl.calendar.contextualmenu.domain.ContextualMenuAction
 import com.toggl.calendar.di.CalendarComponentProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
@@ -32,8 +31,6 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        store.dispatch(ContextualMenuAction.ExampleAction)
 
         store.state
             .onEach { _ -> }

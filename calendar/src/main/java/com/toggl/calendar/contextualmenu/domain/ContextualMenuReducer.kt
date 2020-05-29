@@ -13,10 +13,9 @@ class ContextualMenuReducer @Inject constructor() : Reducer<ContextualMenuState,
     override fun reduce(
         state: MutableValue<ContextualMenuState>,
         action: ContextualMenuAction
-    ): List<Effect<ContextualMenuAction>> =
-        when (action) {
-            is ContextualMenuAction.ExampleAction -> state.mutateWithoutEffects {
-                copy()
-            }
+    ): List<Effect<ContextualMenuAction>> = when (action) {
+            ContextualMenuAction.DialogDismissed,
+            ContextualMenuAction.DiscardButtonTapped,
+            ContextualMenuAction.CloseButtonTapped -> state.mutateWithoutEffects { copy(selectedItem = null) }
         }
 }

@@ -3,7 +3,9 @@ package com.toggl.calendar.contextualmenu.domain
 import com.toggl.calendar.common.domain.CalendarAction
 
 sealed class ContextualMenuAction {
-    object ExampleAction : ContextualMenuAction()
+    object CloseButtonTapped : ContextualMenuAction()
+    object DiscardButtonTapped : ContextualMenuAction()
+    object DialogDismissed : ContextualMenuAction()
 
     companion object {
         fun fromCalendarAction(calendarAction: CalendarAction): ContextualMenuAction? =
@@ -17,5 +19,7 @@ sealed class ContextualMenuAction {
 
 fun ContextualMenuAction.formatForDebug() =
     when (this) {
-        is ContextualMenuAction.ExampleAction -> "Example Action"
+        ContextualMenuAction.CloseButtonTapped -> "Contextual menu closed"
+        ContextualMenuAction.DiscardButtonTapped -> "Contextual menu discarded"
+        ContextualMenuAction.DialogDismissed -> "Contextual menu dialog dismissed"
     }
