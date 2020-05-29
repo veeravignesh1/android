@@ -2,8 +2,8 @@ package com.toggl.calendar.common.domain
 
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.TimeEntry
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
+import java.time.Duration
+import java.time.OffsetDateTime
 import com.toggl.models.domain.EditableTimeEntry
 
 typealias TimeEntryItem = TimeEntry

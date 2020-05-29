@@ -37,8 +37,8 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
+import java.time.Duration
+import java.time.OffsetDateTime
 
 @FlowPreview
 @ExperimentalCoroutinesApi

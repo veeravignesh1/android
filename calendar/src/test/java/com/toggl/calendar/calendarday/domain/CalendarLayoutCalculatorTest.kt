@@ -13,9 +13,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.ZoneOffset
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @DisplayName("The CalendarLayoutCalculator")
 class CalendarLayoutCalculatorTest {

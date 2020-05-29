@@ -4,7 +4,7 @@ import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.repository.dto.CreateProjectDTO
 import com.toggl.repository.dto.StartTimeEntryDTO
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 fun EditableProject.toDto() = CreateProjectDTO(
     name,

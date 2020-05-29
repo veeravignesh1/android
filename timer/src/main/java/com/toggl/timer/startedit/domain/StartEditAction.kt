@@ -5,8 +5,8 @@ import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Tag
 import com.toggl.timer.common.domain.TimerAction
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
+import java.time.Duration
+import java.time.OffsetDateTime
 
 sealed class StartEditAction {
     object BillableTapped : StartEditAction()

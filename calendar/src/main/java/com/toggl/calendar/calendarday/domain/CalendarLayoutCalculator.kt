@@ -4,9 +4,9 @@ import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.environment.services.time.TimeService
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.temporal.ChronoUnit
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.absoluteValue

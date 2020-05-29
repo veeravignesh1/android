@@ -1,6 +1,6 @@
 package com.toggl.environment.services.calendar
 
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 interface CalendarService {
     fun getAvailableCalendars(): List<Calendar>

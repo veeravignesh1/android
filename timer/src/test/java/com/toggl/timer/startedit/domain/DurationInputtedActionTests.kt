@@ -17,9 +17,9 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.converter.ConvertWith
 import org.junit.jupiter.params.converter.SimpleArgumentConverter
 import org.junit.jupiter.params.provider.ValueSource
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.ZoneOffset
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @ExperimentalCoroutinesApi
 @DisplayName("The DurationInputted action")

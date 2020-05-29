@@ -37,8 +37,8 @@ import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurr
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StopTimeBeforeStartTime
 import com.toggl.timer.startedit.util.findTokenAndQueryMatchesForAutocomplete
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
+import java.time.Duration
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 class StartEditReducer @Inject constructor(

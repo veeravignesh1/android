@@ -2,7 +2,7 @@ package com.toggl.calendar.calendarday.domain
 
 import com.toggl.architecture.core.Selector
 import com.toggl.calendar.common.domain.CalendarItem
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 

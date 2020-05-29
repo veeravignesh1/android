@@ -13,7 +13,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.threeten.bp.Duration
+import java.time.Duration
 
 @ExperimentalCoroutinesApi
 @DisplayName("The TimeEntryStartedAction")

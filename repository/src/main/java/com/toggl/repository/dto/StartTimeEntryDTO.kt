@@ -1,6 +1,6 @@
 package com.toggl.repository.dto
 
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 data class StartTimeEntryDTO(
     val description: String,

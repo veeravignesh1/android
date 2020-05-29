@@ -24,10 +24,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.Year
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.Duration
+import java.time.OffsetDateTime
+import java.time.Year
+import java.time.format.DateTimeFormatter
 
 @ExperimentalCoroutinesApi
 @DisplayName("The TimeEntriesLogSelect")

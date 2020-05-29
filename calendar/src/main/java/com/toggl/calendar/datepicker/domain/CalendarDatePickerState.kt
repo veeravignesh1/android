@@ -2,7 +2,7 @@ package com.toggl.calendar.datepicker.domain
 
 import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 @optics
 data class CalendarDatePickerState(

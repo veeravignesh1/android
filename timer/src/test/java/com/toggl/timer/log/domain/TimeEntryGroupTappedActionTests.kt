@@ -8,7 +8,7 @@ import io.kotlintest.properties.assertAll
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldThrow
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.threeten.bp.Duration
+import java.time.Duration
 
 @ExperimentalCoroutinesApi
 class TimeEntryGroupTappedActionTests : FreeCoroutineSpec() {

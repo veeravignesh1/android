@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import com.toggl.common.android.R
 
 class DeepLinkUrls(resources: Resources) {
     val main = resources.getString(R.string.deep_link_main).toUri()

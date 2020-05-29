@@ -72,10 +72,10 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.take
-import org.threeten.bp.Duration
-import org.threeten.bp.OffsetDateTime
+import java.time.Duration
+import java.time.OffsetDateTime
 import javax.inject.Inject
-import com.toggl.common.R as CommonR
+import com.toggl.common.android.R as CommonR
 
 class StartEditDialogFragment : BottomSheetDialogFragment() {
 

@@ -42,6 +42,7 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -52,6 +53,8 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring Libs.Android.desugarJdkLibs
+
     implementation project(':calendar')
     implementation project(':database-android')
     implementation project(':onboarding')
@@ -85,17 +88,18 @@ task prepareGooglePlayServices(type: Copy) {
     from './google-services.json.template'
     into "$buildDir/tmp-google-services"
 
-    def googleProps = new Hashtable()
-    googleProps.put('TOGGL_GCM_SENDER_ID', System.getenv('TOGGL_GCM_SENDER_ID') ?: 'TOGGL_GCM_SENDER_ID')
-    googleProps.put('TOGGL_DATABASE_URL', System.getenv('TOGGL_DATABASE_URL') ?: 'TOGGL_DATABASE_URL')
-    googleProps.put('TOGGL_PROJECT_ID', System.getenv('TOGGL_PROJECT_ID') ?: 'TOGGL_PROJECT_ID')
-    googleProps.put('TOGGL_STORAGE_BUCKET', System.getenv('TOGGL_STORAGE_BUCKET') ?: 'TOGGL_STORAGE_BUCKET')
-    googleProps.put('TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID', System.getenv('TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID') ?: 'TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID')
-    googleProps.put('TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID', System.getenv('TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID') ?: 'TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID')
-    googleProps.put('TOGGL_DROID_GOOGLE_SERVICES_API_KEY', System.getenv('TOGGL_DROID_GOOGLE_SERVICES_API_KEY') ?: 'TOGGL_DROID_GOOGLE_SERVICES_API_KEY')
-    googleProps.put('TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING', System.getenv('TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING') ?: 'TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING')
-    googleProps.put('TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING', System.getenv('TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING') ?: 'TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING')
-    googleProps.put('TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID', System.getenv('TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID') ?: 'TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID')
+    def googleProps = [
+            TOGGL_GCM_SENDER_ID                                        : System.getenv('TOGGL_GCM_SENDER_ID') ?: 'TOGGL_GCM_SENDER_ID',
+            TOGGL_DATABASE_URL                                         : System.getenv('TOGGL_DATABASE_URL') ?: 'TOGGL_DATABASE_URL',
+            TOGGL_PROJECT_ID                                           : System.getenv('TOGGL_PROJECT_ID') ?: 'TOGGL_PROJECT_ID',
+            TOGGL_STORAGE_BUCKET                                       : System.getenv('TOGGL_STORAGE_BUCKET') ?: 'TOGGL_STORAGE_BUCKET',
+            TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID              : System.getenv('TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID') ?: 'TOGGL_DROID_GOOGLE_SERVICES_MOBILE_SDK_APP_ID',
+            TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID                      : System.getenv('TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID') ?: 'TOGGL_DROID_GOOGLE_SERVICES_CLIENT_ID',
+            TOGGL_DROID_GOOGLE_SERVICES_API_KEY                        : System.getenv('TOGGL_DROID_GOOGLE_SERVICES_API_KEY') ?: 'TOGGL_DROID_GOOGLE_SERVICES_API_KEY',
+            TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING: System.getenv('TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING') ?: 'TOGGL_DROID_DEBUG_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING',
+            TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING: System.getenv('TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING') ?: 'TOGGL_DROID_ADHOC_GOOGLE_SERVICES_MOBILE_SDK_APP_ID_STAGING',
+            TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID                        : System.getenv('TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID') ?: 'TOGGL_IOS_GOOGLE_SERVICES_CLIENT_ID',
+    ]
 
     def CommentsFilter = {
         line -> line.trim().startsWith("//") ? null : line
@@ -103,7 +107,9 @@ task prepareGooglePlayServices(type: Copy) {
 
     expand(googleProps)
     filter(FixCrLfFilter)
-    filter(ReplaceTokens, tokens: googleProps)
+    googleProps.each {
+        prop -> filter(ReplaceTokens, tokens: [ (prop.key): prop.value])
+    }
     filter(CommentsFilter)
 
     filteringCharset = 'UTF-8'

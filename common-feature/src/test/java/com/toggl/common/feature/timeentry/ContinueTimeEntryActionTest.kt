@@ -17,8 +17,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.ZoneOffset
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 
 @ExperimentalCoroutinesApi
 @DisplayName("The ContinueTimeEntryAction")

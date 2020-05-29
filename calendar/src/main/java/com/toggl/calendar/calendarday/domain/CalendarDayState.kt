@@ -5,7 +5,7 @@ import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.models.domain.TimeEntry
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 @optics
 data class CalendarDayState(

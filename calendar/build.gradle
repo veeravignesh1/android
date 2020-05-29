@@ -35,6 +35,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -45,6 +46,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':common-feature')
 
     implementation Libs.Kotlin.stdlib
@@ -56,9 +58,6 @@ dependencies {
     implementation Libs.Arrow.syntax
     kapt Libs.Arrow.meta
 
-    testImplementation (Libs.threeTen) {
-        exclude group:'com.jakewharton.threetenabp', module:'threetenabp'
-    }
     testImplementation Libs.Test.Jupiter.api
     testRuntimeOnly Libs.Test.Jupiter.engine
     testImplementation Libs.Test.Jupiter.params

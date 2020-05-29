@@ -13,7 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 @ExperimentalCoroutinesApi
 @DisplayName("The StartTimeEntryAction")

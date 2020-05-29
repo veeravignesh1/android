@@ -3,7 +3,7 @@ package com.toggl.calendar.common.domain
 import arrow.optics.optics
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.TimeEntry
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 
 @optics
 data class CalendarState(

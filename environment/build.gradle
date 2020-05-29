@@ -23,6 +23,16 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
     }
 
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
     buildTypes {
         adhoc {}
     }
@@ -30,12 +40,12 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':api')
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
-    api Libs.threeTenAndroid
     api Libs.Google.firebaseAnalytics
     api Libs.Microsoft.appCenterAnalytics
 

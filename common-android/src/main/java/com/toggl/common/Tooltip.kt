@@ -11,7 +11,8 @@ import androidx.annotation.StringRes
 import androidx.core.os.postDelayed
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import org.threeten.bp.Duration
+import com.toggl.common.android.R
+import java.time.Duration
 
 fun LifecycleOwner.showTooltip(
     @StringRes textResId: Int,

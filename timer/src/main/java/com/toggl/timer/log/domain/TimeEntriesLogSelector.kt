@@ -3,8 +3,8 @@ package com.toggl.timer.log.domain
 import com.toggl.architecture.core.Selector
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 private const val timeEntriesLogHeaderTimeFormat = "eee, dd MMM"
 
