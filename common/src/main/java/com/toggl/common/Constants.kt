@@ -1,5 +1,7 @@
 package com.toggl.common
 
+import java.time.Duration
+
 object Constants {
     const val timeEntryDeletionDelayMs = 5000L
     const val elapsedTimeIndicatorUpdateDelayMs = 1000L
@@ -15,6 +17,7 @@ object Constants {
 
     object TimeEntry {
         const val maxDurationInHours = 999L
+        val defaultTimeEntryDuration: Duration = Duration.ofMinutes(30)
     }
 
     object AutoCompleteSuggestions {

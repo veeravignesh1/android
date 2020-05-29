@@ -19,6 +19,12 @@ data class EditableTimeEntry(
 ) {
     companion object {
         fun empty(workspaceId: Long) = EditableTimeEntry(workspaceId = workspaceId)
+        fun stopped(workspaceId: Long, startTime: OffsetDateTime, duration: Duration) =
+            EditableTimeEntry(
+                workspaceId = workspaceId,
+                startTime = startTime,
+                duration = duration
+            )
 
         fun fromSingle(timeEntry: TimeEntry) =
             EditableTimeEntry(
