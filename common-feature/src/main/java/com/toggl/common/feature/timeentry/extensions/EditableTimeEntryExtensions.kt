@@ -1,6 +1,7 @@
 package com.toggl.common.feature.timeentry.extensions
 
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException
 import com.toggl.models.domain.EditableTimeEntry
 
@@ -12,6 +13,12 @@ fun EditableTimeEntry.isStopped() = this.startTime != null && this.duration != n
 fun EditableTimeEntry.throwIfNew() {
     if (this.isNew()) {
         throw TimeEntryShouldNotBeNewException()
+    }
+}
+
+fun EditableTimeEntry.throwIfRunning() {
+    if (this.isRunning()) {
+        throw TimeEntryShouldNotBeRunningException()
     }
 }
 

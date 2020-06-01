@@ -15,6 +15,7 @@ import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.extensions.throwIfNew
+import com.toggl.common.feature.timeentry.extensions.throwIfRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfStopped
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
@@ -36,6 +37,22 @@ class ContextualMenuReducer @Inject constructor(
             ContextualMenuAction.DialogDismissed,
             ContextualMenuAction.DiscardButtonTapped,
             ContextualMenuAction.CloseButtonTapped -> state.mutateWithoutEffects { copy(selectedItem = null) }
+            ContextualMenuAction.DeleteButtonTapped -> {
+                val editableTimeEntry = state.mapToEditableTimeEntry()
+                editableTimeEntry.throwIfNew()
+                editableTimeEntry.throwIfRunning()
+
+                val idOfEntryToDelete = editableTimeEntry.ids.single()
+                state.mutate { copy(selectedItem = null) } returnEffect delete(idOfEntryToDelete)
+            }
+            ContextualMenuAction.ContinueButtonTapped -> {
+                val editableTimeEntry = state.mapToEditableTimeEntry()
+                editableTimeEntry.throwIfNew()
+                editableTimeEntry.throwIfRunning()
+
+                val idOfEntryToContinue = editableTimeEntry.ids.first()
+                state.mutate { copy(selectedItem = null) } returnEffect continueTimeEntry(idOfEntryToContinue)
+            }
             ContextualMenuAction.StopButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
                 editableTimeEntry.throwIfNew()
@@ -60,6 +77,16 @@ class ContextualMenuReducer @Inject constructor(
 
     private fun stop(): List<Effect<ContextualMenuAction>> {
         val action = TimeEntryAction.StopRunningTimeEntry
+        return effect(ContextualMenuAction.TimeEntryHandling(action).toEffect())
+    }
+
+    private fun delete(id: Long): List<Effect<ContextualMenuAction>> {
+        val action = TimeEntryAction.DeleteTimeEntry(id)
+        return effect(ContextualMenuAction.TimeEntryHandling(action).toEffect())
+    }
+
+    private fun continueTimeEntry(id: Long): List<Effect<ContextualMenuAction>> {
+        val action = TimeEntryAction.ContinueTimeEntry(id)
         return effect(ContextualMenuAction.TimeEntryHandling(action).toEffect())
     }
 

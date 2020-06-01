@@ -7,6 +7,5 @@ fun CalendarEvent.toEditableTimeEntry(workspaceId: Long) =
     EditableTimeEntry.empty(workspaceId).copy(
         description = description,
         duration = duration,
-        startTime = startTime,
-        billable = false
+        startTime = startTime
     )
