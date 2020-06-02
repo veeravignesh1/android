@@ -4,18 +4,22 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
 import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.decorateWith
+import com.toggl.architecture.core.optionalPullback
 import com.toggl.architecture.core.pullback
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarDayReducer
 import com.toggl.calendar.calendarday.domain.CalendarDayState
 import com.toggl.calendar.common.domain.CalendarAction
 import com.toggl.calendar.common.domain.CalendarState
+import com.toggl.calendar.common.domain.isContextualMenuCloseAction
+import com.toggl.calendar.common.domain.setSelectedItemToNull
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuAction
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuReducer
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuState
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerAction
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerReducer
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerState
+import com.toggl.common.feature.handleClosableActionsUsing
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryReducer
 import com.toggl.common.feature.timeentry.TimeEntryState
@@ -49,7 +53,7 @@ class CalendarModule {
     @ExperimentalCoroutinesApi
     @Provides
     internal fun contextualMenuStore(store: Store<CalendarState, CalendarAction>): Store<ContextualMenuState, ContextualMenuAction> =
-        store.view(
+        store.optionalView(
             mapToLocalState = ContextualMenuState.Companion::fromCalendarState,
             mapToGlobalAction = ContextualMenuAction.Companion::toCalendarAction
         )
@@ -83,12 +87,13 @@ class CalendarModule {
                 mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
                 mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
                 mapToGlobalAction = { ContextualMenuAction.TimeEntryHandling(it) }
-            ).pullback(
+            ).optionalPullback(
                 mapToLocalState = ContextualMenuState.Companion::fromCalendarState,
                 mapToLocalAction = ContextualMenuAction.Companion::fromCalendarAction,
                 mapToGlobalState = ContextualMenuState.Companion::toCalendarState,
                 mapToGlobalAction = ContextualMenuAction.Companion::toCalendarAction
-            )
+            ),
+            handleClosableActionsUsing(CalendarAction::isContextualMenuCloseAction, CalendarState::setSelectedItemToNull)
         )
     }
 }

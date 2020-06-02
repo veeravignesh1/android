@@ -26,6 +26,18 @@ sealed class ContextualMenuAction {
     }
 }
 
+fun ContextualMenuAction.isCloseAction() = when (this) {
+    ContextualMenuAction.CloseButtonTapped,
+    ContextualMenuAction.DiscardButtonTapped,
+    ContextualMenuAction.DialogDismissed,
+    ContextualMenuAction.DeleteButtonTapped,
+    ContextualMenuAction.ContinueButtonTapped,
+    ContextualMenuAction.StopButtonTapped,
+    ContextualMenuAction.StartFromEventButtonTapped,
+    ContextualMenuAction.CopyAsTimeEntryButtonTapped -> true
+    is ContextualMenuAction.TimeEntryHandling -> false
+}
+
 fun ContextualMenuAction.formatForDebug() =
     when (this) {
         ContextualMenuAction.CloseButtonTapped -> "Contextual menu closed"

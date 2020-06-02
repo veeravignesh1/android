@@ -9,10 +9,7 @@ import com.toggl.architecture.extensions.toEffect
 import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.exception.SelectedItemShouldBeAATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
-import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.calendar.extensions.toEditableTimeEntry
-import com.toggl.common.feature.extensions.mutateWithoutEffects
-import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.extensions.throwIfNew
 import com.toggl.common.feature.timeentry.extensions.throwIfRunning
@@ -36,14 +33,14 @@ class ContextualMenuReducer @Inject constructor(
         when (action) {
             ContextualMenuAction.DialogDismissed,
             ContextualMenuAction.DiscardButtonTapped,
-            ContextualMenuAction.CloseButtonTapped -> state.mutateWithoutEffects { copy(selectedItem = null) }
+            ContextualMenuAction.CloseButtonTapped -> noEffect()
             ContextualMenuAction.DeleteButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
                 editableTimeEntry.throwIfNew()
                 editableTimeEntry.throwIfRunning()
 
                 val idOfEntryToDelete = editableTimeEntry.ids.single()
-                state.mutate { copy(selectedItem = null) } returnEffect delete(idOfEntryToDelete)
+                delete(idOfEntryToDelete)
             }
             ContextualMenuAction.ContinueButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
@@ -51,26 +48,26 @@ class ContextualMenuReducer @Inject constructor(
                 editableTimeEntry.throwIfRunning()
 
                 val idOfEntryToContinue = editableTimeEntry.ids.first()
-                state.mutate { copy(selectedItem = null) } returnEffect continueTimeEntry(idOfEntryToContinue)
+                continueTimeEntry(idOfEntryToContinue)
             }
             ContextualMenuAction.StopButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
                 editableTimeEntry.throwIfNew()
                 editableTimeEntry.throwIfStopped()
 
-                state.mutate { copy(selectedItem = null) } returnEffect stop()
+                stop()
             }
             ContextualMenuAction.StartFromEventButtonTapped -> {
                 val calendarEvent = state.mapToCalendarEvent()
                 val editableTimeEntry = calendarEvent.toEditableTimeEntry(state().defaultWorkspaceId())
 
-                state.mutate { copy(selectedItem = null) } returnEffect start(editableTimeEntry)
+                start(editableTimeEntry)
             }
             ContextualMenuAction.CopyAsTimeEntryButtonTapped -> {
                 val calendarEvent = state.mapToCalendarEvent()
                 val editableTimeEntry = calendarEvent.toEditableTimeEntry(state().defaultWorkspaceId())
 
-                state.mutate { copy(selectedItem = null) } returnEffect create(editableTimeEntry)
+                create(editableTimeEntry)
             }
             is ContextualMenuAction.TimeEntryHandling -> noEffect()
         }
@@ -103,7 +100,6 @@ class ContextualMenuReducer @Inject constructor(
     private fun MutableValue<ContextualMenuState>.mapToCalendarEvent() =
         mapState {
             when (selectedItem) {
-                null -> throw SelectedItemShouldNotBeNullException()
                 is SelectedCalendarItem.SelectedTimeEntry -> throw SelectedItemShouldBeACalendarEventException()
                 is SelectedCalendarItem.SelectedCalendarEvent -> selectedItem.calendarEvent
             }
@@ -112,7 +108,6 @@ class ContextualMenuReducer @Inject constructor(
     private fun MutableValue<ContextualMenuState>.mapToEditableTimeEntry() =
         mapState {
             when (selectedItem) {
-                null -> throw SelectedItemShouldNotBeNullException()
                 is SelectedCalendarItem.SelectedCalendarEvent -> throw SelectedItemShouldBeAATimeEntryException()
                 is SelectedCalendarItem.SelectedTimeEntry -> selectedItem.editableTimeEntry
             }

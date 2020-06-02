@@ -22,3 +22,6 @@ data class CalendarState(
 
     companion object
 }
+
+internal fun CalendarState.setSelectedItemToNull() =
+    copy(localState = localState.copy(selectedItem = null))
