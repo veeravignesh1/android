@@ -12,7 +12,7 @@ data class ProjectState(
 ) {
     companion object {
 
-        fun fromTimerState(timerState: TimerState) : ProjectState? {
+        fun fromTimerState(timerState: TimerState): ProjectState? {
             val editableProject = timerState.localState.editableTimeEntry?.editableProject ?: return null
 
             return ProjectState(

@@ -138,7 +138,7 @@ class TimerModule {
         )
     }
 
-    private fun TimeEntriesLogReducer.decorateWith(timeEntryReducer: TimeEntryReducer)  =
+    private fun TimeEntriesLogReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
         this.decorateWith(
             timeEntryReducer,
             mapToLocalState = { TimeEntryState(it.timeEntries) },

@@ -5,7 +5,6 @@ import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Tag
 import com.toggl.timer.common.domain.TimerAction
-import com.toggl.timer.project.domain.ProjectAction
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -54,7 +53,6 @@ fun StartEditAction.isCloseAction(): Boolean =
         }
         else -> false
     }
-
 
 fun StartEditAction.formatForDebug() =
     when (this) {

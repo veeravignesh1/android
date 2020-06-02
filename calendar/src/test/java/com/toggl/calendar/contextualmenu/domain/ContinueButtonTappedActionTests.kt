@@ -6,7 +6,6 @@ import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.shouldEmitTimeEntryAction
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
-import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeAATimeEntryException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException

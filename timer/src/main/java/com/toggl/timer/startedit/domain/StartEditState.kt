@@ -26,7 +26,7 @@ data class StartEditState(
     val cursorPosition: Int
 ) {
     companion object {
-        fun fromTimerState(timerState: TimerState) : StartEditState? {
+        fun fromTimerState(timerState: TimerState): StartEditState? {
 
             val editableTimeEntry = timerState.localState.editableTimeEntry ?: return null
 

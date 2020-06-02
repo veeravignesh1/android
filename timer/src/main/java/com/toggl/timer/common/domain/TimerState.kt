@@ -2,7 +2,6 @@ package com.toggl.timer.common.domain
 
 import arrow.optics.Lens
 import arrow.optics.optics
-import com.toggl.architecture.Loadable
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
@@ -10,7 +9,6 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
-import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.nullableEditableProject
 import com.toggl.timer.startedit.domain.DateTimePickMode

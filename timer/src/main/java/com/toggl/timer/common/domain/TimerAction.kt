@@ -1,7 +1,6 @@
 package com.toggl.timer.common.domain
 
 import arrow.optics.optics
-import com.toggl.models.domain.nullableEditableProject
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.formatForDebug
 import com.toggl.timer.project.domain.ProjectAction
@@ -38,7 +37,6 @@ fun TimerAction.isProjectCloseAction(): Boolean =
         is TimerAction.StartTimeEntry -> false
         is TimerAction.Project -> projectAction.isCloseAction()
     }
-
 
 fun TimerAction.formatForDebug(): String =
     when (this) {
