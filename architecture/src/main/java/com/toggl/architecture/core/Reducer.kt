@@ -57,3 +57,39 @@ class PullbackReducer<LocalState, GlobalState, LocalAction, GlobalAction>(
             .map { effect -> effect.map { action -> action?.run(mapToGlobalAction) } }
     }
 }
+
+fun <LocalState, GlobalState, LocalAction, GlobalAction>
+    Reducer<LocalState, LocalAction>.optionalPullback(
+    mapToLocalState: (GlobalState) -> LocalState?,
+    mapToLocalAction: (GlobalAction) -> LocalAction?,
+    mapToGlobalState: (GlobalState, LocalState?) -> GlobalState,
+    mapToGlobalAction: (LocalAction) -> GlobalAction
+): Reducer<GlobalState, GlobalAction> =
+    OptionalReducer(this, mapToLocalState, mapToLocalAction, mapToGlobalState, mapToGlobalAction)
+
+class OptionalReducer<LocalState, GlobalState, LocalAction, GlobalAction>(
+    private val innerReducer: Reducer<LocalState, LocalAction>,
+    private val mapToLocalState: (GlobalState) -> LocalState?,
+    private val mapToLocalAction: (GlobalAction) -> LocalAction?,
+    private val mapToGlobalState: (GlobalState, LocalState?) -> GlobalState,
+    private val mapToGlobalAction: (LocalAction) -> GlobalAction
+) : Reducer<GlobalState, GlobalAction> {
+    override fun reduce(
+        state: MutableValue<GlobalState>,
+        action: GlobalAction
+    ): List<Effect<GlobalAction>> {
+        val localAction = mapToLocalAction(action)
+            ?: return noEffect()
+
+        var localState : LocalState = state.map(mapToLocalState, mapToGlobalState).invoke() ?: return noEffect()
+        val localMutableValue = MutableValue({ localState }) { localState = it }
+
+        val effects = innerReducer
+            .reduce(localMutableValue, localAction)
+            .map { effect -> effect.map { action -> action?.run(mapToGlobalAction) } }
+
+        state.mutate { mapToGlobalState(this, localState) }
+
+        return effects
+    }
+}
