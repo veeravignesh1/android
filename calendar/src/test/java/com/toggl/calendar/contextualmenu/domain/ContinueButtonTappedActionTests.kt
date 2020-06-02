@@ -8,7 +8,6 @@ import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeAATimeEntryException
-import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
@@ -44,17 +43,6 @@ internal class ContinueButtonTappedActionTests {
     }
 
     @Test
-    fun `throws if executed on a null selected item`() = runBlockingTest {
-        val initialState = createInitialState(selectedItem = null)
-
-        reducer.testReduceException(
-            initialState = initialState,
-            action = ContextualMenuAction.ContinueButtonTapped,
-            exception = SelectedItemShouldNotBeNullException::class.java
-        )
-    }
-
-    @Test
     fun `throws if executed on a new time entry`() = runBlockingTest {
         val timeEntry = EditableTimeEntry.empty(1)
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
@@ -77,17 +65,6 @@ internal class ContinueButtonTappedActionTests {
             action = ContextualMenuAction.ContinueButtonTapped,
             exception = TimeEntryShouldNotBeRunningException::class.java
         )
-    }
-
-    @Test
-    fun `sets the selectedItem to null`() = runBlockingTest {
-        val timeEntry = createTimeEntry(1, startTime = OffsetDateTime.now().minusMinutes(3), duration = Duration.ofMinutes(3))
-        val editableTimeEntry = EditableTimeEntry.fromSingle(timeEntry)
-        val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry))
-
-        reducer.testReduceState(initialState, ContextualMenuAction.ContinueButtonTapped) { state ->
-            state shouldBe initialState.copy(selectedItem = null)
-        }
     }
 
     @Test

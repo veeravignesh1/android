@@ -5,9 +5,7 @@ import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.testReduce
-import com.toggl.timer.exceptions.EditableProjectShouldNotBeNullException
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -41,20 +39,6 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
         ) { _, effects -> effects.single()::class shouldBe CreateProjectEffect::class }
     }
 
-    @ParameterizedTest
-    @MethodSource("validProjects")
-    fun `sets the project to null when the project is valid`(validProject: EditableProject) = runBlockingTest {
-        val initialState = createInitialState(
-            editableProject = validProject,
-            projects = listOfProjects
-        )
-
-        reducer.testReduce(
-            initialState = initialState,
-            action = ProjectAction.DoneButtonTapped
-        ) { state, _ -> state.editableProject shouldBe null }
-    }
-
     @Test
     fun `sets an error when the project is invalid`() = runBlockingTest {
 
@@ -66,7 +50,7 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
         reducer.testReduce(
             initialState,
             ProjectAction.DoneButtonTapped
-        ) { state, _ -> state.editableProject!!.error shouldBe EditableProject.ProjectError.ProjectAlreadyExists }
+        ) { state, _ -> state.editableProject.error shouldBe EditableProject.ProjectError.ProjectAlreadyExists }
     }
 
     @Test
@@ -82,23 +66,6 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
             action = ProjectAction.DoneButtonTapped,
             testCase = ::assertNoEffectsWereReturned
         )
-    }
-
-    @Test
-    fun `throws if the editableProject is null`() = runBlockingTest {
-
-        val initialState = createInitialState(
-            editableProject = null,
-            projects = listOfProjects
-        )
-
-        shouldThrow<EditableProjectShouldNotBeNullException> {
-            reducer.testReduce(
-                initialState = initialState,
-                action = ProjectAction.DoneButtonTapped,
-                testCase = ::assertNoEffectsWereReturned
-            )
-        }
     }
 
     companion object {

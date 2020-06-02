@@ -67,7 +67,7 @@ class WheelChangedStartTimeActionTests {
                 action = StartEditAction.WheelChangedStartTime(testData.inputtedStartTime)
             ) {
                 it shouldBe initialState.copy(
-                    editableTimeEntry = it.editableTimeEntry!!.copy(
+                    editableTimeEntry = it.editableTimeEntry.copy(
                         startTime = testData.inputtedStartTime
                     )
                 )
@@ -86,7 +86,7 @@ class WheelChangedStartTimeActionTests {
                 action = StartEditAction.WheelChangedStartTime(testData.inputtedStartTime)
             ) {
                 it shouldBe initialState.copy(
-                    editableTimeEntry = it.editableTimeEntry!!.copy(
+                    editableTimeEntry = it.editableTimeEntry.copy(
                         startTime = testData.inputtedStartTime
                     )
                 )
@@ -106,7 +106,7 @@ class WheelChangedStartTimeActionTests {
             action = StartEditAction.WheelChangedStartTime(testData.inputtedStartTime)
         ) {
             it shouldBe initialState.copy(
-                editableTimeEntry = it.editableTimeEntry!!.copy(
+                editableTimeEntry = it.editableTimeEntry.copy(
                     startTime = testData.inputtedStartTime,
                     duration = testData.expectedDuration
                 )

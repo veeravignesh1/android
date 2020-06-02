@@ -11,7 +11,6 @@ import com.toggl.timer.common.testReduceException
 import com.toggl.timer.common.testReduceState
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
-import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.shouldBe
@@ -257,23 +256,6 @@ internal class DateTimePickedActionTests : CoroutineTest() {
         )
     }
 
-    @ParameterizedTest
-    @EnumSource(DateTimePickMode::class, names = ["None"], mode = EnumSource.Mode.EXCLUDE)
-    @DisplayName("EditableTimeEntryDoesNotHaveAStartTimeSetException is thrown when trying pick and EndDateTime and there's no start time set")
-    fun anExceptionIsThrownWhenTryingToPickATimeButTheresNoEditableTimeEntry(pickMode: DateTimePickMode) {
-        every { timeService.now() }.returns(OffsetDateTime.now())
-        val initialState = createInitialState().copy(
-            dateTimePickMode = pickMode,
-            editableTimeEntry = null
-        )
-
-        reducer.testReduceException(
-            initialState,
-            StartEditAction.DateTimePicked(mockk()),
-            EditableTimeEntryShouldNotBeNullException::class.java
-        )
-    }
-
     @DisplayName("Nothing happens when the pick mode is None")
     @Nested
     inner class None : TheoryHolder {
@@ -402,8 +384,8 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it.editableTimeEntry!!.startTime shouldBe expectedStartTime
-                it.editableTimeEntry!!.duration shouldBe expectedDuration
+                it.editableTimeEntry.startTime shouldBe expectedStartTime
+                it.editableTimeEntry.duration shouldBe expectedDuration
             }
         }
 

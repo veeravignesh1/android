@@ -21,7 +21,7 @@ class BillableTappedActionTests : FreeCoroutineSpec() {
 
                     val effects = reducer.reduce(mutableValue, StartEditAction.BillableTapped)
                     effects shouldBe noEffect()
-                    state.editableTimeEntry!!.billable shouldBe !originalBillableValue
+                    state.editableTimeEntry.billable shouldBe !originalBillableValue
                 }
             }
         }

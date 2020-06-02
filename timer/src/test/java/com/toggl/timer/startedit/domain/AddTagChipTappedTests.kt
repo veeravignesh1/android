@@ -3,8 +3,6 @@ package com.toggl.timer.startedit.domain
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
-import com.toggl.timer.common.testReduceException
-import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.shouldBe
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -17,18 +15,9 @@ internal class AddTagChipTappedTests {
     val reducer = createReducer()
 
     @Test
-    fun `should throw if editableTimeEntry is null`() {
-        reducer.testReduceException(
-            initialState.copy(editableTimeEntry = null),
-            StartEditAction.TagButtonTapped,
-            EditableTimeEntryShouldNotBeNullException::class.java
-        )
-    }
-
-    @Test
     fun `should set the description to # if it was empty and return no effects`() = runBlockingTest {
         reducer.testReduce(initialState, StartEditAction.TagButtonTapped) { state, effects ->
-            state.editableTimeEntry!!.description shouldBe "#"
+            state.editableTimeEntry.description shouldBe "#"
             assertNoEffectsWereReturned(state, effects)
         }
     }
@@ -39,7 +28,7 @@ internal class AddTagChipTappedTests {
             EditableTimeEntry(workspaceId = 1, description = "asdf")
 
         reducer.testReduce(initialState.copy(editableTimeEntry = editableWithDescription), StartEditAction.TagButtonTapped) { state, effects ->
-            state.editableTimeEntry!!.description shouldBe editableWithDescription.description + " #"
+            state.editableTimeEntry.description shouldBe editableWithDescription.description + " #"
             assertNoEffectsWereReturned(state, effects)
         }
     }

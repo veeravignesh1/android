@@ -4,9 +4,7 @@ import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
-import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
-import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
@@ -38,27 +36,6 @@ internal class StartFromEventButtonTappedActionTests {
             action = ContextualMenuAction.StartFromEventButtonTapped,
             exception = SelectedItemShouldBeACalendarEventException::class.java
         )
-    }
-
-    @Test
-    fun `throws if executed on a null selected item`() = runBlockingTest {
-        val initialState = createInitialState(selectedItem = null)
-
-        reducer.testReduceException(
-            initialState = initialState,
-            action = ContextualMenuAction.StartFromEventButtonTapped,
-            exception = SelectedItemShouldNotBeNullException::class.java
-        )
-    }
-
-    @Test
-    fun `sets the selectedItem to null`() = runBlockingTest {
-        val event = createCalendarEvent()
-        val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedCalendarEvent(event))
-
-        reducer.testReduceState(initialState, ContextualMenuAction.StartFromEventButtonTapped) { state ->
-            state shouldBe initialState.copy(selectedItem = null)
-        }
     }
 
     @Test

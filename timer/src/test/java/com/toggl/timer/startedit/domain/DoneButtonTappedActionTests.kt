@@ -11,11 +11,9 @@ import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.toMutableValue
-import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -46,14 +44,6 @@ class DoneButtonTappedActionTests : FreeCoroutineSpec() {
         every { startTimeEntryResult.stoppedTimeEntry } returns mockk()
 
         "The DoneButtonTapped action" - {
-            "should throw when there's no editable entry" {
-                var initialState = state.copy(editableTimeEntry = null)
-                val mutableValue = initialState.toMutableValue { initialState = it }
-
-                shouldThrow<EditableTimeEntryShouldNotBeNullException> {
-                    reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-                }
-            }
 
             "should start the TE if the editable has no ids" {
                 val initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf()))

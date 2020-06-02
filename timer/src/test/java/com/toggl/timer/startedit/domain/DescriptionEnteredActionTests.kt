@@ -26,7 +26,7 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
         reducer.testReduce(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { state, _ -> state.editableTimeEntry!!.description shouldBe "new description" }
+        ) { state, _ -> state.editableTimeEntry.description shouldBe "new description" }
     }
 
     @Test
