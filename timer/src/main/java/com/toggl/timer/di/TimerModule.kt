@@ -4,7 +4,9 @@ import android.content.Context
 import com.toggl.architecture.core.Store
 import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.decorateWith
+import com.toggl.architecture.core.optionalPullback
 import com.toggl.architecture.core.pullback
+import com.toggl.common.feature.handleClosableActionsUsing
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryReducer
 import com.toggl.common.feature.timeentry.TimeEntryState
@@ -13,6 +15,8 @@ import com.toggl.timer.R
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
+import com.toggl.timer.common.domain.isStartEditCloseAction
+import com.toggl.timer.common.domain.setEditableProjectToNull
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogReducer
 import com.toggl.timer.log.domain.TimeEntriesLogSelector
@@ -69,7 +73,7 @@ class TimerModule {
     @ExperimentalCoroutinesApi
     @Provides
     internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartEditState, StartEditAction> =
-        store.view(
+        store.optionalView(
             mapToLocalState = StartEditState.Companion::fromTimerState,
             mapToGlobalAction = StartEditAction.Companion::toTimerAction
         )
@@ -142,6 +146,7 @@ class TimerModule {
                 mapToGlobalState = ProjectState.Companion::toTimerState,
                 mapToGlobalAction = ProjectAction.Companion::toTimerAction
             )
+            handleClosableActionsUsing(TimerAction::isStartEditCloseAction, TimerState::setEditableTimeEntryToNull),
         )
     }
 }

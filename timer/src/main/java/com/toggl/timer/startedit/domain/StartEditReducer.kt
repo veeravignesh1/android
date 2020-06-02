@@ -14,7 +14,6 @@ import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
-import com.toggl.common.feature.timeentry.TimeEntryAction.TimeEntryUpdated
 import com.toggl.common.feature.timeentry.TimeEntryAction.EditTimeEntry
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
@@ -28,7 +27,6 @@ import com.toggl.common.feature.timeentry.extensions.isStopped
 import com.toggl.repository.extensions.toStartDto
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
-import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.timer.extensions.absoluteDurationBetween
@@ -52,11 +50,10 @@ class StartEditReducer @Inject constructor(
         action: StartEditAction
     ): List<Effect<StartEditAction>> {
         return when (action) {
-            StartEditAction.CloseButtonTapped, StartEditAction.DialogDismissed ->
-                state.mutateWithoutEffects { copy(editableTimeEntry = null) }
+            StartEditAction.CloseButtonTapped,
+            StartEditAction.DialogDismissed -> noEffect()
             is StartEditAction.DescriptionEntered ->
                 state.mutate {
-                    editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     copy(
                         cursorPosition = action.cursorPosition,
                         editableTimeEntry = editableTimeEntry.copy(
@@ -74,7 +71,6 @@ class StartEditReducer @Inject constructor(
             StartEditAction.AddProjectChipTapped,
             StartEditAction.ProjectButtonTapped ->
                 state.mutateWithoutEffects {
-                    editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
                         val stringBeforeToken = if (it.description.isEmpty()) "" else "${it.description} "
                         it.copy(description = "$stringBeforeToken$projectToken")
@@ -83,7 +79,6 @@ class StartEditReducer @Inject constructor(
             StartEditAction.AddTagChipTapped,
             StartEditAction.TagButtonTapped ->
                 state.mutateWithoutEffects {
-                    editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                     StartEditState.editableTimeEntry.modify(this) {
                         val stringBeforeToken = if (it.description.isEmpty()) "" else "${it.description} "
                         it.copy(description = "$stringBeforeToken$tagToken")
@@ -94,8 +89,7 @@ class StartEditReducer @Inject constructor(
                     copy(dateTimePickMode = action.pickerMode, temporalInconsistency = TemporalInconsistency.None)
                 }
             StartEditAction.DoneButtonTapped -> {
-                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
-                state.mutate { copy(editableTimeEntry = null) }
+                val editableTimeEntry = state().editableTimeEntry
                 if (editableTimeEntry.shouldStart()) {
                     effect(
                         StartEditAction.TimeEntryHandling(
@@ -153,7 +147,7 @@ class StartEditReducer @Inject constructor(
                 if (mode == DateTimePickMode.None) {
                     noEffect()
                 } else {
-                    val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                    val editableTimeEntry = state().editableTimeEntry
                     val temporalInconsistency = detectTemporalInconsistencies(editableTimeEntry, mode, action.dateTime)
                     if (temporalInconsistency == TemporalInconsistency.None) {
                         state.mutateWithoutEffects {
@@ -179,7 +173,7 @@ class StartEditReducer @Inject constructor(
                     return noEffect()
 
                 state.mutateWithoutEffects {
-                    val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                    val editableTimeEntry = state().editableTimeEntry
 
                     StartEditState.editableTimeEntry.modify(this) {
                         if (editableTimeEntry.isRunningOrNew()) it.copy(startTime = timeService.now() - action.duration)
@@ -188,7 +182,7 @@ class StartEditReducer @Inject constructor(
                 }
             }
             is StartEditAction.WheelChangedStartTime -> {
-                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                val editableTimeEntry = state().editableTimeEntry
                 val maxDuration = Duration.ofHours(maxDurationInHours)
                 val now = timeService.now()
                 val endTime = editableTimeEntry.endTime(now)
@@ -211,7 +205,7 @@ class StartEditReducer @Inject constructor(
                     return noEffect()
 
                 state.mutateWithoutEffects {
-                    val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                    val editableTimeEntry = state().editableTimeEntry
                     if (editableTimeEntry.isNew()) throw EditableTimeEntryDoesNotHaveAStartTimeSetException()
                     if (editableTimeEntry.isRunning()) throw EditableTimeEntryDoesNotHaveADurationSetException()
 
@@ -221,7 +215,7 @@ class StartEditReducer @Inject constructor(
                 }
             }
             StartEditAction.StopButtonTapped -> {
-                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
+                val editableTimeEntry = state().editableTimeEntry
                 if (editableTimeEntry.isStopped())
                     return noEffect()
 
@@ -250,7 +244,6 @@ class StartEditReducer @Inject constructor(
                 }
             }
             is StartEditAction.TagCreated -> {
-                val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 state.mutateWithoutEffects {
                     copy(
                         tags = tags + (action.tag.id to action.tag),
@@ -260,14 +253,7 @@ class StartEditReducer @Inject constructor(
                     )
                 }
             }
-            is StartEditAction.TimeEntryHandling -> {
-                when (action.timeEntryAction) {
-                    is TimeEntryUpdated -> state.mutateWithoutEffects {
-                        copy(editableTimeEntry = null)
-                    }
-                    else -> noEffect()
-                }
-            }
+            is StartEditAction.TimeEntryHandling -> noEffect()
         }
     }
 
@@ -444,7 +430,7 @@ class StartEditReducer @Inject constructor(
                 dispatcherProvider,
                 action.description,
                 action.cursorPosition,
-                state.editableTimeEntry?.workspaceId ?: throw EditableTimeEntryShouldNotBeNullException(),
+                state.editableTimeEntry.workspaceId,
                 state.tags,
                 state.tasks,
                 state.clients,

@@ -5,6 +5,7 @@ import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Tag
 import com.toggl.timer.common.domain.TimerAction
+import com.toggl.timer.project.domain.ProjectAction
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -41,6 +42,19 @@ sealed class StartEditAction {
             )
     }
 }
+
+fun StartEditAction.isCloseAction(): Boolean =
+    when (this) {
+        StartEditAction.CloseButtonTapped,
+        StartEditAction.DoneButtonTapped,
+        StartEditAction.DialogDismissed -> true
+        is StartEditAction.TimeEntryHandling -> when (timeEntryAction) {
+            is TimeEntryAction.TimeEntryUpdated -> true
+            else -> false
+        }
+        else -> false
+    }
+
 
 fun StartEditAction.formatForDebug() =
     when (this) {
