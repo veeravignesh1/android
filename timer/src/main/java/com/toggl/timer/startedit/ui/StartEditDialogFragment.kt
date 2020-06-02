@@ -30,10 +30,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
-import com.toggl.common.addInterceptingOnClickListener
+import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.deepLinks
-import com.toggl.common.performClickHapticFeedback
-import com.toggl.common.setSafeText
+import com.toggl.common.extensions.performClickHapticFeedback
+import com.toggl.common.extensions.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.above

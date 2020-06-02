@@ -1,4 +1,4 @@
-package com.toggl.common
+package com.toggl.common.extensions
 
 import android.annotation.SuppressLint
 import android.os.Build

@@ -14,8 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.toggl.common.addInterceptingOnClickListener
-import com.toggl.common.performClickHapticFeedback
+import com.toggl.common.extensions.addInterceptingOnClickListener
+import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.project.domain.ProjectAction

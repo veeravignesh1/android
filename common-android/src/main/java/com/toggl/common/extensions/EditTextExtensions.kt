@@ -1,4 +1,4 @@
-package com.toggl.common
+package com.toggl.common.extensions
 
 import android.text.Editable
 import android.text.TextWatcher
