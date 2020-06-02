@@ -1,5 +1,7 @@
 package com.toggl.timer.project.domain
 
+import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Workspace
@@ -24,6 +26,13 @@ sealed class ProjectAction {
         fun toTimerAction(projectAction: ProjectAction): TimerAction =
             TimerAction.Project(projectAction)
     }
+}
+
+fun ProjectAction.isCloseAction() = when (this) {
+    ProjectAction.CloseButtonTapped,
+    ProjectAction.DialogDismissed,
+    is ProjectAction.ProjectCreated -> true
+    else -> false
 }
 
 fun ProjectAction.formatForDebug() =

@@ -174,9 +174,16 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .mapNotNull { it.editableTimeEntry?.editableProject }
+            .map { it.editableTimeEntry.editableProject != null }
             .distinctUntilChanged()
-            .onEach { findNavController().navigate(deepLinks.timeEntriesProjectDialog) }
+            .drop(1)
+            .onEach { projectDialogIsVisible ->
+                if (projectDialogIsVisible) {
+                    findNavController().navigate(deepLinks.timeEntriesProjectDialog)
+                } else {
+                    findNavController().popBackStack()
+                }
+            }
             .launchIn(lifecycleScope)
 
         store.state
