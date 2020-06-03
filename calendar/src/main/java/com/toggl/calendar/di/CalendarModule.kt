@@ -82,21 +82,23 @@ class CalendarModule {
                 mapToGlobalState = CalendarDatePickerState.Companion::toCalendarState,
                 mapToGlobalAction = CalendarAction::DatePicker
             ),
-            contextualMenuReducer.decorateWith(timeEntryReducer).optionalPullback(
+            contextualMenuReducer.optionalPullback(
                 mapToLocalState = ContextualMenuState.Companion::fromCalendarState,
                 mapToLocalAction = CalendarAction::unwrap,
                 mapToGlobalState = ContextualMenuState.Companion::toCalendarState,
                 mapToGlobalAction = CalendarAction::ContextualMenu
             )
-        ).handleClosableActionsUsing(CalendarState::setSelectedItemToNull, ContextualMenuAction.Close::class.java)
+        )
+        .handleClosableActionsUsing(CalendarState::setSelectedItemToNull, ContextualMenuAction.Close::class.java)
+        .decorateWith(timeEntryReducer)
 
     }
 
-    private fun ContextualMenuReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
+    private fun CalendarReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
         decorateWith(timeEntryReducer,
             mapToLocalState = { TimeEntryState(it.timeEntries) },
-            mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+            mapToLocalAction = { CalendarAction.unwrapTimeEntryActionHolder(it) },
             mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
-            mapToGlobalAction = { ContextualMenuAction.TimeEntryHandling(it) }
+            mapToGlobalAction = { CalendarAction.ContextualMenu(ContextualMenuAction.TimeEntryHandling(it)) }
         )
 }
