@@ -1,5 +1,8 @@
 package com.toggl.calendar.common.domain
 
+import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
+import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
+import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.TimeEntry
 import java.time.Duration
@@ -50,3 +53,17 @@ sealed class SelectedCalendarItem {
     data class SelectedTimeEntry(val editableTimeEntry: EditableTimeEntry) : SelectedCalendarItem()
     data class SelectedCalendarEvent(val calendarEvent: CalendarEventItem) : SelectedCalendarItem()
 }
+
+fun SelectedCalendarItem?.toEditableTimeEntry() =
+    when (this) {
+        null -> throw SelectedItemShouldNotBeNullException()
+        is SelectedCalendarItem.SelectedCalendarEvent -> throw SelectedItemShouldBeATimeEntryException()
+        is SelectedCalendarItem.SelectedTimeEntry -> editableTimeEntry
+    }
+
+fun SelectedCalendarItem?.toCalendarEvent() =
+    when (this) {
+        null -> throw SelectedItemShouldNotBeNullException()
+        is SelectedCalendarItem.SelectedTimeEntry -> throw SelectedItemShouldBeACalendarEventException()
+        is SelectedCalendarItem.SelectedCalendarEvent -> calendarEvent
+    }

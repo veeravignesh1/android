@@ -6,10 +6,8 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.architecture.extensions.toEffect
-import com.toggl.calendar.common.domain.SelectedCalendarItem
-import com.toggl.calendar.exception.SelectedItemShouldBeAATimeEntryException
-import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
-import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
+import com.toggl.calendar.common.domain.toCalendarEvent
+import com.toggl.calendar.common.domain.toEditableTimeEntry
 import com.toggl.calendar.extensions.toEditableTimeEntry
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
@@ -101,22 +99,10 @@ class ContextualMenuReducer @Inject constructor(
     }
 
     private fun MutableValue<ContextualMenuState>.mapToCalendarEvent() =
-        mapState {
-            when (selectedItem) {
-                null -> throw SelectedItemShouldNotBeNullException()
-                is SelectedCalendarItem.SelectedTimeEntry -> throw SelectedItemShouldBeACalendarEventException()
-                is SelectedCalendarItem.SelectedCalendarEvent -> selectedItem.calendarEvent
-            }
-        }
+        mapState { selectedItem.toCalendarEvent() }
 
     private fun MutableValue<ContextualMenuState>.mapToEditableTimeEntry() =
-        mapState {
-            when (selectedItem) {
-                null -> throw SelectedItemShouldNotBeNullException()
-                is SelectedCalendarItem.SelectedCalendarEvent -> throw SelectedItemShouldBeAATimeEntryException()
-                is SelectedCalendarItem.SelectedTimeEntry -> selectedItem.editableTimeEntry
-            }
-        }
+        mapState { selectedItem.toEditableTimeEntry() }
 
     private fun ContextualMenuState.defaultWorkspaceId() = 1L
 }

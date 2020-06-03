@@ -5,6 +5,7 @@ import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.environment.services.calendar.Calendar
@@ -60,12 +61,13 @@ fun createCalendarEvent(
 fun createInitialState(
     timeEntries: List<TimeEntry> = listOf(),
     calendarEvents: List<CalendarEvent> = listOf(),
+    selectedItem: SelectedCalendarItem? = null,
     date: OffsetDateTime = OffsetDateTime.now(),
     calendars: List<Calendar> = listOf()
 ) = CalendarDayState(
     timeEntries.associateBy { it.id },
     calendarEvents.associateBy { it.id },
-    null,
+    selectedItem,
     date,
     calendars
 )

@@ -4,6 +4,7 @@ import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewExce
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException
 import com.toggl.models.domain.EditableTimeEntry
+import java.time.OffsetDateTime
 
 fun EditableTimeEntry.isNew() = this.startTime == null
 fun EditableTimeEntry.isRunning() = this.duration == null
@@ -29,3 +30,6 @@ fun EditableTimeEntry.throwIfStopped() {
         throw TimeEntryShouldNotBeStoppedException()
     }
 }
+
+val EditableTimeEntry.endTime: OffsetDateTime?
+    get() = startTime?.plus(duration)

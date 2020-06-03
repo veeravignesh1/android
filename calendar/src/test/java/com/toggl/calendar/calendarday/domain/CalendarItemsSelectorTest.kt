@@ -51,7 +51,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 (expectedTimeEntries + notExpectedTimeEntries),
                 emptyList(),
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
@@ -74,7 +74,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 notExpectedTimeEntries,
                 emptyList(),
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
@@ -112,7 +112,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 (expectedTimeEntries + notExpectedTimeEntriesThatStartTheDayBefore + notExpectedTimeEntriesThatEndTheDayAfter),
                 emptyList(),
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
@@ -147,7 +147,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 emptyList(),
                 expectedEvents + notExpectedEvents,
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
@@ -255,7 +255,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 (expectedTimeEntries + notExpectedTimeEntries),
                 expectedEvents + notExpectedEvents,
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
@@ -290,7 +290,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 notExpectedTimeEntries,
                 notExpectedEvents,
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
@@ -351,7 +351,7 @@ internal class CalendarItemsSelectorTest {
             val state = createInitialState(
                 (expectedTimeEntries + notExpectedTimeEntriesThatStartTheDayBefore + notExpectedTimeEntriesThatEndTheDayAfter),
                 expectedEvents + notExpectedEventsThatEndTheDayAfter + notExpectedEventsThatStartTheDayBefore,
-                date
+                date = date
             )
             val selectedTimeEntries = selector.select(state)
 
