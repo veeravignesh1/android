@@ -5,6 +5,7 @@ import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.effects
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.ProjectRepository
@@ -23,6 +24,8 @@ class ProjectReducer @Inject constructor(
         action: ProjectAction
     ): List<Effect<ProjectAction>> =
         when (action) {
+            ProjectAction.CloseButtonTapped,
+            ProjectAction.DialogDismissed -> effectOf(ProjectAction.Close)
             is ProjectAction.NameEntered -> state.mutateWithoutEffects {
                 ProjectState.editableProject.modify(this) {
                     it.copy(name = action.name, error = EditableProject.ProjectError.None)
@@ -64,8 +67,7 @@ class ProjectReducer @Inject constructor(
                     it.copy(clientId = action.client.id)
                 }
             }
-            ProjectAction.CloseButtonTapped,
-            ProjectAction.DialogDismissed -> noEffect()
+            ProjectAction.Close -> noEffect()
         }
 
     private fun createProject(editableProject: EditableProject) = effects(

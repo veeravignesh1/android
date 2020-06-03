@@ -57,7 +57,7 @@ class StartEditReducer @Inject constructor(
     ): List<Effect<StartEditAction>> {
         return when (action) {
             StartEditAction.CloseButtonTapped,
-            StartEditAction.DialogDismissed -> noEffect()
+            StartEditAction.DialogDismissed -> effectOf(StartEditAction.Close)
             is StartEditAction.DescriptionEntered ->
                 state.mutate {
                     copy(
@@ -126,7 +126,7 @@ class StartEditReducer @Inject constructor(
                             )
                         ))
                     }.toEffects()
-                }
+                } + effectOf(StartEditAction.Close)
             }
             is StartEditAction.AutocompleteSuggestionsUpdated ->
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
@@ -269,7 +269,8 @@ class StartEditReducer @Inject constructor(
                     )
                 }
             }
-            is StartEditAction.TimeEntryHandling -> noEffect()
+            is StartEditAction.TimeEntryHandling,
+            StartEditAction.Close -> noEffect()
         }
     }
 
