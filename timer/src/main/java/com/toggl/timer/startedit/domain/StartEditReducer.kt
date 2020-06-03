@@ -5,26 +5,32 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
-import com.toggl.architecture.extensions.toEffect
 import com.toggl.architecture.extensions.toEffects
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
+import com.toggl.common.feature.timeentry.TimeEntryAction.CreateTimeEntry
+import com.toggl.common.feature.timeentry.TimeEntryAction.EditTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.TimeEntryUpdated
-import com.toggl.common.feature.timeentry.TimeEntryAction.EditTimeEntry
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.repository.Repository
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.common.feature.timeentry.extensions.isNew
+import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.isRunningOrNew
 import com.toggl.common.feature.timeentry.extensions.isStopped
+import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
+import com.toggl.repository.exceptions.DurationShouldNotBeNullException
+import com.toggl.repository.exceptions.StartTimeShouldNotBeNullException
+import com.toggl.repository.extensions.toCreateDto
 import com.toggl.repository.extensions.toStartDto
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
@@ -96,25 +102,35 @@ class StartEditReducer @Inject constructor(
             StartEditAction.DoneButtonTapped -> {
                 val editableTimeEntry = state().editableTimeEntry ?: throw EditableTimeEntryShouldNotBeNullException()
                 state.mutate { copy(editableTimeEntry = null) }
-                if (editableTimeEntry.shouldStart()) {
-                    effect(
-                        StartEditAction.TimeEntryHandling(
-                            StartTimeEntry(
-                                editableTimeEntry.toStartDto(timeService.now())
-                            )
-                        ).toEffect()
-                    )
+
+                if (editableTimeEntry.wasNotYetPersisted()) {
+                    if (editableTimeEntry.isRunning()) {
+                        val dto = editableTimeEntry.toStartDto(timeService.now())
+                        effectOf(StartEditAction.TimeEntryHandling(StartTimeEntry(dto)))
+                    } else {
+                        val dto = editableTimeEntry.toCreateDto()
+                        effectOf(StartEditAction.TimeEntryHandling(CreateTimeEntry(dto)))
+                    }
                 } else {
                     val timeEntriesToEdit = editableTimeEntry.ids.mapNotNull { state().timeEntries[it] }
                     timeEntriesToEdit.map {
-                        it.copy(
-                            description = editableTimeEntry.description,
-                            billable = editableTimeEntry.billable
-                        )
-                    }.map {
-                        StartEditAction.TimeEntryHandling(
-                            EditTimeEntry(it)
-                        )
+
+                        val isGroup = editableTimeEntry.isRepresentingGroup()
+                        val startTime = if (isGroup) it.startTime else editableTimeEntry.startTime ?: throw StartTimeShouldNotBeNullException()
+                        val duration = if (isGroup) it.duration else editableTimeEntry.duration ?: throw DurationShouldNotBeNullException()
+
+                        StartEditAction.TimeEntryHandling(EditTimeEntry(
+                            it.copy(
+                                description = editableTimeEntry.description,
+                                billable = editableTimeEntry.billable,
+                                workspaceId = editableTimeEntry.workspaceId,
+                                projectId = editableTimeEntry.projectId,
+                                taskId = editableTimeEntry.taskId,
+                                tagIds = editableTimeEntry.tagIds,
+                                startTime = startTime,
+                                duration = duration
+                            )
+                        ))
                     }.toEffects()
                 }
             }
@@ -453,7 +469,6 @@ class StartEditReducer @Inject constructor(
             )
         )
 
-    private fun EditableTimeEntry.shouldStart() = this.ids.isEmpty()
     private fun EditableTimeEntry.endTime(now: OffsetDateTime): OffsetDateTime =
         startTime?.let { startTime ->
             val relativeDuration = duration ?: startTime.absoluteDurationBetween(now)

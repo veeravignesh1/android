@@ -37,6 +37,8 @@ import com.toggl.common.extensions.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.above
+import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
+import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.showTooltip
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Workspace
@@ -534,7 +536,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             when (duration) {
                 null -> {
                     stop_time_label.text =
-                        if (isNotStarted()) getString(R.string.set_stop_time) else getString(R.string.stop)
+                        if (wasNotYetPersisted()) getString(R.string.set_stop_time) else getString(R.string.stop)
 
                     stop_time_label.setOnClickListener {
                         store.dispatch(StartEditAction.StopButtonTapped)
@@ -553,13 +555,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         this@isEditableInProWorkspace.workspaces[this]?.isPro()
     } ?: false
 
-    private fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
-    private fun EditableTimeEntry.isNotStarted() = this.ids.isEmpty()
     private fun EditableTimeEntry.isRunning() = this.ids.size == 1 && this.startTime != null && this.duration == null
     private fun EditableTimeEntry.isStopped() = this.startTime != null && this.duration != null
     private fun EditableTimeEntry.getDurationForDisplaying() = when {
         this.duration != null -> this.duration!!
-        this.isNotStarted() && this.startTime == null -> Duration.ZERO
+        this.wasNotYetPersisted() && this.startTime == null -> Duration.ZERO
         this.startTime != null -> Duration.between(this.startTime, timeService.now())
         else -> throw IllegalStateException("Editable time entry must either have a duration, a start time or not be started yet (have no ids)")
     }
@@ -567,7 +567,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private fun EditableTimeEntry.startTimeOrNow(): OffsetDateTime = this.startTime ?: timeService.now()
     private fun EditableTimeEntry.endTimeOrNow(): OffsetDateTime? = when {
         this.isStopped() -> this.startTime!!.plus(this.duration)
-        this.isRunning() || this.isNotStarted() -> timeService.now()
+        this.isRunning() || this.wasNotYetPersisted() -> timeService.now()
         else -> null
     }
 

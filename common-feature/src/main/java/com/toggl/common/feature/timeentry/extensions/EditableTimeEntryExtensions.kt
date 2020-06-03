@@ -9,6 +9,8 @@ fun EditableTimeEntry.isNew() = this.startTime == null
 fun EditableTimeEntry.isRunning() = this.duration == null
 fun EditableTimeEntry.isRunningOrNew() = isRunning() || isNew()
 fun EditableTimeEntry.isStopped() = this.startTime != null && this.duration != null
+fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
+fun EditableTimeEntry.wasNotYetPersisted() = this.ids.isEmpty()
 
 fun EditableTimeEntry.throwIfNew() {
     if (this.isNew()) {
