@@ -29,30 +29,10 @@ sealed class StartEditAction {
     object StopButtonTapped : StartEditAction()
     data class TagCreated(val tag: Tag) : StartEditAction()
     data class TimeEntryHandling(override val timeEntryAction: TimeEntryAction) : StartEditAction(), TimeEntryActionHolder
+    object Close : StartEditAction()
 
-    companion object {
-        fun fromTimerAction(timerAction: TimerAction): StartEditAction? =
-            if (timerAction !is TimerAction.StartTimeEntry) null
-            else timerAction.startEditAction
-
-        fun toTimerAction(startEditAction: StartEditAction): TimerAction =
-            TimerAction.StartTimeEntry(
-                startEditAction
-            )
-    }
+    companion object
 }
-
-fun StartEditAction.isCloseAction(): Boolean =
-    when (this) {
-        StartEditAction.CloseButtonTapped,
-        StartEditAction.DoneButtonTapped,
-        StartEditAction.DialogDismissed -> true
-        is StartEditAction.TimeEntryHandling -> when (timeEntryAction) {
-            is TimeEntryAction.TimeEntryUpdated -> true
-            else -> false
-        }
-        else -> false
-    }
 
 fun StartEditAction.formatForDebug() =
     when (this) {
@@ -76,4 +56,5 @@ fun StartEditAction.formatForDebug() =
         StartEditAction.StopButtonTapped -> "Stop button tapped"
         is StartEditAction.TagCreated -> "Tag created $tag"
         is StartEditAction.TimeEntryHandling -> "Time entry action $timeEntryAction"
+        StartEditAction.Close -> "Start/edit view closed"
     }

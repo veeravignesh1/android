@@ -3,14 +3,17 @@ package com.toggl.common.feature
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.architecture.core.combine
+import com.toggl.architecture.core.isOrWraps
 import com.toggl.architecture.extensions.noEffect
 
-internal class OptionalCloseReducer<State, Action>(
+class OptionalCloseReducer<State, Action, ActionToHandle>(
     private val closeCallback: (State) -> State,
-    private val actionIsCloseAction: (Action) -> Boolean
+    private val actionToHandle: Class<ActionToHandle>
 ) : Reducer<State, Action> {
     override fun reduce(state: MutableValue<State>, action: Action): List<Effect<Action>> {
-        if (actionIsCloseAction(action)) {
+
+        if (action.isOrWraps(actionToHandle)) {
             state.mutate(closeCallback)
         }
 
@@ -18,7 +21,8 @@ internal class OptionalCloseReducer<State, Action>(
     }
 }
 
-fun <State, Action> handleClosableActionsUsing(
-    actionIsCloseAction: (Action) -> Boolean,
-    closeCallback: (State) -> State
-): Reducer<State, Action> = OptionalCloseReducer(closeCallback, actionIsCloseAction)
+fun <State, Action, ActionToHandle> Reducer<State, Action>.handleClosableActionsUsing(
+    closeCallback: (State) -> State,
+    actionToHandle: Class<ActionToHandle>
+): Reducer<State, Action> =
+    combine(this, OptionalCloseReducer(closeCallback, actionToHandle))

@@ -1,10 +1,11 @@
 package com.toggl.timer.project.domain
 
+import arrow.optics.optics
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Workspace
-import com.toggl.timer.common.domain.TimerAction
 
+@optics
 sealed class ProjectAction {
     data class NameEntered(val name: String) : ProjectAction()
     object DoneButtonTapped : ProjectAction()
@@ -15,22 +16,9 @@ sealed class ProjectAction {
     data class ColorPicked(val color: String) : ProjectAction()
     data class WorkspacePicked(val workspace: Workspace) : ProjectAction()
     data class ClientPicked(val client: Client) : ProjectAction()
+    object Close : ProjectAction()
 
-    companion object {
-        fun fromTimerAction(timerAction: TimerAction): ProjectAction? =
-            if (timerAction !is TimerAction.Project) null
-            else timerAction.projectAction
-
-        fun toTimerAction(projectAction: ProjectAction): TimerAction =
-            TimerAction.Project(projectAction)
-    }
-}
-
-fun ProjectAction.isCloseAction() = when (this) {
-    ProjectAction.CloseButtonTapped,
-    ProjectAction.DialogDismissed,
-    is ProjectAction.ProjectCreated -> true
-    else -> false
+    companion object
 }
 
 fun ProjectAction.formatForDebug() =
@@ -44,4 +32,5 @@ fun ProjectAction.formatForDebug() =
         is ProjectAction.ColorPicked -> "Selected color $color"
         is ProjectAction.WorkspacePicked -> "Selected workspace with id ${workspace.id}"
         is ProjectAction.ClientPicked -> "Selected client wit id ${client.id}"
+        ProjectAction.Close -> "Project view closed"
     }

@@ -6,6 +6,7 @@ import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.decorateWith
 import com.toggl.architecture.core.optionalPullback
 import com.toggl.architecture.core.pullback
+import com.toggl.architecture.core.unwrap
 import com.toggl.common.feature.handleClosableActionsUsing
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryReducer
@@ -15,8 +16,6 @@ import com.toggl.timer.R
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
-import com.toggl.timer.common.domain.isProjectCloseAction
-import com.toggl.timer.common.domain.isStartEditCloseAction
 import com.toggl.timer.common.domain.setEditableProjectToNull
 import com.toggl.timer.common.domain.setEditableTimeEntryToNull
 import com.toggl.timer.log.domain.TimeEntriesLogAction
@@ -69,7 +68,7 @@ class TimerModule {
     internal fun timeEntriesLogStore(store: Store<TimerState, TimerAction>): Store<TimeEntriesLogState, TimeEntriesLogAction> =
         store.view(
             mapToLocalState = TimeEntriesLogState.Companion::fromTimerState,
-            mapToGlobalAction = TimeEntriesLogAction.Companion::toTimerAction
+            mapToGlobalAction = TimerAction::TimeEntriesLog
         )
 
     @ExperimentalCoroutinesApi
@@ -77,7 +76,7 @@ class TimerModule {
     internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartEditState, StartEditAction> =
         store.optionalView(
             mapToLocalState = StartEditState.Companion::fromTimerState,
-            mapToGlobalAction = StartEditAction.Companion::toTimerAction
+            mapToGlobalAction = TimerAction::StartEditTimeEntry
         )
 
     @ExperimentalCoroutinesApi
@@ -85,7 +84,7 @@ class TimerModule {
     internal fun runningTimeEntryStore(store: Store<TimerState, TimerAction>): Store<RunningTimeEntryState, RunningTimeEntryAction> =
         store.view(
             mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
-            mapToGlobalAction = RunningTimeEntryAction.Companion::toTimerAction
+            mapToGlobalAction = TimerAction::RunningTimeEntry
         )
 
     @ExperimentalCoroutinesApi
@@ -93,7 +92,7 @@ class TimerModule {
     internal fun projectStore(store: Store<TimerState, TimerAction>): Store<ProjectState, ProjectAction> =
         store.optionalView(
             mapToLocalState = ProjectState.Companion::fromTimerState,
-            mapToGlobalAction = ProjectAction.Companion::toTimerAction
+            mapToGlobalAction = TimerAction::Project
         )
 
     @ExperimentalCoroutinesApi
@@ -108,34 +107,35 @@ class TimerModule {
         projectReducer: ProjectReducer
     ): TimerReducer {
 
-        return combine(
+        return combine<TimerState, TimerAction>(
             timeEntriesLogReducer.decorateWith(timeEntryReducer).pullback(
                 mapToLocalState = TimeEntriesLogState.Companion::fromTimerState,
-                mapToLocalAction = TimeEntriesLogAction.Companion::fromTimerAction,
+                mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = TimeEntriesLogState.Companion::toTimerState,
-                mapToGlobalAction = TimeEntriesLogAction.Companion::toTimerAction
+                mapToGlobalAction = TimerAction::TimeEntriesLog
             ),
-            startEditReducer.decorateWith(timeEntryReducer).optionalPullback(
+            startEditReducer.optionalPullback(
                 mapToLocalState = StartEditState.Companion::fromTimerState,
-                mapToLocalAction = StartEditAction.Companion::fromTimerAction,
+                mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = StartEditState.Companion::toTimerState,
-                mapToGlobalAction = StartEditAction.Companion::toTimerAction
+                mapToGlobalAction = TimerAction::StartEditTimeEntry
             ),
             runningTimeEntryReducer.decorateWith(timeEntryReducer).pullback(
                 mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
-                mapToLocalAction = RunningTimeEntryAction.Companion::fromTimerAction,
+                mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = RunningTimeEntryState.Companion::toTimerState,
-                mapToGlobalAction = RunningTimeEntryAction.Companion::toTimerAction
+                mapToGlobalAction = TimerAction::RunningTimeEntry
             ),
             projectReducer.optionalPullback(
                 mapToLocalState = ProjectState.Companion::fromTimerState,
-                mapToLocalAction = ProjectAction.Companion::fromTimerAction,
+                mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = ProjectState.Companion::toTimerState,
-                mapToGlobalAction = ProjectAction.Companion::toTimerAction
-            ),
-            handleClosableActionsUsing(TimerAction::isStartEditCloseAction, TimerState::setEditableTimeEntryToNull),
-            handleClosableActionsUsing(TimerAction::isProjectCloseAction, TimerState::setEditableProjectToNull)
+                mapToGlobalAction = TimerAction::Project
+            )
         )
+        .handleClosableActionsUsing(TimerState::setEditableTimeEntryToNull, StartEditAction.Close::class.java)
+        .handleClosableActionsUsing(TimerState::setEditableProjectToNull, ProjectAction.Close::class.java)
+        .decorateWith(timeEntryReducer)
     }
 
     private fun TimeEntriesLogReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
@@ -147,13 +147,13 @@ class TimerModule {
             mapToGlobalAction = { localAction -> TimeEntriesLogAction.TimeEntryHandling(localAction) }
         )
 
-    private fun StartEditReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
+    private fun TimerReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
         this.decorateWith(
             timeEntryReducer,
             mapToLocalState = { TimeEntryState(it.timeEntries) },
-            mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+            mapToLocalAction = { TimerAction.unwrapTimeEntryActionHolder(it) },
             mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
-            mapToGlobalAction = { localAction -> StartEditAction.TimeEntryHandling(localAction) }
+            mapToGlobalAction = { localAction -> TimerAction.StartEditTimeEntry(StartEditAction.TimeEntryHandling(localAction)) }
         )
 
     private fun RunningTimeEntryReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =

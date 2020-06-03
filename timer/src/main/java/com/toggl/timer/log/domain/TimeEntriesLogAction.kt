@@ -18,16 +18,7 @@ sealed class TimeEntriesLogAction {
     object UndoButtonTapped : TimeEntriesLogAction()
     data class TimeEntryHandling(override val timeEntryAction: TimeEntryAction) : TimeEntriesLogAction(), TimeEntryActionHolder
 
-    companion object {
-        fun fromTimerAction(timerAction: TimerAction): TimeEntriesLogAction? =
-            if (timerAction !is TimerAction.TimeEntriesLog) null
-            else timerAction.timeEntriesLogAction
-
-        fun toTimerAction(timeEntriesLogAction: TimeEntriesLogAction): TimerAction =
-            TimerAction.TimeEntriesLog(
-                timeEntriesLogAction
-            )
-    }
+    companion object
 }
 
 fun TimeEntriesLogAction.formatForDebug() =

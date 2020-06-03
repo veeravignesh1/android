@@ -12,16 +12,7 @@ sealed class RunningTimeEntryAction {
     object CardTapped : RunningTimeEntryAction()
     data class TimeEntryHandling(override val timeEntryAction: TimeEntryAction) : RunningTimeEntryAction(), TimeEntryActionHolder
 
-    companion object {
-        fun fromTimerAction(timerAction: TimerAction): RunningTimeEntryAction? =
-            if (timerAction !is TimerAction.RunningTimeEntry) null
-            else timerAction.runningTimeEntryAction
-
-        fun toTimerAction(timeEntriesLogAction: RunningTimeEntryAction): TimerAction =
-            TimerAction.RunningTimeEntry(
-                timeEntriesLogAction
-            )
-    }
+    companion object
 }
 
 fun RunningTimeEntryAction.formatForDebug() =
