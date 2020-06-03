@@ -8,7 +8,7 @@ sealed class CalendarDatePickerAction {
     companion object {
         fun fromCalendarAction(calendarAction: CalendarAction): CalendarDatePickerAction? =
             if (calendarAction !is CalendarAction.DatePicker) null
-            else calendarAction.datePicker
+            else calendarAction.action
 
             fun toCalendarAction(datePickerAction: CalendarDatePickerAction): CalendarAction =
             CalendarAction.DatePicker(datePickerAction)

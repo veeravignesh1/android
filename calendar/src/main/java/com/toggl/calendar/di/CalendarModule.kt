@@ -6,12 +6,12 @@ import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.decorateWith
 import com.toggl.architecture.core.optionalPullback
 import com.toggl.architecture.core.pullback
+import com.toggl.architecture.core.unwrap
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarDayReducer
 import com.toggl.calendar.calendarday.domain.CalendarDayState
 import com.toggl.calendar.common.domain.CalendarAction
 import com.toggl.calendar.common.domain.CalendarState
-import com.toggl.calendar.common.domain.isContextualMenuCloseAction
 import com.toggl.calendar.common.domain.setSelectedItemToNull
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuAction
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuReducer
@@ -72,13 +72,13 @@ class CalendarModule {
         return combine(
             calendarDayReducer.pullback(
                 mapToLocalState = CalendarDayState.Companion::fromCalendarState,
-                mapToLocalAction = CalendarDayAction.Companion::fromCalendarAction,
+                mapToLocalAction = CalendarAction::unwrap,
                 mapToGlobalState = CalendarDayState.Companion::toCalendarState,
                 mapToGlobalAction = CalendarDayAction.Companion::toCalendarAction
             ),
             datePickerReducer.pullback(
                 mapToLocalState = CalendarDatePickerState.Companion::fromCalendarState,
-                mapToLocalAction = CalendarDatePickerAction.Companion::fromCalendarAction,
+                mapToLocalAction = CalendarAction::unwrap,
                 mapToGlobalState = CalendarDatePickerState.Companion::toCalendarState,
                 mapToGlobalAction = CalendarDatePickerAction.Companion::toCalendarAction
             ),
@@ -89,11 +89,11 @@ class CalendarModule {
                 mapToGlobalAction = { ContextualMenuAction.TimeEntryHandling(it) }
             ).optionalPullback(
                 mapToLocalState = ContextualMenuState.Companion::fromCalendarState,
-                mapToLocalAction = ContextualMenuAction.Companion::fromCalendarAction,
+                mapToLocalAction = CalendarAction::unwrap,
                 mapToGlobalState = ContextualMenuState.Companion::toCalendarState,
                 mapToGlobalAction = ContextualMenuAction.Companion::toCalendarAction
             ),
-            handleClosableActionsUsing(CalendarAction::isContextualMenuCloseAction, CalendarState::setSelectedItemToNull)
+            handleClosableActionsUsing(CalendarState::setSelectedItemToNull)
         )
     }
 }

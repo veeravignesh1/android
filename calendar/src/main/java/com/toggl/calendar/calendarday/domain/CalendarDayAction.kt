@@ -12,10 +12,6 @@ sealed class CalendarDayAction {
     data class EmptyPositionLongPressed(val startTime: OffsetDateTime) : CalendarDayAction()
 
     companion object {
-        fun fromCalendarAction(calendarAction: CalendarAction): CalendarDayAction? =
-            if (calendarAction !is CalendarAction.CalendarDay) null
-            else calendarAction.calendarDay
-
         fun toCalendarAction(calendarDayAction: CalendarDayAction): CalendarAction =
             CalendarAction.CalendarDay(calendarDayAction)
     }

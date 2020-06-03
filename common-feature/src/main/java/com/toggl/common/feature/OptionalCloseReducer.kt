@@ -3,6 +3,7 @@ package com.toggl.common.feature
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.architecture.core.isCloseAction
 import com.toggl.architecture.extensions.noEffect
 
 internal class OptionalCloseReducer<State, Action>(
@@ -19,6 +20,5 @@ internal class OptionalCloseReducer<State, Action>(
 }
 
 fun <State, Action> handleClosableActionsUsing(
-    actionIsCloseAction: (Action) -> Boolean,
     closeCallback: (State) -> State
-): Reducer<State, Action> = OptionalCloseReducer(closeCallback, actionIsCloseAction)
+): Reducer<State, Action> = OptionalCloseReducer(closeCallback) { it.isCloseAction() }

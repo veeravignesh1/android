@@ -133,8 +133,8 @@ class TimerModule {
                 mapToGlobalState = ProjectState.Companion::toTimerState,
                 mapToGlobalAction = ProjectAction.Companion::toTimerAction
             ),
-            handleClosableActionsUsing(TimerAction::isStartEditCloseAction, TimerState::setEditableTimeEntryToNull),
-            handleClosableActionsUsing(TimerAction::isProjectCloseAction, TimerState::setEditableProjectToNull)
+            handleClosableActionsUsing(TimerState::setEditableTimeEntryToNull),
+            handleClosableActionsUsing(TimerState::setEditableProjectToNull)
         )
     }
 
