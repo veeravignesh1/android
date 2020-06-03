@@ -5,6 +5,8 @@ import android.os.Build
 import android.os.Vibrator
 import androidx.core.content.getSystemService
 import androidx.test.core.app.ApplicationProvider
+import com.toggl.common.extensions.performClickEffect
+import com.toggl.common.extensions.performTickEffect
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatCode
 import org.junit.Test

@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.TextWatcher
 import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputEditText
-import com.toggl.common.doSafeAfterTextChanged
+import com.toggl.common.extensions.doSafeAfterTextChanged
 import com.toggl.timer.startedit.domain.StartEditAction.DescriptionEntered
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview

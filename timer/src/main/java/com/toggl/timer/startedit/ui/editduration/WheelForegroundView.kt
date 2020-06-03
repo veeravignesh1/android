@@ -14,7 +14,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
-import com.toggl.common.performTickEffect
+import com.toggl.common.extensions.performTickEffect
 import com.toggl.timer.R
 import com.toggl.timer.extensions.absoluteDurationBetween
 import com.toggl.timer.extensions.roundToClosestMinute
