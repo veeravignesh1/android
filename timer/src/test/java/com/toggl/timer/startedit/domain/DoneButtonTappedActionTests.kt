@@ -12,12 +12,10 @@ import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.toMutableValue
-import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.DisplayName
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -50,16 +48,6 @@ class DoneButtonTappedActionTests : CoroutineTest() {
         coEvery { workspace.id } returns 1
         every { startTimeEntryResult.startedTimeEntry } returns mockk()
         every { startTimeEntryResult.stoppedTimeEntry } returns mockk()
-    }
-
-    @Test
-    fun `should throw when there's no editable entry`() = runBlockingTest {
-        var initialState = state.copy(editableTimeEntry = null)
-        val mutableValue = initialState.toMutableValue { initialState = it }
-
-        shouldThrow<EditableTimeEntryShouldNotBeNullException> {
-            reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-        }
     }
 
     @Test
