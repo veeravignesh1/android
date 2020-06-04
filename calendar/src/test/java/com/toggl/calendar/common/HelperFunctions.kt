@@ -9,6 +9,7 @@ import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.environment.services.calendar.Calendar
+import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeTypeOf
@@ -61,11 +62,13 @@ fun createCalendarEvent(
 fun createInitialState(
     timeEntries: List<TimeEntry> = listOf(),
     calendarEvents: List<CalendarEvent> = listOf(),
+    projects: List<Project> = listOf(),
     selectedItem: SelectedCalendarItem? = null,
     date: OffsetDateTime = OffsetDateTime.now(),
     calendars: List<Calendar> = listOf()
 ) = CalendarDayState(
     timeEntries.associateBy { it.id },
+    projects.associateBy { it.id },
     calendarEvents.associateBy { it.id },
     selectedItem,
     date,

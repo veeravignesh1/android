@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CalendarWidgetView">
+        <!-- base -->
+        <attr name="calendarBaseHourHeight" format="dimension" />
+        <attr name="calendarMaxHourHeight" format="dimension" />
+        <attr name="calendarEdgeDistanceToTriggerAutoScroll" format="dimension" />
+        <attr name="calendarEventAutoScrollToFrameExtraDistance" format="dimension" />
+        <attr name="calendarCurrentHourCircleRadius" format="dimension" />
+        <attr name="currentHourColor" format="color" />
+        <attr name="calendarCurrentHourIndicatorStrokeSize" format="dimension" />
+        <attr name="calendarBackgroundColor" format="color" />
+
+        <!-- background -->
+        <attr name="calendarHourLineStartMargin" format="dimension" />
+        <attr name="calendarVerticalLineDividerStartMargin" format="dimension" />
+        <attr name="calendarHoursStartMargin" format="dimension" />
+        <attr name="lineColor" format="color" />
+        <attr name="calendarHourLinesHeight" format="dimension" />
+        <attr name="calendarHourTextColor" format="color" />
+        <attr name="calendarHoursTextSize" format="dimension" />
+
+        <!-- edit -->
+        <attr name="calendarEditingHandleTouchExtraMargins" format="dimension" />
+        <attr name="editingHourLabelTextColor" format="color" />
+        <attr name="editingHoursLabelPaintTextSize" format="dimension" />
+        <attr name="editingHandlesHorizontalMargins" format="dimension" />
+        <attr name="editingHandlesRadius" format="dimension" />
+
+        <!-- events -->
+        <attr name="calendarEventsStartMargin" format="dimension" />
+        <attr name="calendarEventsLeftPadding" format="dimension" />
+        <attr name="calendarEventsRightPadding" format="dimension" />
+        <attr name="calendarEventsItemsSpacing" format="dimension" />
+        <attr name="shortCalendarItemHeight" format="dimension" />
+        <attr name="regularCalendarItemVerticalPadding" format="dimension" />
+        <attr name="regularCalendarItemHorizontalPadding" format="dimension" />
+        <attr name="shortCalendarItemVerticalPadding" format="dimension" />
+        <attr name="shortCalendarItemHorizontalPadding" format="dimension" />
+        <attr name="regularCalendarItemFontSize" format="dimension" />
+        <attr name="shortCalendarItemFontSize" format="dimension" />
+        <attr name="textEventsPaintTextSize" format="dimension" />
+        <attr name="calendarRunningTimeEntryStripesSpacing" format="dimension" />
+        <attr name="calendarRunningTimeEntryThinStripeWidth" format="dimension" />
+        <attr name="calendarRunningTimeEntryDashedHourTopPadding" format="dimension" />
+        <attr name="calendarEventBottomLineHeight" format="dimension" />
+        <attr name="calendarIconSize" format="dimension" />
+        <attr name="calendarIconRightInsetMargin" format="dimension" />
+        <attr name="calendarIcon" format="reference" />
+        <attr name="primaryTextColor" format="color" />
+    </declare-styleable>
+</resources>

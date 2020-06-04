@@ -5,5 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- TODO add view contents -->
+    <com.toggl.calendar.calendarday.ui.views.CalendarWidgetView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

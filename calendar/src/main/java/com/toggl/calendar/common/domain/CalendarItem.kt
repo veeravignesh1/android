@@ -18,6 +18,7 @@ sealed class CalendarItem {
 
     data class TimeEntry(
         val timeEntry: TimeEntryItem,
+        val projectColor: String? = null,
         override val columnIndex: Int = 0,
         override val totalColumns: Int = 0
     ) : CalendarItem()

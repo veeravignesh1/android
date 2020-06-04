@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_calendar_calendarBaseHourHeight">56dp</dimen>
+    <dimen name="default_calendar_calendarMaxHourHeight">112dp</dimen>
+    <dimen name="default_calendar_calendarEdgeDistanceToTriggerAutoScroll">8dp</dimen>
+    <dimen name="default_calendar_calendarEventAutoScrollToFrameExtraDistance">5dp</dimen>
+    <dimen name="default_calendar_calendarCurrentHourIndicatorStrokeSize">1dp</dimen>
+    <dimen name="default_calendar_calendarCurrentHourCircleRadius">4dp</dimen>
+    <dimen name="default_calendar_calendarHourLineStartMargin">60dp</dimen>
+    <dimen name="default_calendar_calendarVerticalLineDividerStartMargin">68dp</dimen>
+    <dimen name="default_calendar_calendarHoursStartMargin">48dp</dimen>
+    <dimen name="default_calendar_calendarHourLinesHeight">1dp</dimen>
+    <dimen name="default_calendar_calendarHoursTextSize">12sp</dimen>
+    <dimen name="default_calendar_calendarEditingHandleTouchExtraMargins">24dp</dimen>
+    <dimen name="default_calendar_editingHoursLabelPaintTextSize">12sp</dimen>
+    <dimen name="default_calendar_editingHandlesHorizontalMargins">8dp</dimen>
+    <dimen name="default_calendar_editingHandlesRadius">3dp</dimen>
+    <dimen name="default_calendar_calendarEventsStartMargin">68dp</dimen>
+    <dimen name="default_calendar_calendarEventsLeftPadding">4dp</dimen>
+    <dimen name="default_calendar_calendarEventsRightPadding">4dp</dimen>
+    <dimen name="default_calendar_calendarEventsItemsSpacing">4dp</dimen>
+    <dimen name="default_calendar_shortCalendarItemHeight">18dp</dimen>
+    <dimen name="default_calendar_regularCalendarItemVerticalPadding">2dp</dimen>
+    <dimen name="default_calendar_regularCalendarItemHorizontalPadding">4dp</dimen>
+    <dimen name="default_calendar_shortCalendarItemVerticalPadding">0.5dp</dimen>
+    <dimen name="default_calendar_shortCalendarItemHorizontalPadding">2dp</dimen>
+    <dimen name="default_calendar_regularCalendarItemFontSize">12dp</dimen>
+    <dimen name="default_calendar_shortCalendarItemFontSize">10dp</dimen>
+    <dimen name="default_calendar_textEventsPaintTextSize">12sp</dimen>
+    <dimen name="default_calendar_calendarRunningTimeEntryStripesSpacing">12dp</dimen>
+    <dimen name="default_calendar_calendarRunningTimeEntryThinStripeWidth">2dp</dimen>
+    <dimen name="default_calendar_calendarRunningTimeEntryDashedHourTopPadding">4dp</dimen>
+    <dimen name="default_calendar_calendarEventBottomLineHeight">2dp</dimen>
+    <dimen name="default_calendar_calendarIconSize">24dp</dimen>
+    <dimen name="default_calendar_calendarIconRightInsetMargin">4dp</dimen>
+</resources>

@@ -1,6 +1,7 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.CoroutineTest
+import com.toggl.calendar.common.createInitialState
 import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
@@ -17,7 +18,7 @@ import java.time.OffsetDateTime
 @ExperimentalCoroutinesApi
 @DisplayName("The EmptyPositionLongPressed action")
 class EmptyPositionLongPressedActionTests : CoroutineTest() {
-    private val state = CalendarDayState(mapOf(), mapOf(), null, OffsetDateTime.now(), emptyList())
+    private val state = createInitialState()
     private val reducer = CalendarDayReducer(mockk(), dispatcherProvider)
 
     @Test

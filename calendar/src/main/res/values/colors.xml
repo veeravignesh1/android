@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_calendar_currentHourColor">#FF328FFF</color>
+    <color name="default_calendar_calendarBackgroundColor">@color/background</color>
+    <color name="default_calendar_lineColor">#C2C2C2</color>
+    <color name="default_calendar_calendarHourTextColor">#C2C2C2</color>
+    <color name="default_calendar_editingHourLabelTextColor">#FF328FFF</color>
+    <color name="default_calendar_primaryTextColor">@color/text_on_background</color>
+</resources>

@@ -8,6 +8,7 @@ import com.toggl.domain.AppState
 fun mapAppStateToCalendarState(appState: AppState): CalendarState =
     CalendarState(
         appState.timeEntries,
+        appState.projects,
         appState.calendarLocalState
     )
 
@@ -17,6 +18,7 @@ fun mapAppActionToCalendarAction(appAction: AppAction): CalendarAction? =
 fun mapCalendarStateToAppState(appState: AppState, calendarState: CalendarState): AppState =
     appState.copy(
         timeEntries = calendarState.timeEntries,
+        projects = calendarState.projects,
         calendarLocalState = calendarState.localState
     )
 
