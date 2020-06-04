@@ -7,22 +7,22 @@ import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.isOrWraps
 import com.toggl.architecture.extensions.noEffect
 
-class OptionalCloseReducer<State, Action, ActionToHandle>(
+class OptionalCloseReducer<State, Action>(
     private val closeCallback: (State) -> State,
-    private val actionToHandle: Class<ActionToHandle>
+    private val shouldHandleAction: (Action) -> Boolean
 ) : Reducer<State, Action> {
     override fun reduce(state: MutableValue<State>, action: Action): List<Effect<Action>> {
-
-        if (action.isOrWraps(actionToHandle)) {
+        if (shouldHandleAction(action)) {
             state.mutate(closeCallback)
         }
-
         return noEffect()
     }
 }
 
-fun <State, Action, ActionToHandle> Reducer<State, Action>.handleClosableActionsUsing(
-    closeCallback: (State) -> State,
-    actionToHandle: Class<ActionToHandle>
+inline fun <State, Action, reified ActionToHandle> Reducer<State, Action>.handleClosableActionsUsing(
+    noinline closeCallback: (State) -> State
 ): Reducer<State, Action> =
-    combine(this, OptionalCloseReducer(closeCallback, actionToHandle))
+    combine(
+        this,
+        OptionalCloseReducer(closeCallback) { it.isOrWraps<ActionToHandle>() }
+    )

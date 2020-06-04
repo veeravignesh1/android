@@ -16,7 +16,6 @@ import com.toggl.timer.R
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer
 import com.toggl.timer.common.domain.TimerState
-import com.toggl.timer.common.domain.setEditableProjectToNull
 import com.toggl.timer.common.domain.setEditableTimeEntryToNull
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogReducer
@@ -133,8 +132,8 @@ class TimerModule {
                 mapToGlobalAction = TimerAction::Project
             )
         )
-        .handleClosableActionsUsing(TimerState::setEditableTimeEntryToNull, StartEditAction.Close::class.java)
-        .handleClosableActionsUsing(TimerState::setEditableProjectToNull, ProjectAction.Close::class.java)
+        .handleClosableActionsUsing<TimerState, TimerAction, StartEditAction.Close>(TimerState::setEditableTimeEntryToNull)
+        .handleClosableActionsUsing<TimerState, TimerAction, ProjectAction.Close>(TimerState::setEditableTimeEntryToNull)
         .decorateWith(timeEntryReducer)
     }
 

@@ -20,7 +20,6 @@ import com.toggl.calendar.datepicker.domain.CalendarDatePickerAction
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerReducer
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerState
 import com.toggl.common.feature.handleClosableActionsUsing
-import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryReducer
 import com.toggl.common.feature.timeentry.TimeEntryState
 import dagger.Module
@@ -89,9 +88,8 @@ class CalendarModule {
                 mapToGlobalAction = CalendarAction::ContextualMenu
             )
         )
-        .handleClosableActionsUsing(CalendarState::setSelectedItemToNull, ContextualMenuAction.Close::class.java)
+        .handleClosableActionsUsing<CalendarState, CalendarAction, ContextualMenuAction.Close>(CalendarState::setSelectedItemToNull)
         .decorateWith(timeEntryReducer)
-
     }
 
     private fun CalendarReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =

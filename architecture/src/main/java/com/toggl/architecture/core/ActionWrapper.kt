@@ -8,10 +8,13 @@ inline fun <From, reified To> From.unwrap(): To? =
     if (this !is ActionWrapper<*> || this.action !is To) null
     else this.action as To
 
-fun <T> Any?.isOrWraps(typeToCheck: Class<T>): Boolean =
-    when {
-        this == null -> false
-        typeToCheck.isAssignableFrom(this::class.java) -> true
-        this is ActionWrapper<*> -> this.action.isOrWraps(typeToCheck)
-        else -> false
+fun Any.asActionSequence(): Sequence<Any> = generateSequence(
+    seedFunction = { this },
+    nextFunction = {
+        if (it is ActionWrapper<*>) it.action
+        else null
     }
+)
+
+inline fun <reified T> Any?.isOrWraps(): Boolean =
+    this?.asActionSequence()?.any { it is T } ?: false
