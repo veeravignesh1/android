@@ -25,6 +25,8 @@ fun <Action> effectOf(effect: Action) = listOf(effect.toEffect())
 
 fun <Action> effects(vararg effects: Effect<Action>) = effects.toList()
 
+fun <Action> effects(vararg actions: Action) = actions.map { it.toEffect() }.toList()
+
 infix operator fun <Action> Effect<Action>.plus(otherEffect: Effect<Action>) = listOf(this, otherEffect)
 
 fun noEffect(): List<Effect<Nothing>> =

@@ -5,7 +5,7 @@ import com.toggl.models.domain.Task
 import com.toggl.models.domain.EditableProject
 
 fun createInitialState(
-    editableProject: EditableProject? = null,
+    editableProject: EditableProject = EditableProject.empty(1),
     projects: Map<Long, Project> = mapOf()
 ) = ProjectState(
     editableProject = editableProject,

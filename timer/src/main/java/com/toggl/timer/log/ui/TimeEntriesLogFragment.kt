@@ -27,6 +27,7 @@ import com.toggl.timer.log.domain.TimeEntryViewModel
 import kotlinx.android.synthetic.main.fragment_time_entries_log.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -79,13 +80,17 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             store.state
                 .map { it.editableTimeEntry != null }
                 .distinctUntilChanged()
+                .drop(1)
                 .onEach { isEditViewExpanded ->
+                    this@TimeEntriesLogFragment.context?.performClickHapticFeedback()
+
+                    val navController = findNavController()
                     if (isEditViewExpanded) {
-                        this@TimeEntriesLogFragment.context?.performClickHapticFeedback()
-                        findNavController().navigate(deepLinks.timeEntriesStartEditDialog)
+                        navController.navigate(deepLinks.timeEntriesStartEditDialog)
+                    } else {
+                        navController.popBackStack()
                     }
-                }
-                .launchIn(this)
+                }.launchIn(this)
 
             store.state
                 .map { it.entriesPendingDeletion }

@@ -6,14 +6,13 @@ import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.shouldEmitTimeEntryAction
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
-import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
-import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
+import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -44,17 +43,6 @@ internal class ContinueButtonTappedActionTests {
     }
 
     @Test
-    fun `throws if executed on a null selected item`() = runBlockingTest {
-        val initialState = createInitialState(selectedItem = null)
-
-        reducer.testReduceException(
-            initialState = initialState,
-            action = ContextualMenuAction.ContinueButtonTapped,
-            exception = SelectedItemShouldNotBeNullException::class.java
-        )
-    }
-
-    @Test
     fun `throws if executed on a new time entry`() = runBlockingTest {
         val timeEntry = EditableTimeEntry.empty(1)
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
@@ -80,17 +68,6 @@ internal class ContinueButtonTappedActionTests {
     }
 
     @Test
-    fun `sets the selectedItem to null`() = runBlockingTest {
-        val timeEntry = createTimeEntry(1, startTime = OffsetDateTime.now().minusMinutes(3), duration = Duration.ofMinutes(3))
-        val editableTimeEntry = EditableTimeEntry.fromSingle(timeEntry)
-        val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry))
-
-        reducer.testReduceState(initialState, ContextualMenuAction.ContinueButtonTapped) { state ->
-            state shouldBe initialState.copy(selectedItem = null)
-        }
-    }
-
-    @Test
     fun `returns an effect to continue the time entry`() = runBlockingTest {
         val timeEntry = createTimeEntry(1, startTime = OffsetDateTime.now().minusMinutes(3), duration = Duration.ofMinutes(3))
         val editableTimeEntry = EditableTimeEntry.fromSingle(timeEntry)
@@ -99,8 +76,19 @@ internal class ContinueButtonTappedActionTests {
         reducer.testReduceEffects(
             initialState = initialState,
             action = ContextualMenuAction.ContinueButtonTapped
-        ) { effects -> effects.single().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
+        ) { effects -> effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
             it.id shouldBe timeEntry.id
         } }
+    }
+
+    @Test
+    fun `returns a close effect`() = runBlockingTest {
+        val timeEntry = createTimeEntry(1, startTime = OffsetDateTime.now().minusMinutes(3), duration = Duration.ofMinutes(3))
+        val editableTimeEntry = EditableTimeEntry.fromSingle(timeEntry)
+        val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry))
+
+        reducer.testReduceEffects(initialState, ContextualMenuAction.DialogDismissed) {
+            it.last().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+        }
     }
 }

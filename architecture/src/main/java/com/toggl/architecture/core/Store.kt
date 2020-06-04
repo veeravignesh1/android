@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 
 interface Store<State, Action : Any> {
@@ -22,25 +23,42 @@ interface Store<State, Action : Any> {
         mapToLocalState: (State) -> ViewState,
         mapToGlobalAction: (ViewAction) -> Action?
     ): Store<ViewState, ViewAction>
+
+    @ExperimentalCoroutinesApi
+    fun <ViewState : Any, ViewAction : Any> optionalView(
+        mapToLocalState: (State) -> ViewState?,
+        mapToGlobalAction: (ViewAction) -> Action?
+    ): Store<ViewState, ViewAction>
 }
 
 class FlowStore<State, Action : Any> private constructor(
     override val state: Flow<State>,
     private val dispatchFn: (List<Action>) -> Unit
 ) : Store<State, Action> {
+
     @ExperimentalCoroutinesApi
     override fun <ViewState, ViewAction : Any> view(
         mapToLocalState: (State) -> ViewState,
         mapToGlobalAction: (ViewAction) -> Action?
-    ): Store<ViewState, ViewAction> {
-        return FlowStore(
-            state = state.map { mapToLocalState(it) }.distinctUntilChanged(),
-            dispatchFn = { actions ->
-                val globalActions = actions.mapNotNull(mapToGlobalAction)
-                dispatchFn(globalActions)
-            }
-        )
-    }
+    ): Store<ViewState, ViewAction> = FlowStore(
+        state = state.map { mapToLocalState(it) }.distinctUntilChanged(),
+        dispatchFn = { actions ->
+            val globalActions = actions.mapNotNull(mapToGlobalAction)
+            dispatchFn(globalActions)
+        }
+    )
+
+    @ExperimentalCoroutinesApi
+    override fun <ViewState : Any, ViewAction : Any> optionalView(
+        mapToLocalState: (State) -> ViewState?,
+        mapToGlobalAction: (ViewAction) -> Action?
+    ): Store<ViewState, ViewAction> = FlowStore(
+        state = state.mapNotNull { mapToLocalState(it) }.distinctUntilChanged(),
+        dispatchFn = { actions ->
+            val globalActions = actions.mapNotNull(mapToGlobalAction)
+            dispatchFn(globalActions)
+        }
+    )
 
     companion object {
         @FlowPreview

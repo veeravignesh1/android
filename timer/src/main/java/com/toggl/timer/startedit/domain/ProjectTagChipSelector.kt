@@ -14,7 +14,7 @@ class ProjectTagChipSelector(
 
     override suspend fun select(state: StartEditState): List<ChipViewModel> {
 
-        val editableTimeEntry = state.editableTimeEntry ?: return emptyList()
+        val editableTimeEntry = state.editableTimeEntry
 
         return sequence {
             val projectId = editableTimeEntry.projectId

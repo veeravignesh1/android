@@ -4,14 +4,14 @@ import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
-import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.core.Reducer
-import com.toggl.common.feature.extensions.returnEffect
+import com.toggl.architecture.extensions.effectOf
+import com.toggl.architecture.extensions.effects
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.isValid
 import com.toggl.repository.extensions.toDto
-import com.toggl.timer.exceptions.EditableProjectShouldNotBeNullException
 import javax.inject.Inject
 
 class ProjectReducer @Inject constructor(
@@ -24,20 +24,20 @@ class ProjectReducer @Inject constructor(
         action: ProjectAction
     ): List<Effect<ProjectAction>> =
         when (action) {
+            ProjectAction.CloseButtonTapped,
+            ProjectAction.DialogDismissed -> effectOf(ProjectAction.Close)
             is ProjectAction.NameEntered -> state.mutateWithoutEffects {
-                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
                 ProjectState.editableProject.modify(this) {
                     it.copy(name = action.name, error = EditableProject.ProjectError.None)
                 }
             }
             ProjectAction.DoneButtonTapped -> {
                 val (project, projectCanBeCreated) = state.mapState {
-                    val editableProject = editableProject ?: throw EditableProjectShouldNotBeNullException()
                     val listOfProjects = projects.values
                     editableProject to editableProject.isValid(listOfProjects)
                 }
 
-                if (projectCanBeCreated) state.mutate { copy(editableProject = null) } returnEffect createProject(project)
+                if (projectCanBeCreated) createProject(project)
                 else state.mutateWithoutEffects {
                     ProjectState.editableProject.modify(this) {
                         it.copy(error = EditableProject.ProjectError.ProjectAlreadyExists)
@@ -52,29 +52,25 @@ class ProjectReducer @Inject constructor(
                         it.copy(isPrivate = !it.isPrivate)
                     }
                 }
-            ProjectAction.CloseButtonTapped,
-            ProjectAction.DialogDismissed -> state.mutateWithoutEffects { copy(editableProject = null) }
             is ProjectAction.ColorPicked -> state.mutateWithoutEffects {
-                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
                 ProjectState.editableProject.modify(this) {
                     it.copy(color = action.color)
                 }
             }
             is ProjectAction.WorkspacePicked -> state.mutateWithoutEffects {
-                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
                 ProjectState.editableProject.modify(this) {
                     it.copy(workspaceId = action.workspace.id)
                 }
             }
             is ProjectAction.ClientPicked -> state.mutateWithoutEffects {
-                if (editableProject == null) throw EditableProjectShouldNotBeNullException()
                 ProjectState.editableProject.modify(this) {
                     it.copy(clientId = action.client.id)
                 }
             }
+            ProjectAction.Close -> noEffect()
         }
 
-    private fun createProject(editableProject: EditableProject) = effect(
+    private fun createProject(editableProject: EditableProject) = effects(
         CreateProjectEffect(editableProject.toDto(), repository, dispatcherProvider)
     )
 }

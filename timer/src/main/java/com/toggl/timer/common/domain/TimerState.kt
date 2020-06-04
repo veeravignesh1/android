@@ -10,6 +10,7 @@ import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
+import com.toggl.models.domain.nullableEditableProject
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.TemporalInconsistency
 
@@ -52,6 +53,12 @@ data class TimerState(
 
     companion object
 }
+
+internal fun TimerState.setEditableTimeEntryToNull() =
+    copy(localState = localState.copy(editableTimeEntry = null))
+
+internal fun TimerState.setEditableProjectToNull() =
+    copy(localState = TimerState.LocalState.editableTimeEntry.nullableEditableProject.set(localState, null))
 
 fun TimerState.LocalState.isEditingGroup() =
     this.editableTimeEntry?.run { ids.size > 1 } ?: false

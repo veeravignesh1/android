@@ -12,12 +12,11 @@ import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.toMutableValue
-import com.toggl.timer.exceptions.EditableTimeEntryShouldNotBeNullException
 import io.kotlintest.DisplayName
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
-import io.kotlintest.shouldThrow
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -53,16 +52,6 @@ class DoneButtonTappedActionTests : CoroutineTest() {
     }
 
     @Test
-    fun `should throw when there's no editable entry`() = runBlockingTest {
-        var initialState = state.copy(editableTimeEntry = null)
-        val mutableValue = initialState.toMutableValue { initialState = it }
-
-        shouldThrow<EditableTimeEntryShouldNotBeNullException> {
-            reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-        }
-    }
-
-    @Test
     fun `should start the TE if the editable has no ids and no duration`() = runBlockingTest {
         val initialState = state.copy(editableTimeEntry = editableTimeEntry.copy(ids = listOf(), duration = null))
 
@@ -70,7 +59,8 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             initialState,
             StartEditAction.DoneButtonTapped
         ) { effects ->
-            effects.shouldBeSingleton()
+            val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+            actions.shouldBeSingleton()
             effects.first().shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.StartTimeEntry>()
         }
     }
@@ -83,7 +73,8 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             initialState,
             StartEditAction.DoneButtonTapped
         ) { effects ->
-            effects.shouldBeSingleton()
+            val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+            actions.shouldBeSingleton()
             effects.first().shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.CreateTimeEntry>()
         }
     }
@@ -94,8 +85,9 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             state.copy(),
             StartEditAction.DoneButtonTapped
         ) { effects ->
-            effects.shouldBeSingleton()
-            effects.single().shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry> {
+            val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+            actions.shouldBeSingleton()
+            effects.first().shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry> {
                 it.timeEntry.shouldBe(
                     TimeEntry(
                         id = editableTimeEntry.ids.single(),
@@ -121,8 +113,9 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             initialState,
             StartEditAction.DoneButtonTapped
         ) { effects ->
-                effects shouldHaveSize 2
-                effects.forEach { effect -> effect.shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry> {
+                val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+                actions shouldHaveSize 2
+                actions.forEach { action -> action.timeEntryAction.shouldBeTypeOf<TimeEntryAction.EditTimeEntry> {
                     it.timeEntry.shouldBe(
                         TimeEntry(
                             id = it.timeEntry.id,
@@ -149,8 +142,9 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             initialState,
             StartEditAction.DoneButtonTapped
         ) { effects ->
-            effects shouldHaveSize 2
-            effects.forEach { it.shouldEmitTimeEntryAction<StartEditAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry>() }
+            val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+            actions shouldHaveSize 2
+            actions.forEach { it.timeEntryAction.shouldBeTypeOf<TimeEntryAction.EditTimeEntry>() }
         }
     }
 
@@ -160,9 +154,9 @@ class DoneButtonTappedActionTests : CoroutineTest() {
         val mutableValue = initialState.toMutableValue { initialState = it }
 
         val result = reducer.reduce(mutableValue, StartEditAction.DoneButtonTapped)
-        result.forEach { it.execute() }
+        val actions = result.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
 
-        result.size shouldBe 0
+        actions.size shouldBe 0
         coVerify(exactly = 0) {
             repository.editTimeEntry(any())
         }

@@ -5,6 +5,7 @@ import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
+import com.toggl.timer.common.testReduceState
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -23,10 +24,10 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
 
     @Test
     fun `should change EditableTimeEntry's description`() = runBlockingTest {
-        reducer.testReduce(
+        reducer.testReduceState(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { state, _ -> state.editableTimeEntry!!.description shouldBe "new description" }
+        ) { state -> state.editableTimeEntry.description shouldBe "new description" }
     }
 
     @Test

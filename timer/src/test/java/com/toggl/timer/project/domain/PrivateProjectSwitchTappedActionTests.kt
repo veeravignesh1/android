@@ -24,7 +24,7 @@ internal class PrivateProjectSwitchTappedActionTests : CoroutineTest() {
             initialState,
             ProjectAction.PrivateProjectSwitchTapped
         ) { state, effects ->
-            state.editableProject!!.isPrivate shouldBe false
+            state.editableProject.isPrivate shouldBe false
             effects shouldBe noEffect()
         }
     }

@@ -1,12 +1,11 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
-import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.models.domain.EditableTimeEntry
-import com.toggl.timer.common.testReduce
-import io.kotlintest.matchers.types.shouldBeNull
+import com.toggl.timer.common.testReduceEffects
+import io.kotlintest.matchers.types.shouldNotBeNull
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,19 +22,13 @@ class CloseButtonTappedActionTests : CoroutineTest() {
     private val reducer = createReducer(dispatcherProvider = dispatcherProvider)
 
     @Test
-    fun `should set the editableTimeEntry to null`() = runBlockingTest {
-        reducer.testReduce(
+    fun `shouldn't return any effect`() = runBlockingTest {
+        reducer.testReduceEffects(
             initialState = state,
             action = StartEditAction.CloseButtonTapped
-        ) { state, _ -> state.editableTimeEntry.shouldBeNull() }
-    }
-
-    @Test
-    fun `shouldn't return any effect`() = runBlockingTest {
-        reducer.testReduce(
-            initialState = state,
-            action = StartEditAction.CloseButtonTapped,
-            testCase = ::assertNoEffectsWereReturned
-        )
+        ) { effects ->
+            val closeAction = effects.single().execute() as? StartEditAction.Close
+            closeAction.shouldNotBeNull()
+        }
     }
 }

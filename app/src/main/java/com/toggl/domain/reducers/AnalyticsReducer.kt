@@ -37,9 +37,9 @@ class AnalyticsReducer @Inject constructor(
     private fun AppAction.toEvent(state: MutableValue<AppState>): Event? =
         when (this) {
             is AppAction.Timer -> when (timer) {
-                is TimerAction.StartTimeEntry -> timer.startEditAction.toEvent(state)
-                is TimerAction.TimeEntriesLog -> timer.timeEntriesLogAction.toEvent()
-                is TimerAction.RunningTimeEntry -> timer.runningTimeEntryAction.toEvent()
+                is TimerAction.StartEditTimeEntry -> timer.action.toEvent(state)
+                is TimerAction.TimeEntriesLog -> timer.action.toEvent()
+                is TimerAction.RunningTimeEntry -> timer.action.toEvent()
                 else -> null
             }
             else -> null

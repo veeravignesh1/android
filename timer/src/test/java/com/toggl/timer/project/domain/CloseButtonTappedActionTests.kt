@@ -3,10 +3,8 @@ package com.toggl.timer.project.domain
 import com.toggl.models.domain.EditableProject
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.common.CoroutineTest
-import com.toggl.timer.common.assertNoEffectsWereReturned
-import com.toggl.timer.common.testReduce
-import com.toggl.timer.common.testReduceState
-import io.kotlintest.matchers.types.shouldBeNull
+import com.toggl.timer.common.testReduceEffects
+import io.kotlintest.matchers.types.shouldNotBeNull
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -20,25 +18,16 @@ internal class CloseButtonTappedActionTests : CoroutineTest() {
     private val reducer = ProjectReducer(repository, dispatcherProvider)
 
     @Test
-    fun `sets the editableProject property to null`() = runBlockingTest {
-        val editableProject = EditableProject.empty(1)
-        val initialState = createInitialState(editableProject = editableProject)
-
-        reducer.testReduceState(
-            initialState = initialState,
-            action = ProjectAction.CloseButtonTapped
-        ) { state -> state.editableProject.shouldBeNull() }
-    }
-
-    @Test
     fun `returns no effects`() = runBlockingTest {
         val editableProject = EditableProject.empty(1)
         val initialState = createInitialState(editableProject = editableProject)
 
-        reducer.testReduce(
+        reducer.testReduceEffects(
             initialState = initialState,
-            action = ProjectAction.CloseButtonTapped,
-            testCase = ::assertNoEffectsWereReturned
-        )
+            action = ProjectAction.CloseButtonTapped
+        ) { effects ->
+            val closeAction = effects.single().execute() as? ProjectAction.Close
+            closeAction.shouldNotBeNull()
+        }
     }
 }

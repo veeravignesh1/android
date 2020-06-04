@@ -72,7 +72,7 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         }
 
         store.state
-            .mapNotNull { it.editableProject?.isPrivate }
+            .mapNotNull { it.editableProject.isPrivate }
             .distinctUntilChanged()
             .onEach { private_chip.isChecked = it }
             .launchIn(lifecycleScope)

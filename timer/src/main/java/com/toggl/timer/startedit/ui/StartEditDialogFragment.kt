@@ -64,10 +64,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -133,8 +131,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).also { bottomSheetDialog: BottomSheetDialog ->
             store.state
-                .filter { it.editableTimeEntry != null }
-                .map { BottomControlPanelParams(it.editableTimeEntry!!, it.isEditableInProWorkspace()) }
+                .map { BottomControlPanelParams(it.editableTimeEntry, it.isEditableInProWorkspace()) }
                 .take(1)
                 .onEach {
                     bottomSheetDialog.setOnShowListener { dialogInterface ->
@@ -173,15 +170,21 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
         store.state
-            .filterNot { it.editableTimeEntry == null }
-            .mapNotNull { it.editableTimeEntry?.description }
+            .mapNotNull { it.editableTimeEntry.description }
             .onEach { time_entry_description.setSafeText(it) }
             .launchIn(lifecycleScope)
 
         store.state
-            .mapNotNull { it.editableTimeEntry?.editableProject }
+            .map { it.editableTimeEntry.editableProject != null }
             .distinctUntilChanged()
-            .onEach { findNavController().navigate(deepLinks.timeEntriesProjectDialog) }
+            .drop(1)
+            .onEach { projectDialogIsVisible ->
+                if (projectDialogIsVisible) {
+                    findNavController().navigate(deepLinks.timeEntriesProjectDialog)
+                } else {
+                    findNavController().popBackStack()
+                }
+            }
             .launchIn(lifecycleScope)
 
         store.state
@@ -200,11 +203,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .filter { it.editableTimeEntry != null }
             .distinctUntilChanged { old, new -> old.dateTimePickMode == new.dateTimePickMode }
-            .onEach {
-                startEditingTimeDate(it.dateTimePickMode, it.editableTimeEntry!!)
-            }
+            .onEach { startEditingTimeDate(it.dateTimePickMode, it.editableTimeEntry) }
             .launchIn(lifecycleScope)
 
         store.state
@@ -214,7 +214,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .map { it.editableTimeEntry?.billable ?: false }
+            .map { it.editableTimeEntry.billable }
             .distinctUntilChanged()
             .onEach { billable_chip.isChecked = it }
             .launchIn(lifecycleScope)
@@ -225,18 +225,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .sample(descriptionInputThrottleInMillis)
             .onEach { store.dispatch(it) }
             .launchIn(lifecycleScope)
-
-        lifecycleScope.launchWhenStarted {
-            store.state
-                .filter { it.editableTimeEntry == null }
-                .distinctUntilChanged()
-                .onEach {
-                    if (dialog?.isShowing == true) {
-                        findNavController().popBackStack()
-                    }
-                }
-                .collect()
-        }
 
         with(wheel_foreground) {
             isEditingFlow
@@ -311,8 +299,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun projectsOrTagsChanged(old: StartEditState, new: StartEditState): Boolean {
-        val oldEditableTimeEntry = old.editableTimeEntry ?: return false
-        val newEditableTimeEntry = new.editableTimeEntry ?: return false
+        val oldEditableTimeEntry = old.editableTimeEntry
+        val newEditableTimeEntry = new.editableTimeEntry
 
         return oldEditableTimeEntry.projectId == newEditableTimeEntry.projectId &&
             oldEditableTimeEntry.tagIds == newEditableTimeEntry.tagIds
@@ -349,7 +337,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         billableButton.isVisible = bottomControlPanelParams.isProWorkspace
 
         store.state
-            .mapNotNull { it.editableTimeEntry?.billable }
+            .mapNotNull { it.editableTimeEntry.billable }
             .distinctUntilChanged()
             .onEach { setBillableButtonColor(billableButton, it) }
             .map { if (it) R.string.non_billable else R.string.billable }
@@ -551,7 +539,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun Workspace.isPro() = this.features.indexOf(WorkspaceFeature.Pro) != -1
-    private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry?.workspaceId?.run {
+    private fun StartEditState.isEditableInProWorkspace() = this.editableTimeEntry.workspaceId.run {
         this@isEditableInProWorkspace.workspaces[this]?.isPro()
     } ?: false
 
@@ -571,7 +559,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         else -> null
     }
 
-    fun TextView.setTextIfDifferent(newText: String) {
+    private fun TextView.setTextIfDifferent(newText: String) {
         if (this.text != newText) {
             this.text = newText
         }

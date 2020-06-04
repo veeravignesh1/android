@@ -230,7 +230,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it.editableTimeEntry.shouldNotBeNull()
-                it.editableTimeEntry!!.tagIds shouldContain tag.id
+                it.editableTimeEntry.tagIds shouldContain tag.id
             }
         }
 
@@ -274,7 +274,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.description shouldBe "Such "
+                it.editableTimeEntry.description shouldBe "Such "
             }
         }
 
@@ -296,7 +296,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     initialState,
                     StartEditAction.AutocompleteSuggestionTapped(suggestion)
                 ) {
-                    it.editableTimeEntry?.description shouldBe "Such #tag #tag "
+                    it.editableTimeEntry.description shouldBe "Such #tag #tag "
                 }
             }
     }
@@ -315,11 +315,11 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.editableProject.shouldNotBeNull()
+                it.editableTimeEntry.editableProject.shouldNotBeNull()
 
-                it.editableTimeEntry?.editableProject?.name shouldBe projectName
-                it.editableTimeEntry?.editableProject?.workspaceId shouldBe 1
-                Project.defaultColors.shouldContain(it.editableTimeEntry!!.editableProject!!.color)
+                it.editableTimeEntry.editableProject?.name shouldBe projectName
+                it.editableTimeEntry.editableProject?.workspaceId shouldBe 1
+                Project.defaultColors.shouldContain(it.editableTimeEntry.editableProject!!.color)
             }
         }
 
@@ -353,7 +353,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 // let's leave out the description for now, it will be testes separately
-                val descriptionLessState = it.copy(editableTimeEntry = it.editableTimeEntry!!.copy(description = ""))
+                val descriptionLessState = it.copy(editableTimeEntry = it.editableTimeEntry.copy(description = ""))
                 descriptionLessState shouldBe initialStateWithProjects.copy(
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         projectId = testTask.projectId,
@@ -408,7 +408,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.description shouldBe "Such "
+                it.editableTimeEntry.description shouldBe "Such "
             }
         }
 
@@ -432,7 +432,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.description shouldBe "Such # @ @ @ "
+                it.editableTimeEntry.description shouldBe "Such # @ @ @ "
             }
         }
 
@@ -456,7 +456,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.description shouldBe "Such # @ # @ "
+                it.editableTimeEntry.description shouldBe "Such # @ # @ "
             }
         }
     }
@@ -494,7 +494,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry?.description shouldBe "Such "
+                it.editableTimeEntry.description shouldBe "Such "
             }
         }
 
@@ -514,7 +514,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     initialState,
                     StartEditAction.AutocompleteSuggestionTapped(suggestion)
                 ) {
-                    it.editableTimeEntry?.description shouldBe "Such #tag #tag "
+                    it.editableTimeEntry.description shouldBe "Such #tag #tag "
                 }
             }
     }
