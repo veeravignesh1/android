@@ -10,12 +10,16 @@ import com.toggl.architecture.extensions.toEffect
 import com.toggl.calendar.common.domain.toCalendarEvent
 import com.toggl.calendar.common.domain.toEditableTimeEntry
 import com.toggl.calendar.extensions.toEditableTimeEntry
+import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.common.feature.timeentry.extensions.throwIfNew
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
+import com.toggl.common.feature.timeentry.extensions.throwIfNotPersisted
 import com.toggl.common.feature.timeentry.extensions.throwIfRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfStopped
+import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.extensions.toCreateDto
 import com.toggl.repository.extensions.toStartDto
 import javax.inject.Inject
@@ -36,15 +40,28 @@ class ContextualMenuReducer @Inject constructor(
             ContextualMenuAction.CloseButtonTapped -> effectOf(ContextualMenuAction.Close)
             ContextualMenuAction.DeleteButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
-                editableTimeEntry.throwIfNew()
+                editableTimeEntry.throwIfNotPersisted()
                 editableTimeEntry.throwIfRunning()
 
                 val idOfEntryToDelete = editableTimeEntry.ids.single()
                 delete(idOfEntryToDelete) + ContextualMenuAction.Close.toEffect()
             }
+            ContextualMenuAction.SaveButtonTapped -> {
+                val editableTimeEntry = state.mapToEditableTimeEntry()
+                editableTimeEntry.throwIfRunning()
+
+                val timeEntryEffect =
+                    if (editableTimeEntry.wasNotYetPersisted()) create(editableTimeEntry)
+                    else edit(state().timeEntries[editableTimeEntry.ids.single()] ?: throw TimeEntryDoesNotExistException())
+
+                timeEntryEffect + ContextualMenuAction.Close.toEffect()
+            }
+            ContextualMenuAction.EditButtonTapped -> {
+                state.mutateWithoutEffects { copy(editableTimeEntry = state.mapToEditableTimeEntry()) }
+            }
             ContextualMenuAction.ContinueButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
-                editableTimeEntry.throwIfNew()
+                editableTimeEntry.throwIfNotPersisted()
                 editableTimeEntry.throwIfRunning()
 
                 val idOfEntryToContinue = editableTimeEntry.ids.first()
@@ -52,7 +69,7 @@ class ContextualMenuReducer @Inject constructor(
             }
             ContextualMenuAction.StopButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()
-                editableTimeEntry.throwIfNew()
+                editableTimeEntry.throwIfNotPersisted()
                 editableTimeEntry.throwIfStopped()
 
                 stop() + ContextualMenuAction.Close.toEffect()
@@ -95,6 +112,11 @@ class ContextualMenuReducer @Inject constructor(
 
     private fun create(editableTimeEntry: EditableTimeEntry): Effect<ContextualMenuAction> {
         val action = TimeEntryAction.CreateTimeEntry(editableTimeEntry.toCreateDto())
+        return ContextualMenuAction.TimeEntryHandling(action).toEffect()
+    }
+
+    private fun edit(timeEntry: TimeEntry): Effect<ContextualMenuAction> {
+        val action = TimeEntryAction.EditTimeEntry(timeEntry)
         return ContextualMenuAction.TimeEntryHandling(action).toEffect()
     }
 

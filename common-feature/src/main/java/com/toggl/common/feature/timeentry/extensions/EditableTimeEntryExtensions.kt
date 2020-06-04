@@ -1,5 +1,6 @@
 package com.toggl.common.feature.timeentry.extensions
 
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException
@@ -12,6 +13,12 @@ fun EditableTimeEntry.isRunningOrNew() = isRunning() || isNew()
 fun EditableTimeEntry.isStopped() = this.startTime != null && this.duration != null
 fun EditableTimeEntry.isRepresentingGroup() = this.ids.size > 1
 fun EditableTimeEntry.wasNotYetPersisted() = this.ids.isEmpty()
+
+fun EditableTimeEntry.throwIfNotPersisted() {
+    if (this.wasNotYetPersisted()) {
+        throw TimeEntryShouldBePersistedException()
+    }
+}
 
 fun EditableTimeEntry.throwIfNew() {
     if (this.isNew()) {

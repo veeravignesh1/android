@@ -8,12 +8,10 @@ import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,8 +22,8 @@ import java.time.Duration
 import java.time.OffsetDateTime
 
 @ExperimentalCoroutinesApi
-@DisplayName("The ContinueButtonTapped action")
-internal class ContinueButtonTappedActionTests {
+@DisplayName("The SaveButtonTapped action")
+class SaveButtonTappedActionTests {
 
     private val timeService = mockk<TimeService> { every { now() } returns OffsetDateTime.now() }
     private val reducer = ContextualMenuReducer(timeService)
@@ -37,20 +35,8 @@ internal class ContinueButtonTappedActionTests {
 
         reducer.testReduceException(
             initialState = initialState,
-            action = ContextualMenuAction.ContinueButtonTapped,
+            action = ContextualMenuAction.SaveButtonTapped,
             exception = SelectedItemShouldBeATimeEntryException::class.java
-        )
-    }
-
-    @Test
-    fun `throws if executed on a non persisted time entry`() = runBlockingTest {
-        val timeEntry = EditableTimeEntry.empty(1)
-        val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
-
-        reducer.testReduceException(
-            initialState = initialState,
-            action = ContextualMenuAction.ContinueButtonTapped,
-            exception = TimeEntryShouldBePersistedException::class.java
         )
     }
 
@@ -62,33 +48,48 @@ internal class ContinueButtonTappedActionTests {
 
         reducer.testReduceException(
             initialState = initialState,
-            action = ContextualMenuAction.ContinueButtonTapped,
+            action = ContextualMenuAction.SaveButtonTapped,
             exception = TimeEntryShouldNotBeRunningException::class.java
         )
     }
 
     @Test
-    fun `returns an effect to continue the time entry`() = runBlockingTest {
-        val timeEntry = createTimeEntry(1, startTime = OffsetDateTime.now().minusMinutes(3), duration = Duration.ofMinutes(3))
-        val editableTimeEntry = EditableTimeEntry.fromSingle(timeEntry)
+    fun `returns an effect to close the view`() = runBlockingTest {
+
+        val timeEntry = EditableTimeEntry.empty(1)
+        val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
+
+        reducer.testReduceEffects(initialState, ContextualMenuAction.CloseButtonTapped) { effects ->
+            effects.last().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+        }
+    }
+
+    @Test
+    fun `returns an effect to create a time entry if the entry does not exist`() = runBlockingTest {
+        val editableTimeEntry = EditableTimeEntry.empty(1).copy(startTime = OffsetDateTime.now(), duration = Duration.ofMinutes(3))
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry))
 
         reducer.testReduceEffects(
             initialState = initialState,
-            action = ContextualMenuAction.ContinueButtonTapped
-        ) { effects -> effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
-            it.id shouldBe timeEntry.id
-        } }
+            action = ContextualMenuAction.SaveButtonTapped
+        ) { effects ->
+            effects.first()
+                .shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.CreateTimeEntry>()
+        }
     }
 
     @Test
-    fun `returns a close effect`() = runBlockingTest {
-        val timeEntry = createTimeEntry(1, startTime = OffsetDateTime.now().minusMinutes(3), duration = Duration.ofMinutes(3))
+    fun `returns an effect to edit a time entry if the entry exists`() = runBlockingTest {
+        val timeEntry = createTimeEntry(1, duration = Duration.ofMinutes(3), startTime = OffsetDateTime.now())
         val editableTimeEntry = EditableTimeEntry.fromSingle(timeEntry)
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry))
 
-        reducer.testReduceEffects(initialState, ContextualMenuAction.DialogDismissed) {
-            it.last().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+        reducer.testReduceEffects(
+            initialState = initialState.copy(timeEntries = mapOf(1L to timeEntry)),
+            action = ContextualMenuAction.SaveButtonTapped
+        ) { effects ->
+            effects.first()
+                .shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.EditTimeEntry>()
         }
     }
 }

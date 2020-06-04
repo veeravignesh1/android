@@ -3,11 +3,13 @@ package com.toggl.calendar.contextualmenu.domain
 import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 
 @optics
 data class ContextualMenuState(
     val timeEntries: Map<Long, TimeEntry>,
+    val editableTimeEntry: EditableTimeEntry?,
     val selectedItem: SelectedCalendarItem
 ) {
     companion object {
@@ -15,6 +17,7 @@ data class ContextualMenuState(
             calendarState.localState.selectedItem?.let {
                 ContextualMenuState(
                     calendarState.timeEntries,
+                    calendarState.editableTimeEntry,
                     calendarState.localState.selectedItem
                 )
             }
@@ -23,6 +26,7 @@ data class ContextualMenuState(
             contextualMenuState?.let {
                 calendarState.copy(
                     timeEntries = contextualMenuState.timeEntries,
+                    editableTimeEntry = contextualMenuState.editableTimeEntry,
                     localState = calendarState.localState.copy(
                         selectedItem = contextualMenuState.selectedItem
                     )

@@ -1,6 +1,5 @@
 package com.toggl.timer.common.domain
 
-import arrow.optics.Lens
 import arrow.optics.optics
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
@@ -22,10 +21,10 @@ data class TimerState(
     val projects: Map<Long, Project>,
     val workspaces: Map<Long, Workspace>,
     val timeEntries: Map<Long, TimeEntry>,
+    val editableTimeEntry: EditableTimeEntry?,
     val localState: LocalState
 ) {
     data class LocalState internal constructor(
-        internal val editableTimeEntry: EditableTimeEntry?,
         internal val expandedGroupIds: Set<Long>,
         internal val entriesPendingDeletion: Set<Long>,
         internal val autocompleteSuggestions: List<AutocompleteSuggestion>,
@@ -34,7 +33,6 @@ data class TimerState(
         internal val cursorPosition: Int
     ) {
         constructor() : this(
-            editableTimeEntry = null,
             expandedGroupIds = setOf(),
             entriesPendingDeletion = setOf(),
             autocompleteSuggestions = emptyList(),
@@ -42,26 +40,13 @@ data class TimerState(
             temporalInconsistency = TemporalInconsistency.None,
             cursorPosition = 0
         )
-
-        companion object {
-            internal val editableTimeEntry: Lens<LocalState, EditableTimeEntry> = Lens(
-                get = { it.editableTimeEntry!! },
-                set = { localState, editableTimeEntry -> localState.copy(editableTimeEntry = editableTimeEntry) }
-            )
-        }
     }
 
     companion object
 }
 
-internal fun TimerState.setEditableTimeEntryToNull() =
-    copy(localState = localState.copy(editableTimeEntry = null))
+fun TimerState.setEditableTimeEntryToNull() =
+    copy(editableTimeEntry = null)
 
-internal fun TimerState.setEditableProjectToNull() =
-    copy(localState = TimerState.LocalState.editableTimeEntry.nullableEditableProject.set(localState, null))
-
-fun TimerState.LocalState.isEditingGroup() =
-    this.editableTimeEntry?.run { ids.size > 1 } ?: false
-
-fun TimerState.LocalState.getRunningTimeEntryWorkspaceId() =
-    this.editableTimeEntry?.workspaceId
+fun TimerState.setEditableProjectToNull() =
+    TimerState.editableTimeEntry.nullableEditableProject.set(this, null)

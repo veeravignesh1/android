@@ -12,8 +12,8 @@ data class TimeEntriesLogState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
-    val expandedGroupIds: Set<Long>,
     val editableTimeEntry: EditableTimeEntry?,
+    val expandedGroupIds: Set<Long>,
     val entriesPendingDeletion: Set<Long>,
     val shouldGroup: Boolean = true
 ) {
@@ -23,16 +23,16 @@ data class TimeEntriesLogState(
                 timerState.timeEntries,
                 timerState.projects,
                 timerState.clients,
+                timerState.editableTimeEntry,
                 timerState.localState.expandedGroupIds,
-                timerState.localState.editableTimeEntry,
                 timerState.localState.entriesPendingDeletion
             )
 
         fun toTimerState(timerState: TimerState, timeEntriesLogState: TimeEntriesLogState) =
             timerState.copy(
                 timeEntries = timeEntriesLogState.timeEntries,
+                editableTimeEntry = timeEntriesLogState.editableTimeEntry,
                 localState = timerState.localState.copy(
-                    editableTimeEntry = timeEntriesLogState.editableTimeEntry,
                     expandedGroupIds = timeEntriesLogState.expandedGroupIds,
                     entriesPendingDeletion = timeEntriesLogState.entriesPendingDeletion
                 )

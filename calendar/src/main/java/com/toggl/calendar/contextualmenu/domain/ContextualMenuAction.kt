@@ -9,6 +9,8 @@ sealed class ContextualMenuAction {
     object CloseButtonTapped : ContextualMenuAction()
     object DiscardButtonTapped : ContextualMenuAction()
     object DialogDismissed : ContextualMenuAction()
+    object SaveButtonTapped : ContextualMenuAction()
+    object EditButtonTapped : ContextualMenuAction()
     object DeleteButtonTapped : ContextualMenuAction()
     object ContinueButtonTapped : ContextualMenuAction()
     object StopButtonTapped : ContextualMenuAction()
@@ -26,6 +28,8 @@ fun ContextualMenuAction.formatForDebug() =
         ContextualMenuAction.CloseButtonTapped -> "Contextual menu close button pressed"
         ContextualMenuAction.DiscardButtonTapped -> "Contextual menu discarded"
         ContextualMenuAction.DialogDismissed -> "Contextual menu dialog dismissed"
+        ContextualMenuAction.SaveButtonTapped -> "Save button tapped"
+        ContextualMenuAction.EditButtonTapped -> "Edit button tapped"
         ContextualMenuAction.DeleteButtonTapped -> "Delete button tapped"
         ContextualMenuAction.ContinueButtonTapped -> "Continue button tapped"
         ContextualMenuAction.StopButtonTapped -> "Stop button tapped"

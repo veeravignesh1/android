@@ -8,7 +8,6 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.models.extensions.isPro
 import com.toggl.timer.common.domain.TimerAction
-import com.toggl.timer.common.domain.getRunningTimeEntryWorkspaceId
 import com.toggl.timer.startedit.domain.StartEditAction
 
 class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
@@ -19,10 +18,7 @@ class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
     ): List<Effect<AppAction>> =
         when {
             action.isToggleBillableAction() -> state.mapState {
-                val workspaceId = timerLocalState
-                    .getRunningTimeEntryWorkspaceId()
-                    ?: return@mapState noEffect()
-
+                val workspaceId = editableTimeEntry?.workspaceId ?: return@mapState noEffect()
                 val workspace = workspaces[workspaceId]
                     ?: return@mapState noEffect()
 

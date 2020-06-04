@@ -28,7 +28,7 @@ data class StartEditState(
     companion object {
         fun fromTimerState(timerState: TimerState): StartEditState? {
 
-            val editableTimeEntry = timerState.localState.editableTimeEntry ?: return null
+            val editableTimeEntry = timerState.editableTimeEntry ?: return null
 
             return StartEditState(
                 tags = timerState.tags,
@@ -49,8 +49,8 @@ data class StartEditState(
             startEditState?.let {
                 timerState.copy(
                     timeEntries = startEditState.timeEntries,
+                    editableTimeEntry = startEditState.editableTimeEntry,
                     localState = timerState.localState.copy(
-                        editableTimeEntry = startEditState.editableTimeEntry,
                         autocompleteSuggestions = startEditState.autocompleteSuggestions,
                         dateTimePickMode = startEditState.dateTimePickMode,
                         temporalInconsistency = startEditState.temporalInconsistency,

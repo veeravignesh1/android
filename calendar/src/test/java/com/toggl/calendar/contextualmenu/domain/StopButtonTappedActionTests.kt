@@ -8,7 +8,7 @@ import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
+import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
@@ -42,14 +42,14 @@ internal class StopButtonTappedActionTests {
     }
 
     @Test
-    fun `throws if executed on a new time entry`() = runBlockingTest {
+    fun `throws if executed on a non persisted time entry`() = runBlockingTest {
         val timeEntry = EditableTimeEntry.empty(1)
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
 
         reducer.testReduceException(
             initialState = initialState,
             action = ContextualMenuAction.StopButtonTapped,
-            exception = TimeEntryShouldNotBeNewException::class.java
+            exception = TimeEntryShouldBePersistedException::class.java
         )
     }
 

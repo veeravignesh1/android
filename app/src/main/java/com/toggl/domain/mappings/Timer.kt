@@ -13,6 +13,7 @@ fun mapAppStateToTimerState(appState: AppState): TimerState =
         appState.projects,
         appState.workspaces,
         appState.timeEntries,
+        appState.editableTimeEntry,
         appState.timerLocalState
     )
 

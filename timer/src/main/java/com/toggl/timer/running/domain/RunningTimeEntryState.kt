@@ -13,16 +13,14 @@ data class RunningTimeEntryState(
     companion object {
         fun fromTimerState(timerState: TimerState) =
             RunningTimeEntryState(
-                editableTimeEntry = timerState.localState.editableTimeEntry,
+                editableTimeEntry = timerState.editableTimeEntry,
                 timeEntries = timerState.timeEntries
             )
 
         fun toTimerState(timerState: TimerState, runningTimeEntryState: RunningTimeEntryState) =
             timerState.copy(
                 timeEntries = runningTimeEntryState.timeEntries,
-                localState = timerState.localState.copy(
-                    editableTimeEntry = runningTimeEntryState.editableTimeEntry
-                )
+                editableTimeEntry = runningTimeEntryState.editableTimeEntry
             )
     }
 }
