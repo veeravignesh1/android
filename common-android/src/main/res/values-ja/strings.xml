@@ -26,4 +26,6 @@
     <string name="add_client">クライアントを追加</string>
     <string name="new_project">新しいプロジェクト</string>
     <string name="create">作成する</string>
+    <string name="create_project">プロジェクトを追加</string>
+    <string name="create_tag">タグを追加</string>
 </resources>

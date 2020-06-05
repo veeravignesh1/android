@@ -33,7 +33,7 @@ data class ProjectViewModel(
     val clientName: String?
 )
 
-fun ProjectViewModel?.formatForDisplay() =
+fun ProjectViewModel?.formatForDisplay(taskName: String? = null) =
     if (this == null) ""
     else
         buildSpannedString {
@@ -42,6 +42,9 @@ fun ProjectViewModel?.formatForDisplay() =
             }
             append(" ")
             append(clientName ?: "")
+            if (taskName != null) {
+                append(": $taskName")
+            }
         }
 
 data class DayHeaderViewModel(

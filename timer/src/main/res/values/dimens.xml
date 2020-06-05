@@ -22,4 +22,8 @@
     <dimen name="chip_padding">10dp</dimen>
     <dimen name="log_item_horizontal_margin">8dp</dimen>
     <dimen name="log_item_vertical_margin">2dp</dimen>
+
+    <!-- Suggestions -->
+    <dimen name="suggestions_popup_max_height">144dp</dimen>
+    <dimen name="suggestions_popup_item_height">48dp</dimen>
 </resources>

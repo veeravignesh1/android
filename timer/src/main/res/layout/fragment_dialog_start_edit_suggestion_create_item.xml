@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/suggestions_popup_item_height"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/grid_1"
+        android:tint="@color/primary"
+        app:srcCompat="@drawable/ic_new" />
+
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/grid_4"
+        android:layout_marginEnd="@dimen/grid_2"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/text_on_surface"
+        android:textSize="14sp"
+        tools:text="Time Entry Time Entry Time Entry Time Entry Time Entry Time Entry Time Entry Time Entry Time Entry Time Entry" />
+</FrameLayout>

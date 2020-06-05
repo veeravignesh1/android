@@ -39,7 +39,7 @@ fun Project.toProjectViewModel(clients: Map<Long, Client>) = ProjectViewModel(id
 fun List<TimeEntry>.totalDuration(): Duration =
     fold(Duration.ZERO) { acc, timeEntry -> acc + timeEntry.duration }
 
-private fun Map<Long, Project>.getProjectViewModelFor(timeEntry: TimeEntry, clients: Map<Long, Client>): ProjectViewModel? {
+fun Map<Long, Project>.getProjectViewModelFor(timeEntry: TimeEntry, clients: Map<Long, Client>): ProjectViewModel? {
     val projectId = timeEntry.projectId
     return if (projectId == null) null
 

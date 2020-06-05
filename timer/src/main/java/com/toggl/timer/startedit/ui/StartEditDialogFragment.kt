@@ -15,6 +15,7 @@ import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.PopupWindow.INPUT_METHOD_NEEDED
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -30,21 +31,23 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
-import com.toggl.common.extensions.addInterceptingOnClickListener
+import com.toggl.common.RecyclerViewPopup
+import com.toggl.common.above
 import com.toggl.common.deepLinks
+import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.common.extensions.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
-import com.toggl.common.above
+import com.toggl.common.sheet.OnStateChangedAction
 import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.showTooltip
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.extensions.formatForDisplayingDate
@@ -55,11 +58,13 @@ import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.ProjectTagChipSelector
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
+import com.toggl.timer.startedit.domain.SuggestionsSelector
+import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionViewHolder
+import com.toggl.timer.startedit.ui.autocomplete.SuggestionsAdapter
 import com.toggl.timer.startedit.ui.chips.ChipAdapter
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
-import kotlinx.android.synthetic.main.fragment_dialog_start_edit.close_action
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
@@ -70,11 +75,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.sample
 import kotlinx.coroutines.flow.take
 import java.time.Duration
 import java.time.OffsetDateTime
 import javax.inject.Inject
+import kotlin.math.min
 import com.toggl.common.android.R as CommonR
 
 class StartEditDialogFragment : BottomSheetDialogFragment() {
@@ -86,19 +91,26 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     lateinit var projectTagChipSelector: ProjectTagChipSelector
 
     @Inject
+    lateinit var suggestionsSelector: SuggestionsSelector
+
+    @Inject
     lateinit var timeService: TimeService
     private var timeIndicatorScheduledUpdate: Job? = null
 
     private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
 
     private var editDialog: Dialog? = null
+
     private val dispatchingCancelListener: DialogInterface.OnCancelListener = DialogInterface.OnCancelListener {
         store.dispatch(StartEditAction.DateTimePickingCancelled)
     }
 
-    private val descriptionInputThrottleInMillis = 300L
     private val adapter = ChipAdapter(::onChipTapped)
+    private val suggestionsAdapter = SuggestionsAdapter { store.dispatch(StartEditAction.AutocompleteSuggestionTapped(it)) }
 
+    private var suggestionHeight: Int = 0
+    private var suggestionsPopupMaxHeight: Int = 0
+    private lateinit var suggestionsPopup: RecyclerViewPopup<AutocompleteSuggestionViewHolder>
     private val bottomSheetCallback = BottomSheetCallback()
 
     private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
@@ -106,6 +118,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private lateinit var extentedTimeOptions: List<View>
     private lateinit var billableOptions: List<View>
 
+    @FlowPreview
+    @ExperimentalCoroutinesApi
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as TimerComponentProvider)
             .provideTimerComponent().inject(this)
@@ -146,6 +160,18 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        suggestionsPopup = RecyclerViewPopup(
+            requireContext(),
+            time_entry_description,
+            R.layout.suggestions_popup,
+            R.id.suggestions_recycler_view,
+            suggestionsAdapter
+        )
+
+        suggestionHeight = resources.getDimensionPixelSize(R.dimen.suggestions_popup_item_height)
+        suggestionsPopupMaxHeight = resources.getDimensionPixelSize(R.dimen.suggestions_popup_max_height)
+        suggestionsPopup.inputMethodMode = INPUT_METHOD_NEEDED
+        suggestionsPopup.isOutsideTouchable = true
 
         chip_recycler_view.adapter = adapter
         hideableStopViews = listOf(stop_divider, stop_date_label)
@@ -168,6 +194,12 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
         billableOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+
+        bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
+            override fun onStateChanged(sheet: View, newState: Int) {
+                updateSuggestionPopupVisibility(newState)
+            }
+        })
 
         store.state
             .mapNotNull { it.editableTimeEntry.description }
@@ -203,6 +235,16 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
+            .select(suggestionsSelector)
+            .onEach { suggestionsAdapter.submitList(it) }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.autocompleteSuggestions.size }
+            .onEach { showSuggestionsPopup(it) }
+            .launchIn(lifecycleScope)
+
+        store.state
             .distinctUntilChanged { old, new -> old.dateTimePickMode == new.dateTimePickMode }
             .onEach { startEditingTimeDate(it.dateTimePickMode, it.editableTimeEntry) }
             .launchIn(lifecycleScope)
@@ -222,7 +264,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         time_entry_description
             .onDescriptionChanged
             .distinctUntilChanged()
-            .sample(descriptionInputThrottleInMillis)
             .onEach { store.dispatch(it) }
             .launchIn(lifecycleScope)
 
@@ -295,6 +336,58 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 }
                 this@StartEditDialogFragment.isCancelable = !hasFocus
             }
+        }
+    }
+
+    @FlowPreview
+    @ExperimentalCoroutinesApi
+    private fun updateSuggestionPopupVisibility(@Suppress("UNUSED_PARAMETER") bottomSheetState: Int) {
+        val popupCanBeVisible = bottomSheetState == BottomSheetBehavior.STATE_COLLAPSED ||
+            bottomSheetState == BottomSheetBehavior.STATE_EXPANDED
+        if (popupCanBeVisible && suggestionsAdapter.itemCount > 0) {
+            calculateAndShowPopup(suggestionsAdapter.itemCount)
+        } else {
+            suggestionsPopup.dismiss()
+        }
+    }
+
+    @FlowPreview
+    @ExperimentalCoroutinesApi
+    private fun showSuggestionsPopup(numberOfSuggestions: Int) {
+        val popupIsVisible = numberOfSuggestions > 0
+        if (popupIsVisible) {
+            calculateAndShowPopup(numberOfSuggestions)
+        } else {
+            suggestionsPopup.dismiss()
+        }
+    }
+
+    @FlowPreview
+    @ExperimentalCoroutinesApi
+    private fun calculateAndShowPopup(numberOfSuggestions: Int) {
+        with(time_entry_description) {
+
+            val popupXPosition = layout?.let {
+                val currentCursorOffset = time_entry_description.selectionStart
+                it.getPrimaryHorizontal(currentCursorOffset).toInt()
+            } ?: paddingStart
+
+            val locationOnScreen = intArrayOf(0, 0)
+            getLocationOnScreen(locationOnScreen)
+            val yPositionOfTextView = locationOnScreen[1]
+            val popupHeight = min(numberOfSuggestions * suggestionHeight, suggestionsPopupMaxHeight)
+
+            val positionAboveTextView = yPositionOfTextView - popupHeight
+            val positionBelowTextView = yPositionOfTextView + height
+            val shouldShowBelowTextView = positionAboveTextView < 0
+            val popupYPosition = if (shouldShowBelowTextView) positionBelowTextView else positionAboveTextView
+
+            suggestionsPopup.show(
+                x = popupXPosition,
+                y = popupYPosition,
+                width = ViewGroup.LayoutParams.WRAP_CONTENT,
+                height = popupHeight
+            )
         }
     }
 

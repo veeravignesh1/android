@@ -27,4 +27,6 @@
     <string name="add_client">Adicionar cliente</string>
     <string name="new_project">Novo Projeto</string>
     <string name="create">Criar</string>
+    <string name="create_project">Criar projeto</string>
+    <string name="create_tag">Criar tag</string>
 </resources>
