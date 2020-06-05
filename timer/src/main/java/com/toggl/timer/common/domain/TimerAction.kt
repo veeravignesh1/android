@@ -11,6 +11,8 @@ import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.running.domain.formatForDebug
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.formatForDebug
+import com.toggl.timer.suggestions.domain.SuggestionsAction
+import com.toggl.timer.suggestions.domain.formatForDebug
 
 @optics
 sealed class TimerAction {
@@ -18,6 +20,7 @@ sealed class TimerAction {
     data class TimeEntriesLog(override val action: TimeEntriesLogAction) : TimerAction(), ActionWrapper<TimeEntriesLogAction>
     data class RunningTimeEntry(override val action: RunningTimeEntryAction) : TimerAction(), ActionWrapper<RunningTimeEntryAction>
     data class Project(override val action: ProjectAction) : TimerAction(), ActionWrapper<ProjectAction>
+    data class Suggestions(override val action: SuggestionsAction) : TimerAction(), ActionWrapper<SuggestionsAction>
 
     companion object {
         fun unwrapTimeEntryActionHolder(timerAction: TimerAction): TimeEntryAction? {
@@ -33,4 +36,5 @@ fun TimerAction.formatForDebug(): String =
         is TimerAction.TimeEntriesLog -> action.formatForDebug()
         is TimerAction.RunningTimeEntry -> action.formatForDebug()
         is TimerAction.Project -> action.formatForDebug()
+        is TimerAction.Suggestions -> action.formatForDebug()
     }

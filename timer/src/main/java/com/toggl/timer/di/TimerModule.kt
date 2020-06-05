@@ -32,6 +32,9 @@ import com.toggl.timer.startedit.domain.ProjectTagChipSelector
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditReducer
 import com.toggl.timer.startedit.domain.StartEditState
+import com.toggl.timer.suggestions.domain.SuggestionsAction
+import com.toggl.timer.suggestions.domain.SuggestionsReducer
+import com.toggl.timer.suggestions.domain.SuggestionsState
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -104,7 +107,8 @@ class TimerModule {
         timeEntriesLogReducer: TimeEntriesLogReducer,
         startEditReducer: StartEditReducer,
         runningTimeEntryReducer: RunningTimeEntryReducer,
-        projectReducer: ProjectReducer
+        projectReducer: ProjectReducer,
+        suggestionsReducer: SuggestionsReducer
     ): TimerReducer {
 
         return combine<TimerState, TimerAction>(
@@ -131,6 +135,12 @@ class TimerModule {
                 mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = ProjectState.Companion::toTimerState,
                 mapToGlobalAction = TimerAction::Project
+            ),
+            suggestionsReducer.decorateWith(timeEntryReducer).pullback(
+                mapToLocalState = SuggestionsState.Companion::fromTimerState,
+                mapToLocalAction = TimerAction::unwrap,
+                mapToGlobalState = SuggestionsState.Companion::toTimerState,
+                mapToGlobalAction = TimerAction::Suggestions
             )
         )
         .handleClosableActionsUsing<TimerState, TimerAction, ProjectAction.Close>(TimerState::setEditableProjectToNull)
@@ -163,5 +173,14 @@ class TimerModule {
             mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
             mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
             mapToGlobalAction = { localAction -> RunningTimeEntryAction.TimeEntryHandling(localAction) }
+        )
+
+    private fun SuggestionsReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
+        this.decorateWith(
+            timeEntryReducer,
+            mapToLocalState = { TimeEntryState(it.timeEntries) },
+            mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
+            mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+            mapToGlobalAction = { localAction -> SuggestionsAction.TimeEntryHandling(localAction) }
         )
 }
