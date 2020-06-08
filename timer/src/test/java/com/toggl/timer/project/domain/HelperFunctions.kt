@@ -3,13 +3,18 @@ package com.toggl.timer.project.domain
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.Workspace
+import com.toggl.models.validation.HSVColor
 
 fun createInitialState(
     editableProject: EditableProject = EditableProject.empty(1),
-    projects: Map<Long, Project> = mapOf()
+    projects: List<Project> = listOf(),
+    workspaces: List<Workspace> = listOf()
 ) = ProjectState(
     editableProject = editableProject,
-    projects = projects
+    projects = projects.associateBy { it.id },
+    workspaces = workspaces.associateBy { it.id },
+    customColor = HSVColor.defaultCustomColor
 )
 
 fun createProject(

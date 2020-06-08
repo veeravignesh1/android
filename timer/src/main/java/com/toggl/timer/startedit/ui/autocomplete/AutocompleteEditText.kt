@@ -30,14 +30,6 @@ class AutocompleteTextInputEditText : TextInputEditText {
         }
     }
 
-    fun requestFocus(onFocusChanged: () -> Unit) {
-        setOnFocusChangeListener { _, _ ->
-            post { onFocusChanged() }
-            onFocusChangeListener = null
-        }
-        requestFocus()
-    }
-
     fun clearDescriptionChangedListeners() {
         removeTextChangedListener(descriptionChangeListener)
     }

@@ -24,7 +24,7 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
         createProject(1, "Project 1", clientId = 1, workspaceId = 1),
         createProject(2, "Project 2", clientId = 1, workspaceId = 1),
         createProject(3, "Project 3", clientId = 1, workspaceId = 1)
-    ).associateBy { it.id }
+    )
 
     @ParameterizedTest
     @MethodSource("validProjects")

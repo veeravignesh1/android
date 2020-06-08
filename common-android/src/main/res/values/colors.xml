@@ -17,10 +17,11 @@
   <color name="text_on_background">#FF000000</color>
   <color name="add_description">#FFABA0AF</color>
   <color name="divider">#55000000</color>
+  <color name="modal_card">#FFFFFFFF</color>
   <color name="start_time_entry_button_background">#FFE47BD7</color>
   <color name="stop_time_entry_button_background">#FFFF8879</color>
   <color name="running_card_description_background">#FFEAE6EA</color>
-  <color name="icon">#FF757575</color>
+  <color name="icon">#FF827188</color>
   <color name="button_active">#06AAF5</color>
   <color name="button_active_background">#2606AAF5</color>
   <color name="button_inactive">#B5BCC0</color>

@@ -18,7 +18,7 @@ internal class PrivateProjectSwitchTappedActionTests : CoroutineTest() {
 
     @Test
     fun `should toggle the private flag and return no effect`() = runBlockingTest {
-        val initialState = ProjectState(EditableProject.empty(1).copy(isPrivate = true), emptyMap())
+        val initialState = createInitialState(EditableProject.empty(1).copy(isPrivate = true))
 
         reducer.testReduce(
             initialState,

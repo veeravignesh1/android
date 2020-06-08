@@ -3,12 +3,16 @@ package com.toggl.timer.project.domain
 import arrow.optics.optics
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.Project
+import com.toggl.models.domain.Workspace
+import com.toggl.models.validation.HSVColor
 import com.toggl.timer.common.domain.TimerState
 
 @optics
 data class ProjectState(
     val editableProject: EditableProject,
-    val projects: Map<Long, Project>
+    val projects: Map<Long, Project>,
+    val workspaces: Map<Long, Workspace>,
+    val customColor: HSVColor
 ) {
     companion object {
 
@@ -17,7 +21,9 @@ data class ProjectState(
 
             return ProjectState(
                 editableProject = editableProject,
-                projects = timerState.projects
+                projects = timerState.projects,
+                workspaces = timerState.workspaces,
+                customColor = timerState.localState.customColor
             )
         }
 
@@ -27,7 +33,8 @@ data class ProjectState(
                     projects = projectState.projects,
                     editableTimeEntry = timerState.editableTimeEntry?.copy(
                         editableProject = projectState.editableProject
-                    )
+                    ),
+                    localState = timerState.localState.copy(customColor = projectState.customColor)
                 )
             } ?: timerState
     }

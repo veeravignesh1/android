@@ -19,7 +19,7 @@ internal class NameEnteredActionTests : CoroutineTest() {
 
     @Test
     fun `should update state with the new name`() = runBlockingTest {
-        val initialState = ProjectState(EditableProject.empty(1), emptyMap())
+        val initialState = createInitialState()
         reducer.testReduceState(
             initialState,
             ProjectAction.NameEntered("xxxy")
@@ -29,7 +29,7 @@ internal class NameEnteredActionTests : CoroutineTest() {
     @Test
     fun `should set the error to none`() = runBlockingTest {
         val projectWithError = EditableProject.empty(1).copy(error = EditableProject.ProjectError.ProjectAlreadyExists)
-        val initialState = ProjectState(projectWithError, emptyMap())
+        val initialState = createInitialState(projectWithError)
         reducer.testReduceState(
             initialState,
             ProjectAction.NameEntered("xxxy")
@@ -38,7 +38,7 @@ internal class NameEnteredActionTests : CoroutineTest() {
 
     @Test
     fun `should produce no effects`() = runBlockingTest {
-        val initialState = ProjectState(EditableProject.empty(1), emptyMap())
+        val initialState = createInitialState()
         reducer.testReduce(initialState, ProjectAction.NameEntered("xxxy"), ::assertNoEffectsWereReturned)
     }
 }

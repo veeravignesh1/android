@@ -36,6 +36,7 @@ import com.toggl.common.above
 import com.toggl.common.deepLinks
 import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.performClickHapticFeedback
+import com.toggl.common.extensions.requestFocus
 import com.toggl.common.extensions.setSafeText
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
@@ -116,7 +117,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     private lateinit var bottomControlPanelAnimator: BottomControlPanelAnimator
     private lateinit var hideableStopViews: List<View>
     private lateinit var extentedTimeOptions: List<View>
-    private lateinit var billableOptions: List<View>
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -188,12 +188,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             wheel_foreground,
             wheel_duration_input
         )
-        billableOptions = listOf(billable_chip, billable_divider)
 
         extentedTimeOptions
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
-        billableOptions
-            .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
+
+        bottomSheetCallback.addOnSlideAction(AlphaSlideAction(billable_chip, false))
 
         bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
             override fun onStateChanged(sheet: View, newState: Int) {
@@ -252,7 +251,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.state
             .map { it.isEditableInProWorkspace() }
             .distinctUntilChanged()
-            .onEach { shouldBillableOptionsShow -> billableOptions.forEach { it.isVisible = shouldBillableOptionsShow } }
+            .onEach { shouldBillableOptionsShow -> billable_chip.isVisible = shouldBillableOptionsShow }
             .launchIn(lifecycleScope)
 
         store.state

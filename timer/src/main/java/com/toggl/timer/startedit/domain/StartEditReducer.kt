@@ -1,5 +1,4 @@
 package com.toggl.timer.startedit.domain
-
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/start_time_entry_layout"
+    android:background="@color/modal_card"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/grid_1">
@@ -29,7 +30,6 @@
 
     <com.google.android.material.chip.Chip
         android:id="@+id/time_indicator"
-        style="@style/Widget.MaterialComponents.Chip.Action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,23 +49,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/time_entry_description_input_layout"
+            <com.toggl.timer.startedit.ui.autocomplete.AutocompleteTextInputEditText
+                android:id="@+id/time_entry_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/description"
+                android:background="@android:color/transparent"
+                android:inputType="text"
+                android:paddingEnd="@dimen/grid_1"
+                android:paddingStart="@dimen/grid_1"
+                tools:ignore="Autofill"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.toggl.timer.startedit.ui.autocomplete.AutocompleteTextInputEditText
-                    android:id="@+id/time_entry_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/transparent"
-                    android:inputType="text"
-                    tools:ignore="Autofill" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/chip_recycler_view"
@@ -74,33 +70,21 @@
                 tools:listitem="@layout/fragment_dialog_start_edit_chip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/description_to_chip_margin"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@+id/time_entry_description_input_layout" />
-
-            <View
-                android:id="@+id/extended_options_divider"
-                style="@style/Divider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/chip_recycler_view" />
+                app:layout_constraintTop_toBottomOf="@id/time_entry_description" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/billable_chip"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:alpha="0"
+                tools:alpha="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/billable"
                 app:chipIcon="@drawable/ic_billable"
                 app:chipIconVisible="true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/extended_options_divider" />
-
-            <View
-                android:id="@+id/billable_divider"
-                style="@style/Divider"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/billable_chip" />
+                app:layout_constraintTop_toBottomOf="@id/chip_recycler_view" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/center_guideline"
@@ -117,7 +101,7 @@
                 android:text="@string/start_time"
                 app:layout_constraintEnd_toStartOf="@+id/center_guideline"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+                app:layout_constraintTop_toBottomOf="@id/billable_chip"  />
 
             <TextView
                 android:id="@+id/start_time_label"
@@ -153,7 +137,7 @@
                 app:layout_constraintBaseline_toBaselineOf="@id/start_header"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/center_guideline"
-                app:layout_constraintTop_toBottomOf="@id/billable_divider" />
+                app:layout_constraintTop_toBottomOf="@id/billable_chip" />
 
 
             <TextView

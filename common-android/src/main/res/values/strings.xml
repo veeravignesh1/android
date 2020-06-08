@@ -24,6 +24,8 @@
     <string name="add_client">Add client</string>
     <string name="new_project">New project</string>
     <string name="create">Create</string>
+    <string name="done">Done</string>
+    <string name="custom_project_color">Custom Project Color</string>
     <string name="create_project">Create project</string>
     <string name="create_tag">Create tag</string>
     <plurals name="entriesDeleted">

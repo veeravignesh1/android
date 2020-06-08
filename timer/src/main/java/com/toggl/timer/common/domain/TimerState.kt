@@ -10,6 +10,7 @@ import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.nullableEditableProject
+import com.toggl.models.validation.HSVColor
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.TemporalInconsistency
 
@@ -30,7 +31,8 @@ data class TimerState(
         internal val autocompleteSuggestions: List<AutocompleteSuggestion>,
         internal val dateTimePickMode: DateTimePickMode,
         internal val temporalInconsistency: TemporalInconsistency,
-        internal val cursorPosition: Int
+        internal val cursorPosition: Int,
+        internal val customColor: HSVColor
     ) {
         constructor() : this(
             expandedGroupIds = setOf(),
@@ -38,7 +40,8 @@ data class TimerState(
             autocompleteSuggestions = emptyList(),
             dateTimePickMode = DateTimePickMode.None,
             temporalInconsistency = TemporalInconsistency.None,
-            cursorPosition = 0
+            cursorPosition = 0,
+            customColor = HSVColor.defaultCustomColor
         )
     }
 

@@ -9,6 +9,7 @@
     <color name="text_on_surface">#FFD5D0D8</color>
     <color name="text_on_background">#FFABA0AF</color>
     <color name="divider">#55FFFFFF</color>
+    <color name="modal_card">#FF0A040C</color>
     <color name="error">#FFFF453A</color>
     <color name="start_time_entry_button_background">#FFDC6ED0</color>
     <color name="stop_time_entry_button_background">#FFFF8879</color>

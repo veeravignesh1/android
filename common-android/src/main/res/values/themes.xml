@@ -12,6 +12,7 @@
         <item name="colorOnBackground">@color/text_on_surface</item>
         <item name="android:colorBackground">@color/background</item>
         <item name="android:statusBarColor">@color/toolbar</item>
+        <item name="chipStyle">@style/TogglChip</item>
         <item name="floatingActionButtonStyle">@style/TogglFloatingActionButton</item>
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Toggl.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Toggl.MediumComponent</item>

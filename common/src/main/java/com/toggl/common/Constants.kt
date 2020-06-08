@@ -24,4 +24,11 @@ object Constants {
         const val projectToken: Char = '@'
         const val tagToken: Char = '#'
     }
+
+    object DefaultCustomColor {
+        const val hue = 210F
+        const val saturation = .74F
+        const val value = .75F
+        const val hex = "#3178BE"
+    }
 }

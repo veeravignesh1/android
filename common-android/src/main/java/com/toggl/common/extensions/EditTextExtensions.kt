@@ -22,3 +22,11 @@ fun EditText.doSafeAfterTextChanged(action: (text: Editable?) -> Unit): TextWatc
         action(it)
     }
 }
+
+fun EditText.requestFocus(onFocusChanged: () -> Unit) {
+    setOnFocusChangeListener { _, _ ->
+        post { onFocusChanged() }
+        onFocusChangeListener = null
+    }
+    requestFocus()
+}
