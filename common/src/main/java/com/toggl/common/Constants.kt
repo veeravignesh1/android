@@ -25,6 +25,14 @@ object Constants {
         const val tagToken: Char = '#'
     }
 
+    object ClockMath {
+        const val quarterOfCircle: Double = 0.5f * kotlin.math.PI
+        const val fullCircle: Double = 2 * kotlin.math.PI
+        const val hoursOnTheClock: Int = 12
+        const val minutesInAnHour: Int = 60
+        const val secondsInAMinute: Int = 60
+    }
+
     object DefaultCustomColor {
         const val hue = 210F
         const val saturation = .74F

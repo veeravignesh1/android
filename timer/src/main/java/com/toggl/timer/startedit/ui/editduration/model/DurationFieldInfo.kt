@@ -1,6 +1,6 @@
 package com.toggl.timer.startedit.ui.editduration.model
 
-import com.toggl.timer.startedit.util.MathConstants
+import com.toggl.common.Constants
 import java.time.Duration
 import kotlin.math.min
 
@@ -60,7 +60,7 @@ data class DurationFieldInfo(val digits: List<Int> = emptyList()) {
 
         fun fromDuration(duration: Duration): DurationFieldInfo {
             val digits = mutableListOf<Int>()
-            val totalMinutes = duration.coerceIn(Duration.ZERO, maximumDuration).seconds / MathConstants.secondsInAMinute
+            val totalMinutes = duration.coerceIn(Duration.ZERO, maximumDuration).seconds / Constants.ClockMath.secondsInAMinute
             val hoursPart = totalMinutes / 60
             val minutesPart = totalMinutes % 60
             val digitsString = (hoursPart * 100 + minutesPart).toString()

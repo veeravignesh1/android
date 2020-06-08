@@ -17,6 +17,7 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import com.toggl.common.extensions.applyAndRecycle
 import com.toggl.timer.R
 import com.toggl.timer.startedit.ui.editduration.model.DurationFieldInfo
 import com.toggl.timer.startedit.util.asDurationString
@@ -25,7 +26,9 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import java.time.Duration
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @ExperimentalCoroutinesApi
 @FlowPreview
 class WheelDurationInputView @JvmOverloads constructor(
@@ -48,13 +51,9 @@ class WheelDurationInputView @JvmOverloads constructor(
 
     init {
         val defaultFadedTextColor = ContextCompat.getColor(context, R.color.default_wheel_duration_input_faded_text_color)
-        context.theme.obtainStyledAttributes(attrs, R.styleable.WheelDurationInputView, 0, 0).apply {
-            try {
-                fadedTextColor = getColor(R.styleable.WheelDurationInputView_fadedTextColor, defaultFadedTextColor)
-                fadedTextColorTypeSpan = ForegroundColorSpan(fadedTextColor)
-            } finally {
-                recycle()
-            }
+        context.theme.obtainStyledAttributes(attrs, R.styleable.WheelDurationInputView, 0, 0).applyAndRecycle {
+            fadedTextColor = getColor(R.styleable.WheelDurationInputView_fadedTextColor, defaultFadedTextColor)
+            fadedTextColorTypeSpan = ForegroundColorSpan(fadedTextColor)
         }
     }
 

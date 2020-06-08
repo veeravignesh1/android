@@ -51,8 +51,8 @@ import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
-import com.toggl.timer.extensions.formatForDisplayingDate
-import com.toggl.timer.extensions.formatForDisplayingTime
+import com.toggl.common.extensions.formatForDisplayingDate
+import com.toggl.common.extensions.formatForDisplayingTime
 import com.toggl.timer.extensions.tryHidingKeyboard
 import com.toggl.timer.extensions.tryShowingKeyboardFor
 import com.toggl.timer.startedit.domain.DateTimePickMode
@@ -80,9 +80,11 @@ import kotlinx.coroutines.flow.take
 import java.time.Duration
 import java.time.OffsetDateTime
 import javax.inject.Inject
+import kotlin.contracts.ExperimentalContracts
 import kotlin.math.min
 import com.toggl.common.android.R as CommonR
 
+@ExperimentalContracts
 class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     @Inject

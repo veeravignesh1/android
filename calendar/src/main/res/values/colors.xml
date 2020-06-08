@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="default_calendar_currentHourColor">#FF328FFF</color>
-    <color name="default_calendar_calendarBackgroundColor">@color/background</color>
-    <color name="default_calendar_lineColor">#C2C2C2</color>
-    <color name="default_calendar_calendarHourTextColor">#C2C2C2</color>
-    <color name="default_calendar_editingHourLabelTextColor">#FF328FFF</color>
-    <color name="default_calendar_primaryTextColor">@color/text_on_background</color>
+    <color name="default_calendar_current_hour_color">#FF328FFF</color>
+    <color name="default_calendar_calendar_background_color">@color/background</color>
+    <color name="default_calendar_line_color">#C2C2C2</color>
+    <color name="default_calendar_calendar_hour_text_color">#C2C2C2</color>
+    <color name="default_calendar_editing_hour_label_text_color">#FF328FFF</color>
+    <color name="default_calendar_primary_text_color">@color/text_on_background</color>
+    <color name="default_calendar_default_calendar_item_color">#C2C2C2</color>
 </resources>

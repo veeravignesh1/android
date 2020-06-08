@@ -14,16 +14,17 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
+import com.toggl.common.Constants.ClockMath.fullCircle
 import com.toggl.common.extensions.performTickEffect
 import com.toggl.timer.R
-import com.toggl.timer.extensions.absoluteDurationBetween
-import com.toggl.timer.extensions.roundToClosestMinute
-import com.toggl.timer.extensions.timeOfDay
+import com.toggl.common.extensions.absoluteDurationBetween
+import com.toggl.common.extensions.applyAndRecycle
+import com.toggl.common.extensions.roundToClosestMinute
+import com.toggl.common.extensions.timeOfDay
 import com.toggl.timer.startedit.ui.editduration.shapes.Arc
 import com.toggl.timer.startedit.ui.editduration.shapes.Dot
 import com.toggl.timer.startedit.ui.editduration.shapes.HandleCap
 import com.toggl.timer.startedit.ui.editduration.shapes.Wheel
-import com.toggl.timer.startedit.util.MathConstants
 import com.toggl.timer.startedit.util.angleBetween
 import com.toggl.timer.startedit.util.angleToTime
 import com.toggl.timer.startedit.util.distanceSq
@@ -39,7 +40,9 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
 import java.time.Duration
 import java.time.OffsetDateTime
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @FlowPreview
 @ExperimentalCoroutinesApi
 class WheelForegroundView @JvmOverloads constructor(
@@ -162,31 +165,27 @@ class WheelForegroundView @JvmOverloads constructor(
             val defaultCapBorderColor = ContextCompat.getColor(context, R.color.default_wheel_foreground_cap_border_color)
             val defaultCapIconColor = ContextCompat.getColor(context, R.color.default_wheel_foreground_cap_icon_color)
             val defaultCapShadowColor = ContextCompat.getColor(context, R.color.default_wheel_foreground_cap_shadow_color)
-            context.theme.obtainStyledAttributes(attrs, R.styleable.WheelForegroundView, 0, 0).apply {
-                try {
-                    arcWidth = getDimension(R.styleable.WheelForegroundView_arcWidth, defaultArcWidth)
-                    capWidth = getDimension(R.styleable.WheelForegroundView_capWidth, defaultCapWidth)
-                    capIconSize = getDimensionPixelSize(R.styleable.WheelForegroundView_capIconSize, defaultCapIconSize)
-                    capShadowWidth = getDimension(R.styleable.WheelForegroundView_capShadowWidth, defaultCapShadowWidth)
-                    capBorderStrokeWidth =
-                        getDimension(R.styleable.WheelForegroundView_capBorderStrokeWidth, defaultCapBorderStrokeWidth)
-                    capBackgroundColor =
-                        getColor(R.styleable.WheelForegroundView_capBackgroundColor, defaultCapBackgroundColor)
-                    capBorderColor = getColor(R.styleable.WheelForegroundView_capBorderColor, defaultCapBorderColor)
-                    capIconColor = getColor(R.styleable.WheelForegroundView_capIconColor, defaultCapIconColor)
-                    capShadowColor = getColor(R.styleable.WheelForegroundView_capShadowColor, defaultCapShadowColor)
-                    wheelHandleDotIndicatorRadius = getDimension(
-                        R.styleable.WheelForegroundView_wheelHandleDotIndicatorRadius,
-                        defaultHandleDotIndicatorRadius
-                    )
-                    val rainbowColorsId =
-                        getResourceId(R.styleable.WheelForegroundView_wheelRainbowColors, R.array.default_wheel_rainbow_colors)
-                    rainbowColors = getIntArray(rainbowColorsId).toList()
-                    startCapIconId = getResourceId(R.styleable.WheelForegroundView_startCapIcon, R.drawable.ic_play)
-                    endCapIconId = getResourceId(R.styleable.WheelForegroundView_endCapIcon, R.drawable.ic_stop)
-                } finally {
-                    recycle()
-                }
+            context.theme.obtainStyledAttributes(attrs, R.styleable.WheelForegroundView, 0, 0).applyAndRecycle {
+                arcWidth = getDimension(R.styleable.WheelForegroundView_arcWidth, defaultArcWidth)
+                capWidth = getDimension(R.styleable.WheelForegroundView_capWidth, defaultCapWidth)
+                capIconSize = getDimensionPixelSize(R.styleable.WheelForegroundView_capIconSize, defaultCapIconSize)
+                capShadowWidth = getDimension(R.styleable.WheelForegroundView_capShadowWidth, defaultCapShadowWidth)
+                capBorderStrokeWidth =
+                    getDimension(R.styleable.WheelForegroundView_capBorderStrokeWidth, defaultCapBorderStrokeWidth)
+                capBackgroundColor =
+                    getColor(R.styleable.WheelForegroundView_capBackgroundColor, defaultCapBackgroundColor)
+                capBorderColor = getColor(R.styleable.WheelForegroundView_capBorderColor, defaultCapBorderColor)
+                capIconColor = getColor(R.styleable.WheelForegroundView_capIconColor, defaultCapIconColor)
+                capShadowColor = getColor(R.styleable.WheelForegroundView_capShadowColor, defaultCapShadowColor)
+                wheelHandleDotIndicatorRadius = getDimension(
+                    R.styleable.WheelForegroundView_wheelHandleDotIndicatorRadius,
+                    defaultHandleDotIndicatorRadius
+                )
+                val rainbowColorsId =
+                    getResourceId(R.styleable.WheelForegroundView_wheelRainbowColors, R.array.default_wheel_rainbow_colors)
+                rainbowColors = getIntArray(rainbowColorsId).toList()
+                startCapIconId = getResourceId(R.styleable.WheelForegroundView_startCapIcon, R.drawable.ic_play)
+                endCapIconId = getResourceId(R.styleable.WheelForegroundView_endCapIcon, R.drawable.ic_stop)
             }
         }
     }
@@ -317,8 +316,8 @@ class WheelForegroundView @JvmOverloads constructor(
 
         val currentAngle = angleBetween(touchInteractionPointF, center)
         var angleChange = currentAngle - previousAngle
-        while (angleChange < -kotlin.math.PI) angleChange += MathConstants.fullCircle
-        while (angleChange > kotlin.math.PI) angleChange -= MathConstants.fullCircle
+        while (angleChange < -kotlin.math.PI) angleChange += fullCircle
+        while (angleChange > kotlin.math.PI) angleChange -= fullCircle
 
         updateEditedTime(angleChange.angleToTime())
     }

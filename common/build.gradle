@@ -5,6 +5,15 @@ apply plugin: 'kotlin'
 
 dependencies {
     implementation Libs.Kotlin.stdlib
+    testImplementation Libs.Test.Jupiter.api
+    testRuntimeOnly Libs.Test.Jupiter.engine
+    testImplementation Libs.Test.Jupiter.params
+    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.kotlinTest
+    testImplementation Libs.Test.kotlinTestJunit
+    testImplementation Libs.Test.kotlinCoroutineTest
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8

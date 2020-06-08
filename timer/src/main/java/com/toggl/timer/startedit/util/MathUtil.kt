@@ -1,19 +1,11 @@
 package com.toggl.timer.startedit.util
 
 import android.graphics.PointF
-import com.toggl.timer.startedit.util.MathConstants.fullCircle
-import com.toggl.timer.startedit.util.MathConstants.minutesInAnHour
-import com.toggl.timer.startedit.util.MathConstants.quarterOfCircle
-import com.toggl.timer.startedit.util.MathConstants.secondsInAMinute
+import com.toggl.common.Constants.ClockMath.fullCircle
+import com.toggl.common.Constants.ClockMath.minutesInAnHour
+import com.toggl.common.Constants.ClockMath.quarterOfCircle
+import com.toggl.common.Constants.ClockMath.secondsInAMinute
 import java.time.Duration
-
-object MathConstants {
-    const val quarterOfCircle: Double = 0.5f * kotlin.math.PI
-    const val fullCircle: Double = 2 * kotlin.math.PI
-    const val hoursOnTheClock: Int = 12
-    const val minutesInAnHour: Int = 60
-    const val secondsInAMinute: Int = 60
-}
 
 fun Duration.toAngleOnTheDial(): Double = this.toAngle() - quarterOfCircle
 

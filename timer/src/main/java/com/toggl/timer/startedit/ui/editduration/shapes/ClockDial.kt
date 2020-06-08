@@ -6,8 +6,8 @@ import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.Typeface
 import androidx.annotation.ColorInt
-import com.toggl.timer.startedit.util.MathConstants.fullCircle
-import com.toggl.timer.startedit.util.MathConstants.minutesInAnHour
+import com.toggl.common.Constants.ClockMath.fullCircle
+import com.toggl.common.Constants.ClockMath.minutesInAnHour
 import com.toggl.timer.startedit.util.updateWithPointOnCircumference
 
 class ClockDial(

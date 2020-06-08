@@ -7,6 +7,7 @@ import com.toggl.timer.startedit.ui.StartEditDialogFragment
 import dagger.Subcomponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlin.contracts.ExperimentalContracts
 
 @Subcomponent
 interface TimerComponent {
@@ -16,6 +17,7 @@ interface TimerComponent {
     }
 
     fun inject(fragment: TimeEntriesLogFragment)
+    @ExperimentalContracts
     @FlowPreview
     @ExperimentalCoroutinesApi
     fun inject(fragment: StartEditDialogFragment)

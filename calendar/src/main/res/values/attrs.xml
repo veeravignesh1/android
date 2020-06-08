@@ -26,12 +26,14 @@
         <attr name="editingHoursLabelPaintTextSize" format="dimension" />
         <attr name="editingHandlesHorizontalMargins" format="dimension" />
         <attr name="editingHandlesRadius" format="dimension" />
+        <attr name="editingHandlesStrokeWidth" format="dimension" />
 
         <!-- events -->
         <attr name="calendarEventsStartMargin" format="dimension" />
         <attr name="calendarEventsLeftPadding" format="dimension" />
         <attr name="calendarEventsRightPadding" format="dimension" />
         <attr name="calendarEventsItemsSpacing" format="dimension" />
+        <attr name="calendarEventsCornerRadius" format="dimension" />
         <attr name="shortCalendarItemHeight" format="dimension" />
         <attr name="regularCalendarItemVerticalPadding" format="dimension" />
         <attr name="regularCalendarItemHorizontalPadding" format="dimension" />
@@ -43,10 +45,13 @@
         <attr name="calendarRunningTimeEntryStripesSpacing" format="dimension" />
         <attr name="calendarRunningTimeEntryThinStripeWidth" format="dimension" />
         <attr name="calendarRunningTimeEntryDashedHourTopPadding" format="dimension" />
+        <attr name="calendarRunningTimeEntryBorderStrokeWidth" format="dimension" />
+        <attr name="calendarRunningTimeEntryExtraHeight" format="dimension" />
         <attr name="calendarEventBottomLineHeight" format="dimension" />
         <attr name="calendarIconSize" format="dimension" />
         <attr name="calendarIconRightInsetMargin" format="dimension" />
         <attr name="calendarIcon" format="reference" />
         <attr name="primaryTextColor" format="color" />
+        <attr name="defaultCalendarItemColor" format="color" />
     </declare-styleable>
 </resources>

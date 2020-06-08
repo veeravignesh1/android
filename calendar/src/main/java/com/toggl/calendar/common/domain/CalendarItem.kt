@@ -30,6 +30,16 @@ sealed class CalendarItem {
     ) : CalendarItem()
 }
 
+fun CalendarItem.colorString(): String? = when (this) {
+    is CalendarItem.TimeEntry -> projectColor
+    is CalendarItem.CalendarEvent -> calendarEvent.color
+}
+
+fun CalendarItem.description(): String = when (this) {
+    is CalendarItem.TimeEntry -> timeEntry.description
+    is CalendarItem.CalendarEvent -> calendarEvent.description
+}
+
 fun CalendarItem.startTime(): OffsetDateTime = when (this) {
     is CalendarItem.TimeEntry -> timeEntry.startTime
     is CalendarItem.CalendarEvent -> calendarEvent.startTime
@@ -44,6 +54,9 @@ fun CalendarItem.duration(): Duration? = when (this) {
     is CalendarItem.TimeEntry -> timeEntry.duration
     is CalendarItem.CalendarEvent -> calendarEvent.duration
 }
+
+fun CalendarItem.isRunning(): Boolean =
+    this is CalendarItem.TimeEntry && this.timeEntry.duration == null
 
 fun CalendarItem.toSelectedCalendarItem(): SelectedCalendarItem = when (this) {
     is CalendarItem.TimeEntry -> SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(this.timeEntry))

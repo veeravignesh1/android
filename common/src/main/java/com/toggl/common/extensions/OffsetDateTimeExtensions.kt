@@ -1,6 +1,6 @@
-package com.toggl.timer.extensions
+package com.toggl.common.extensions
 
-import com.toggl.timer.startedit.util.MathConstants
+import com.toggl.common.Constants.ClockMath.secondsInAMinute
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -19,8 +19,8 @@ fun OffsetDateTime.absoluteDurationBetween(other: OffsetDateTime): Duration =
 fun OffsetDateTime.timeOfDay(): Duration = Duration.ofNanos(toLocalTime().toNanoOfDay())
 
 fun OffsetDateTime.roundToClosestMinute(): OffsetDateTime =
-    if (this.second > MathConstants.secondsInAMinute / 2) {
-        this + Duration.ofSeconds((MathConstants.secondsInAMinute - this.second).toLong())
+    if (this.second > secondsInAMinute / 2) {
+        this + Duration.ofSeconds((secondsInAMinute - this.second).toLong())
     } else {
         this - Duration.ofSeconds(this.second.toLong())
     }

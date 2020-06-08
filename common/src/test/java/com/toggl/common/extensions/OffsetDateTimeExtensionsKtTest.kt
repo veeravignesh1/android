@@ -1,4 +1,4 @@
-package com.toggl.timer.extensions
+package com.toggl.common.extensions
 
 import io.kotlintest.matchers.beGreaterThanOrEqualTo
 import io.kotlintest.matchers.beLessThan

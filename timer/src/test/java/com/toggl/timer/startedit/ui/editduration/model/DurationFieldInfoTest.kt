@@ -1,6 +1,6 @@
 package com.toggl.timer.startedit.ui.editduration.model
 
-import com.toggl.timer.startedit.util.MathConstants
+import com.toggl.common.Constants.ClockMath.secondsInAMinute
 import io.kotlintest.matchers.beGreaterThanOrEqualTo
 import io.kotlintest.matchers.beLessThanOrEqualTo
 import io.kotlintest.should
@@ -333,7 +333,7 @@ class DurationFieldInfoTest {
 
             val output = field.toDuration()
 
-            output.seconds / MathConstants.secondsInAMinute shouldBe totalMinutes
+            output.seconds / secondsInAMinute shouldBe totalMinutes
         }
     }
 

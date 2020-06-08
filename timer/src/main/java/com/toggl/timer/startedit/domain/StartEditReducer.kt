@@ -34,7 +34,7 @@ import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetExcept
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
-import com.toggl.timer.extensions.absoluteDurationBetween
+import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime

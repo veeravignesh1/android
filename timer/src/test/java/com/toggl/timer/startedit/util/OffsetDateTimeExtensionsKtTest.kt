@@ -1,8 +1,8 @@
 package com.toggl.timer.startedit.util
 
-import com.toggl.timer.extensions.absoluteDurationBetween
-import com.toggl.timer.extensions.roundToClosestMinute
-import com.toggl.timer.extensions.timeOfDay
+import com.toggl.common.extensions.absoluteDurationBetween
+import com.toggl.common.extensions.roundToClosestMinute
+import com.toggl.common.extensions.timeOfDay
 import io.kotlintest.matchers.beGreaterThanOrEqualTo
 import io.kotlintest.matchers.beLessThan
 import io.kotlintest.shouldBe
