@@ -73,6 +73,7 @@ class CalendarItemDrawingDelegate(
     private val itemPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val textPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val calendarIconPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+
     private val drawingRect: RectF = RectF()
     private val stripeRect = RectF()
     private val dashEffect = DashPathEffect(floatArrayOf(10f, 10f), 0f)

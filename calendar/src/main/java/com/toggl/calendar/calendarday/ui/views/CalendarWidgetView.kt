@@ -4,11 +4,16 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.View
+import android.widget.OverScroller
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.withTranslation
 import com.toggl.calendar.R
+import com.toggl.common.Constants.ClockMath.hoursInTheDay
 import com.toggl.common.extensions.applyAndRecycle
 import kotlin.contracts.ExperimentalContracts
 
@@ -29,7 +34,7 @@ class CalendarWidgetView @JvmOverloads constructor(
     private var calendarHourLineStartMargin: Float
     private var calendarVerticalLineDividerStartMargin: Float
     private var calendarHoursStartMargin: Float
-    private var lineColor: Int
+    private var calendarBackgroundHourLineColor: Int
     private var calendarHourLinesHeight: Float
     private var calendarHourTextColor: Int
     private var calendarHoursTextSize: Float
@@ -65,9 +70,17 @@ class CalendarWidgetView @JvmOverloads constructor(
     private var defaultCalendarItemColor: Int
 
     private val viewFrame = RectF()
+    private var hourHeight: Float = 0f
     private var scrollOffset: Float = 500f
 
     private var drawingData: CalendarWidgetViewDrawingData = CalendarWidgetViewDrawingData()
+    private var isDragging: Boolean = false
+    private var flingWasCalled: Boolean = false
+    private var isScrolling: Boolean = false
+
+    private val scroller: OverScroller
+    private val gestureDetector: GestureDetector
+    private val scaleGestureDetector: ScaleGestureDetector
 
     private val calendarItemDrawingDelegate: CalendarItemDrawingDelegate
     private val backgroundDrawingDelegate: CalendarBackgroundDrawingDelegate
@@ -91,7 +104,8 @@ class CalendarWidgetView @JvmOverloads constructor(
             val defaultCalendarVerticalLineDividerStartMargin =
                 getDimension(R.dimen.default_calendar_calendar_vertical_line_divider_start_margin)
             val defaultCalendarHoursStartMargin = getDimension(R.dimen.default_calendar_calendar_hours_start_margin)
-            val defaultLineColor = ContextCompat.getColor(context, R.color.default_calendar_line_color)
+            val defaultCalendarHourLineColor =
+                ContextCompat.getColor(context, R.color.default_calendar_calendar_hour_line_color)
             val defaultCalendarHourLinesHeight = getDimension(R.dimen.default_calendar_calendar_hour_lines_height)
             val defaultCalendarHourTextColor =
                 ContextCompat.getColor(context, R.color.default_calendar_calendar_hour_text_color)
@@ -173,7 +187,8 @@ class CalendarWidgetView @JvmOverloads constructor(
                 )
                 calendarHoursStartMargin =
                     getDimension(R.styleable.CalendarWidgetView_calendarHoursStartMargin, defaultCalendarHoursStartMargin)
-                lineColor = getColor(R.styleable.CalendarWidgetView_lineColor, defaultLineColor)
+                calendarBackgroundHourLineColor =
+                    getColor(R.styleable.CalendarWidgetView_calendarHourLineColor, defaultCalendarHourLineColor)
                 calendarHourLinesHeight =
                     getDimension(R.styleable.CalendarWidgetView_calendarHourLinesHeight, defaultCalendarHourLinesHeight)
                 calendarHourTextColor =
@@ -274,6 +289,7 @@ class CalendarWidgetView @JvmOverloads constructor(
             ContextCompat.getDrawable(context, calendarIconId)!!
                 .toBitmap((calendarIconSize / 2f).toInt(), (calendarIconSize / 2).toInt())
 
+        hourHeight = calendarBaseHourHeight
         calendarItemDrawingDelegate = CalendarItemDrawingDelegate(
             itemSpacing = calendarEventsItemsSpacing,
             leftMargin = calendarVerticalLineDividerStartMargin,
@@ -306,7 +322,29 @@ class CalendarWidgetView @JvmOverloads constructor(
         ).apply {
             currentHourHeight = calendarBaseHourHeight
         }
-        backgroundDrawingDelegate = CalendarBackgroundDrawingDelegate()
+
+        backgroundDrawingDelegate = CalendarBackgroundDrawingDelegate(
+            hourLineColor = calendarBackgroundHourLineColor,
+            hourLabelTextColor = calendarHourTextColor,
+            hourLabelTextSize = calendarHoursTextSize,
+            verticalLineLeftMargin = calendarVerticalLineDividerStartMargin,
+            timeSliceStartX = calendarHourLineStartMargin,
+            hoursX = calendarHoursStartMargin
+        ).also {
+            it.currentHourHeight = calendarBaseHourHeight
+        }
+
+        val gestureListener = GestureListener(
+            ::onTouchDown,
+            ::onLongPress,
+            ::scrollView,
+            ::flingView,
+            ::onSingleTapUp,
+            ::onScale
+        )
+        gestureDetector = GestureDetector(context, gestureListener)
+        scaleGestureDetector = ScaleGestureDetector(context, gestureListener)
+        scroller = OverScroller(context)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -317,6 +355,54 @@ class CalendarWidgetView @JvmOverloads constructor(
             drawCalendarBackground()
             drawCalendarItems()
             drawCurrentHourIndicator()
+        }
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        if (!changed)
+            return
+
+        backgroundDrawingDelegate.onLayout()
+    }
+
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        val scaleResult = scaleGestureDetector.onTouchEvent(event)
+        if (scaleGestureDetector.isInProgress)
+            return scaleResult || super.onTouchEvent(event)
+
+        return when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                gestureDetector.onTouchEvent(event)
+                true
+            }
+            MotionEvent.ACTION_UP -> {
+                isDragging = false
+                gestureDetector.onTouchEvent(event)
+                if (flingWasCalled)
+                    return true
+                if (!isScrolling)
+                    return true
+
+                isScrolling = false
+                invalidate()
+                true
+            }
+            MotionEvent.ACTION_MOVE -> {
+                gestureDetector.onTouchEvent(event)
+                if (isDragging) {
+                    TODO("Drag event")
+                }
+                true
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                isDragging = false
+                gestureDetector.onTouchEvent(event)
+                isScrolling = false
+                true
+            }
+            else -> gestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
         }
     }
 
@@ -333,6 +419,140 @@ class CalendarWidgetView @JvmOverloads constructor(
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun Canvas.drawCurrentHourIndicator() {
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onTouchDown(e: MotionEvent) {
+        scroller.forceFinished(true)
+        flingWasCalled = false
+        handler.removeCallbacks(::continueScroll)
+        invalidate()
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onLongPress(e: MotionEvent) {
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun scrollView(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float) {
+        if (isDragging)
+            return
+
+        val oldScrollOffset = scrollOffset
+        val newScrollOffset = scrollOffset + distanceY
+        scrollOffset = newScrollOffset.coerceIn(0f, calculateMaxHeight() - height)
+
+        onScrollChanged(0, scrollOffset.toInt(), 0, oldScrollOffset.toInt())
+
+        isScrolling = true
+        postInvalidate()
+    }
+
+    private fun calculateMaxHeight() = hourHeight * hoursInTheDay
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun flingView(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float) {
+        scroller.forceFinished(true)
+        flingWasCalled = true
+        isScrolling = true
+        scroller.fling(0, scrollOffset.toInt(), 0, (-velocityY / 2f).toInt(), 0, 0, 0, calculateMaxHeight().toInt())
+        handler.post(::continueScroll)
+    }
+
+    private fun continueScroll() {
+        isScrolling = isScrolling && scroller.computeScrollOffset()
+        if (!isScrolling) {
+            invalidate()
+            return
+        }
+
+        if (scroller.currY == scrollOffset.toInt()) {
+            handler.post(::continueScroll)
+            return
+        }
+
+        val oldScrollOffset = scrollOffset
+        scrollOffset = scroller.currY.coerceIn(0, (calculateMaxHeight() - height).toInt()).toFloat()
+
+        onScrollChanged(0, scrollOffset.toInt(), 0, oldScrollOffset.toInt())
+
+        handler.post(::continueScroll)
+        invalidate()
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onSingleTapUp(e: MotionEvent) {
+    }
+
+    private fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
+        val oldHourHeight = hourHeight
+        val scaleFactor = scaleDetector.scaleFactor
+        val newHourHeight = (hourHeight * scaleFactor)
+        hourHeight = newHourHeight.coerceIn(calendarBaseHourHeight, calendarMaxHourHeight)
+
+        val hourSizeChanged = oldHourHeight != hourHeight
+        if (!hourSizeChanged)
+            return true
+
+        // Since the size of each hour is an integer
+        // we first need to calculate the real scale
+        // factor applied to the calendar
+        val actualScale = (newHourHeight - oldHourHeight) / ((newHourHeight + oldHourHeight) / 2)
+
+        // We need to calculate so the calendar feels
+        // like it's zooming in and not sliding below
+        // the user's fingers
+        val focusPointOffset = scaleDetector.focusY * actualScale
+        val scaledOffset = scrollOffset * actualScale
+        val newScrollOffset = scrollOffset + scaledOffset + focusPointOffset
+        scrollOffset = newScrollOffset.coerceIn(0f, calculateMaxHeight() - height)
+
+        backgroundDrawingDelegate.currentHourHeight = hourHeight
+        calendarItemDrawingDelegate.currentHourHeight = hourHeight
+        invalidate()
+
+        return true
+    }
+
+    inner class GestureListener(
+        val onDownCallback: (MotionEvent) -> Unit,
+        val onLongPressCallback: (MotionEvent) -> Unit,
+        val onScrollCallback: (MotionEvent, MotionEvent, Float, Float) -> Unit,
+        val onFlingCallback: (MotionEvent, MotionEvent, Float, Float) -> Unit,
+        val onSingleTapUpCallback: (MotionEvent) -> Unit,
+        val onScaleCallback: (ScaleGestureDetector) -> Boolean
+    ) : GestureDetector.SimpleOnGestureListener(), ScaleGestureDetector.OnScaleGestureListener {
+
+        override fun onDown(e: MotionEvent): Boolean {
+            onDownCallback(e)
+            return true
+        }
+
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            onFlingCallback(e1, e2, velocityX, velocityY)
+            return true
+        }
+
+        override fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): Boolean {
+            onScrollCallback(e1, e2, distanceX, distanceY)
+            return true
+        }
+
+        override fun onLongPress(e: MotionEvent) {
+            onLongPressCallback(e)
+        }
+
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            onSingleTapUpCallback(e)
+            return true
+        }
+
+        override fun onScale(detector: ScaleGestureDetector): Boolean = onScaleCallback(detector)
+
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
+
+        override fun onScaleEnd(detector: ScaleGestureDetector) {}
     }
 }

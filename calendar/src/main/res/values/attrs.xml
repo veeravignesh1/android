@@ -15,7 +15,7 @@
         <attr name="calendarHourLineStartMargin" format="dimension" />
         <attr name="calendarVerticalLineDividerStartMargin" format="dimension" />
         <attr name="calendarHoursStartMargin" format="dimension" />
-        <attr name="lineColor" format="color" />
+        <attr name="calendarHourLineColor" format="color" />
         <attr name="calendarHourLinesHeight" format="dimension" />
         <attr name="calendarHourTextColor" format="color" />
         <attr name="calendarHoursTextSize" format="dimension" />

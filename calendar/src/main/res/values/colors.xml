@@ -2,7 +2,7 @@
 <resources>
     <color name="default_calendar_current_hour_color">#FF328FFF</color>
     <color name="default_calendar_calendar_background_color">@color/background</color>
-    <color name="default_calendar_line_color">#C2C2C2</color>
+    <color name="default_calendar_calendar_hour_line_color">#C2C2C2</color>
     <color name="default_calendar_calendar_hour_text_color">#C2C2C2</color>
     <color name="default_calendar_editing_hour_label_text_color">#FF328FFF</color>
     <color name="default_calendar_primary_text_color">@color/text_on_background</color>
