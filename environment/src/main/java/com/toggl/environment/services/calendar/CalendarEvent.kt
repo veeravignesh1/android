@@ -1,5 +1,6 @@
 package com.toggl.environment.services.calendar
 
+import com.toggl.models.domain.EditableTimeEntry
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -11,3 +12,10 @@ data class CalendarEvent(
     val color: String?,
     val calendarId: String
 )
+
+fun CalendarEvent.toEditableTimeEntry(workspaceId: Long) =
+    EditableTimeEntry.empty(workspaceId).copy(
+        description = description,
+        duration = duration,
+        startTime = startTime
+    )

@@ -5,6 +5,7 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
+import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
@@ -14,6 +15,22 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
 import java.time.Duration
 import java.time.OffsetDateTime
+
+fun createCalendarEvent(
+    id: String = "",
+    description: String = "",
+    startTime: OffsetDateTime = OffsetDateTime.now(),
+    duration: Duration = Duration.ofMinutes(2),
+    color: String = "#c2c2c2",
+    calendarId: String = ""
+) = CalendarEvent(
+    id,
+    startTime,
+    duration,
+    description,
+    color,
+    calendarId
+)
 
 fun createTimeEntry(
     id: Long,

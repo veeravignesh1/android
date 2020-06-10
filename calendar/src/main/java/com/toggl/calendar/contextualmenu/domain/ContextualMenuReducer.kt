@@ -9,7 +9,6 @@ import com.toggl.architecture.extensions.plus
 import com.toggl.architecture.extensions.toEffect
 import com.toggl.calendar.common.domain.toCalendarEvent
 import com.toggl.calendar.common.domain.toEditableTimeEntry
-import com.toggl.calendar.extensions.toEditableTimeEntry
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
@@ -17,6 +16,7 @@ import com.toggl.common.feature.timeentry.extensions.throwIfNotPersisted
 import com.toggl.common.feature.timeentry.extensions.throwIfRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
+import com.toggl.environment.services.calendar.toEditableTimeEntry
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
