@@ -5,6 +5,8 @@ Abbreviation | Generated code
 `rtest` | `@Test` annotated method with `reducer.testReduce` template code
 `rstest` | `@Test` annotated method with `reducer.testReduceState` template code
 `retest` | `@Test` annotated method with `reducer.testReduceEffects` template code
+`rnetest` | `@Test` annotated method with `reducer.testReduceNoEffects` template code
+`rxtest` | `@Test` annotated method with `reducer.testReduceException` template code
 
 ## ⏬ How to import Live Template settings to your Android Studio
 
