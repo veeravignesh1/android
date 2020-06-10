@@ -24,3 +24,8 @@ fun OffsetDateTime.roundToClosestMinute(): OffsetDateTime =
     } else {
         this - Duration.ofSeconds(this.second.toLong())
     }
+
+fun OffsetDateTime.maybePlus(duration: Duration?): OffsetDateTime? {
+    if (duration == null) return null
+    return this + duration
+}

@@ -3,6 +3,7 @@ package com.toggl.calendar.common.domain
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
+import com.toggl.common.extensions.maybePlus
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.TimeEntry
 import java.time.Duration
@@ -46,7 +47,7 @@ fun CalendarItem.startTime(): OffsetDateTime = when (this) {
 }
 
 fun CalendarItem.endTime(): OffsetDateTime? = when (this) {
-    is CalendarItem.TimeEntry -> timeEntry.startTime + timeEntry.duration
+    is CalendarItem.TimeEntry -> timeEntry.startTime.maybePlus(timeEntry.duration)
     is CalendarItem.CalendarEvent -> calendarEvent.startTime + calendarEvent.duration
 }
 

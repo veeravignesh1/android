@@ -4,7 +4,7 @@ import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.calendar.common.domain.SelectedCalendarItem
 
 class CalendarWidgetViewDrawingData(
-    sourceItems: List<CalendarItem> = emptyList(),
+    private val sourceItems: List<CalendarItem> = emptyList(),
     private val selectedCalendarItem: SelectedCalendarItem? = null
 ) {
     val nonSelectedCalendarItemsToDraw: List<CalendarItem>
@@ -15,6 +15,12 @@ class CalendarWidgetViewDrawingData(
         nonSelectedCalendarItemsToDraw = sourceItems.filterIndexed { index, _ -> index != selectedItemIndex }
         selectedCalendarItemToDraw = if (selectedItemIndex != -1) sourceItems[selectedItemIndex] else null
     }
+
+    fun withSourceItems(newSourceItems: List<CalendarItem>) =
+        CalendarWidgetViewDrawingData(newSourceItems, selectedCalendarItem)
+
+    fun withSelectedItem(newSelectedCalendarItem: SelectedCalendarItem?) =
+        CalendarWidgetViewDrawingData(sourceItems, newSelectedCalendarItem)
 }
 
 private fun CalendarItem.isSelectedItem(selectedItem: SelectedCalendarItem?): Boolean {

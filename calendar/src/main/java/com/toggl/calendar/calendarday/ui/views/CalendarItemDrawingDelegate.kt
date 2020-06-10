@@ -24,13 +24,13 @@ import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.Constants.ClockMath.minutesInAnHour
 import com.toggl.common.extensions.absoluteDurationBetween
 import java.time.Duration
-import java.time.LocalDateTime
 import java.time.OffsetDateTime
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
 import kotlin.math.min
 
+@Suppress("UNUSED_PARAMETER")
 class CalendarItemDrawingDelegate(
     private val itemSpacing: Float,
     private val leftMargin: Float,
@@ -138,7 +138,8 @@ class CalendarItemDrawingDelegate(
     private fun calculateLineHeight(eventHeight: Float, eventTextLayout: StaticLayout): Int =
         (0 until eventTextLayout.lineCount)
             .map(eventTextLayout::getLineBottom)
-            .maxBy { it <= eventHeight } ?: 0
+            .filter { it <= eventHeight }
+            .max() ?: 0
 
     private fun getCalendarItemTextLayout(
         item: CalendarItem,
@@ -301,13 +302,9 @@ class CalendarItemDrawingDelegate(
         itemPaint.pathEffect = null
     }
 
-    private fun calculateCurrentHourOffset(): Int {
-        val now = OffsetDateTime.now().toLocalDateTime()
-        return calculateHourOffsetFrom(now).toInt()
-    }
-
-    private fun calculateHourOffsetFrom(offsetDateTime: LocalDateTime): Float {
-        return (offsetDateTime.hour + offsetDateTime.minute / minutesInAnHourF) * currentHourHeight
+    private fun calculateCurrentHourOffset(): Float {
+        val now = OffsetDateTime.now()
+        return (now.hour + now.minute.toFloat() / minutesInAnHourF) * currentHourHeight
     }
 
     private fun getProperlySizedCalendarBitmap(): Bitmap? {
@@ -324,7 +321,7 @@ class CalendarItemDrawingDelegate(
         val availableWidth = calendarBounds.width() - leftMargin
         val eventWidth = (availableWidth - leftPadding - rightPadding - totalItemSpacing) / calendarItem.totalColumns
         val left = leftMargin + leftPadding + eventWidth * calendarItem.columnIndex + calendarItem.columnIndex * itemSpacing
-        val startTime = calendarItem.startTime()
+        val startTime = calendarItem.startTime().withOffsetSameInstant(OffsetDateTime.now().offset)
         val totalHours = startTime.hour + startTime.minute.toFloat() / minutesInAnHourF
         val durationHours = duration(calendarItem).toMinutes().toFloat() / minutesInAnHourF
         val durationInHeight = max(minHourHeight, durationHours * currentHourHeight)

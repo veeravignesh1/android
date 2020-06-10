@@ -13,8 +13,11 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.withTranslation
 import com.toggl.calendar.R
+import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.common.Constants.ClockMath.hoursInTheDay
 import com.toggl.common.extensions.applyAndRecycle
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
@@ -73,6 +76,7 @@ class CalendarWidgetView @JvmOverloads constructor(
     private var hourHeight: Float = 0f
     private var scrollOffset: Float = 500f
 
+    private var drawingLock = ReentrantLock(true)
     private var drawingData: CalendarWidgetViewDrawingData = CalendarWidgetViewDrawingData()
     private var isDragging: Boolean = false
     private var flingWasCalled: Boolean = false
@@ -345,6 +349,13 @@ class CalendarWidgetView @JvmOverloads constructor(
         gestureDetector = GestureDetector(context, gestureListener)
         scaleGestureDetector = ScaleGestureDetector(context, gestureListener)
         scroller = OverScroller(context)
+    }
+
+    fun updateList(newCalendarItems: List<CalendarItem>) {
+        drawingLock.withLock {
+            drawingData = drawingData.withSourceItems(newCalendarItems)
+            invalidate()
+        }
     }
 
     override fun onDraw(canvas: Canvas) {

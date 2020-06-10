@@ -2,6 +2,7 @@ package com.toggl.calendar.calendarday.domain
 
 import com.toggl.architecture.core.Selector
 import com.toggl.calendar.common.domain.CalendarItem
+import com.toggl.common.extensions.maybePlus
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,7 +18,7 @@ class CalendarItemsSelector @Inject constructor(
         fun isOnDate(startTime: OffsetDateTime, endTime: OffsetDateTime?) =
             startTime.toLocalDate() == localDate && (endTime == null || endTime.toLocalDate() == localDate)
 
-        val filteredTimeEntries = state.timeEntries.filterValues { isOnDate(it.startTime, it.startTime + it.duration) }
+        val filteredTimeEntries = state.timeEntries.filterValues { isOnDate(it.startTime, it.startTime.maybePlus(it.duration)) }
         val filteredEvents = state.events.filterValues { isOnDate(it.startTime, it.startTime + it.duration) }
         return filteredTimeEntries
             .values.map { CalendarItem.TimeEntry(it, projectColor = projects[it.projectId]?.color) }
