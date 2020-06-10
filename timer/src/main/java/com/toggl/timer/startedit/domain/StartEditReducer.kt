@@ -26,7 +26,6 @@ import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.isRunningOrNew
 import com.toggl.common.feature.timeentry.extensions.isStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
-import com.toggl.repository.exceptions.DurationShouldNotBeNullException
 import com.toggl.repository.exceptions.StartTimeShouldNotBeNullException
 import com.toggl.repository.extensions.toCreateDto
 import com.toggl.repository.extensions.toStartDto
@@ -110,7 +109,7 @@ class StartEditReducer @Inject constructor(
 
                         val isGroup = editableTimeEntry.isRepresentingGroup()
                         val startTime = if (isGroup) it.startTime else editableTimeEntry.startTime ?: throw StartTimeShouldNotBeNullException()
-                        val duration = if (isGroup) it.duration else editableTimeEntry.duration ?: throw DurationShouldNotBeNullException()
+                        val duration = if (isGroup) it.duration else editableTimeEntry.duration
 
                         StartEditAction.TimeEntryHandling(EditTimeEntry(
                             it.copy(
