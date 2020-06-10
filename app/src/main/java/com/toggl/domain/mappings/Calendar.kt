@@ -18,8 +18,9 @@ fun mapAppActionToCalendarAction(appAction: AppAction): CalendarAction? =
 
 fun mapCalendarStateToAppState(appState: AppState, calendarState: CalendarState): AppState =
     appState.copy(
-        timeEntries = calendarState.timeEntries,
         projects = calendarState.projects,
+        timeEntries = calendarState.timeEntries,
+        editableTimeEntry = calendarState.editableTimeEntry,
         calendarLocalState = calendarState.localState
     )
 

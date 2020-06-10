@@ -48,6 +48,7 @@ data class StartEditState(
         fun toTimerState(timerState: TimerState, startEditState: StartEditState?) =
             startEditState?.let {
                 timerState.copy(
+                    tags = startEditState.tags,
                     timeEntries = startEditState.timeEntries,
                     editableTimeEntry = startEditState.editableTimeEntry,
                     localState = timerState.localState.copy(

@@ -22,6 +22,11 @@ fun mapAppActionToTimerAction(appAction: AppAction): TimerAction? =
 
 fun mapTimerStateToAppState(appState: AppState, timerState: TimerState): AppState =
     appState.copy(
+        tags = timerState.tags,
+        tasks = timerState.tasks,
+        clients = timerState.clients,
+        projects = timerState.projects,
+        workspaces = timerState.workspaces,
         timeEntries = timerState.timeEntries,
         editableTimeEntry = timerState.editableTimeEntry,
         timerLocalState = timerState.localState
