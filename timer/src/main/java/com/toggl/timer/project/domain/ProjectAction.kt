@@ -13,6 +13,8 @@ sealed class ProjectAction {
     object PrivateProjectSwitchTapped : ProjectAction()
     object CloseButtonTapped : ProjectAction()
     object DialogDismissed : ProjectAction()
+    data class ColorValueChanged(val value: Float) : ProjectAction()
+    data class ColorHueSaturationChanged(val hue: Float, val saturation: Float) : ProjectAction()
     data class ColorPicked(val color: String) : ProjectAction()
     data class WorkspacePicked(val workspace: Workspace) : ProjectAction()
     data class ClientPicked(val client: Client) : ProjectAction()
@@ -29,6 +31,8 @@ fun ProjectAction.formatForDebug() =
         is ProjectAction.PrivateProjectSwitchTapped -> "Private project switch tapped"
         ProjectAction.CloseButtonTapped -> "Close button tapped"
         ProjectAction.DialogDismissed -> "Dialog dismissed by swipping"
+        is ProjectAction.ColorValueChanged -> "Color value changed to $value"
+        is ProjectAction.ColorHueSaturationChanged -> "Color hue changed to $hue and saturation to $saturation"
         is ProjectAction.ColorPicked -> "Selected color $color"
         is ProjectAction.WorkspacePicked -> "Selected workspace with id ${workspace.id}"
         is ProjectAction.ClientPicked -> "Selected client wit id ${client.id}"

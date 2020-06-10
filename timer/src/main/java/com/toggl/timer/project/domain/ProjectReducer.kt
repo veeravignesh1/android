@@ -1,6 +1,5 @@
 package com.toggl.timer.project.domain
 
-import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
@@ -8,10 +7,12 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.effects
 import com.toggl.architecture.extensions.noEffect
-import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.extensions.toHex
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.isValid
 import com.toggl.repository.extensions.toDto
+import com.toggl.repository.interfaces.ProjectRepository
 import javax.inject.Inject
 
 class ProjectReducer @Inject constructor(
@@ -52,6 +53,20 @@ class ProjectReducer @Inject constructor(
                         it.copy(isPrivate = !it.isPrivate)
                     }
                 }
+            is ProjectAction.ColorValueChanged -> {
+                val newCustomColor = state().customColor.copy(value = action.value)
+                state.mutate {
+                    copy(customColor = newCustomColor)
+                }
+                effectOf(ProjectAction.ColorPicked(newCustomColor.toHex()))
+            }
+            is ProjectAction.ColorHueSaturationChanged -> {
+                val newCustomColor = state().customColor.copy(hue = action.hue, saturation = action.saturation)
+                state.mutate {
+                    copy(customColor = newCustomColor)
+                }
+                effectOf(ProjectAction.ColorPicked(newCustomColor.toHex()))
+            }
             is ProjectAction.ColorPicked -> state.mutateWithoutEffects {
                 ProjectState.editableProject.modify(this) {
                     it.copy(color = action.color)

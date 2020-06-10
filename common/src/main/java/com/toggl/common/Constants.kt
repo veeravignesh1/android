@@ -40,4 +40,9 @@ object Constants {
         const val value = .75F
         const val hex = "#3178BE"
     }
+
+    object ColorValue {
+        const val min = 0.3F
+        const val max = 1F
+    }
 }

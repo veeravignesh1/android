@@ -1,9 +1,11 @@
 package com.toggl.common.extensions
 
-import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 
-fun View.setBackgroundTint(color: Int) {
-    val colorStateList = ColorStateList.valueOf(color)
-    this.backgroundTintList = colorStateList
+fun View.setOvalBackground(color: Int) {
+    this.background = GradientDrawable().apply {
+        setColor(color)
+        shape = GradientDrawable.OVAL
+    }
 }

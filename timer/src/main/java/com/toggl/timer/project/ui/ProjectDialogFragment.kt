@@ -15,12 +15,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.architecture.extensions.select
-import com.toggl.common.Constants
 import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.adjustForUserTheme
 import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.common.extensions.requestFocus
-import com.toggl.common.extensions.setBackgroundTint
+import com.toggl.common.extensions.setOvalBackground
 import com.toggl.common.extensions.setSafeText
 import com.toggl.common.feature.extensions.toColor
 import com.toggl.models.domain.Project
@@ -120,6 +119,20 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             store.dispatch(ProjectAction.DoneButtonTapped)
         }
 
+        hue_saturation_picker.hueFlow
+            .combine(hue_saturation_picker.saturationFlow) { hue, saturation ->
+                ProjectAction.ColorHueSaturationChanged(hue, saturation)
+            }
+            .distinctUntilChanged()
+            .onEach { store.dispatch(it) }
+            .launchIn(lifecycleScope)
+
+        value_picker.valueFlow
+            .distinctUntilChanged()
+            .map { ProjectAction.ColorValueChanged(it) }
+            .onEach { store.dispatch(it) }
+            .launchIn(lifecycleScope)
+
         store.select(ProjectColorSelector())
             .onEach { colors -> adapter.submitList(colors) }
             .launchIn(lifecycleScope)
@@ -139,16 +152,23 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         store.state
             .map { it.customColor }
             .distinctUntilChanged()
-            .onEach {
-                custom_project_color_indicator.setBackgroundTint(
-                    it.toColor().adjustForUserTheme(custom_project_color_indicator.context)
-                )
+            .onEach { hsv ->
+                custom_project_color_indicator.setOvalBackground(hsv.toColor().adjustForUserTheme(custom_project_color_indicator.context))
+                val (hue, saturation, value) = hsv
+                value_picker.hue = hue
+                value_picker.saturation = saturation
+                value_picker.value = value
+                hue_saturation_picker.hue = hue
+                hue_saturation_picker.saturation = saturation
+                hue_saturation_picker.value = value
             }.launchIn(lifecycleScope)
 
         val colorFlow = store.state.map { it.editableProject.color }.distinctUntilChanged()
 
         colorFlow
-            .onEach { project_color_indicator.setBackgroundTint(it.adjustForUserTheme(project_color_indicator.context)) }
+            .onEach {
+                project_color_indicator.setOvalBackground(it.adjustForUserTheme(custom_project_color_indicator.context))
+            }
             .launchIn(lifecycleScope)
 
         val colorIsPremiumFlow = colorFlow.map {
@@ -197,8 +217,10 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
                 coloPickerVisibilityRequestFlow.value = false
             }
             is ColorViewModel.CustomColor -> {
-                // TODO Dispatch colorPicked using the values of the hs and v picker controls
-                store.dispatch(ProjectAction.ColorPicked(Constants.DefaultCustomColor.hex))
+                store.dispatch(listOf(
+                    ProjectAction.ColorValueChanged(value_picker.value),
+                    ProjectAction.ColorHueSaturationChanged(hue_saturation_picker.hue, hue_saturation_picker.saturation)
+                ))
             }
             ColorViewModel.PremiumLocked -> {
                 // TODO Show the awareness popup

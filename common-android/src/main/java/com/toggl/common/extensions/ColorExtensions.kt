@@ -47,6 +47,10 @@ fun Int.toLabelColor(context: Context): Int {
     return Color.HSVToColor(hsv)
 }
 
+object Colors {
+    val defaultPalette = intArrayOf(Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.RED)
+}
+
 private fun adjustSaturationToDarkMode(saturation: Float, value: Float) =
     (saturation * value) / 1F
 

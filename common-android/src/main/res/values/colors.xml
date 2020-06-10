@@ -27,4 +27,6 @@
   <color name="button_inactive">#B5BCC0</color>
   <color name="clickable_text_primary">#328FFF</color>
   <color name="clickable_text_secondary">#2196F3</color>
+  <color name="thumb_background">#FFFFFF</color>
+  <color name="thumb_border">#CECECF</color>
 </resources>
