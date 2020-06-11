@@ -72,8 +72,9 @@ workflows:
   nightly-builds:
     steps:
     - change-android-versioncode-and-versionname@1: {}
-    - android-build@0.10.0:
+    - android-build@0.10.1:
         inputs:
+        - build_type: aab
         - variant: release
     - sign-apk@1: {}
     - google-play-deploy@3:
