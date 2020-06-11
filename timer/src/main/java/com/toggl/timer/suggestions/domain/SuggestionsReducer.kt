@@ -14,7 +14,8 @@ import javax.inject.Singleton
 
 @Singleton
 class SuggestionsReducer @Inject constructor(
-    private val timeService: TimeService
+    private val timeService: TimeService,
+    private val suggestionProvider: SuggestionProvider
 ) : Reducer<SuggestionsState, SuggestionsAction> {
 
     override fun reduce(

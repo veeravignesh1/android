@@ -7,6 +7,7 @@ import com.toggl.architecture.core.decorateWith
 import com.toggl.architecture.core.optionalPullback
 import com.toggl.architecture.core.pullback
 import com.toggl.architecture.core.unwrap
+import com.toggl.common.Constants
 import com.toggl.common.feature.handleClosableActionsUsing
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryReducer
@@ -32,6 +33,10 @@ import com.toggl.timer.startedit.domain.ProjectTagChipSelector
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditReducer
 import com.toggl.timer.startedit.domain.StartEditState
+import com.toggl.timer.suggestions.domain.CalendarSuggestionProvider
+import com.toggl.timer.suggestions.domain.ComposeSuggestionProvider
+import com.toggl.timer.suggestions.domain.MostUsedSuggestionProvider
+import com.toggl.timer.suggestions.domain.SuggestionProvider
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import com.toggl.timer.suggestions.domain.SuggestionsReducer
 import com.toggl.timer.suggestions.domain.SuggestionsState
@@ -43,6 +48,25 @@ import javax.inject.Singleton
 
 @Module(subcomponents = [TimerComponent::class])
 class TimerModule {
+
+    @Provides
+    @MaxNumberOfMostUsedSuggestions
+    internal fun maxNumberOfMostusedSuggestions() = Constants.Suggestions.maxNumberOfMostUsedSuggestions
+
+    @Provides
+    @MaxNumberOfCalendarSuggestions
+    internal fun maxNumberOfCalendarSuggestions() = Constants.Suggestions.maxNumberOfCalendarSuggestions
+
+    @Provides
+    internal fun suggestionProvider(
+        calendarSuggestionProvider: CalendarSuggestionProvider,
+        mostUsedSuggestionProvider: MostUsedSuggestionProvider
+    ): SuggestionProvider =
+        ComposeSuggestionProvider(
+            Constants.Suggestions.maxNumberOfSuggestions,
+            calendarSuggestionProvider,
+            mostUsedSuggestionProvider
+        )
 
     @Provides
     internal fun timeEntriesLogSelector(
@@ -136,7 +160,7 @@ class TimerModule {
                 mapToGlobalState = ProjectState.Companion::toTimerState,
                 mapToGlobalAction = TimerAction::Project
             ),
-            suggestionsReducer.decorateWith(timeEntryReducer).pullback(
+            suggestionsReducer.optionalPullback(
                 mapToLocalState = SuggestionsState.Companion::fromTimerState,
                 mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = SuggestionsState.Companion::toTimerState,
@@ -157,15 +181,6 @@ class TimerModule {
             mapToGlobalAction = { localAction -> TimeEntriesLogAction.TimeEntryHandling(localAction) }
         )
 
-    private fun TimerReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
-        this.decorateWith(
-            timeEntryReducer,
-            mapToLocalState = { TimeEntryState(it.timeEntries) },
-            mapToLocalAction = { TimerAction.unwrapTimeEntryActionHolder(it) },
-            mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
-            mapToGlobalAction = { localAction -> TimerAction.StartEditTimeEntry(StartEditAction.TimeEntryHandling(localAction)) }
-        )
-
     private fun RunningTimeEntryReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
         this.decorateWith(
             timeEntryReducer,
@@ -173,6 +188,21 @@ class TimerModule {
             mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
             mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
             mapToGlobalAction = { localAction -> RunningTimeEntryAction.TimeEntryHandling(localAction) }
+        )
+
+    private fun TimerReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
+        decorateWith(
+            timeEntryReducer,
+            mapToLocalState = { TimeEntryState(it.timeEntries) },
+            mapToLocalAction = { TimerAction.unwrapStartEditTimeEntryActionHolder(it) },
+            mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+            mapToGlobalAction = { localAction -> TimerAction.StartEditTimeEntry(StartEditAction.TimeEntryHandling(localAction)) }
+        ).decorateWith(
+            timeEntryReducer,
+            mapToLocalState = { TimeEntryState(it.timeEntries) },
+            mapToLocalAction = { TimerAction.unwrapSuggestionsTimeEntryActionHolder(it) },
+            mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+            mapToGlobalAction = { localAction -> TimerAction.Suggestions(SuggestionsAction.TimeEntryHandling(localAction)) }
         )
 
     private fun SuggestionsReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =

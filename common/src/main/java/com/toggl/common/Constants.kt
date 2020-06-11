@@ -25,6 +25,12 @@ object Constants {
         const val tagToken: Char = '#'
     }
 
+    object Suggestions {
+        const val maxNumberOfSuggestions = 3
+        const val maxNumberOfCalendarSuggestions = 1
+        const val maxNumberOfMostUsedSuggestions = 3
+    }
+
     object ClockMath {
         const val quarterOfCircle: Double = 0.5f * kotlin.math.PI
         const val fullCircle: Double = 2 * kotlin.math.PI

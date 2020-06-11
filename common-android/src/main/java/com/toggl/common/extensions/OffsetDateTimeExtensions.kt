@@ -7,11 +7,14 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import kotlin.math.absoluteValue
 
-val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-val dateFormatter = DateTimeFormatter.ofPattern("dd/MM")
+private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM")
 
-fun OffsetDateTime.formatForDisplayingTime() = this.format(timeFormatter)
-fun OffsetDateTime.formatForDisplayingDate() = this.format(dateFormatter)
+fun OffsetDateTime.minutesUntil(otherOffsetDateTime: OffsetDateTime) =
+    this.until(otherOffsetDateTime, ChronoUnit.MINUTES)
+
+fun OffsetDateTime.formatForDisplayingTime(): String = this.format(timeFormatter)
+fun OffsetDateTime.formatForDisplayingDate(): String = this.format(dateFormatter)
 
 fun OffsetDateTime.absoluteDurationBetween(other: OffsetDateTime): Duration =
     Duration.ofMillis(ChronoUnit.MILLIS.between(this, other).absoluteValue)

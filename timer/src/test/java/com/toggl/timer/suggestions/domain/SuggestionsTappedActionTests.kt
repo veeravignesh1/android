@@ -1,4 +1,4 @@
-package com.toggl.timer.suggestions
+package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.environment.services.time.TimeService
@@ -7,9 +7,6 @@ import com.toggl.timer.common.createCalendarEvent
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
-import com.toggl.timer.suggestions.domain.Suggestion
-import com.toggl.timer.suggestions.domain.SuggestionsAction
-import com.toggl.timer.suggestions.domain.SuggestionsReducer
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
@@ -25,7 +22,8 @@ internal class SuggestionTappedTests {
     private val timeService = mockk<TimeService> { every { now() } returns OffsetDateTime.now() }
     private val timeEntry = createTimeEntry(1, "Some description")
     private val initialState = createInitialState(timeEntries = listOf(timeEntry))
-    private val reducer = SuggestionsReducer(timeService)
+    private val suggestionProvider = mockk<SuggestionProvider>()
+    private val reducer = SuggestionsReducer(timeService, suggestionProvider)
 
     @Test
     fun `returns an effect to continue a time entry when receiving most used suggestions`() = runBlockingTest {

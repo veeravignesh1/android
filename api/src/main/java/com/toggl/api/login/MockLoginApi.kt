@@ -12,7 +12,7 @@ class MockLoginApi : LoginApi {
         delay(2000)
 
         return when (val token = "12345678901234567890123456789012".toApiToken()) {
-            is ApiToken.Valid -> User(token)
+            is ApiToken.Valid -> User(token, 1)
             ApiToken.Invalid -> throw NotImplementedError()
         }
     }

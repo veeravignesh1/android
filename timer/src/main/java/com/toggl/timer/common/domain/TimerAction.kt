@@ -23,8 +23,13 @@ sealed class TimerAction {
     data class Suggestions(override val action: SuggestionsAction) : TimerAction(), ActionWrapper<SuggestionsAction>
 
     companion object {
-        fun unwrapTimeEntryActionHolder(timerAction: TimerAction): TimeEntryAction? {
+        fun unwrapStartEditTimeEntryActionHolder(timerAction: TimerAction): TimeEntryAction? {
             val wrapper = timerAction as? StartEditTimeEntry ?: return null
+            return TimeEntryAction.fromTimeEntryActionHolder(wrapper.action)
+        }
+
+        fun unwrapSuggestionsTimeEntryActionHolder(timerAction: TimerAction): TimeEntryAction? {
+            val wrapper = timerAction as? Suggestions ?: return null
             return TimeEntryAction.fromTimeEntryActionHolder(wrapper.action)
         }
     }
