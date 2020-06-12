@@ -16,6 +16,7 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withClip
 import androidx.core.graphics.withTranslation
 import com.toggl.calendar.common.domain.CalendarItem
+import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.colorString
 import com.toggl.calendar.common.domain.description
 import com.toggl.calendar.common.domain.duration
@@ -97,17 +98,38 @@ class CalendarItemDrawingDelegate(
             return
 
         when {
-            calendarItem is CalendarItem.TimeEntry && calendarItem.duration() != null ->
+            calendarItem.isTimeEntry() && calendarItem.duration() != null ->
                 canvas.drawStoppedTimeEntryItem(calendarItem)
-            calendarItem is CalendarItem.TimeEntry && calendarItem.duration() == null ->
+            calendarItem.isTimeEntry() && calendarItem.duration() == null ->
                 canvas.drawRunningTimeEntryItem(calendarItem)
-            calendarItem is CalendarItem.CalendarEvent -> canvas.drawCalendarEventItem(calendarItem)
+            calendarItem.isCalendarEvent() -> canvas.drawCalendarEventItem(calendarItem)
         }
         canvas.drawCalendarItemText(calendarItem)
-        if (isInEditMode && calendarItem is CalendarItem.TimeEntry) {
+        if (isInEditMode && calendarItem.isTimeEntry()) {
             canvas.drawEditingHandles(calendarItem)
         }
     }
+
+    fun calculateItemRect(calendarItem: CalendarItem, calendarBounds: RectF, outRect: RectF) {
+        val totalItemSpacing = (calendarItem.totalColumns - 1) * itemSpacing
+        val availableWidth = calendarBounds.width() - leftMargin
+        val eventWidth = (availableWidth - leftPadding - rightPadding - totalItemSpacing) / calendarItem.totalColumns
+        val left = leftMargin + leftPadding + eventWidth * calendarItem.columnIndex + calendarItem.columnIndex * itemSpacing
+        val startTime = calendarItem.startTime().withOffsetSameInstant(OffsetDateTime.now().offset)
+        val totalHours = startTime.hour + startTime.minute.toFloat() / minutesInAnHourF
+        val durationHours = duration(calendarItem).toMinutes().toFloat() / minutesInAnHourF
+        val durationInHeight = max(minHourHeight, durationHours * currentHourHeight)
+        val top = calculateHourHeight(totalHours)
+        outRect.set(left, top, left + eventWidth, top + durationInHeight)
+    }
+
+    private fun CalendarItem.isTimeEntry() =
+        this is CalendarItem.TimeEntry ||
+            (this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry)
+
+    private fun CalendarItem.isCalendarEvent() =
+        this is CalendarItem.CalendarEvent ||
+            (this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedCalendarEvent)
 
     private fun Canvas.drawCalendarItemText(calendarItem: CalendarItem) {
         val textLeftPadding =
@@ -194,8 +216,8 @@ class CalendarItemDrawingDelegate(
         return if (whiteContrast >= minimumTextContrast) Color.WHITE else Color.BLACK
     }
 
-    private fun Canvas.drawCalendarEventItem(calendarItem: CalendarItem.CalendarEvent) {
-        val originalColor = Color.parseColor(calendarItem.calendarEvent.color)
+    private fun Canvas.drawCalendarEventItem(calendarItem: CalendarItem) {
+        val originalColor = calendarItem.colorString().toColorOrDefault()
         val fadedColor = ColorUtils.setAlphaComponent(originalColor, twentyFivePercentIntAlpha)
         val fadedColorOnWhite = ColorUtils.compositeColors(fadedColor, Color.WHITE)
         itemPaint.style = Paint.Style.FILL_AND_STROKE
@@ -221,15 +243,15 @@ class CalendarItemDrawingDelegate(
         drawBitmap(calendarBitmap, drawingRect.left, drawingRect.top, calendarIconPaint)
     }
 
-    private fun Canvas.drawStoppedTimeEntryItem(calendarItem: CalendarItem.TimeEntry) {
-        itemPaint.color = calendarItem.projectColor.toColorOrDefault()
+    private fun Canvas.drawStoppedTimeEntryItem(calendarItem: CalendarItem) {
+        itemPaint.color = calendarItem.colorString().toColorOrDefault()
         itemPaint.style = Paint.Style.FILL_AND_STROKE
         calendarItemPaintedBackgroundColor = itemPaint.color
         drawRoundRect(drawingRect, cornerRadius, cornerRadius, itemPaint)
     }
 
-    private fun Canvas.drawRunningTimeEntryItem(calendarItem: CalendarItem.TimeEntry) {
-        val itemColor = calendarItem.projectColor.toColorOrDefault()
+    private fun Canvas.drawRunningTimeEntryItem(calendarItem: CalendarItem) {
+        val itemColor = calendarItem.colorString().toColorOrDefault()
         val calendarFillColor = ColorUtils.setAlphaComponent(itemColor, fivePercentIntAlpha)
         val calendarFillColorOnCalendarBackgroundColor = ColorUtils.compositeColors(calendarFillColor, calendarBackgroundColor)
         val calendarStripeColor = ColorUtils.setAlphaComponent(itemColor, tenPercentIntAlpha)
@@ -317,19 +339,10 @@ class CalendarItemDrawingDelegate(
     }
 
     private fun calculateItemRect(calendarItem: CalendarItem, calendarBounds: RectF) {
-        val totalItemSpacing = (calendarItem.totalColumns - 1) * itemSpacing
-        val availableWidth = calendarBounds.width() - leftMargin
-        val eventWidth = (availableWidth - leftPadding - rightPadding - totalItemSpacing) / calendarItem.totalColumns
-        val left = leftMargin + leftPadding + eventWidth * calendarItem.columnIndex + calendarItem.columnIndex * itemSpacing
-        val startTime = calendarItem.startTime().withOffsetSameInstant(OffsetDateTime.now().offset)
-        val totalHours = startTime.hour + startTime.minute.toFloat() / minutesInAnHourF
-        val durationHours = duration(calendarItem).toMinutes().toFloat() / minutesInAnHourF
-        val durationInHeight = max(minHourHeight, durationHours * currentHourHeight)
-        val top = calculateHourHeight(totalHours)
-        drawingRect.set(left, top, left + eventWidth, top + durationInHeight)
+        calculateItemRect(calendarItem, calendarBounds, drawingRect)
     }
 
-    private fun Canvas.drawEditingHandles(calendarItem: CalendarItem.TimeEntry) {
+    private fun Canvas.drawEditingHandles(calendarItem: CalendarItem) {
         val isRunning = calendarItem.isRunning()
         itemPaint.color = Color.WHITE
         itemPaint.style = Paint.Style.FILL_AND_STROKE
@@ -354,6 +367,11 @@ class CalendarItemDrawingDelegate(
                 calendarItem.timeEntry.duration
                     ?: calendarItem.timeEntry.startTime.absoluteDurationBetween(OffsetDateTime.now())
             is CalendarItem.CalendarEvent -> calendarItem.calendarEvent.duration
+            is CalendarItem.SelectedItem -> when (val selectedItem = calendarItem.selectedCalendarItem) {
+                is SelectedCalendarItem.SelectedTimeEntry -> selectedItem.editableTimeEntry.duration
+                    ?: selectedItem.editableTimeEntry.startTime!!.absoluteDurationBetween(OffsetDateTime.now())
+                is SelectedCalendarItem.SelectedCalendarEvent -> selectedItem.calendarEvent.duration
+            }
         }
     }
 

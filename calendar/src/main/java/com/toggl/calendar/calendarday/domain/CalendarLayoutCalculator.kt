@@ -1,6 +1,7 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.domain.CalendarItem
+import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.environment.services.time.TimeService
@@ -67,8 +68,12 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
      * @return An list of calendar attributes
      */
     private fun calculateLayoutAttributesFor(bucket: CalendarItemGroup): List<CalendarItem> {
-        val left = bucket.filter { it is CalendarItem.CalendarEvent }.toMutableList()
-        val right = bucket.filter { it is CalendarItem.TimeEntry }.toMutableList()
+        val left = bucket.filter {
+            it is CalendarItem.CalendarEvent || it is CalendarItem.SelectedItem && it.selectedCalendarItem is SelectedCalendarItem.SelectedCalendarEvent
+        }.toMutableList()
+        val right = bucket.filter {
+            it is CalendarItem.TimeEntry || it is CalendarItem.SelectedItem && it.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry
+        }.toMutableList()
 
         val leftColumns = calculateColumnsForItemsInSource(left)
         val rightColumns = calculateColumnsForItemsInSource(right)
@@ -94,6 +99,11 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
             )
             is CalendarItem.CalendarEvent -> calendarItem.copy(
                 calendarItem.calendarEvent,
+                columnIndex = columnIndex,
+                totalColumns = totalColumns
+            )
+            is CalendarItem.SelectedItem -> calendarItem.copy(
+                calendarItem.selectedCalendarItem,
                 columnIndex = columnIndex,
                 totalColumns = totalColumns
             )
@@ -175,6 +185,11 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
         when (this) {
             is CalendarItem.TimeEntry -> timeEntry.duration ?: (now + offsetFromNow).absoluteDurationBetween(startTime())
             is CalendarItem.CalendarEvent -> calendarEvent.duration
+            is CalendarItem.SelectedItem -> when (selectedCalendarItem) {
+                is SelectedCalendarItem.SelectedTimeEntry -> selectedCalendarItem.editableTimeEntry.duration
+                    ?: (now + offsetFromNow).absoluteDurationBetween(startTime())
+                is SelectedCalendarItem.SelectedCalendarEvent -> selectedCalendarItem.calendarEvent.duration
+            }
         }
 
     private fun OffsetDateTime.absoluteDurationBetween(other: OffsetDateTime): Duration =

@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.toggl.architecture.extensions.select
 import com.toggl.calendar.R
+import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarItemsSelector
 import com.toggl.calendar.di.CalendarComponentProvider
 import kotlinx.android.synthetic.main.fragment_calendarday.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -36,6 +38,7 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
         super.onAttach(context)
     }
 
+    @FlowPreview
     @ExperimentalContracts
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,5 +49,15 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
             .distinctUntilChanged()
             .onEach { calendar_widget.updateList(it) }
             .launchIn(lifecycleScope)
+
+        calendar_widget.itemTappedFlow
+            .onEach {
+                store.dispatch(CalendarDayAction.ItemTapped(it))
+            }.launchIn(lifecycleScope)
+
+        calendar_widget.emptySpaceLongPressedFlow
+            .onEach {
+                store.dispatch(CalendarDayAction.EmptyPositionLongPressed(it))
+            }.launchIn(lifecycleScope)
     }
 }

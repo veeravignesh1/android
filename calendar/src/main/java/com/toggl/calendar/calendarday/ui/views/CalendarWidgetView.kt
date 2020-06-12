@@ -16,10 +16,18 @@ import com.toggl.calendar.R
 import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.common.Constants.ClockMath.hoursInTheDay
 import com.toggl.common.extensions.applyAndRecycle
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
+import java.time.Duration
+import java.time.OffsetDateTime
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.contracts.ExperimentalContracts
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 @ExperimentalContracts
 class CalendarWidgetView @JvmOverloads constructor(
     context: Context,
@@ -73,8 +81,9 @@ class CalendarWidgetView @JvmOverloads constructor(
     private var defaultCalendarItemColor: Int
 
     private val viewFrame = RectF()
+    private val touchRectF = RectF()
     private var hourHeight: Float = 0f
-    private var scrollOffset: Float = 500f
+    private var scrollOffset: Float = 0f
 
     private var drawingLock = ReentrantLock(true)
     private var drawingData: CalendarWidgetViewDrawingData = CalendarWidgetViewDrawingData()
@@ -88,6 +97,12 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     private val calendarItemDrawingDelegate: CalendarItemDrawingDelegate
     private val backgroundDrawingDelegate: CalendarBackgroundDrawingDelegate
+
+    private val itemTappedChannel = ConflatedBroadcastChannel<CalendarItem>()
+    val itemTappedFlow = itemTappedChannel.asFlow()
+
+    private val emptySpaceLongPressedChannel = ConflatedBroadcastChannel<OffsetDateTime>()
+    val emptySpaceLongPressedFlow = emptySpaceLongPressedChannel.asFlow()
 
     init {
         context.resources.run {
@@ -353,7 +368,7 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     fun updateList(newCalendarItems: List<CalendarItem>) {
         drawingLock.withLock {
-            drawingData = drawingData.withSourceItems(newCalendarItems)
+            drawingData = CalendarWidgetViewDrawingData(newCalendarItems)
             invalidate()
         }
     }
@@ -444,6 +459,29 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     @Suppress("UNUSED_PARAMETER")
     private fun onLongPress(e: MotionEvent) {
+        val x = e.x
+        val y = e.y
+
+        val touchedCalendarItem = findCalendarItemFromPoint(x, y + scrollOffset)
+        if (touchedCalendarItem == null) {
+            emptySpaceLongPressedChannel.offer(offsetAtYOffset(y + scrollOffset))
+        }
+    }
+
+    private fun offsetAtYOffset(y: Float): OffsetDateTime {
+        val currentOffset = OffsetDateTime.now().offset
+        val currentDate = OffsetDateTime.now().toLocalDate().atStartOfDay()
+        val seconds = (y / hourHeight) * 60 * 60
+        val duration = Duration.ofSeconds(seconds.toLong())
+        val nextDay = currentDate.plusDays(1)
+
+        val offset = currentDate + duration
+
+        return when {
+            offset < currentDate -> currentDate.atOffset(currentOffset)
+            offset > nextDay -> nextDay.atOffset(currentOffset)
+            else -> offset.atOffset(currentOffset)
+        }
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -495,6 +533,13 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     @Suppress("UNUSED_PARAMETER")
     private fun onSingleTapUp(e: MotionEvent) {
+        val x = e.x
+        val y = e.y
+
+        val touchedCalendarItem = findCalendarItemFromPoint(x, y)
+        if (touchedCalendarItem != null) {
+            itemTappedChannel.offer(touchedCalendarItem)
+        }
     }
 
     private fun onScale(scaleDetector: ScaleGestureDetector): Boolean {
@@ -525,6 +570,19 @@ class CalendarWidgetView @JvmOverloads constructor(
         invalidate()
 
         return true
+    }
+
+    private fun findCalendarItemFromPoint(x: Float, y: Float): CalendarItem? = drawingData.let {
+        if (it.selectedCalendarItemToDraw != null) {
+            calendarItemDrawingDelegate.calculateItemRect(it.selectedCalendarItemToDraw, viewFrame, touchRectF)
+            if (touchRectF.contains(x, y + scrollOffset))
+                return it.selectedCalendarItemToDraw
+        }
+
+        it.nonSelectedCalendarItemsToDraw.find { calendarItem ->
+            calendarItemDrawingDelegate.calculateItemRect(calendarItem, viewFrame, touchRectF)
+            touchRectF.contains(x, y + scrollOffset)
+        }
     }
 
     inner class GestureListener(
