@@ -14,14 +14,21 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.withTranslation
 import com.toggl.calendar.R
 import com.toggl.calendar.common.domain.CalendarItem
+import com.toggl.calendar.common.domain.duration
+import com.toggl.calendar.common.domain.endTime
+import com.toggl.calendar.common.domain.isRunning
+import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.Constants.ClockMath.hoursInTheDay
+import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.extensions.applyAndRecycle
+import com.toggl.common.extensions.roundToClosestQuarter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import java.time.Duration
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 import kotlin.contracts.ExperimentalContracts
@@ -80,16 +87,27 @@ class CalendarWidgetView @JvmOverloads constructor(
     private var primaryTextColor: Int
     private var defaultCalendarItemColor: Int
 
-    private val viewFrame = RectF()
-    private val touchRectF = RectF()
     private var hourHeight: Float = 0f
     private var scrollOffset: Float = 0f
 
+    private val viewFrame = RectF()
+    private val touchRectF = RectF()
+    private val itemInEditModeRect = RectF()
+    private val dragTopRect = RectF()
+    private val dragBottomRect = RectF()
+    private val eventStartingRect = RectF()
+
     private var drawingLock = ReentrantLock(true)
     private var drawingData: CalendarWidgetViewDrawingData = CalendarWidgetViewDrawingData()
-    private var isDragging: Boolean = false
     private var flingWasCalled: Boolean = false
     private var isScrolling: Boolean = false
+    private var isDragging: Boolean = false
+    private var currentTouchY: Float = 0f
+    private var draggingDelta: Float = 0f
+    private var draggingScrollDelta: Float = 0f
+    private var dragStartingTouchY: Float = 0f
+    private var dragStartingScrollOffset: Float = 0f
+    private var editAction: EditAction = EditAction.None
 
     private val scroller: OverScroller
     private val gestureDetector: GestureDetector
@@ -99,10 +117,19 @@ class CalendarWidgetView @JvmOverloads constructor(
     private val backgroundDrawingDelegate: CalendarBackgroundDrawingDelegate
 
     private val itemTappedChannel = ConflatedBroadcastChannel<CalendarItem>()
-    val itemTappedFlow = itemTappedChannel.asFlow()
-
     private val emptySpaceLongPressedChannel = ConflatedBroadcastChannel<OffsetDateTime>()
+
+    private var itemInEditModePreviousEndTime: OffsetDateTime? = null
+    private var itemInEditModePreviousStartTime: OffsetDateTime? = null
+    private val startTimeChangesChannel = ConflatedBroadcastChannel<OffsetDateTime>()
+    private val endTimeChangesChannel = ConflatedBroadcastChannel<OffsetDateTime>()
+    private val offsetChangesChannel = ConflatedBroadcastChannel<OffsetDateTime>()
+
+    val itemTappedFlow = itemTappedChannel.asFlow()
     val emptySpaceLongPressedFlow = emptySpaceLongPressedChannel.asFlow()
+    val startTimeFlow = startTimeChangesChannel.asFlow()
+    val endTimeFlow = endTimeChangesChannel.asFlow()
+    val offsetFlow = offsetChangesChannel.asFlow()
 
     init {
         context.resources.run {
@@ -418,7 +445,7 @@ class CalendarWidgetView @JvmOverloads constructor(
             MotionEvent.ACTION_MOVE -> {
                 gestureDetector.onTouchEvent(event)
                 if (isDragging) {
-                    TODO("Drag event")
+                    dragEvent(event)
                 }
                 true
             }
@@ -442,6 +469,7 @@ class CalendarWidgetView @JvmOverloads constructor(
             val selectedItemToDraw = currentDrawingData.selectedCalendarItemToDraw
             calendarItemsToDraw.forEach { calendarItemDrawingDelegate.onDraw(this, viewFrame, it, false) }
             selectedItemToDraw?.let { calendarItemDrawingDelegate.onDraw(this, viewFrame, it, true) }
+            selectedItemToDraw?.let { calendarItemDrawingDelegate.calculateItemRect(it, viewFrame, itemInEditModeRect) }
         }
     }
 
@@ -454,8 +482,199 @@ class CalendarWidgetView @JvmOverloads constructor(
         scroller.forceFinished(true)
         flingWasCalled = false
         handler.removeCallbacks(::continueScroll)
+        onTouchDownWhileEditingItem(e)
         invalidate()
     }
+
+    private fun onTouchDownWhileEditingItem(event: MotionEvent) {
+        drawingData.selectedCalendarItemToDraw?.let {
+            calendarItemDrawingDelegate.calculateItemRect(it, viewFrame, touchRectF)
+            calculateTopDragRect(touchRectF, dragTopRect)
+            calculateBottomDragRect(touchRectF, dragBottomRect)
+
+            val touchX = event.x
+            val touchY = event.y
+
+            dragStartingTouchY = touchY
+            dragStartingScrollOffset = scrollOffset
+            eventStartingRect.set(touchRectF)
+
+            editAction = when {
+                dragTopRect.contains(touchX, touchY + scrollOffset) -> EditAction.ChangeStart
+                it.isRunning() -> EditAction.None
+                dragBottomRect.contains(touchX, touchY + scrollOffset) -> EditAction.ChangeEnd
+                touchRectF.contains(touchX, touchY + scrollOffset) -> EditAction.ChangeOffset
+                else -> EditAction.None
+            }
+
+            isDragging = editAction != EditAction.None
+        }
+    }
+
+    private fun calculateTopDragRect(sourceTouchRect: RectF, targetTouchRect: RectF) {
+        targetTouchRect.set(sourceTouchRect)
+        targetTouchRect.bottom = targetTouchRect.top + calendarEditingHandleTouchExtraMargins
+        targetTouchRect.top -= calendarEditingHandleTouchExtraMargins
+        targetTouchRect.left = targetTouchRect.right - calendarEditingHandleTouchExtraMargins
+        targetTouchRect.right += calendarEditingHandleTouchExtraMargins
+    }
+
+    private fun calculateBottomDragRect(sourceTouchRect: RectF, targetTouchRect: RectF) {
+        targetTouchRect.set(sourceTouchRect)
+        targetTouchRect.top = targetTouchRect.bottom - calendarEditingHandleTouchExtraMargins
+        targetTouchRect.bottom += calendarEditingHandleTouchExtraMargins
+        targetTouchRect.right = targetTouchRect.left + calendarEditingHandleTouchExtraMargins
+        targetTouchRect.left -= calendarEditingHandleTouchExtraMargins
+    }
+
+    private fun dragEvent(event: MotionEvent) {
+        drawingData.selectedCalendarItemToDraw?.let {
+            val histCount = event.historySize
+            var touchYSum = 0f
+            for (i in 0 until histCount) {
+                touchYSum += event.getHistoricalY(0, i)
+            }
+            val touchY = if (histCount > 0) touchYSum / histCount else event.y
+            currentTouchY = touchY
+            draggingDelta = touchY - dragStartingTouchY
+            draggingScrollDelta = scrollOffset - dragStartingScrollOffset
+
+            when (editAction) {
+                EditAction.ChangeStart -> updateItemInEditModeStartTime()
+                EditAction.ChangeEnd -> updateItemInEditModeEndTime()
+                EditAction.ChangeOffset -> updateItemInEditModeOffset()
+                EditAction.None -> {
+                }
+            }
+
+            invalidate()
+        }
+    }
+
+    private fun updateItemInEditModeStartTime() {
+        drawingData.let {
+            if (it.selectedCalendarItemToDraw == null) return
+
+            val newTop = (eventStartingRect.top + draggingDelta + draggingScrollDelta).coerceIn(0f, itemInEditModeRect.bottom)
+
+            val calendarItem = it.selectedCalendarItemToDraw
+            val newStartTime = snappingTimeAtYOffset(newTop, it.itemsStartAndEndTimes)
+            val newDuration = calendarItem.endTime()?.absoluteDurationBetween(newStartTime)
+
+            if (newDuration != null && newDuration <= Duration.ZERO || newDuration == null && newStartTime > OffsetDateTime.now())
+                return
+
+            if (itemInEditModePreviousStartTime != newStartTime) {
+                itemInEditModePreviousStartTime = newStartTime
+                startTimeChangesChannel.offer(newStartTime)
+            }
+
+            if (newTop <= 0) {
+                cancelDraggingAndAutoScroll()
+            }
+        }
+    }
+
+    private fun updateItemInEditModeEndTime() {
+        drawingData.let {
+            if (it.selectedCalendarItemToDraw == null) return
+            if (it.selectedCalendarItemToDraw.duration() == null) return
+
+            val newBottom = (eventStartingRect.bottom + draggingDelta + draggingScrollDelta).coerceIn(
+                itemInEditModeRect.top,
+                calculateMaxHeight()
+            )
+            val newEndTime = snappingTimeAtYOffset(newBottom, it.itemsStartAndEndTimes)
+            val calendarItem = it.selectedCalendarItemToDraw
+            val newDuration = newEndTime.absoluteDurationBetween(calendarItem.startTime())
+            val nextDay = calendarItem.startTime().plusDays(1).truncatedTo(ChronoUnit.DAYS)
+
+            if (newDuration <= Duration.ZERO || newEndTime >= nextDay)
+                return
+
+            if (itemInEditModePreviousEndTime != newEndTime) {
+                itemInEditModePreviousEndTime = newEndTime
+                endTimeChangesChannel.offer(newEndTime)
+            }
+
+            if (newBottom >= calculateMaxHeight())
+                cancelDraggingAndAutoScroll()
+        }
+    }
+
+    private fun updateItemInEditModeOffset() {
+        drawingData.let {
+            if (it.selectedCalendarItemToDraw == null) return
+            val currentDuration = it.selectedCalendarItemToDraw.duration() ?: return
+
+            val newTop = eventStartingRect.top + draggingDelta + draggingScrollDelta
+            val newBottom = eventStartingRect.bottom + draggingDelta + draggingScrollDelta
+
+            if (newTop <= 0 || newBottom >= calculateMaxHeight()) {
+                cancelDraggingAndAutoScroll()
+                return
+            }
+
+            val newStartTime = newStartTimeWithStaticDuration(newTop, it.itemsStartAndEndTimes, currentDuration)
+            val calendarItem = it.selectedCalendarItemToDraw
+            val nextDay = calendarItem.startTime().plusDays(1).truncatedTo(ChronoUnit.DAYS)
+
+            if (newStartTime + currentDuration >= nextDay)
+                return
+
+            if (itemInEditModePreviousStartTime != newStartTime) {
+                offsetChangesChannel.offer(newStartTime)
+            }
+        }
+    }
+
+    private fun cancelDraggingAndAutoScroll() {
+    }
+
+    private fun newStartTimeWithStaticDuration(
+        yOffset: Float,
+        currentItemsStartAndEndTimes: List<OffsetDateTime>,
+        duration: Duration
+    ): OffsetDateTime {
+        if (currentItemsStartAndEndTimes.isEmpty()) {
+            return dateTimeOffsetAtYOffset(yOffset).roundToClosestQuarter()
+        }
+
+        val newStartTime = dateTimeOffsetAtYOffset(yOffset)
+        val newEndTime = newStartTime + duration
+
+        val startSnappingPointDifference = distanceToClosestSnappingPoint(
+            newStartTime, currentItemsStartAndEndTimes.plus(newStartTime.roundToClosestQuarter())
+        )
+
+        val endSnappingPointDifference = distanceToClosestSnappingPoint(newEndTime, currentItemsStartAndEndTimes)
+        val snappingPointDifference = minOf(startSnappingPointDifference.positive(), endSnappingPointDifference.positive())
+        return newStartTime + snappingPointDifference
+    }
+
+    private fun snappingTimeAtYOffset(
+        yOffset: Float,
+        currentItemsStartAndEndTimes: List<OffsetDateTime>
+    ): OffsetDateTime {
+        if (currentItemsStartAndEndTimes.isEmpty()) {
+            return dateTimeOffsetAtYOffset(yOffset).roundToClosestQuarter()
+        }
+
+        val newTime = dateTimeOffsetAtYOffset(yOffset)
+        val snappingPointDifference = distanceToClosestSnappingPoint(
+            newTime,
+            currentItemsStartAndEndTimes.plus(newTime.roundToClosestQuarter())
+        )
+
+        return newTime + snappingPointDifference
+    }
+
+    private fun distanceToClosestSnappingPoint(time: OffsetDateTime, data: List<OffsetDateTime>): Duration =
+        data.fold(Duration.ofHours(999)) { min, next ->
+            val durationUntilNext = time.absoluteDurationBetween(next)
+            if (min.positive() <= durationUntilNext) min
+            else durationUntilNext
+        }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onLongPress(e: MotionEvent) {
@@ -464,11 +683,11 @@ class CalendarWidgetView @JvmOverloads constructor(
 
         val touchedCalendarItem = findCalendarItemFromPoint(x, y + scrollOffset)
         if (touchedCalendarItem == null) {
-            emptySpaceLongPressedChannel.offer(offsetAtYOffset(y + scrollOffset))
+            emptySpaceLongPressedChannel.offer(dateTimeOffsetAtYOffset(y + scrollOffset))
         }
     }
 
-    private fun offsetAtYOffset(y: Float): OffsetDateTime {
+    private fun dateTimeOffsetAtYOffset(y: Float): OffsetDateTime {
         val currentOffset = OffsetDateTime.now().offset
         val currentDate = OffsetDateTime.now().toLocalDate().atStartOfDay()
         val seconds = (y / hourHeight) * 60 * 60
@@ -585,6 +804,9 @@ class CalendarWidgetView @JvmOverloads constructor(
         }
     }
 
+    private fun Duration.positive(): Duration =
+        if (this.isNegative) this.negated() else this
+
     inner class GestureListener(
         val onDownCallback: (MotionEvent) -> Unit,
         val onLongPressCallback: (MotionEvent) -> Unit,
@@ -623,5 +845,9 @@ class CalendarWidgetView @JvmOverloads constructor(
         override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
         override fun onScaleEnd(detector: ScaleGestureDetector) {}
+    }
+
+    enum class EditAction {
+        None, ChangeStart, ChangeEnd, ChangeOffset
     }
 }

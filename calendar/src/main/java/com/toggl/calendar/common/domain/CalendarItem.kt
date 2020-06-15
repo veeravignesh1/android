@@ -4,6 +4,7 @@ import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.extensions.maybePlus
+import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
@@ -88,7 +89,9 @@ fun CalendarItem.duration(): Duration? = when (this) {
 }
 
 fun CalendarItem.isRunning(): Boolean =
-    this is CalendarItem.TimeEntry && this.timeEntry.duration == null
+    this is CalendarItem.TimeEntry && this.timeEntry.duration == null ||
+        (this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
+            this.selectedCalendarItem.editableTimeEntry.isRunning())
 
 fun CalendarItem.toSelectedCalendarItem(): SelectedCalendarItem = when (this) {
     is CalendarItem.TimeEntry -> SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(this.timeEntry))

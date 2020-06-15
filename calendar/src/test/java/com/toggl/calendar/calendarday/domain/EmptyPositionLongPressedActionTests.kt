@@ -1,6 +1,7 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.CoroutineTest
+import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createInitialState
 import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceNoEffects
@@ -19,7 +20,7 @@ import java.time.OffsetDateTime
 @DisplayName("The EmptyPositionLongPressed action")
 class EmptyPositionLongPressedActionTests : CoroutineTest() {
     private val state = createInitialState()
-    private val reducer = CalendarDayReducer(mockk(), dispatcherProvider)
+    private val reducer = createCalendarDayReducer(dispatcherProvider = dispatcherProvider)
 
     @Test
     fun `should set selectedItem with the start time`() = runBlockingTest {

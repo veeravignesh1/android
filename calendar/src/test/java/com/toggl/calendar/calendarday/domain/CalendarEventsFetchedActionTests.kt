@@ -1,11 +1,11 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.CoroutineTest
+import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import io.kotlintest.shouldBe
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test
 internal class CalendarEventsFetchedActionTests : CoroutineTest() {
 
     private val initialState = createCalendarDayState()
-    private val reducer = CalendarDayReducer(mockk(), dispatcherProvider)
+    private val reducer = createCalendarDayReducer(dispatcherProvider = dispatcherProvider)
 
     private val calendarEvents = listOf(
         createCalendarEvent("1"),

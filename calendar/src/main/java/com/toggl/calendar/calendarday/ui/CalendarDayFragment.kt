@@ -59,5 +59,20 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
             .onEach {
                 store.dispatch(CalendarDayAction.EmptyPositionLongPressed(it))
             }.launchIn(lifecycleScope)
+
+        calendar_widget.startTimeFlow
+            .onEach {
+                store.dispatch(CalendarDayAction.StartTimeDragged(it))
+            }.launchIn(lifecycleScope)
+
+        calendar_widget.endTimeFlow
+            .onEach {
+                store.dispatch(CalendarDayAction.StopTimeDragged(it))
+            }.launchIn(lifecycleScope)
+
+        calendar_widget.offsetFlow
+            .onEach {
+                store.dispatch(CalendarDayAction.TimeEntryDragged(it))
+            }.launchIn(lifecycleScope)
     }
 }

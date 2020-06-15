@@ -1,6 +1,7 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.CoroutineTest
+import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createInitialState
 import com.toggl.calendar.common.createTimeEntry
 import com.toggl.calendar.common.domain.SelectedCalendarItem
@@ -26,7 +27,7 @@ import java.time.ZoneOffset
 @DisplayName("The StopTimeDragged action")
 class StopTimeDraggedActionTests : CoroutineTest() {
 
-    private val reducer = CalendarDayReducer(mockk(), dispatcherProvider)
+    private val reducer = createCalendarDayReducer(dispatcherProvider = dispatcherProvider)
 
     private val startTime = OffsetDateTime.of(2005, 5, 5, 5, 5, 0, 0, ZoneOffset.UTC)
     private val duration = Duration.ofHours(5)

@@ -1,5 +1,6 @@
 package com.toggl.common.feature.timeentry.extensions
 
+import com.toggl.common.extensions.maybePlus
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
@@ -39,5 +40,6 @@ fun EditableTimeEntry.throwIfStopped() {
     }
 }
 
-val EditableTimeEntry.endTime: OffsetDateTime?
-    get() = startTime?.plus(duration)
+fun EditableTimeEntry.endTime(now: OffsetDateTime? = null): OffsetDateTime? {
+    return startTime?.maybePlus(duration) ?: now
+}

@@ -1,6 +1,7 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.CoroutineTest
+import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createInitialState
 import com.toggl.calendar.common.createTimeEntry
 import com.toggl.calendar.common.domain.SelectedCalendarItem
@@ -10,8 +11,10 @@ import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
+import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -24,19 +27,35 @@ import java.time.ZoneOffset
 @ExperimentalCoroutinesApi
 @DisplayName("The StartTimeDragged action")
 class StartTimeDraggedActionTests : CoroutineTest() {
-
-    private val reducer = CalendarDayReducer(mockk(), dispatcherProvider)
-
+    private val timeService: TimeService = mockk()
+    private val now = OffsetDateTime.of(2005, 5, 5, 11, 5, 0, 0, ZoneOffset.UTC)
     private val startTime = OffsetDateTime.of(2005, 5, 5, 5, 5, 0, 0, ZoneOffset.UTC)
     private val duration = Duration.ofHours(5)
     private val endTime = startTime.plus(duration)
 
-    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(
-        1,
-        "test",
-        startTime,
-        duration
-    ))
+    private val reducer = createCalendarDayReducer(dispatcherProvider = dispatcherProvider, timeService = timeService)
+
+    init {
+        every { timeService.now() }.returns(now)
+    }
+
+    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(
+        createTimeEntry(
+            1,
+            "test",
+            startTime,
+            duration
+        )
+    )
+
+    private val validEditableRunningTimeEntry = EditableTimeEntry.fromSingle(
+        createTimeEntry(
+            1,
+            "running test",
+            startTime,
+            null
+        )
+    )
 
     @Test
     fun `throws if executed on a calendar item`() = runBlockingTest {
@@ -83,6 +102,19 @@ class StartTimeDraggedActionTests : CoroutineTest() {
     }
 
     @Test
+    fun `shouldn't change the state if new start time is after now when the time entry is running`() = runBlockingTest {
+        val selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableRunningTimeEntry)
+        val initialState = createInitialState(selectedItem = selectedItem)
+        val newStart = now.plusHours(1)
+        reducer.testReduceState(
+            initialState,
+            CalendarDayAction.StartTimeDragged(newStart)
+        ) { state ->
+            state shouldBe initialState
+        }
+    }
+
+    @Test
     fun `shouldn't return any effects`() = runBlockingTest {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry))
         val newStart = startTime.minusHours(1)
@@ -90,7 +122,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
     }
 
     @Test
-    fun `should set the new start time and increase duration when moved back`() = runBlockingTest {
+    fun `should set the new start time and increase duration when moved back for stopped time entries`() = runBlockingTest {
         val selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry)
         val initialState = createInitialState(selectedItem = selectedItem)
         val newStart = startTime.minusHours(1)
@@ -111,22 +143,65 @@ class StartTimeDraggedActionTests : CoroutineTest() {
     }
 
     @Test
-    fun `should set the new start time and decrease duration when moved forward`() = runBlockingTest {
-        val selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry)
+    fun `should set the new start time and decrease duration when moved forward  for stopped time entries`() =
+        runBlockingTest {
+            val selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry)
+            val initialState = createInitialState(selectedItem = selectedItem)
+            val newStart = startTime.plusHours(1)
+            val expectedNewDuration = duration.minusHours(1)
+            reducer.testReduceState(
+                initialState,
+                CalendarDayAction.StartTimeDragged(newStart)
+            ) { state ->
+                state shouldBe initialState.copy(
+                    selectedItem = SelectedCalendarItem.SelectedTimeEntry(
+                        validEditableTimeEntry.copy(
+                            startTime = newStart,
+                            duration = expectedNewDuration
+                        )
+                    )
+                )
+            }
+        }
+
+    @Test
+    fun `should set the new start time and not set the duration when moved back for running time entries`() = runBlockingTest {
+        val selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableRunningTimeEntry)
         val initialState = createInitialState(selectedItem = selectedItem)
-        val newStart = startTime.plusHours(1)
-        val expectedNewDuration = duration.minusHours(1)
-        reducer.testReduceState(initialState,
+        val newStart = startTime.minusHours(1)
+        reducer.testReduceState(
+            initialState,
             CalendarDayAction.StartTimeDragged(newStart)
         ) { state ->
             state shouldBe initialState.copy(
                 selectedItem = SelectedCalendarItem.SelectedTimeEntry(
-                    validEditableTimeEntry.copy(
+                    validEditableRunningTimeEntry.copy(
                         startTime = newStart,
-                        duration = expectedNewDuration
+                        duration = null
                     )
                 )
             )
         }
     }
+
+    @Test
+    fun `should set the new start time and not set the duration when moved forward  for running time entries`() =
+        runBlockingTest {
+            val selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableRunningTimeEntry)
+            val initialState = createInitialState(selectedItem = selectedItem)
+            val newStart = startTime.plusHours(1)
+            reducer.testReduceState(
+                initialState,
+                CalendarDayAction.StartTimeDragged(newStart)
+            ) { state ->
+                state shouldBe initialState.copy(
+                    selectedItem = SelectedCalendarItem.SelectedTimeEntry(
+                        validEditableRunningTimeEntry.copy(
+                            startTime = newStart,
+                            duration = null
+                        )
+                    )
+                )
+            }
+        }
 }

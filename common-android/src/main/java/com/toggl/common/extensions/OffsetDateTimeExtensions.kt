@@ -28,6 +28,32 @@ fun OffsetDateTime.roundToClosestMinute(): OffsetDateTime =
         this - Duration.ofSeconds(this.second.toLong())
     }
 
+fun OffsetDateTime.roundToClosestQuarter(): OffsetDateTime {
+    val roundDown = this.roundDownToClosestQuarter()
+    val roundUp = this.roundUpToClosestQuarter()
+
+    val secondsToRoundDown = roundDown.roundDownToClosestQuarter().absoluteDurationBetween(this).seconds
+    val secondsToRoundUp = roundUp.roundDownToClosestQuarter().absoluteDurationBetween(this).seconds
+    return if (secondsToRoundDown > secondsToRoundUp) roundUp else roundDown
+}
+
+fun OffsetDateTime.roundUpToClosestQuarter(): OffsetDateTime {
+    return if (this.minute >= 45) {
+        val nextHour = this.plusHours(1)
+        nextHour.truncatedTo(ChronoUnit.HOURS)
+    } else {
+        val offset = 15 - this.minute % 15
+        val minute = this.minute + offset
+        this.truncatedTo(ChronoUnit.HOURS).withMinute(minute)
+    }
+}
+
+fun OffsetDateTime.roundDownToClosestQuarter(): OffsetDateTime {
+    val offset = this.minute % 15
+    val minute = this.minute - offset
+    return this.truncatedTo(ChronoUnit.HOURS).withMinute(minute)
+}
+
 fun OffsetDateTime.maybePlus(duration: Duration?): OffsetDateTime? {
     if (duration == null) return null
     return this + duration
