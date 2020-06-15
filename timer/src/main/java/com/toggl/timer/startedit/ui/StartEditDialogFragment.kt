@@ -17,6 +17,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.PopupWindow.INPUT_METHOD_NEEDED
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -60,6 +61,7 @@ import com.toggl.timer.startedit.domain.ProjectTagChipSelector
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import com.toggl.timer.startedit.domain.SuggestionsSelector
+import com.toggl.timer.startedit.domain.TemporalInconsistency
 import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionViewHolder
 import com.toggl.timer.startedit.ui.autocomplete.SuggestionsAdapter
 import com.toggl.timer.startedit.ui.chips.ChipAdapter
@@ -260,6 +262,23 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .map { it.editableTimeEntry.billable }
             .distinctUntilChanged()
             .onEach { billable_chip.isChecked = it }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.temporalInconsistency }
+            .distinctUntilChanged()
+            .onEach {
+                val textRes = when (it) {
+                    TemporalInconsistency.StartTimeAfterCurrentTime -> R.string.start_time_after_current_time_warning
+                    TemporalInconsistency.StartTimeAfterStopTime -> R.string.start_time_after_stop_time_warning
+                    TemporalInconsistency.StopTimeBeforeStartTime -> R.string.stop_time_before_start_time_warning
+                    TemporalInconsistency.DurationTooLong -> R.string.duration_too_long_warning
+                    TemporalInconsistency.None -> null
+                }
+                textRes?.let { tr ->
+                    Toast.makeText(context, tr, Toast.LENGTH_SHORT).show()
+                }
+            }
             .launchIn(lifecycleScope)
 
         time_entry_description

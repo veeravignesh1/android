@@ -29,4 +29,8 @@
     <string name="create_project">プロジェクトを追加</string>
     <string name="create_tag">タグを追加</string>
     <string name="done">完了</string>
+    <string name="start_time_after_current_time_warning">開始時刻は、現在時刻より前にしてください!</string>
+    <string name="start_time_after_stop_time_warning">開始時刻は、終了時刻より前にしてください!</string>
+    <string name="stop_time_before_start_time_warning">終了時刻は、開始時刻より後にしてください!</string>
+    <string name="duration_too_long_warning">期間は999時間を超えることはできません！</string>
 </resources>
