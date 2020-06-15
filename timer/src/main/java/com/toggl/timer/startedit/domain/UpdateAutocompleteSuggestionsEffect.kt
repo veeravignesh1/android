@@ -85,7 +85,7 @@ class UpdateAutocompleteSuggestionsEffect(
 
         val tagWithExactNameExistsInWorkspace = possibleTags.any { it.name.equals(query, true) }
         val createSuggestion =
-            if (tagWithExactNameExistsInWorkspace) emptyList()
+            if (tagWithExactNameExistsInWorkspace || query.isBlank()) emptyList()
             else listOf(AutocompleteSuggestion.CreateTag(query))
 
         return createSuggestion + fetchSuggestionsFor(query, possibleTags, AutocompleteSuggestion::Tag) { tag, word ->

@@ -360,6 +360,19 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             result.shouldNotBeNull()
             result.autocompleteSuggestions.filterIsInstance<AutocompleteSuggestion.CreateTag>().single().name shouldBe "even"
         }
+
+        @Test
+        fun `shouldn't return a create tag suggestion if the query is blank`() = runBlockingTest {
+            val effect = createEffect(
+                "#  ",
+                5,
+                tags = emptyMap()
+            )
+
+            val result = effect.execute()
+            result.shouldNotBeNull()
+            result.autocompleteSuggestions shouldBe emptyList()
+        }
     }
 
     private fun createEffect(
