@@ -16,6 +16,7 @@ import com.toggl.models.domain.nullableEditableProject
 import com.toggl.models.validation.HSVColor
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.TemporalInconsistency
+import com.toggl.timer.suggestions.domain.Suggestion
 
 @optics
 data class TimerState(
@@ -37,7 +38,8 @@ data class TimerState(
         internal val temporalInconsistency: TemporalInconsistency,
         internal val cursorPosition: Int,
         internal val customColor: HSVColor,
-        internal val maxNumberOfSuggestions: Int
+        internal val maxNumberOfSuggestions: Int,
+        internal val suggestions: List<Suggestion>
     ) {
         constructor() : this(
             expandedGroupIds = setOf(),
@@ -47,7 +49,8 @@ data class TimerState(
             temporalInconsistency = TemporalInconsistency.None,
             cursorPosition = 0,
             customColor = HSVColor.defaultCustomColor,
-            maxNumberOfSuggestions = Constants.Suggestions.maxNumberOfSuggestions
+            maxNumberOfSuggestions = Constants.Suggestions.maxNumberOfSuggestions,
+            suggestions = emptyList()
         )
     }
 

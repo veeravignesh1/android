@@ -10,6 +10,7 @@ import com.toggl.timer.log.ui.TimeEntriesLogStoreViewModel
 import com.toggl.timer.project.ui.ProjectStoreViewModel
 import com.toggl.timer.running.ui.RunningTimeEntryStoreViewModel
 import com.toggl.timer.startedit.ui.StartEditStoreViewModel
+import com.toggl.timer.suggestions.ui.SuggestionsStoreViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -56,6 +57,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ContextualMenuStoreViewModel::class)
     abstract fun bindContextualMenuStoreViewModel(viewModel: ContextualMenuStoreViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SuggestionsStoreViewModel::class)
+    abstract fun bindSuggestionsStoreViewModel(viewModel: SuggestionsStoreViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: TogglViewModelFactory): ViewModelProvider.Factory

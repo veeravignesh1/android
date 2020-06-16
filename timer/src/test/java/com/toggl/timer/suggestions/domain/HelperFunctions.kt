@@ -10,10 +10,12 @@ fun createInitialState(
     user: User = User(ApiToken.Invalid, defaultWorkspaceId = 10),
     projects: List<Project> = emptyList(),
     timeEntries: List<TimeEntry> = emptyList(),
-    maxNumberOfSuggestions: Int = Constants.Suggestions.maxNumberOfSuggestions
+    maxNumberOfSuggestions: Int = Constants.Suggestions.maxNumberOfSuggestions,
+    suggestions: List<Suggestion> = emptyList()
 ) = SuggestionsState(
     user = user,
     projects = projects.associateBy { it.id },
     timeEntries = timeEntries.associateBy { it.id },
-    maxNumberOfSuggestions = maxNumberOfSuggestions
+    maxNumberOfSuggestions = maxNumberOfSuggestions,
+    suggestions = suggestions
 )

@@ -9,6 +9,7 @@ import com.toggl.timer.common.domain.TimerState
 
 @optics
 data class SuggestionsState(
+    val suggestions: List<Suggestion>,
     val user: User,
     val projects: Map<Long, Project>,
     val timeEntries: Map<Long, TimeEntry>,
@@ -23,7 +24,8 @@ data class SuggestionsState(
                 user = user.value,
                 projects = timerState.projects,
                 timeEntries = timerState.timeEntries,
-                maxNumberOfSuggestions = timerState.localState.maxNumberOfSuggestions
+                maxNumberOfSuggestions = timerState.localState.maxNumberOfSuggestions,
+                suggestions = timerState.localState.suggestions
             )
         }
 

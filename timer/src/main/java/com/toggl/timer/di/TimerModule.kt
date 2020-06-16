@@ -123,6 +123,14 @@ class TimerModule {
         )
 
     @ExperimentalCoroutinesApi
+    @Provides
+    internal fun suggestionsStore(store: Store<TimerState, TimerAction>): Store<SuggestionsState, SuggestionsAction> =
+        store.optionalView(
+            mapToLocalState = SuggestionsState.Companion::fromTimerState,
+            mapToGlobalAction = TimerAction::Suggestions
+        )
+
+    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton
