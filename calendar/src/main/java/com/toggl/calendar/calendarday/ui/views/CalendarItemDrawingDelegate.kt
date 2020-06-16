@@ -90,9 +90,14 @@ class CalendarItemDrawingDelegate(
         canvas: Canvas,
         calendarBounds: RectF,
         calendarItem: CalendarItem,
-        isInEditMode: Boolean = false
+        isInEditMode: Boolean = false,
+        preCalculatedDrawingRect: RectF? = null
     ) {
         calculateItemRect(calendarItem, calendarBounds)
+        if (isInEditMode && preCalculatedDrawingRect != null) {
+            drawingRect.top = preCalculatedDrawingRect.top
+            drawingRect.bottom = preCalculatedDrawingRect.bottom
+        }
 
         if (drawingRect.bottom < calendarBounds.top || drawingRect.top > calendarBounds.bottom)
             return
