@@ -27,7 +27,7 @@ fun DatabaseTimeEntryWithTags.toModel() = TimeEntry(
     tags
 )
 
-fun DatabaseTimeEntry.toModel() = TimeEntry(
+fun DatabaseTimeEntry.toModelWithoutTags() = TimeEntry(
     id,
     description,
     startTime,

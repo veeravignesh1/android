@@ -13,28 +13,37 @@ import com.toggl.database.models.DatabaseTimeEntryWithTags
 import java.time.Duration
 import java.time.OffsetDateTime
 
-typealias StartTimeEntryDatabaseResult = Pair<DatabaseTimeEntry, List<DatabaseTimeEntry>>
+data class StartTimeEntryDatabaseResult(
+    val startedTimeEntry: DatabaseTimeEntryWithTags,
+    val stoppedTimeEntries: List<DatabaseTimeEntry>
+)
 
 @Dao
 interface TimeEntryDao {
     // TimeEntries only
 
     @Transaction
-    fun startTimeEntry(description: String, startTime: OffsetDateTime, billable: Boolean, workspaceId: Long, projectId: Long?, taskId: Long?): StartTimeEntryDatabaseResult {
-        val stoppedTimeEntries = stopRunningTimeEntries(startTime)
-        val id = insertTimeEntry(
-            DatabaseTimeEntry(
-                description = description,
-                startTime = startTime,
-                duration = null,
-                billable = billable,
-                workspaceId = workspaceId,
-                projectId = projectId,
-                taskId = taskId,
-                isDeleted = false
-            )
+    fun startTimeEntry(databaseTimeEntryWithTags: DatabaseTimeEntryWithTags): StartTimeEntryDatabaseResult {
+        val (timeEntry, tags) = databaseTimeEntryWithTags
+        val stoppedTimeEntries = stopRunningTimeEntries(timeEntry.startTime)
+        val id = insertTimeEntry(timeEntry)
+        insertAllTimeEntryTagsPairs(tags.map {
+            DatabaseTimeEntryTag(id, it)
+        })
+        return StartTimeEntryDatabaseResult(
+            getOneTimeEntryWithTags(id),
+            stoppedTimeEntries
         )
-        return getOneTimeEntry(id) to stoppedTimeEntries
+    }
+
+    @Transaction
+    fun createTimeEntry(databaseTimeEntryWithTags: DatabaseTimeEntryWithTags): Long {
+        val (timeEntry, tags) = databaseTimeEntryWithTags
+        val id = insertTimeEntry(timeEntry)
+        insertAllTimeEntryTagsPairs(tags.map {
+            DatabaseTimeEntryTag(id, it)
+        })
+        return id
     }
 
     @Transaction
@@ -49,6 +58,9 @@ interface TimeEntryDao {
 
     @Query("SELECT * FROM time_entries WHERE NOT isDeleted AND id = :id")
     fun getOneTimeEntry(id: Long): DatabaseTimeEntry
+
+    @Query("SELECT * FROM time_entries WHERE NOT isDeleted AND id = :id")
+    fun getOneTimeEntryWithTags(id: Long): DatabaseTimeEntryWithTags
 
     @Insert
     fun insertAllTimeEntries(vararg databaseTimeEntries: DatabaseTimeEntry): List<Long>

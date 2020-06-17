@@ -10,7 +10,6 @@ import com.toggl.database.models.DatabaseClient
 import com.toggl.database.models.DatabaseProject
 import com.toggl.database.models.DatabaseTag
 import com.toggl.database.models.DatabaseTask
-import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.environment.services.time.TimeService
@@ -26,6 +25,7 @@ import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
+import com.toggl.repository.extensions.toModelWithoutTags
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TagRepository
@@ -100,40 +100,24 @@ class Repository(
     override suspend fun loadTasks(): List<Task> = taskDao.getAll().map(DatabaseTask::toModel)
 
     override suspend fun startTimeEntry(startTimeEntryDTO: StartTimeEntryDTO): StartTimeEntryResult {
-        return timeEntryDao.startTimeEntry(
-            startTimeEntryDTO.description,
-            startTimeEntryDTO.startTime,
-            startTimeEntryDTO.billable,
-            startTimeEntryDTO.workspaceId,
-            startTimeEntryDTO.projectId,
-            startTimeEntryDTO.taskId
-        ).let { (started, stopped) ->
+        return timeEntryDao.startTimeEntry(startTimeEntryDTO.toDatabaseModel()).let { (started, stopped) ->
                 StartTimeEntryResult(
-                    started.let(DatabaseTimeEntry::toModel),
-                    stopped.firstOrNull()?.let(DatabaseTimeEntry::toModel)
+                    started.toModel(),
+                    stopped.firstOrNull()?.toModelWithoutTags()
                 )
             }
     }
 
     override suspend fun createTimeEntry(createTimeEntryDTO: CreateTimeEntryDTO): TimeEntry {
-        val insertedId = timeEntryDao.insertTimeEntry(DatabaseTimeEntry(
-            description = createTimeEntryDTO.description,
-            startTime = createTimeEntryDTO.startTime,
-            duration = createTimeEntryDTO.duration,
-            billable = createTimeEntryDTO.billable,
-            workspaceId = createTimeEntryDTO.workspaceId,
-            projectId = createTimeEntryDTO.projectId,
-            taskId = createTimeEntryDTO.taskId,
-            isDeleted = false
-        ))
-        return timeEntryDao.getOneTimeEntry(insertedId).let(DatabaseTimeEntry::toModel)
+        val insertedId = timeEntryDao.createTimeEntry(createTimeEntryDTO.toDatabaseModel())
+        return timeEntryDao.getOneTimeEntryWithTags(insertedId).toModel()
     }
 
     override suspend fun stopRunningTimeEntry(): TimeEntry? {
         val now = timeService.now()
         return timeEntryDao.stopRunningTimeEntries(now)
-            .map(DatabaseTimeEntry::toModel)
             .firstOrNull()
+            ?.let { timeEntryDao.getOneTimeEntryWithTags(it.id).toModel() }
     }
 
     override suspend fun editTimeEntry(timeEntry: TimeEntry): TimeEntry {

@@ -2,11 +2,13 @@ package com.toggl.repository
 
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
+import com.toggl.database.dao.StartTimeEntryDatabaseResult
 import com.toggl.database.dao.TagDao
 import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseTimeEntry
+import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
@@ -14,6 +16,7 @@ import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
+import com.toggl.repository.extensions.toModelWithoutTags
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import io.kotlintest.TestCase
 import io.kotlintest.matchers.collections.shouldBeEmpty
@@ -170,19 +173,24 @@ class RepositoryTest : StringSpec() {
                     nowTime
                 ))
             }
+            val returnedTimeEntryWithTags = mockk<DatabaseTimeEntryWithTags>()
             every { timeService.now() } returns nowTime
             every { timeEntryDao.stopRunningTimeEntries(any()) } returns stoppedTimeEntries
+            every { timeEntryDao.getOneTimeEntryWithTags(any()) } returns returnedTimeEntryWithTags
+            every { returnedTimeEntryWithTags.timeEntry } returns timeEntryRunningOne
+            every { returnedTimeEntryWithTags.tags } returns mockk()
 
             val result = repository.stopRunningTimeEntry()
 
             verify(exactly = 1) {
                 timeEntryDao.stopRunningTimeEntries(nowTime)
+                timeEntryDao.getOneTimeEntryWithTags(1)
             }
             verify {
                 workspaceDao wasNot called
                 clientDao wasNot called
             }
-            result shouldBe stoppedTimeEntries.firstOrNull()?.let(DatabaseTimeEntry::toModel)
+            result!!.id shouldBe stoppedTimeEntries.firstOrNull()!!.id
         }
 
         "stopRunningTimeEntry doesn't update any time entries if none are running and doesn't return any time entries" {
@@ -238,9 +246,8 @@ class RepositoryTest : StringSpec() {
                 false
             )
             every { timeService.now() } returns nowTime
-            every { timeEntryDao.startTimeEntry(any(), any(), any(), any(), any(), any()) } returns (startedTimeEntry to stoppedTimeEntries)
-
-            val result = repository.startTimeEntry(StartTimeEntryDTO(
+            every { timeEntryDao.startTimeEntry(any()) } returns StartTimeEntryDatabaseResult(DatabaseTimeEntryWithTags(startedTimeEntry, emptyList()), stoppedTimeEntries)
+            val startTimeEntryDTO = StartTimeEntryDTO(
                 startedTimeEntry.description,
                 startedTimeEntry.startTime,
                 startedTimeEntry.billable,
@@ -248,25 +255,19 @@ class RepositoryTest : StringSpec() {
                 startedTimeEntry.projectId,
                 startedTimeEntry.taskId,
                 listOf()
-            ))
+            )
+            val result = repository.startTimeEntry(startTimeEntryDTO)
 
             verify(exactly = 1) {
-                timeEntryDao.startTimeEntry(
-                    startedTimeEntry.description,
-                    startedTimeEntry.startTime,
-                    startedTimeEntry.billable,
-                    startedTimeEntry.workspaceId,
-                    startedTimeEntry.projectId,
-                    startedTimeEntry.taskId
-                )
+                timeEntryDao.startTimeEntry(startTimeEntryDTO.toDatabaseModel())
             }
             verify {
                 workspaceDao wasNot called
                 clientDao wasNot called
             }
             result shouldBe StartTimeEntryResult(
-                startedTimeEntry.let(DatabaseTimeEntry::toModel),
-                stoppedTimeEntries.firstOrNull()?.let(DatabaseTimeEntry::toModel)
+                startedTimeEntry.toModelWithoutTags(),
+                stoppedTimeEntries.firstOrNull()?.toModelWithoutTags()
             )
         }
 
