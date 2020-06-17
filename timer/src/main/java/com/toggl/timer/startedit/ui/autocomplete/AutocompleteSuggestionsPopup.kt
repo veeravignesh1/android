@@ -7,8 +7,8 @@ import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnLayout
-import com.toggl.common.Position
-import com.toggl.common.RecyclerViewPopup
+import com.toggl.common.ui.Position
+import com.toggl.common.ui.RecyclerViewPopup
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.timer.R
 import java.lang.ref.WeakReference

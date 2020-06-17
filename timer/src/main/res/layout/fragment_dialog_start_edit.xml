@@ -36,7 +36,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0:00:24" />
 
-    <androidx.core.widget.NestedScrollView
+    <com.toggl.common.ui.LockableScrollView
         android:id="@+id/nested_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -206,5 +206,5 @@
                 app:layout_constraintTop_toTopOf="@id/wheel_foreground" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </com.toggl.common.ui.LockableScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

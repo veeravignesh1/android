@@ -28,6 +28,14 @@ class BottomSheetCallback : BottomSheetBehavior.BottomSheetCallback() {
         return onStateChangedActions.add(action)
     }
 
+    fun addOnStateChangedAction(action: (newState: Int) -> Unit): Boolean {
+        return addOnStateChangedAction(object : OnStateChangedAction {
+            override fun onStateChanged(sheet: View, newState: Int) {
+                action(newState)
+            }
+        })
+    }
+
     fun removeOnStateChangedAction(action: OnStateChangedAction): Boolean {
         return onStateChangedActions.remove(action)
     }

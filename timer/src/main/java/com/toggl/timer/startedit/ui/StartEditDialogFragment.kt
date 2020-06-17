@@ -31,8 +31,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
-import com.toggl.common.Position
-import com.toggl.common.above
+import com.toggl.common.ui.Position
+import com.toggl.common.ui.above
 import com.toggl.common.deepLinks
 import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.displayMetrics
@@ -44,8 +44,7 @@ import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
-import com.toggl.common.sheet.OnStateChangedAction
-import com.toggl.common.showTooltip
+import com.toggl.common.ui.showTooltip
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.EditableTimeEntry
@@ -181,6 +180,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .forEach { bottomSheetCallback.addOnSlideAction(AlphaSlideAction(it, false)) }
 
         bottomSheetCallback.addOnSlideAction(AlphaSlideAction(billable_chip, false))
+        bottomSheetCallback.addOnStateChangedAction { newState ->
+            nested_scrollview.canScroll = newState == BottomSheetBehavior.STATE_EXPANDED
+        }
 
         store.state
             .mapNotNull { it.editableTimeEntry.description }
@@ -221,11 +223,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         val bottomSheetStateFlow = MutableStateFlow(bottomSheetBehavior.state)
-        bottomSheetCallback.addOnStateChangedAction(object : OnStateChangedAction {
-            override fun onStateChanged(sheet: View, newState: Int) {
-                bottomSheetStateFlow.value = newState
-            }
-        })
+        bottomSheetCallback.addOnStateChangedAction { newState ->
+            bottomSheetStateFlow.value = newState
+        }
 
         store.state
             .map { it.autocompleteSuggestions.size }

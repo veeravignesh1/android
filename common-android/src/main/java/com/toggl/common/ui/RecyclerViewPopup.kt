@@ -1,4 +1,4 @@
-package com.toggl.common
+package com.toggl.common.ui
 
 import android.content.Context
 import android.os.Build
