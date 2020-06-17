@@ -38,6 +38,7 @@
     <dimen name="color_value_picker_height">28dp</dimen>
 
     <!-- Suggestions -->
-    <dimen name="suggestions_popup_max_height">144dp</dimen>
-    <dimen name="suggestions_popup_item_height">48dp</dimen>
+    <dimen name="suggestions_popup_item_height">50dp</dimen>
+    <dimen name="suggestions_popup_item_horizontal_padding">10dp</dimen>
+    <dimen name="autocomplete_dot_size">10dp</dimen>
 </resources>

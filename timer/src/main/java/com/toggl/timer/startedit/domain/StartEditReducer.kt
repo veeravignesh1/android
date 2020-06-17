@@ -74,19 +74,17 @@ class StartEditReducer @Inject constructor(
                 }
             StartEditAction.AddProjectChipTapped,
             StartEditAction.ProjectButtonTapped ->
-                state.mutateWithoutEffects {
-                    StartEditState.editableTimeEntry.modify(this) {
-                        val stringBeforeToken = if (it.description.isEmpty()) "" else "${it.description} "
-                        it.copy(description = "$stringBeforeToken$projectToken")
-                    }
+                state.mapState {
+                    val stringBeforeToken = if (editableTimeEntry.description.isEmpty()) "" else "${editableTimeEntry.description} "
+                    val description = "$stringBeforeToken$projectToken"
+                    effectOf(StartEditAction.DescriptionEntered(description, description.length))
                 }
             StartEditAction.AddTagChipTapped,
             StartEditAction.TagButtonTapped ->
-                state.mutateWithoutEffects {
-                    StartEditState.editableTimeEntry.modify(this) {
-                        val stringBeforeToken = if (it.description.isEmpty()) "" else "${it.description} "
-                        it.copy(description = "$stringBeforeToken$tagToken")
-                    }
+                state.mapState {
+                    val stringBeforeToken = if (editableTimeEntry.description.isEmpty()) "" else "${editableTimeEntry.description} "
+                    val description = "$stringBeforeToken$tagToken"
+                    effectOf(StartEditAction.DescriptionEntered(description, description.length))
                 }
             is StartEditAction.PickerTapped ->
                 state.mutateWithoutEffects {
@@ -129,6 +127,8 @@ class StartEditReducer @Inject constructor(
             is StartEditAction.AutocompleteSuggestionsUpdated ->
                 state.mutateWithoutEffects { copy(autocompleteSuggestions = action.autocompleteSuggestions) }
             is StartEditAction.AutocompleteSuggestionTapped -> {
+                state.mutate { copy(autocompleteSuggestions = emptyList()) }
+
                 when (action.autocompleteSuggestion) {
                     is AutocompleteSuggestion.TimeEntry -> state.mutateWithoutEffects {
                         modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)

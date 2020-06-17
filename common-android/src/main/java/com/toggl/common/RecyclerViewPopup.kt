@@ -35,7 +35,7 @@ class RecyclerViewPopup<VH : RecyclerView.ViewHolder>(
 
     fun show(x: Int, y: Int, width: Int, height: Int) {
         if (!isShowing) {
-            showAtLocation(anchor, Gravity.TOP, x, y)
+            showAtLocation(anchor, Gravity.NO_GRAVITY, x, y)
         }
 
         update(x, y, width, height)

@@ -58,7 +58,7 @@ data class TimerState(
 }
 
 fun TimerState.setEditableTimeEntryToNull() =
-    copy(editableTimeEntry = null)
+    copy(editableTimeEntry = null, localState = localState.copy(autocompleteSuggestions = emptyList()))
 
 fun TimerState.setEditableProjectToNull() =
     TimerState.editableTimeEntry.nullableEditableProject.set(this, null)

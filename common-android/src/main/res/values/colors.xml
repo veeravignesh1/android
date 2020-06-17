@@ -18,6 +18,7 @@
   <color name="add_description">#FFABA0AF</color>
   <color name="divider">#55000000</color>
   <color name="modal_card">#FFFFFFFF</color>
+  <color name="autocomplete_suggestion_background">#FFF4F3f5</color>
   <color name="start_time_entry_button_background">#FFE47BD7</color>
   <color name="stop_time_entry_button_background">#FFFF8879</color>
   <color name="running_card_description_background">#FFEAE6EA</color>

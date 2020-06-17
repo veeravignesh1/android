@@ -52,6 +52,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it shouldBe initialState.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         description = timeEntrySuggestion.description,
                         billable = timeEntrySuggestion.billable,
@@ -91,6 +92,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it shouldBe initialState.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         projectId = project.id,
                         workspaceId = project.workspaceId
@@ -112,6 +114,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it shouldBe initialState.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         editableProject = null,
                         projectId = project.id,
@@ -138,6 +141,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it shouldBe initialState.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         description = "Such ",
                         projectId = project.id,
@@ -166,6 +170,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it shouldBe initialState.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         description = "Such # @ @ @ ",
                         projectId = project.id,
@@ -194,6 +199,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 it shouldBe initialState.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         description = "Such # @ # @ ",
                         projectId = project.id,
@@ -355,6 +361,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 // let's leave out the description for now, it will be testes separately
                 val descriptionLessState = it.copy(editableTimeEntry = it.editableTimeEntry.copy(description = ""))
                 descriptionLessState shouldBe initialStateWithProjects.copy(
+                    autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
                         projectId = testTask.projectId,
                         description = "",

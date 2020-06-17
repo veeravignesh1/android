@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.timer.R
 import com.toggl.timer.log.domain.formatForDisplay
-import com.toggl.timer.startedit.ui.suggestions.SuggestionViewModel
 
 abstract class AutocompleteSuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var label: TextView = itemView.findViewById(R.id.label)
@@ -19,21 +18,21 @@ class TimeEntrySuggestionViewHolder(
     itemView: View,
     val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
-    var projectLabel: TextView = itemView.findViewById(R.id.project_label)
-    var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
+    private var projectLabel: TextView = itemView.findViewById(R.id.project_label)
+    private var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
 
-    fun bind(suggestion: SuggestionViewModel.TimeEntrySuggestion) {
-        itemView.setOnClickListener { onTappedListener(suggestion.autocompleteSuggestion) }
-        label.text = suggestion.description
-        if (suggestion.projectViewModel == null) {
+    fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel.TimeEntryAutocompleteSuggestion) {
+        itemView.setOnClickListener { onTappedListener(autocompleteSuggestion.autocompleteSuggestion) }
+        label.text = autocompleteSuggestion.description
+        if (autocompleteSuggestion.projectViewModel == null) {
             projectDot.visibility = View.GONE
             projectLabel.visibility = View.GONE
         } else {
             projectDot.visibility = View.VISIBLE
             projectLabel.visibility = View.VISIBLE
-            val projectColor = Color.parseColor(suggestion.projectViewModel.color)
+            val projectColor = Color.parseColor(autocompleteSuggestion.projectViewModel.color)
             projectDot.setColorFilter(projectColor, PorterDuff.Mode.SRC_IN)
-            projectLabel.text = suggestion.projectViewModel.formatForDisplay(suggestion.taskName)
+            projectLabel.text = autocompleteSuggestion.projectViewModel.formatForDisplay(autocompleteSuggestion.taskName)
         }
     }
 }
@@ -44,10 +43,10 @@ class ProjectSuggestionViewHolder(
 ) : AutocompleteSuggestionViewHolder(itemView) {
     var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
 
-    fun bind(suggestion: SuggestionViewModel.ProjectSuggestion) {
-        itemView.setOnClickListener { onTappedListener(suggestion.autocompleteSuggestion) }
-        label.text = suggestion.projectViewModel.name
-        val projectColor = Color.parseColor(suggestion.projectViewModel.color)
+    fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel.ProjectAutocompleteSuggestion) {
+        itemView.setOnClickListener { onTappedListener(autocompleteSuggestion.autocompleteSuggestion) }
+        label.text = autocompleteSuggestion.projectViewModel.name
+        val projectColor = Color.parseColor(autocompleteSuggestion.projectViewModel.color)
         label.setTextColor(projectColor)
         projectDot.setColorFilter(projectColor, PorterDuff.Mode.SRC_IN)
     }
@@ -59,11 +58,11 @@ class TaskSuggestionViewHolder(
 ) : AutocompleteSuggestionViewHolder(itemView) {
     var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
 
-    fun bind(suggestion: SuggestionViewModel.TaskSuggestion) {
-        itemView.setOnClickListener { onTappedListener(suggestion.autocompleteSuggestion) }
-        val projectColor = Color.parseColor(suggestion.projectViewModel.color)
+    fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel.TaskAutocompleteSuggestion) {
+        itemView.setOnClickListener { onTappedListener(autocompleteSuggestion.autocompleteSuggestion) }
+        val projectColor = Color.parseColor(autocompleteSuggestion.projectViewModel.color)
         projectDot.setColorFilter(projectColor, PorterDuff.Mode.SRC_IN)
-        label.text = suggestion.projectViewModel.formatForDisplay(suggestion.taskName)
+        label.text = autocompleteSuggestion.projectViewModel.formatForDisplay(autocompleteSuggestion.taskName)
     }
 }
 
@@ -71,9 +70,9 @@ class TagSuggestionViewHolder(
     itemView: View,
     val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
-    fun bind(suggestion: SuggestionViewModel.TagSuggestion) {
-        itemView.setOnClickListener { onTappedListener(suggestion.autocompleteSuggestion) }
-        label.text = suggestion.tagName
+    fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel.TagAutocompleteSuggestion) {
+        itemView.setOnClickListener { onTappedListener(autocompleteSuggestion.autocompleteSuggestion) }
+        label.text = autocompleteSuggestion.tagName
     }
 }
 
@@ -81,13 +80,13 @@ class CreateEntrySuggestionViewHolder(
     itemView: View,
     val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
-    fun bind(suggestion: SuggestionViewModel) {
-        when (suggestion) {
-            is SuggestionViewModel.CreateProject -> bind(
-                R.string.create_project, suggestion.name, suggestion.autocompleteSuggestion
+    fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel) {
+        when (autocompleteSuggestion) {
+            is AutocompleteSuggestionViewModel.CreateProject -> bind(
+                R.string.create_project, autocompleteSuggestion.name, autocompleteSuggestion.autocompleteSuggestion
             )
-            is SuggestionViewModel.CreateTag -> bind(
-                R.string.create_tag, suggestion.name, suggestion.autocompleteSuggestion
+            is AutocompleteSuggestionViewModel.CreateTag -> bind(
+                R.string.create_tag, autocompleteSuggestion.name, autocompleteSuggestion.autocompleteSuggestion
             )
         }
     }

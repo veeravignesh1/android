@@ -9,17 +9,18 @@
 
     <ImageView
         android:id="@+id/project_dot"
-        android:layout_width="6dp"
-        android:layout_height="6dp"
+        android:layout_width="@dimen/autocomplete_dot_size"
+        android:layout_height="@dimen/autocomplete_dot_size"
         android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginStart="@dimen/grid_3"
+        android:layout_marginEnd="@dimen/grid_2"
         app:srcCompat="@drawable/circle_shape" />
 
     <TextView
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/grid_4"
+        android:layout_marginStart="@dimen/grid_6"
         android:layout_marginEnd="@dimen/grid_2"
         android:ellipsize="end"
         android:fontFamily="sans-serif-medium"

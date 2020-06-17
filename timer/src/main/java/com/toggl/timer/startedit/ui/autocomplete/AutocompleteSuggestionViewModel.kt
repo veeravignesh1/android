@@ -1,43 +1,43 @@
-package com.toggl.timer.startedit.ui.suggestions
+package com.toggl.timer.startedit.ui.autocomplete
 
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.timer.log.domain.ProjectViewModel
 
-sealed class SuggestionViewModel {
-    data class TimeEntrySuggestion(
+sealed class AutocompleteSuggestionViewModel {
+    data class TimeEntryAutocompleteSuggestion(
         val id: Long,
         val description: String,
         val projectViewModel: ProjectViewModel?,
         val taskName: String?,
         val autocompleteSuggestion: AutocompleteSuggestion
-    ) : SuggestionViewModel()
+    ) : AutocompleteSuggestionViewModel()
 
-    data class ProjectSuggestion(
+    data class ProjectAutocompleteSuggestion(
         val id: Long,
         val projectViewModel: ProjectViewModel,
         val autocompleteSuggestion: AutocompleteSuggestion
-    ) : SuggestionViewModel()
+    ) : AutocompleteSuggestionViewModel()
 
-    data class TaskSuggestion(
+    data class TaskAutocompleteSuggestion(
         val id: Long,
         val taskName: String,
         val projectViewModel: ProjectViewModel,
         val autocompleteSuggestion: AutocompleteSuggestion
-    ) : SuggestionViewModel()
+    ) : AutocompleteSuggestionViewModel()
 
-    data class TagSuggestion(
+    data class TagAutocompleteSuggestion(
         val id: Long,
         val tagName: String,
         val autocompleteSuggestion: AutocompleteSuggestion
-    ) : SuggestionViewModel()
+    ) : AutocompleteSuggestionViewModel()
 
     data class CreateProject(
         val name: String,
         val autocompleteSuggestion: AutocompleteSuggestion
-    ) : SuggestionViewModel()
+    ) : AutocompleteSuggestionViewModel()
 
     data class CreateTag(
         val name: String,
         val autocompleteSuggestion: AutocompleteSuggestion
-    ) : SuggestionViewModel()
+    ) : AutocompleteSuggestionViewModel()
 }

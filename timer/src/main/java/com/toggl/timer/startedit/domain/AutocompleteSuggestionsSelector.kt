@@ -6,13 +6,13 @@ import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.log.domain.getProjectViewModelFor
 import com.toggl.timer.log.domain.toProjectViewModel
-import com.toggl.timer.startedit.ui.suggestions.SuggestionViewModel
+import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionViewModel
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class SuggestionsSelector @Inject constructor() : Selector<StartEditState, List<SuggestionViewModel>> {
-    override suspend fun select(state: StartEditState): List<SuggestionViewModel> {
+class AutocompleteSuggestionsSelector @Inject constructor() : Selector<StartEditState, List<AutocompleteSuggestionViewModel>> {
+    override suspend fun select(state: StartEditState): List<AutocompleteSuggestionViewModel> {
         val suggestions = state.autocompleteSuggestions
         val projects = state.projects
         val clients = state.clients
@@ -21,7 +21,7 @@ class SuggestionsSelector @Inject constructor() : Selector<StartEditState, List<
         return suggestions.map {
             when (it) {
                 is AutocompleteSuggestion.TimeEntry ->
-                    SuggestionViewModel.TimeEntrySuggestion(
+                    AutocompleteSuggestionViewModel.TimeEntryAutocompleteSuggestion(
                         it.timeEntry.id,
                         it.timeEntry.description,
                         projects.getProjectViewModelFor(it.timeEntry, clients),
@@ -29,13 +29,13 @@ class SuggestionsSelector @Inject constructor() : Selector<StartEditState, List<
                         it
                     )
                 is AutocompleteSuggestion.Project ->
-                    SuggestionViewModel.ProjectSuggestion(
+                    AutocompleteSuggestionViewModel.ProjectAutocompleteSuggestion(
                         it.project.id,
                         it.project.toProjectViewModel(clients),
                         it
                     )
                 is AutocompleteSuggestion.Task ->
-                    SuggestionViewModel.TaskSuggestion(
+                    AutocompleteSuggestionViewModel.TaskAutocompleteSuggestion(
                         it.task.id,
                         it.task.name,
                         projects[it.task.projectId]?.toProjectViewModel(clients)
@@ -43,13 +43,13 @@ class SuggestionsSelector @Inject constructor() : Selector<StartEditState, List<
                         it
                     )
                 is AutocompleteSuggestion.Tag ->
-                    SuggestionViewModel.TagSuggestion(
+                    AutocompleteSuggestionViewModel.TagAutocompleteSuggestion(
                         it.tag.id,
                         it.tag.name,
                         it
                     )
-                is AutocompleteSuggestion.CreateProject -> SuggestionViewModel.CreateProject(it.name, it)
-                is AutocompleteSuggestion.CreateTag -> SuggestionViewModel.CreateTag(it.name, it)
+                is AutocompleteSuggestion.CreateProject -> AutocompleteSuggestionViewModel.CreateProject(it.name, it)
+                is AutocompleteSuggestion.CreateTag -> AutocompleteSuggestionViewModel.CreateTag(it.name, it)
             }
         }
     }
