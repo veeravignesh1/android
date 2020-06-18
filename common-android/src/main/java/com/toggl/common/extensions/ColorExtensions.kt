@@ -1,6 +1,7 @@
 package com.toggl.common.extensions
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import kotlin.math.min
 import kotlin.math.max
@@ -46,6 +47,9 @@ fun Int.toLabelColor(context: Context): Int {
     val hsv = floatArrayOf(hue, newSaturation, newValue)
     return Color.HSVToColor(hsv)
 }
+
+fun Int.toColorStateList() =
+    ColorStateList.valueOf(this)
 
 object Colors {
     val defaultPalette = intArrayOf(Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.RED)

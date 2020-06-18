@@ -1,5 +1,7 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
+import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
 import com.toggl.models.domain.Tag
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
@@ -30,7 +32,7 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.filterIsInstance<ChipViewModel.AddProject>().singleOrNull { it.text == projectLabel }.shouldNotBeNull()
+        chips.filterIsInstance<ChipViewModel.AddProject>().singleOrNull { it.text == "$projectToken $projectLabel" }.shouldNotBeNull()
     }
 
     @Test
@@ -84,7 +86,7 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(tags = tags, editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.any { it is ChipViewModel.AddTag && it.text == tagLabel }.shouldBeTrue()
+        chips.any { it is ChipViewModel.AddTag && it.text == "$tagToken $tagLabel" }.shouldBeTrue()
     }
 
     @Test
@@ -95,6 +97,6 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
 
         val state = createInitialState(editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
-        chips.any { it is ChipViewModel.AddTag && it.text == tagLabel }.shouldBeTrue()
+        chips.any { it is ChipViewModel.AddTag && it.text == "$tagToken $tagLabel" }.shouldBeTrue()
     }
 }

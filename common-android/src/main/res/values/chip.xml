@@ -2,10 +2,8 @@
 <resources>
     <style name="TogglChip" parent="@style/Widget.MaterialComponents.Chip.Action">
         <item name="chipStrokeWidth">1dp</item>
-        <item name="chipStrokeColor">@color/icon</item>>
-        <item name="chipIconTint">@color/icon</item>
+        <item name="chipStrokeColor">@color/icon</item>
         <item name="chipBackgroundColor">@color/modal_card</item>
+        <item name="android:textColor">@color/chip_text</item>
     </style>
-
-
 </resources>

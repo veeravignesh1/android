@@ -23,6 +23,9 @@
   <color name="stop_time_entry_button_background">#FFFF8879</color>
   <color name="running_card_description_background">#FFEAE6EA</color>
   <color name="icon">#FF827188</color>
+  <color name="tag_chip_background">#FFD5D0D8</color>
+  <color name="chip_close_background">#FFFFFFFF</color>
+  <color name="chip_text">#FF310F3A</color>
   <color name="button_active">#06AAF5</color>
   <color name="button_active_background">#2606AAF5</color>
   <color name="button_inactive">#B5BCC0</color>

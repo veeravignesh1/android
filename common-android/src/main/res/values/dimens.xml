@@ -5,4 +5,5 @@
     <dimen name="bottom_control_panel_button_background_size">32dp</dimen>
     <dimen name="circle_divider_size">4dp</dimen>
     <dimen name="circle_divider_margin">4dp</dimen>
+    <dimen name="project_dot">6dp</dimen>
 </resources>
