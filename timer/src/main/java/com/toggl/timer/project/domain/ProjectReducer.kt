@@ -7,12 +7,15 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.effects
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.extensions.toHex
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.isValid
 import com.toggl.repository.extensions.toDto
 import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.timer.startedit.util.findTokenAndQueryMatchesForAutocomplete
 import javax.inject.Inject
 
 class ProjectReducer @Inject constructor(
@@ -45,8 +48,6 @@ class ProjectReducer @Inject constructor(
                     }
                 }
             }
-            is ProjectAction.ProjectCreated ->
-                state.mutateWithoutEffects { copy(projects = projects + (action.project.id to action.project)) }
             ProjectAction.PrivateProjectSwitchTapped ->
                 state.mutateWithoutEffects {
                     ProjectState.editableProject.modify(this) {
@@ -82,6 +83,15 @@ class ProjectReducer @Inject constructor(
                     it.copy(clientId = action.client.id)
                 }
             }
+            is ProjectAction.ProjectCreated -> state.mutate {
+                val (token, currentQuery) = timeEntryDescription.findTokenAndQueryMatchesForAutocomplete(projectToken, cursorPosition)
+                val delimiter = "$token$currentQuery"
+                copy(
+                    projects = projects + (action.project.id to action.project),
+                    timeEntryProjectId = action.project.id,
+                    timeEntryDescription = timeEntryDescription.substringBeforeLast(delimiter)
+                )
+            } returnEffect effectOf(ProjectAction.Close)
             ProjectAction.Close -> noEffect()
         }
 

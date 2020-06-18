@@ -12,6 +12,9 @@ data class ProjectState(
     val editableProject: EditableProject,
     val projects: Map<Long, Project>,
     val workspaces: Map<Long, Workspace>,
+    val timeEntryProjectId: Long?,
+    val timeEntryDescription: String,
+    val cursorPosition: Int,
     val customColor: HSVColor
 ) {
     companion object {
@@ -23,7 +26,10 @@ data class ProjectState(
                 editableProject = editableProject,
                 projects = timerState.projects,
                 workspaces = timerState.workspaces,
-                customColor = timerState.localState.customColor
+                customColor = timerState.localState.customColor,
+                timeEntryProjectId = timerState.editableTimeEntry.projectId,
+                timeEntryDescription = timerState.editableTimeEntry.description,
+                cursorPosition = timerState.localState.cursorPosition
             )
         }
 
@@ -32,6 +38,8 @@ data class ProjectState(
                 timerState.copy(
                     projects = projectState.projects,
                     editableTimeEntry = timerState.editableTimeEntry?.copy(
+                        description = projectState.timeEntryDescription,
+                        projectId = projectState.timeEntryProjectId,
                         editableProject = projectState.editableProject
                     ),
                     localState = timerState.localState.copy(customColor = projectState.customColor)

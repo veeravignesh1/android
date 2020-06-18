@@ -10,12 +10,16 @@ fun createInitialState(
     editableProject: EditableProject = EditableProject.empty(1),
     projects: List<Project> = listOf(),
     workspaces: List<Workspace> = listOf(),
-    customColor: HSVColor = HSVColor.defaultCustomColor
+    customColor: HSVColor = HSVColor.defaultCustomColor,
+    description: String = ""
 ) = ProjectState(
     editableProject = editableProject,
     projects = projects.associateBy { it.id },
     workspaces = workspaces.associateBy { it.id },
-    customColor = customColor
+    customColor = customColor,
+    timeEntryDescription = description,
+    timeEntryProjectId = null,
+    cursorPosition = description.length
 )
 
 fun createProject(

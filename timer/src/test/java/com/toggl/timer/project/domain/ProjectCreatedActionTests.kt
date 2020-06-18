@@ -1,11 +1,13 @@
 package com.toggl.timer.project.domain
 
+import com.toggl.models.domain.EditableProject
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.common.CoroutineTest
-import com.toggl.timer.common.assertNoEffectsWereReturned
-import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.testReduce
+import com.toggl.timer.common.testReduceEffects
+import com.toggl.timer.common.testReduceState
 import io.kotlintest.matchers.collections.shouldContain
+import io.kotlintest.matchers.types.shouldNotBeNull
 import io.kotlintest.shouldBe
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,15 +42,42 @@ internal class ProjectCreatedActionTests : CoroutineTest() {
     }
 
     @Test
-    fun `returns no effects`() = runBlockingTest {
+    fun `updates the time entry description`() = runBlockingTest {
+
+        val initialState = createInitialState(
+            EditableProject.createValidBecauseClientsAreDifferent(),
+            listOfProjects,
+            description = "Test @Proj"
+        )
+        val newProject = createProject(4, "Project 4")
+
+        reducer.testReduceState(
+            initialState = initialState,
+            action = ProjectAction.ProjectCreated(newProject)
+        ) { state -> state.timeEntryDescription shouldBe "Test " }
+    }
+
+    @Test
+    fun `updates the time entry's project id`() = runBlockingTest {
 
         val initialState = createInitialState(EditableProject.createValidBecauseClientsAreDifferent(), listOfProjects)
         val newProject = createProject(4, "Project 4")
 
-        reducer.testReduce(
+        reducer.testReduceState(
             initialState = initialState,
-            action = ProjectAction.ProjectCreated(newProject),
-            testCase = ::assertNoEffectsWereReturned
-        )
+            action = ProjectAction.ProjectCreated(newProject)
+        ) { state -> state.timeEntryProjectId shouldBe newProject.id }
+    }
+
+    @Test
+    fun `returns an effect to close the view`() = runBlockingTest {
+
+        val initialState = createInitialState(EditableProject.createValidBecauseClientsAreDifferent(), listOfProjects)
+        val newProject = createProject(4, "Project 4")
+
+        reducer.testReduceEffects(initialState = initialState, action = ProjectAction.ProjectCreated(newProject)) { effects ->
+            val closeAction = effects.single().execute() as? ProjectAction.Close
+            closeAction.shouldNotBeNull()
+        }
     }
 }
