@@ -91,13 +91,9 @@ class CalendarItemDrawingDelegate(
         calendarBounds: RectF,
         calendarItem: CalendarItem,
         isInEditMode: Boolean = false,
-        preCalculatedDrawingRect: RectF? = null
+        preCalculatedDrawingRect: RectF
     ) {
-        calculateItemRect(calendarItem, calendarBounds)
-        if (isInEditMode && preCalculatedDrawingRect != null) {
-            drawingRect.top = preCalculatedDrawingRect.top
-            drawingRect.bottom = preCalculatedDrawingRect.bottom
-        }
+        drawingRect.set(preCalculatedDrawingRect)
 
         if (drawingRect.bottom < calendarBounds.top || drawingRect.top > calendarBounds.bottom)
             return
@@ -341,10 +337,6 @@ class CalendarItemDrawingDelegate(
         if (containerHeight > smallCalendarIconBitMap.height)
             return smallCalendarIconBitMap
         return null
-    }
-
-    private fun calculateItemRect(calendarItem: CalendarItem, calendarBounds: RectF) {
-        calculateItemRect(calendarItem, calendarBounds, drawingRect)
     }
 
     private fun Canvas.drawEditingHandles(calendarItem: CalendarItem) {

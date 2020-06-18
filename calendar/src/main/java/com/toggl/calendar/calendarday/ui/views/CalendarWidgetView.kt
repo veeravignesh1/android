@@ -1,5 +1,7 @@
 package com.toggl.calendar.calendarday.ui.views
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -110,6 +112,9 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     private var drawingLock = ReentrantLock(true)
     private var drawingData: CalendarWidgetViewDrawingData = CalendarWidgetViewDrawingData()
+    private var drawingRectFs: MutableMap<String, RectF> = mutableMapOf()
+    private var runningAnimations: MutableMap<String, Pair<RectF, Animator>> = mutableMapOf()
+    private val tempDrawingRectFDiff = RectF()
     private var flingWasCalled: Boolean = false
     private var isScrolling: Boolean = false
     private var isDragging: Boolean = false
@@ -426,8 +431,78 @@ class CalendarWidgetView @JvmOverloads constructor(
                     vibrate()
                 }
                 lastSelectedItem = it.selectedCalendarItemToDraw
+                animateChangingSelectedItemRectIfNecessary(it.selectedCalendarItemToDraw)
+                animateChangingCalendarItemsIfNecessary(it.nonSelectedCalendarItemsToDraw)
             }
             postInvalidateOnAnimation()
+        }
+    }
+
+    private fun animateChangingSelectedItemRectIfNecessary(selectedCalendarItemToDraw: CalendarItem?) {
+        if (viewFrame.isEmpty || selectedCalendarItemToDraw == null)
+            return
+
+        calendarItemDrawingDelegate.calculateItemRect(selectedCalendarItemToDraw, viewFrame, tempDrawingRectFDiff)
+        val drawingId = selectedCalendarItemToDraw.drawingId()
+        val runningAnimation = runningAnimations[drawingId]
+        if (runningAnimation != null) {
+            val (runningAnimationEndRectF, runningAnimator) = runningAnimation
+            if (runningAnimationEndRectF.left == tempDrawingRectFDiff.left && runningAnimationEndRectF.right == tempDrawingRectFDiff.right)
+                return
+            runningAnimator.cancel()
+            runningAnimator.removeAllListeners()
+            runningAnimations.remove(drawingId)
+        }
+        if (itemInEditModeRect.left != tempDrawingRectFDiff.left || itemInEditModeRect.right != tempDrawingRectFDiff.right) {
+            val startingRect = RectF()
+            val endingRect = RectF()
+            startingRect.set(itemInEditModeRect)
+            endingRect.set(tempDrawingRectFDiff)
+            // note that this itemInEditModeRect is the same used to handle drags and it will be modified by the animator
+            // through the RectFSideEvaluator to create the rect left/right animations for the current selected item
+            // note that this same rect has its top/bottom values changed during drags to edit
+            val rectEvaluator = RectFSideEvaluator(itemInEditModeRect)
+            val newAnimator = ObjectAnimator.ofObject(rectEvaluator, startingRect, endingRect).apply {
+                duration = 200
+                addUpdateListener { invalidate() }
+                start()
+            }
+            runningAnimations[drawingId] = endingRect to newAnimator
+        }
+    }
+
+    private fun animateChangingCalendarItemsIfNecessary(nonSelectedCalendarItemsToDraw: List<CalendarItem>) {
+        if (viewFrame.isEmpty)
+            return
+
+        for (calendarItem in nonSelectedCalendarItemsToDraw) {
+            val drawingId = calendarItem.drawingId()
+            val oldDrawingRectF = drawingRectFs[drawingId] ?: continue
+            calendarItemDrawingDelegate.calculateItemRect(calendarItem, viewFrame, tempDrawingRectFDiff)
+            val runningAnimation = runningAnimations[drawingId]
+            if (runningAnimation != null) {
+                val (runningAnimationEndRectF, runningAnimator) = runningAnimation
+                if (runningAnimationEndRectF == tempDrawingRectFDiff)
+                    continue
+                runningAnimator.cancel()
+                runningAnimator.removeAllListeners()
+                runningAnimations.remove(drawingId)
+            }
+            if (oldDrawingRectF != tempDrawingRectFDiff) {
+                val startingRect = RectF()
+                val endingRect = RectF()
+                startingRect.set(oldDrawingRectF)
+                endingRect.set(tempDrawingRectFDiff)
+                // note that this oldDrawingRectF is the same from the drawingRectFs and it will be modified to create
+                // the moving animations from the animator through the RectFEvaluator
+                val rectEvaluator = RectFEvaluator(oldDrawingRectF)
+                val newAnimator = ObjectAnimator.ofObject(rectEvaluator, startingRect, endingRect).apply {
+                    duration = 200
+                    addUpdateListener { invalidate() }
+                    start()
+                }
+                runningAnimations[drawingId] = endingRect to newAnimator
+            }
         }
     }
 
@@ -503,7 +578,13 @@ class CalendarWidgetView @JvmOverloads constructor(
         drawingData.let { currentDrawingData ->
             val calendarItemsToDraw = currentDrawingData.nonSelectedCalendarItemsToDraw
             val selectedItemToDraw = currentDrawingData.selectedCalendarItemToDraw
-            calendarItemsToDraw.forEach { calendarItemDrawingDelegate.onDraw(this, viewFrame, it, false) }
+            calendarItemsToDraw.forEach { calendarItem ->
+                val drawingId = calendarItem.drawingId()
+                val drawingRectF = drawingRectFs.computeIfAbsent(drawingId) {
+                    RectF().apply { calendarItemDrawingDelegate.calculateItemRect(calendarItem, viewFrame, this) }
+                }
+                calendarItemDrawingDelegate.onDraw(this, viewFrame, calendarItem, false, drawingRectF)
+            }
             selectedItemToDraw?.let {
                 if (!isDragging) {
                     calendarItemDrawingDelegate.calculateItemRect(it, viewFrame, itemInEditModeRect)
@@ -893,6 +974,11 @@ class CalendarWidgetView @JvmOverloads constructor(
 
         backgroundDrawingDelegate.currentHourHeight = hourHeight
         calendarItemDrawingDelegate.currentHourHeight = hourHeight
+        runningAnimations.values.forEach { (_, animator) ->
+            animator.cancel()
+        }
+        runningAnimations.clear()
+        drawingRectFs.clear()
         invalidate()
 
         return true
@@ -1030,5 +1116,15 @@ class CalendarWidgetView @JvmOverloads constructor(
         Up(-1),
         Idle(0),
         Down(1)
+    }
+}
+
+private fun CalendarItem.drawingId(): String = when (this) {
+    is CalendarItem.TimeEntry -> timeEntry.id.toString()
+    is CalendarItem.CalendarEvent -> "${calendarEvent.calendarId}:${calendarEvent.id}"
+    is CalendarItem.SelectedItem -> when (selectedCalendarItem) {
+        is SelectedCalendarItem.SelectedTimeEntry -> (selectedCalendarItem.editableTimeEntry.ids.firstOrNull()?.toString()
+            ?: "null")
+        is SelectedCalendarItem.SelectedCalendarEvent -> "${selectedCalendarItem.calendarEvent.calendarId}:${selectedCalendarItem.calendarEvent.id}"
     }
 }
