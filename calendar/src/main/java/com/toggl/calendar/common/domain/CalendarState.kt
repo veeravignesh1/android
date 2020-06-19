@@ -1,9 +1,11 @@
 package com.toggl.calendar.common.domain
 
 import arrow.optics.optics
+import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.BackStackAwareState
+import com.toggl.common.feature.navigation.pop
 import com.toggl.environment.services.calendar.Calendar
 import com.toggl.environment.services.calendar.CalendarEvent
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import java.time.OffsetDateTime
@@ -12,20 +14,22 @@ import java.time.OffsetDateTime
 data class CalendarState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
-    val editableTimeEntry: EditableTimeEntry?,
+    val backStack: BackStack,
     val localState: LocalState
-) {
+) : BackStackAwareState<CalendarState> {
     data class LocalState internal constructor(
         internal val selectedDate: OffsetDateTime,
         internal val calendarEvents: Map<String, CalendarEvent>,
-        internal val selectedItem: SelectedCalendarItem?,
         internal val calendars: List<Calendar>
     ) {
-        constructor() : this(OffsetDateTime.now(), mapOf(), null, listOf())
+        constructor() : this(OffsetDateTime.now(), mapOf(), listOf())
     }
+
+    override fun popBackStack(): CalendarState =
+        copy(backStack = backStack.pop())
 
     companion object
 }
 
-internal fun CalendarState.setSelectedItemToNull() =
-    copy(localState = localState.copy(selectedItem = null))
+internal fun CalendarState.pop() =
+    copy(backStack = backStack.pop())

@@ -3,16 +3,17 @@ package com.toggl.timer.common.domain
 import arrow.optics.optics
 import com.toggl.architecture.Loadable
 import com.toggl.common.Constants
+import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.BackStackAwareState
+import com.toggl.common.feature.navigation.pop
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
-import com.toggl.models.domain.nullableEditableProject
 import com.toggl.models.validation.HSVColor
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.TemporalInconsistency
@@ -27,9 +28,9 @@ data class TimerState(
     val projects: Map<Long, Project>,
     val workspaces: Map<Long, Workspace>,
     val timeEntries: Map<Long, TimeEntry>,
-    val editableTimeEntry: EditableTimeEntry?,
+    val backStack: BackStack,
     val localState: LocalState
-) {
+) : BackStackAwareState<TimerState> {
     data class LocalState internal constructor(
         internal val expandedGroupIds: Set<Long>,
         internal val entriesPendingDeletion: Set<Long>,
@@ -54,11 +55,8 @@ data class TimerState(
         )
     }
 
+    override fun popBackStack(): TimerState =
+        copy(backStack = backStack.pop())
+
     companion object
 }
-
-fun TimerState.setEditableTimeEntryToNull() =
-    copy(editableTimeEntry = null, localState = localState.copy(autocompleteSuggestions = emptyList()))
-
-fun TimerState.setEditableProjectToNull() =
-    TimerState.editableTimeEntry.nullableEditableProject.set(this, null)

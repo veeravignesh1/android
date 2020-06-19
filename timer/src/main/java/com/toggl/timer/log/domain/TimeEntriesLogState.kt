@@ -1,10 +1,10 @@
 package com.toggl.timer.log.domain
 
 import arrow.optics.optics
+import com.toggl.common.feature.navigation.BackStack
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.TimerState
 
 @optics
@@ -12,7 +12,7 @@ data class TimeEntriesLogState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
-    val editableTimeEntry: EditableTimeEntry?,
+    val backStack: BackStack,
     val expandedGroupIds: Set<Long>,
     val entriesPendingDeletion: Set<Long>,
     val shouldGroup: Boolean = true
@@ -23,7 +23,7 @@ data class TimeEntriesLogState(
                 timerState.timeEntries,
                 timerState.projects,
                 timerState.clients,
-                timerState.editableTimeEntry,
+                timerState.backStack,
                 timerState.localState.expandedGroupIds,
                 timerState.localState.entriesPendingDeletion
             )
@@ -31,7 +31,7 @@ data class TimeEntriesLogState(
         fun toTimerState(timerState: TimerState, timeEntriesLogState: TimeEntriesLogState) =
             timerState.copy(
                 timeEntries = timeEntriesLogState.timeEntries,
-                editableTimeEntry = timeEntriesLogState.editableTimeEntry,
+                backStack = timeEntriesLogState.backStack,
                 localState = timerState.localState.copy(
                     expandedGroupIds = timeEntriesLogState.expandedGroupIds,
                     entriesPendingDeletion = timeEntriesLogState.entriesPendingDeletion

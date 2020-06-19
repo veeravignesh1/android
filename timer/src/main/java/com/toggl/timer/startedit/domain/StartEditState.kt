@@ -1,6 +1,9 @@
 package com.toggl.timer.startedit.domain
 
 import arrow.optics.optics
+import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.getEditableTimeEntryIfAny
+import com.toggl.common.feature.navigation.updateEditableTimeEntry
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
@@ -19,6 +22,7 @@ data class StartEditState(
     val projects: Map<Long, Project>,
     val workspaces: Map<Long, Workspace>,
     val timeEntries: Map<Long, TimeEntry>,
+    val backStack: BackStack,
     val editableTimeEntry: EditableTimeEntry,
     val autocompleteSuggestions: List<AutocompleteSuggestion>,
     val dateTimePickMode: DateTimePickMode,
@@ -28,7 +32,7 @@ data class StartEditState(
     companion object {
         fun fromTimerState(timerState: TimerState): StartEditState? {
 
-            val editableTimeEntry = timerState.editableTimeEntry ?: return null
+            val editableTimeEntry = timerState.backStack.getEditableTimeEntryIfAny() ?: return null
 
             return StartEditState(
                 tags = timerState.tags,
@@ -37,6 +41,7 @@ data class StartEditState(
                 projects = timerState.projects,
                 workspaces = timerState.workspaces,
                 timeEntries = timerState.timeEntries,
+                backStack = timerState.backStack,
                 editableTimeEntry = editableTimeEntry,
                 autocompleteSuggestions = timerState.localState.autocompleteSuggestions,
                 dateTimePickMode = timerState.localState.dateTimePickMode,
@@ -50,7 +55,7 @@ data class StartEditState(
                 timerState.copy(
                     tags = startEditState.tags,
                     timeEntries = startEditState.timeEntries,
-                    editableTimeEntry = startEditState.editableTimeEntry,
+                    backStack = startEditState.backStack.updateEditableTimeEntry(startEditState.editableTimeEntry),
                     localState = timerState.localState.copy(
                         autocompleteSuggestions = startEditState.autocompleteSuggestions,
                         dateTimePickMode = startEditState.dateTimePickMode,
