@@ -3,10 +3,9 @@ package com.toggl.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.toggl.R
 import com.toggl.TogglApplication
@@ -16,21 +15,20 @@ import com.toggl.common.deepLinks
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
+import com.toggl.common.feature.navigation.Router
+import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
-import com.toggl.timer.suggestions.ui.SuggestionsStoreViewModel
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigationProvider {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var store: Store<AppState, AppAction>
-
-    private val suggestionsStore: SuggestionsStoreViewModel by viewModels { viewModelFactory }
+    @Inject lateinit var router: Router
+    @Inject lateinit var store: Store<AppState, AppAction>
 
     override var isBottomNavigationVisible: Boolean
         get() = bottom_navigation.isVisible
@@ -43,6 +41,11 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigation
         (applicationContext as TogglApplication).appComponent.inject(this)
 
         store.dispatch(AppAction.Loading(LoadingAction.StartLoading))
+
+        store.state
+            .map { it.backStack }
+            .onEach { router.processNewBackStack(it, nav_host_fragment.findNavController()) }
+            .launchIn(lifecycleScope)
 
         bottom_navigation.setOnNavigationItemSelectedListener(::changeTab)
         bottom_navigation.setOnNavigationItemReselectedListener(::scrollUpOnTab)
@@ -62,7 +65,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigation
 
     override fun onResume() {
         super.onResume()
-        suggestionsStore.dispatch(SuggestionsAction.LoadSuggestions)
+        store.dispatch(AppAction.Timer(TimerAction.Suggestions(SuggestionsAction.LoadSuggestions)))
     }
 
     private fun scrollUpOnTab(menuItem: MenuItem) {
