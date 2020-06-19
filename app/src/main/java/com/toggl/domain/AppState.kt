@@ -22,6 +22,7 @@ data class AppState(
     val tags: Map<Long, Tag> = mapOf(),
     val timeEntries: Map<Long, TimeEntry> = mapOf(),
     val editableTimeEntry: EditableTimeEntry? = null,
+    val calendarPermissionWasGranted: Boolean = false,
     val onboardingLocalState: OnboardingState.LocalState = OnboardingState.LocalState(),
     val timerLocalState: TimerState.LocalState = TimerState.LocalState(),
     val calendarLocalState: CalendarState.LocalState = CalendarState.LocalState()

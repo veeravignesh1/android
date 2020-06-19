@@ -9,10 +9,12 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.environment.services.analytics.AnalyticsService
 import com.toggl.environment.services.analytics.Event
+import com.toggl.environment.services.analytics.parameters.CalendarSuggestionProviderState
 import com.toggl.environment.services.analytics.parameters.EditViewCloseReason
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason.GroupHeader
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason.RunningTimeEntryCard
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason.SingleTimeEntry
+import com.toggl.environment.services.analytics.parameters.SuggestionProviderType
 import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin.GroupedLogSwipe
 import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin.LogSwipe
 import com.toggl.environment.services.analytics.parameters.TimeEntryStopOrigin.Manual
@@ -21,6 +23,10 @@ import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import com.toggl.timer.startedit.domain.StartEditAction
+import com.toggl.timer.suggestions.domain.Suggestion
+import com.toggl.timer.suggestions.domain.SuggestionsAction
+import java.time.Duration
+import java.time.OffsetDateTime
 import javax.inject.Inject
 
 class AnalyticsReducer @Inject constructor(
@@ -30,23 +36,24 @@ class AnalyticsReducer @Inject constructor(
         state: MutableValue<AppState>,
         action: AppAction
     ): List<Effect<AppAction>> {
-        action.toEvent(state)?.run { analyticsService.track(this) }
+        action.toEvents(state).forEach { analyticsService.track(it) }
         return noEffect()
     }
 
-    private fun AppAction.toEvent(state: MutableValue<AppState>): Event? =
+    private fun AppAction.toEvents(state: MutableValue<AppState>): List<Event> =
         when (this) {
             is AppAction.Timer -> when (timer) {
-                is TimerAction.StartEditTimeEntry -> timer.action.toEvent(state)
-                is TimerAction.TimeEntriesLog -> timer.action.toEvent()
-                is TimerAction.RunningTimeEntry -> timer.action.toEvent()
-                else -> null
+                is TimerAction.StartEditTimeEntry -> timer.action.toEvents(state)
+                is TimerAction.TimeEntriesLog -> timer.action.toEvents()
+                is TimerAction.RunningTimeEntry -> timer.action.toEvents()
+                is TimerAction.Suggestions -> timer.action.toEvents(state)
+                else -> emptyList()
             }
-            else -> null
+            else -> emptyList()
         }
 
-    private fun StartEditAction.toEvent(state: MutableValue<AppState>): Event? =
-        when (this) {
+    private fun StartEditAction.toEvents(state: MutableValue<AppState>): List<Event> =
+        listOfNotNull(when (this) {
             StartEditAction.CloseButtonTapped,
             StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
             StartEditAction.DoneButtonTapped ->
@@ -57,27 +64,66 @@ class AnalyticsReducer @Inject constructor(
                     )
                 }
             else -> null
-        }
+        })
 
-    private fun RunningTimeEntryAction.toEvent(): Event? =
-        when (this) {
-            RunningTimeEntryAction.StopButtonTapped -> Event.timeEntryStopped(Manual)
-            RunningTimeEntryAction.CardTapped -> Event.editViewOpened(RunningTimeEntryCard)
-            else -> null
-        }
+    private fun RunningTimeEntryAction.toEvents(): List<Event> =
+        listOfNotNull(
+            when (this) {
+                RunningTimeEntryAction.StopButtonTapped -> Event.timeEntryStopped(Manual)
+                RunningTimeEntryAction.CardTapped -> Event.editViewOpened(RunningTimeEntryCard)
+                else -> null
+            }
+        )
 
-    private fun TimeEntriesLogAction.toEvent(): Event? =
-        when {
-            this is TimeEntriesLogAction.TimeEntryTapped
+    private fun TimeEntriesLogAction.toEvents(): List<Event> =
+        listOfNotNull(
+            when {
+                this is TimeEntriesLogAction.TimeEntryTapped
                 -> Event.editViewOpened(SingleTimeEntry)
-            this is TimeEntriesLogAction.TimeEntryGroupTapped
+                this is TimeEntriesLogAction.TimeEntryGroupTapped
                 -> Event.editViewOpened(GroupHeader)
-            this is TimeEntriesLogAction.TimeEntrySwiped && this.direction == SwipeDirection.Right
+                this is TimeEntriesLogAction.TimeEntrySwiped && this.direction == SwipeDirection.Right
                 -> Event.timeEntryDeleted(LogSwipe)
-            this is TimeEntriesLogAction.TimeEntryGroupSwiped && this.direction == SwipeDirection.Right
+                this is TimeEntriesLogAction.TimeEntryGroupSwiped && this.direction == SwipeDirection.Right
                 -> Event.timeEntryDeleted(GroupedLogSwipe)
-            this is TimeEntriesLogAction.UndoButtonTapped ->
-                Event.undoTapped()
-            else -> null
+                this is TimeEntriesLogAction.UndoButtonTapped ->
+                    Event.undoTapped()
+                else -> null
+            }
+        )
+
+    private fun SuggestionsAction.toEvents(state: MutableValue<AppState>): List<Event> =
+        when (this) {
+            is SuggestionsAction.SuggestionTapped -> when (suggestion) {
+                is Suggestion.MostUsed -> listOf(Event.suggestionStarted(SuggestionProviderType.MostUsedTimeEntries))
+                is Suggestion.Calendar -> {
+                    val currentTime = OffsetDateTime.now()
+                    val startTime = (suggestion as Suggestion.Calendar).calendarEvent.startTime
+                    val offset = Duration.between(currentTime, startTime)
+                    listOf(
+                        Event.suggestionStarted(SuggestionProviderType.Calendar),
+                        Event.calendarSuggestionContinueEvent(offset)
+                    )
+                }
+            }
+            is SuggestionsAction.SuggestionsLoaded -> {
+                val randomForestCount = 0
+                val calendarCount = suggestions.filterIsInstance<Suggestion.Calendar>().size
+                val mostUsedCount = suggestions.filterIsInstance<Suggestion.MostUsed>().size
+                val providerCounts = mapOf(
+                    "Calendar" to calendarCount.toString(),
+                    "RandomForest" to randomForestCount.toString(),
+                    "MostUsedTimeEntries" to mostUsedCount.toString()
+                )
+                val calendarAuthorized = state().calendarPermissionWasGranted
+                val workspaceCount = state().workspaces.size
+                val calendarProviderState = when {
+                    !calendarAuthorized -> CalendarSuggestionProviderState.Unauthorized
+                    calendarCount > 0 -> CalendarSuggestionProviderState.SuggestionsAvailable
+                    else -> CalendarSuggestionProviderState.NoEvents
+                }
+                listOf(Event.suggestionsPresented(suggestions.size, providerCounts, calendarProviderState, workspaceCount))
+            }
+            else -> emptyList()
         }
 }
