@@ -12,14 +12,13 @@ import com.toggl.calendar.calendarday.domain.CalendarDayReducer
 import com.toggl.calendar.calendarday.domain.CalendarDayState
 import com.toggl.calendar.common.domain.CalendarAction
 import com.toggl.calendar.common.domain.CalendarState
-import com.toggl.calendar.common.domain.setSelectedItemToNull
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuAction
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuReducer
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuState
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerAction
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerReducer
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerState
-import com.toggl.common.feature.handleClosableActionsUsing
+import com.toggl.common.feature.navigation.handleClosableActionsUsing
 import com.toggl.common.feature.timeentry.TimeEntryReducer
 import com.toggl.common.feature.timeentry.TimeEntryState
 import dagger.Module
@@ -27,6 +26,7 @@ import dagger.Provides
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
+import kotlin.contracts.ExperimentalContracts
 
 typealias CalendarReducer = Reducer<CalendarState, CalendarAction>
 
@@ -57,6 +57,7 @@ class CalendarModule {
             mapToGlobalAction = CalendarAction::ContextualMenu
         )
 
+    @ExperimentalContracts
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
@@ -88,7 +89,7 @@ class CalendarModule {
                 mapToGlobalAction = CalendarAction::ContextualMenu
             )
         )
-        .handleClosableActionsUsing<CalendarState, CalendarAction, ContextualMenuAction.Close>(CalendarState::setSelectedItemToNull)
+        .handleClosableActionsUsing<CalendarState, CalendarAction, ContextualMenuAction.Close>()
         .decorateWith(timeEntryReducer)
     }
 
