@@ -23,6 +23,8 @@
         <item quantity="one" tools:ignore="ImpliedQuantity">Registro de tempo removido</item>
         <item quantity="other">%d registros de tempos removidos</item>
     </plurals>
+    <string name="log_suggestions_title">Sugestões</string>
+    <string name="log_time_entries_title">Sua Atividade</string>
     <string name="private_project">Projeto privado</string>
     <string name="add_client">Adicionar cliente</string>
     <string name="new_project">Novo Projeto</string>

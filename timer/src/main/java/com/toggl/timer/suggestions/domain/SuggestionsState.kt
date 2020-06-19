@@ -2,6 +2,7 @@ package com.toggl.timer.suggestions.domain
 
 import arrow.optics.optics
 import com.toggl.architecture.Loadable
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
@@ -12,6 +13,7 @@ data class SuggestionsState(
     val suggestions: List<Suggestion>,
     val user: User,
     val projects: Map<Long, Project>,
+    val clients: Map<Long, Client>,
     val timeEntries: Map<Long, TimeEntry>,
     val maxNumberOfSuggestions: Int
 ) {
@@ -23,6 +25,7 @@ data class SuggestionsState(
             return SuggestionsState(
                 user = user.value,
                 projects = timerState.projects,
+                clients = timerState.clients,
                 timeEntries = timerState.timeEntries,
                 maxNumberOfSuggestions = timerState.localState.maxNumberOfSuggestions,
                 suggestions = timerState.localState.suggestions
@@ -31,7 +34,11 @@ data class SuggestionsState(
 
         fun toTimerState(timerState: TimerState, suggestionsState: SuggestionsState?) =
             suggestionsState?.let {
-                timerState.copy(timeEntries = suggestionsState.timeEntries)
+                timerState.copy(
+                    timeEntries = suggestionsState.timeEntries,
+                    projects = suggestionsState.projects,
+                    clients = suggestionsState.clients
+                )
             } ?: timerState
     }
 }

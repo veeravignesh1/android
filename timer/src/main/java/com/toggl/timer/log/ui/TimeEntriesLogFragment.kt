@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.MergeAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants.timeEntryDeletionDelayMs
@@ -24,6 +25,10 @@ import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogSelector
 import com.toggl.timer.log.domain.TimeEntryGroupViewModel
 import com.toggl.timer.log.domain.TimeEntryViewModel
+import com.toggl.timer.suggestions.domain.SuggestionsAction
+import com.toggl.timer.suggestions.ui.SuggestionsAdapter
+import com.toggl.timer.suggestions.ui.SuggestionsLogSelector
+import com.toggl.timer.suggestions.ui.SuggestionsStoreViewModel
 import kotlinx.android.synthetic.main.fragment_time_entries_log.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -31,7 +36,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
 
@@ -45,14 +49,35 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     @Inject
     lateinit var timeEntriesLogSelector: TimeEntriesLogSelector
 
+    @Inject
+    lateinit var suggestionsLogSelector: SuggestionsLogSelector
+
     private val store: TimeEntriesLogStoreViewModel by viewModels { viewModelFactory }
 
-    private val adapter = TimeEntriesLogAdapter(
+    private val suggestionsStore: SuggestionsStoreViewModel by viewModels { viewModelFactory }
+
+    private val timeEntriesAdapter = TimeEntriesLogAdapter(
         { store.dispatch(TimeEntriesLogAction.TimeEntryTapped(it)) },
         { store.dispatch(TimeEntriesLogAction.TimeEntryGroupTapped(it)) },
         { store.dispatch(TimeEntriesLogAction.ContinueButtonTapped(it)) },
         { store.dispatch(TimeEntriesLogAction.ToggleTimeEntryGroupTapped(it)) }
     )
+
+    private val suggestionsAdapter = SuggestionsAdapter {
+        suggestionsStore.dispatch(SuggestionsAction.SuggestionTapped(it))
+    }
+
+    private val suggestionsHeaderAdapter by lazy { SectionHeaderAdapter(getString(R.string.log_suggestions_title)) }
+    private val timeEntriesHeaderAdapter by lazy { SectionHeaderAdapter(getString(R.string.log_time_entries_title)) }
+
+    private val mergeAdapter by lazy {
+        MergeAdapter(
+            suggestionsHeaderAdapter,
+            suggestionsAdapter,
+            timeEntriesHeaderAdapter,
+            timeEntriesAdapter
+        )
+    }
 
     private var snackbar: Snackbar? = null
 
@@ -66,38 +91,47 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recycler_view.adapter = adapter
+        recycler_view.adapter = mergeAdapter
         val swipeCallback = createSwipeActionCallback(requireContext())
         val itemTouchHelper = ItemTouchHelper(swipeCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
 
-        lifecycleScope.launch {
-            store.select(timeEntriesLogSelector)
-                .distinctUntilChanged()
-                .onEach { adapter.submitList(it) }
-                .launchIn(this)
+        suggestionsStore.select(suggestionsLogSelector)
+            .distinctUntilChanged()
+            .onEach {
+                suggestionsAdapter.submitList(it)
+                suggestionsHeaderAdapter.isVisible = it.isNotEmpty()
+            }
+            .launchIn(lifecycleScope)
 
-            store.state
-                .map { it.editableTimeEntry != null }
-                .distinctUntilChanged()
-                .drop(1)
-                .onEach { isEditViewExpanded ->
-                    this@TimeEntriesLogFragment.context?.performClickHapticFeedback()
+        store.select(timeEntriesLogSelector)
+            .distinctUntilChanged()
+            .onEach {
+                timeEntriesAdapter.submitList(it)
+                timeEntriesHeaderAdapter.isVisible = it.isNotEmpty()
+            }
+            .launchIn(lifecycleScope)
 
-                    val navController = findNavController()
-                    if (isEditViewExpanded) {
-                        navController.navigate(deepLinks.timeEntriesStartEditDialog)
-                    } else {
-                        navController.popBackStack()
-                    }
-                }.launchIn(this)
+        store.state
+            .map { it.editableTimeEntry != null }
+            .distinctUntilChanged()
+            .drop(1)
+            .onEach { isEditViewExpanded ->
+                this@TimeEntriesLogFragment.context?.performClickHapticFeedback()
 
-            store.state
-                .map { it.entriesPendingDeletion }
-                .distinctUntilChanged()
-                .onEach { showUndoDeletionSnackbar(it) }
-                .launchIn(this)
-        }
+                val navController = findNavController()
+                if (isEditViewExpanded) {
+                    navController.navigate(deepLinks.timeEntriesStartEditDialog)
+                } else {
+                    navController.popBackStack()
+                }
+            }.launchIn(lifecycleScope)
+
+        store.state
+            .map { it.entriesPendingDeletion }
+            .distinctUntilChanged()
+            .onEach { showUndoDeletionSnackbar(it) }
+            .launchIn(lifecycleScope)
     }
 
     override fun onDestroyView() {
@@ -122,9 +156,9 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     }
 
     private fun onLogItemSwiped(adapterPosition: Int, swipeDirection: SwipeDirection) {
-        val currentItems: List<TimeEntryViewModel> = adapter.currentList
+        val currentItems: List<TimeEntryViewModel> = timeEntriesAdapter.currentList
         if (adapterPosition >= currentItems.size) {
-            adapter.notifyDataSetChanged()
+            timeEntriesAdapter.notifyDataSetChanged()
             return
         }
 
@@ -135,7 +169,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         }?.let(store::dispatch)
 
         if (swipeDirection == SwipeDirection.Right) {
-            adapter.notifyItemChanged(adapterPosition)
+            timeEntriesAdapter.notifyItemChanged(adapterPosition)
         }
     }
 

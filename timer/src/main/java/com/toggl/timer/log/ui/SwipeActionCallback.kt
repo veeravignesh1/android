@@ -37,7 +37,7 @@ class SwipeActionCallback(
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         onSwipeActionListener(
-            viewHolder.adapterPosition,
+            viewHolder.bindingAdapterPosition,
             if (direction == ItemTouchHelper.LEFT) SwipeDirection.Left
             else SwipeDirection.Right
         )

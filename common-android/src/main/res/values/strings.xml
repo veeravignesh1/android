@@ -32,6 +32,8 @@
         <item quantity="one">Time entry was deleted</item>
         <item quantity="other">%d time entries deleted</item>
     </plurals>
+    <string name="log_suggestions_title">Suggestions</string>
+    <string name="log_time_entries_title">Your Activity</string>
     <string name="start_time_after_current_time_warning">Start time must be before current time!</string>
     <string name="start_time_after_stop_time_warning">Start time must be before Stop time!</string>
     <string name="stop_time_before_start_time_warning">Stop time must be after Start time!</string>

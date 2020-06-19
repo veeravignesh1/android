@@ -47,6 +47,7 @@ dependencies {
     api Libs.AndroidX.Navigation.fragment
     api Libs.AndroidX.Navigation.ui
     api Libs.AndroidX.appcompat
+    api Libs.AndroidX.recyclerview
     api Libs.AndroidX.coreKtx
     api Libs.AndroidX.constraintlayout
     api Libs.AndroidX.Lifecycle.extensions

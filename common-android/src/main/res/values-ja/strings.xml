@@ -22,6 +22,8 @@
     <plurals name="entriesDeleted" tools:ignore="UnusedQuantity">
         <item quantity="other">%d個の記録が削除されました</item>
     </plurals>
+    <string name="log_suggestions_title">提案</string>
+    <string name="log_time_entries_title">あなたの活動</string>
     <string name="private_project">個人プロジェクト</string>
     <string name="add_client">クライアントを追加</string>
     <string name="new_project">新しいプロジェクト</string>

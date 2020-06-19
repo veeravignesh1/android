@@ -63,6 +63,7 @@ object Libs {
 
     object AndroidX {
         const val appcompat = "androidx.appcompat:appcompat:1.1.0"
+        const val recyclerview = "androidx.recyclerview:recyclerview:1.2.0-alpha03"
         const val browser = "androidx.browser:browser:1.0.0"
         const val fragment = "androidx.fragment:fragment:1.0.0"
 

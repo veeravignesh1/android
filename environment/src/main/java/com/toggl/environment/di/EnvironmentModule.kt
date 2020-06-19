@@ -42,7 +42,7 @@ class EnvironmentModule {
     @Singleton
     fun calendarService() = object : CalendarService {
         override fun getAvailableCalendars(): List<Calendar> {
-            TODO("Not yet implemented")
+            return emptyList()
         }
 
         override fun getCalendarEvents(
@@ -50,7 +50,7 @@ class EnvironmentModule {
             toEndDate: OffsetDateTime,
             fromCalendars: List<Calendar>
         ): List<CalendarEvent> {
-            TODO("Not yet implemented")
+            return emptyList()
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.Constants
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
@@ -11,10 +12,12 @@ fun createInitialState(
     projects: List<Project> = emptyList(),
     timeEntries: List<TimeEntry> = emptyList(),
     maxNumberOfSuggestions: Int = Constants.Suggestions.maxNumberOfSuggestions,
-    suggestions: List<Suggestion> = emptyList()
+    suggestions: List<Suggestion> = emptyList(),
+    clients: Map<Long, Client> = emptyMap()
 ) = SuggestionsState(
     user = user,
     projects = projects.associateBy { it.id },
+    clients = clients,
     timeEntries = timeEntries.associateBy { it.id },
     maxNumberOfSuggestions = maxNumberOfSuggestions,
     suggestions = suggestions
