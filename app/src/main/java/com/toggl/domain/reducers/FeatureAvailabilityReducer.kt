@@ -4,6 +4,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.HigherOrderReducer
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.feature.navigation.getEditableTimeEntryIfAny
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.models.extensions.isPro
@@ -18,7 +19,7 @@ class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
     ): List<Effect<AppAction>> =
         when {
             action.isToggleBillableAction() -> state.mapState {
-                val workspaceId = editableTimeEntry?.workspaceId ?: return@mapState noEffect()
+                val workspaceId = backStack.getEditableTimeEntryIfAny()?.workspaceId ?: return@mapState noEffect()
                 val workspace = workspaces[workspaceId]
                     ?: return@mapState noEffect()
 

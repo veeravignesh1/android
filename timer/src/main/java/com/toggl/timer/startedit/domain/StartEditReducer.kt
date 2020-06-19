@@ -34,6 +34,8 @@ import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetExcep
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.common.extensions.absoluteDurationBetween
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
@@ -287,8 +289,7 @@ class StartEditReducer @Inject constructor(
             it.copy(
                 description = it.description.substringBefore(delimiter),
                 projectId = projectSuggestion.id,
-                workspaceId = projectSuggestion.workspaceId,
-                editableProject = null
+                workspaceId = projectSuggestion.workspaceId
             )
         }
 
@@ -317,15 +318,14 @@ class StartEditReducer @Inject constructor(
             )
         }
 
-    private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState =
-        StartEditState.editableTimeEntry.modify(this) {
-            it.copy(
-                editableProject = EditableProject(
-                    name = autocompleteSuggestion.name,
-                    workspaceId = 1
-                )
-            )
-        }
+    private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState {
+        val editableProject = EditableProject(
+            name = autocompleteSuggestion.name,
+            workspaceId = 1
+        )
+        val route = Route.Project(editableProject)
+        return copy(backStack = backStack.push(route))
+    }
 
     private fun StartEditState.modifyWithTaskSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Task): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {

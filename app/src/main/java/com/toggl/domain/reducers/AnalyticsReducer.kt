@@ -4,6 +4,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.feature.navigation.getEditableTimeEntryIfAny
 import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -57,7 +58,7 @@ class AnalyticsReducer @Inject constructor(
             StartEditAction.CloseButtonTapped,
             StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
             StartEditAction.DoneButtonTapped ->
-                state().editableTimeEntry?.let {
+                state().backStack.getEditableTimeEntryIfAny()?.let {
                     Event.editViewClosed(
                         if (it.isRepresentingGroup()) EditViewCloseReason.GroupSave
                         else EditViewCloseReason.Save

@@ -8,6 +8,8 @@ import com.toggl.architecture.extensions.noEffect
 import com.toggl.architecture.extensions.toEffect
 import com.toggl.architecture.extensions.toEffects
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryAction.DeleteTimeEntry
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
@@ -40,13 +42,15 @@ class TimeEntriesLogReducer @Inject constructor() : Reducer<TimeEntriesLogState,
                         ?.run(EditableTimeEntry.Companion::fromSingle)
                         ?: throw TimeEntryDoesNotExistException()
 
-                    copy(editableTimeEntry = entryToEdit)
+                    val route = Route.StartEdit(entryToEdit)
+                    copy(backStack = backStack.push(route))
                 }
 
             is TimeEntryGroupTapped ->
                 state.mutateWithoutEffects {
                     val entryToEdit = EditableTimeEntry.fromGroup(state().getAllTimeEntriesWithIds(action.ids))
-                    copy(editableTimeEntry = entryToEdit)
+                    val route = Route.StartEdit(entryToEdit)
+                    copy(backStack = backStack.push(route))
                 }
 
             is TimeEntrySwiped -> {

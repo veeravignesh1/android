@@ -7,6 +7,8 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.architecture.extensions.toEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.StopRunningTimeEntry
 import com.toggl.common.feature.timeentry.extensions.runningTimeEntryOrNull
@@ -36,7 +38,8 @@ class RunningTimeEntryReducer @Inject constructor(val timeService: TimeService) 
                         ?.run(EditableTimeEntry.Companion::fromSingle)
                         ?: EditableTimeEntry.empty(defaultWorkspaceId())
 
-                    copy(editableTimeEntry = entryToOpen)
+                    val route = Route.StartEdit(entryToOpen)
+                    copy(backStack = backStack.push(route))
                 }
             is TimeEntryHandling -> noEffect()
         }
