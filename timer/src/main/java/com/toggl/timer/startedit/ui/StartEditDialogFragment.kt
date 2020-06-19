@@ -94,7 +94,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     @Inject lateinit var projectTagChipSelector: ProjectTagChipSelector
     @Inject lateinit var autocompleteSuggestionsSelector: AutocompleteSuggestionsSelector
 
-    private var editDialog: Dialog? = null
+    private var editTimeDialog: Dialog? = null
     private var timeIndicatorScheduledUpdate: Job? = null
 
     private lateinit var hideableStopViews: List<View>
@@ -375,14 +375,14 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     override fun onDestroyView() {
         bottomSheetCallback.clear()
         autocompletePopup.dismiss()
-        store.dispatch(StartEditAction.DialogDismissed)
         time_entry_description.clearDescriptionChangedListeners()
-        dismissEditDialog()
+        dismissEditTimeDialog()
         super.onDestroyView()
     }
 
     override fun onCancel(dialog: DialogInterface) {
         (dialog as BottomSheetDialog).setOnShowListener(null)
+        store.dispatch(StartEditAction.DialogDismissed)
         super.onCancel(dialog)
     }
 
@@ -462,7 +462,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private fun startEditingTimeDate(dateTimePickMode: DateTimePickMode, editableTimeEntry: EditableTimeEntry) {
         when (dateTimePickMode) {
-            DateTimePickMode.None -> dismissEditDialog()
+            DateTimePickMode.None -> dismissEditTimeDialog()
             DateTimePickMode.StartTime -> startEditingTime(editableTimeEntry.startTimeOrNow())
             DateTimePickMode.StartDate -> startEditingDate(
                 editableTimeEntry.startTimeOrNow(),
@@ -476,9 +476,9 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    private fun dismissEditDialog() {
-        editDialog?.dismiss()
-        editDialog = null
+    private fun dismissEditTimeDialog() {
+        editTimeDialog?.dismiss()
+        editTimeDialog = null
     }
 
     private fun startEditingTime(initialTime: OffsetDateTime) {
@@ -497,7 +497,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         ).run {
             setOnCancelListener(dispatchingCancelListener)
             show()
-            editDialog = this
+            editTimeDialog = this
         }
     }
 
@@ -525,7 +525,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
             setOnCancelListener(dispatchingCancelListener)
             show()
-            editDialog = this
+            editTimeDialog = this
         }
     }
 
