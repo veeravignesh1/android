@@ -5,7 +5,6 @@ import androidx.navigation.NavController
 import com.toggl.common.extensions.performClickHapticFeedback
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.math.abs
 
 @Singleton
 class Router @Inject constructor(private val context: Context) {
@@ -17,18 +16,34 @@ class Router @Inject constructor(private val context: Context) {
         newBackStack: BackStack,
         navController: NavController
     ) {
-        val newBackStackSize = newBackStack.size
-        val oldBackStackSize = currentBackStack.size
+        val oldBackStack = currentBackStack
 
-        val sizeDifference = newBackStackSize - oldBackStackSize
-        val operations = when {
-            sizeDifference > 0 -> newBackStack.drop(oldBackStackSize).map { BackStackOperation.Push(it.deepLink(context)) }
-            sizeDifference < 0 -> currentBackStack.dropLast(abs(sizeDifference)).map { BackStackOperation.Pop }
-            else -> emptyList()
+        val operations = sequence {
+
+            val neededPopOperations = oldBackStack.foldIndexed(emptyList<BackStackOperation>()) { index, popOperations, oldRoute ->
+                if (popOperations.any()) {
+                    // As soon as any operation is invalid, we need to pop the rest
+                    return@foldIndexed popOperations + BackStackOperation.Pop
+                }
+
+                val newRoute = newBackStack[index]
+
+                if (newRoute == oldRoute) popOperations
+                else listOf(BackStackOperation.Pop)
+            }
+
+            yieldAll(neededPopOperations)
+
+            val numberOfValidOperations = oldBackStack.size - neededPopOperations.size
+
+            for (i in numberOfValidOperations until newBackStack.size) {
+                val deepLink = newBackStack[i - 1].deepLink(context)
+                val route = BackStackOperation.Push(deepLink)
+                yield(route)
+            }
         }
 
         for (operation in operations) {
-
             context.performClickHapticFeedback()
             when (operation) {
                 is BackStackOperation.Push -> navController.navigate(operation.deepLink)
