@@ -16,7 +16,6 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.withClip
 import androidx.core.graphics.withTranslation
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.colorString
 import com.toggl.calendar.common.domain.description
 import com.toggl.calendar.common.domain.duration
@@ -25,6 +24,7 @@ import com.toggl.calendar.common.domain.isRunning
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.Constants.ClockMath.minutesInAnHour
 import com.toggl.common.extensions.absoluteDurationBetween
+import com.toggl.common.feature.models.SelectedCalendarItem
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

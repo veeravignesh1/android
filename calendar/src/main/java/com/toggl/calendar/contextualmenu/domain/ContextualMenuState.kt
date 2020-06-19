@@ -2,8 +2,8 @@ package com.toggl.calendar.contextualmenu.domain
 
 import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.models.domain.TimeEntry
 
 @optics

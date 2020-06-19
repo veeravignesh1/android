@@ -22,7 +22,6 @@ import com.toggl.calendar.calendarday.ui.views.CalendarWidgetView.DraggingDirect
 import com.toggl.calendar.calendarday.ui.views.CalendarWidgetView.DraggingDirection.Idle
 import com.toggl.calendar.calendarday.ui.views.CalendarWidgetView.DraggingDirection.Up
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.duration
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.isRunning
@@ -33,6 +32,7 @@ import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.extensions.applyAndRecycle
 import com.toggl.common.extensions.performTickEffect
 import com.toggl.common.extensions.roundToClosestQuarter
+import com.toggl.common.feature.models.SelectedCalendarItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
