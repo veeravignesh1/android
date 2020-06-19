@@ -27,6 +27,7 @@ import com.toggl.calendar.common.domain.duration
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.isRunning
 import com.toggl.calendar.common.domain.startTime
+import com.toggl.common.Constants
 import com.toggl.common.Constants.ClockMath.hoursInTheDay
 import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.extensions.applyAndRecycle
@@ -39,7 +40,9 @@ import kotlinx.coroutines.flow.asFlow
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
+import java.util.Timer
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.fixedRateTimer
 import kotlin.concurrent.withLock
 import kotlin.contracts.ExperimentalContracts
 import kotlin.math.abs
@@ -130,6 +133,7 @@ class CalendarWidgetView @JvmOverloads constructor(
     private val dragMaxSpeed = 15f
     private var draggingDirection = Idle
     private val autoScrollAnimator: ValueAnimator
+    private var currentHourTimer: Timer? = null
 
     private val scroller: OverScroller
     private val gestureDetector: GestureDetector
@@ -138,6 +142,7 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     private val calendarItemDrawingDelegate: CalendarItemDrawingDelegate
     private val backgroundDrawingDelegate: CalendarBackgroundDrawingDelegate
+    private val currentHourDrawingDelegate: CalendarCurrentHourDrawingDelegate
 
     private val itemTappedChannel = ConflatedBroadcastChannel<CalendarItem>()
     private val emptySpaceLongPressedChannel = ConflatedBroadcastChannel<OffsetDateTime>()
@@ -388,7 +393,10 @@ class CalendarWidgetView @JvmOverloads constructor(
             editingHandlesHorizontalMargins = editingHandlesHorizontalMargins,
             editingHandlesRadius = editingHandlesRadius,
             editingHandlesStrokeWidth = editingHandlesStrokeWidth,
-            defaultCalendarItemColor = defaultCalendarItemColor
+            defaultCalendarItemColor = defaultCalendarItemColor,
+            editingHoursLabelsStartMargin = calendarHoursStartMargin,
+            editingHoursLabelsTextColor = editingHourLabelTextColor,
+            editingHoursLabelsTextSize = editingHoursLabelPaintTextSize
         ).apply {
             currentHourHeight = calendarBaseHourHeight
         }
@@ -403,6 +411,13 @@ class CalendarWidgetView @JvmOverloads constructor(
         ).also {
             it.currentHourHeight = calendarBaseHourHeight
         }
+
+        currentHourDrawingDelegate = CalendarCurrentHourDrawingDelegate(
+            currentHourColor = currentHourColor,
+            calendarCurrentHourIndicatorStrokeSize = calendarCurrentHourIndicatorStrokeSize,
+            currentHourCircleRadius = calendarCurrentHourCircleRadius,
+            timeSliceStartX = calendarHourLineStartMargin
+        )
 
         val gestureListener = GestureListener(
             ::onTouchDown,
@@ -506,6 +521,16 @@ class CalendarWidgetView @JvmOverloads constructor(
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        currentHourTimer = fixedRateTimer(period = Duration.ofMinutes(1).toMillis()) { postInvalidate() }
+    }
+
+    override fun onDetachedFromWindow() {
+        currentHourTimer?.cancel()
+        super.onDetachedFromWindow()
+    }
+
     override fun onDraw(canvas: Canvas) {
         viewFrame.set(0f, scrollOffset, width.toFloat(), scrollOffset + height)
         topAreaTriggerLine = viewFrame.top + calendarEdgeDistanceToTriggerAutoScroll
@@ -596,6 +621,9 @@ class CalendarWidgetView @JvmOverloads constructor(
 
     @Suppress("UNUSED_PARAMETER")
     private fun Canvas.drawCurrentHourIndicator() {
+        val now = OffsetDateTime.now()
+        val currentHourY = (now.hour + now.minute.toFloat() / Constants.ClockMath.minutesInAnHour) * hourHeight
+        currentHourDrawingDelegate.onDraw(this, viewFrame, currentHourY)
     }
 
     @Suppress("UNUSED_PARAMETER")

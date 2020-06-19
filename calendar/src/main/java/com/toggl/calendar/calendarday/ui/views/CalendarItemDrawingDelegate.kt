@@ -20,12 +20,14 @@ import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.colorString
 import com.toggl.calendar.common.domain.description
 import com.toggl.calendar.common.domain.duration
+import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.isRunning
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.Constants.ClockMath.minutesInAnHour
 import com.toggl.common.extensions.absoluteDurationBetween
 import java.time.Duration
 import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.max
@@ -60,7 +62,10 @@ class CalendarItemDrawingDelegate(
     private val editingHandlesHorizontalMargins: Float,
     private val editingHandlesRadius: Float,
     private val editingHandlesStrokeWidth: Float,
-    private val defaultCalendarItemColor: Int
+    private val defaultCalendarItemColor: Int,
+    private val editingHoursLabelsTextSize: Float,
+    private val editingHoursLabelsStartMargin: Float,
+    private val editingHoursLabelsTextColor: Int
 ) {
     private val fivePercentIntAlpha: Int = (255 * 0.05).toInt()
     private val tenPercentIntAlpha: Int = 255 / 10
@@ -74,7 +79,12 @@ class CalendarItemDrawingDelegate(
     private val itemPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val textPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val calendarIconPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-
+    private val hourLabelsPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textAlign = Paint.Align.RIGHT
+        color = editingHoursLabelsTextColor
+        textSize = editingHoursLabelsTextSize
+    }
+    private val hourFormat = DateTimeFormatter.ofPattern("HH:mm")
     private val drawingRect: RectF = RectF()
     private val stripeRect = RectF()
     private val dashEffect = DashPathEffect(floatArrayOf(10f, 10f), 0f)
@@ -108,6 +118,7 @@ class CalendarItemDrawingDelegate(
         canvas.drawCalendarItemText(calendarItem)
         if (isInEditMode && calendarItem.isTimeEntry()) {
             canvas.drawEditingHandles(calendarItem)
+            canvas.drawHourIndicators(calendarItem)
         }
     }
 
@@ -356,6 +367,13 @@ class CalendarItemDrawingDelegate(
         drawCircle(drawingRect.right - editingHandlesHorizontalMargins, drawingRect.top, editingHandlesRadius, itemPaint)
         if (!isRunning)
             drawCircle(drawingRect.left + editingHandlesHorizontalMargins, drawingRect.bottom, editingHandlesRadius, itemPaint)
+    }
+
+    private fun Canvas.drawHourIndicators(calendarItem: CalendarItem) {
+        val startHourLabel = hourFormat.format(calendarItem.startTime())
+        val endHourLabel = hourFormat.format(calendarItem.endTime() ?: OffsetDateTime.now())
+        drawText(startHourLabel, editingHoursLabelsStartMargin, drawingRect.top + hourLabelsPaint.descent(), hourLabelsPaint)
+        drawText(endHourLabel, editingHoursLabelsStartMargin, drawingRect.bottom + hourLabelsPaint.descent(), hourLabelsPaint)
     }
 
     private fun duration(calendarItem: CalendarItem): Duration {
