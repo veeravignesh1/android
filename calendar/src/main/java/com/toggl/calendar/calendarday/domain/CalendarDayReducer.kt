@@ -12,9 +12,9 @@ import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.withoutEffects
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
-import com.toggl.common.feature.navigation.getSelectedItemIfAny
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.navigation.push
-import com.toggl.common.feature.navigation.updateSelectableItem
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.extensions.endTime
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfNew
@@ -98,13 +98,13 @@ class CalendarDayReducer @Inject constructor(
 
     private fun MutableValue<CalendarDayState>.mutateEditableTimeEntry(modifyEditableTimeEntry: (EditableTimeEntry) -> EditableTimeEntry) {
         return mutate {
-            val selectableItem = backStack.getSelectedItemIfAny()
+            val selectableItem = backStack.getRouteParam<SelectedCalendarItem>()
             val editableTimeEntry = selectableItem.toEditableTimeEntry()
             editableTimeEntry.throwIfNew()
 
-            copy(backStack = backStack.updateSelectableItem(
-                selectableItem.copy(editableTimeEntry = modifyEditableTimeEntry(editableTimeEntry))
-            ))
+            copy(backStack = backStack.setRouteParam {
+                Route.ContextualMenu(selectableItem.copy(editableTimeEntry = modifyEditableTimeEntry(editableTimeEntry)))
+            })
         }
     }
 

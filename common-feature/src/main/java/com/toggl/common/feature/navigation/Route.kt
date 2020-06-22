@@ -10,10 +10,14 @@ import com.toggl.models.domain.EditableTimeEntry
 sealed class Route {
     object Onboarding : Route()
     object Timer : Route()
-    class StartEdit(val editableTimeEntry: EditableTimeEntry) : Route()
-    class Project(val editableProject: EditableProject) : Route()
-    class ContextualMenu(val selectedItem: SelectedCalendarItem) : Route()
+    class StartEdit(override val param: EditableTimeEntry) : Route(), ParamHolder<EditableTimeEntry>
+    class Project(override val param: EditableProject) : Route(), ParamHolder<EditableProject>
+    class ContextualMenu(override val param: SelectedCalendarItem) : Route(), ParamHolder<SelectedCalendarItem>
     object Settings : Route()
+}
+
+interface ParamHolder<P> {
+    val param: P
 }
 
 fun Route.deepLink(context: Context): Uri {

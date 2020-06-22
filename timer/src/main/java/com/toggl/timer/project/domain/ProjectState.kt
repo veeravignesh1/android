@@ -1,10 +1,7 @@
 package com.toggl.timer.project.domain
 
 import arrow.optics.optics
-import com.toggl.common.feature.navigation.getEditableProjectIfAny
-import com.toggl.common.feature.navigation.getEditableTimeEntryIfAny
-import com.toggl.common.feature.navigation.updateEditableProject
-import com.toggl.common.feature.navigation.updateEditableTimeEntry
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
@@ -24,8 +21,8 @@ data class ProjectState(
     companion object {
 
         fun fromTimerState(timerState: TimerState): ProjectState? {
-            val editableTimeEntry = timerState.backStack.getEditableTimeEntryIfAny() ?: return null
-            val editableProject = timerState.backStack.getEditableProjectIfAny() ?: return null
+            val editableTimeEntry = timerState.backStack.getRouteParam<EditableTimeEntry>() ?: return null
+            val editableProject = timerState.backStack.getRouteParam<EditableProject>() ?: return null
 
             return ProjectState(
                 editableProject = editableProject,

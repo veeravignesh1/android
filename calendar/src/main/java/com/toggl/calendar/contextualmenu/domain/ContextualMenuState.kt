@@ -4,8 +4,9 @@ import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.BackStack
-import com.toggl.common.feature.navigation.getSelectedItemIfAny
-import com.toggl.common.feature.navigation.updateSelectableItem
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.letRouteParamIfAny
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.models.domain.TimeEntry
 
 @optics
@@ -16,7 +17,7 @@ data class ContextualMenuState(
 ) {
     companion object {
         fun fromCalendarState(calendarState: CalendarState) =
-            calendarState.backStack.getSelectedItemIfAny()?.let {
+            calendarState.backStack.letRouteParamIfAny<SelectedCalendarItem, ContextualMenuState> {
                 ContextualMenuState(
                     calendarState.timeEntries,
                     calendarState.backStack,
@@ -28,7 +29,7 @@ data class ContextualMenuState(
             contextualMenuState?.let {
                 calendarState.copy(
                     timeEntries = contextualMenuState.timeEntries,
-                    backStack = contextualMenuState.backStack.updateSelectableItem(contextualMenuState.selectedItem)
+                    backStack = contextualMenuState.backStack.setRouteParam { Route.ContextualMenu(contextualMenuState.selectedItem) }
                 )
             } ?: calendarState
     }
