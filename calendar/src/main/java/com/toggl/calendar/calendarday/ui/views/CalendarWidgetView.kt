@@ -650,7 +650,7 @@ class CalendarWidgetView @JvmOverloads constructor(
 
             editAction = when {
                 dragTopRect.contains(touchX, touchY + scrollOffset) -> EditAction.ChangeStart
-                it.isRunning() -> EditAction.None
+                it.isRunning -> EditAction.None
                 dragBottomRect.contains(touchX, touchY + scrollOffset) -> EditAction.ChangeEnd
                 touchRectF.contains(touchX, touchY + scrollOffset) -> EditAction.ChangeOffset
                 else -> EditAction.None
@@ -755,7 +755,7 @@ class CalendarWidgetView @JvmOverloads constructor(
             itemInEditModeRect.top = newTop
             val calendarItem = it.selectedCalendarItemToDraw
             val newStartTime = snappingTimeAtYOffset(itemInEditModeRect.top, it.itemsStartAndEndTimes)
-            val newDuration = calendarItem.endTime()?.absoluteDurationBetween(newStartTime)
+            val newDuration = calendarItem.endTime?.absoluteDurationBetween(newStartTime)
 
             if (newDuration != null && newDuration <= Duration.ZERO || newDuration == null && newStartTime > OffsetDateTime.now())
                 return
@@ -775,7 +775,7 @@ class CalendarWidgetView @JvmOverloads constructor(
     private fun updateItemInEditModeEndTime() {
         drawingData.let {
             if (it.selectedCalendarItemToDraw == null) return
-            if (it.selectedCalendarItemToDraw.duration() == null) return
+            if (it.selectedCalendarItemToDraw.duration == null) return
 
             val maxHeight = calculateMaxHeight()
             val newBottom = (eventStartingRect.bottom + draggingDelta + draggingScrollDelta).coerceIn(
@@ -785,8 +785,8 @@ class CalendarWidgetView @JvmOverloads constructor(
             itemInEditModeRect.bottom = newBottom
             val newEndTime = snappingTimeAtYOffset(itemInEditModeRect.bottom, it.itemsStartAndEndTimes)
             val calendarItem = it.selectedCalendarItemToDraw
-            val newDuration = newEndTime.absoluteDurationBetween(calendarItem.startTime())
-            val nextDay = calendarItem.startTime().plusDays(1).truncatedTo(ChronoUnit.DAYS)
+            val newDuration = newEndTime.absoluteDurationBetween(calendarItem.startTime)
+            val nextDay = calendarItem.startTime.plusDays(1).truncatedTo(ChronoUnit.DAYS)
 
             if (newDuration <= Duration.ZERO || newEndTime >= nextDay)
                 return
@@ -805,7 +805,7 @@ class CalendarWidgetView @JvmOverloads constructor(
     private fun updateItemInEditModeOffset() {
         drawingData.let {
             if (it.selectedCalendarItemToDraw == null) return
-            val currentDuration = it.selectedCalendarItemToDraw.duration() ?: return
+            val currentDuration = it.selectedCalendarItemToDraw.duration ?: return
 
             val newTop = eventStartingRect.top + draggingDelta + draggingScrollDelta
             val newBottom = eventStartingRect.bottom + draggingDelta + draggingScrollDelta
@@ -821,7 +821,7 @@ class CalendarWidgetView @JvmOverloads constructor(
             val newStartTime =
                 newStartTimeWithStaticDuration(itemInEditModeRect.top, it.itemsStartAndEndTimes, currentDuration)
             val calendarItem = it.selectedCalendarItemToDraw
-            val nextDay = calendarItem.startTime().plusDays(1).truncatedTo(ChronoUnit.DAYS)
+            val nextDay = calendarItem.startTime.plusDays(1).truncatedTo(ChronoUnit.DAYS)
 
             if (newStartTime + currentDuration >= nextDay)
                 return

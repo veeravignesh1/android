@@ -7,7 +7,7 @@ import com.toggl.timer.R
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.log.domain.TimeEntryContentViewModel
 import com.toggl.timer.log.domain.TimeEntryGroupViewModel
-import com.toggl.timer.log.domain.formatForDisplay
+import com.toggl.common.feature.domain.formatForDisplay
 
 abstract class TimeEntryContentViewHolder<in T : TimeEntryContentViewModel>(itemView: View) : TimeEntryLogViewHolder(itemView) {
     val addDescriptionLabel: View = itemView.findViewById(R.id.add_description_label)

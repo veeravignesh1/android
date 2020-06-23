@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.toggl.architecture.extensions.select
 import com.toggl.calendar.R
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
@@ -17,6 +18,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
@@ -73,6 +75,16 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
         calendar_widget.offsetFlow
             .onEach {
                 store.dispatch(CalendarDayAction.TimeEntryDragged(it))
+            }.launchIn(lifecycleScope)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(contextual_menu_bottom_sheet)
+
+        store.state
+            .map { it.selectedItem != null }
+            .onEach { hasSelectedItem ->
+                bottomSheetBehavior.state =
+                    if (hasSelectedItem) BottomSheetBehavior.STATE_EXPANDED
+                    else BottomSheetBehavior.STATE_HIDDEN
             }.launchIn(lifecycleScope)
     }
 }

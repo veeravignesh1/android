@@ -109,9 +109,9 @@ class CalendarItemDrawingDelegate(
             return
 
         when {
-            calendarItem.isTimeEntry() && calendarItem.duration() != null ->
+            calendarItem.isTimeEntry() && calendarItem.duration != null ->
                 canvas.drawStoppedTimeEntryItem(calendarItem)
-            calendarItem.isTimeEntry() && calendarItem.duration() == null ->
+            calendarItem.isTimeEntry() && calendarItem.duration == null ->
                 canvas.drawRunningTimeEntryItem(calendarItem)
             calendarItem.isCalendarEvent() -> canvas.drawCalendarEventItem(calendarItem)
         }
@@ -127,7 +127,7 @@ class CalendarItemDrawingDelegate(
         val availableWidth = calendarBounds.width() - leftMargin
         val eventWidth = (availableWidth - leftPadding - rightPadding - totalItemSpacing) / calendarItem.totalColumns
         val left = leftMargin + leftPadding + eventWidth * calendarItem.columnIndex + calendarItem.columnIndex * itemSpacing
-        val startTime = calendarItem.startTime().withOffsetSameInstant(OffsetDateTime.now().offset)
+        val startTime = calendarItem.startTime.withOffsetSameInstant(OffsetDateTime.now().offset)
         val totalHours = startTime.hour + startTime.minute.toFloat() / minutesInAnHourF
         val durationHours = duration(calendarItem).toMinutes().toFloat() / minutesInAnHourF
         val durationInHeight = max(minHourHeight, durationHours * currentHourHeight)
@@ -157,7 +157,7 @@ class CalendarItemDrawingDelegate(
         val textWidth = eventWidth - textHorizontalPadding * 2
         if (textWidth <= 0) return
 
-        val eventTextLayout = getCalendarItemTextLayout(calendarItem, textWidth, fontSize, calendarItem.isRunning())
+        val eventTextLayout = getCalendarItemTextLayout(calendarItem, textWidth, fontSize, calendarItem.isRunning)
         val totalLineHeight = calculateLineHeight(eventHeight, eventTextLayout).toFloat()
 
         withTranslation(
@@ -181,8 +181,8 @@ class CalendarItemDrawingDelegate(
         fontSize: Float,
         isRunning: Boolean
     ): StaticLayout {
-        val eventTextLayout = textLayouts[item.description()]
-        if (eventTextLayout != null && abs(eventTextLayout.width - eventWidth) <= 0.1 && eventTextLayout.text == item.description())
+        val eventTextLayout = textLayouts[item.description]
+        if (eventTextLayout != null && abs(eventTextLayout.width - eventWidth) <= 0.1 && eventTextLayout.text == item.description)
             return eventTextLayout
 
         val color = calculateBestContrastingTextColorFor(item, isRunning)
@@ -191,9 +191,9 @@ class CalendarItemDrawingDelegate(
         textPaint.textSize = fontSize
         @Suppress("DEPRECATION")
         val newEventTextLayout = StaticLayout(
-            item.description(),
+            item.description,
             0,
-            item.description().length,
+            item.description.length,
             TextPaint(textPaint),
             eventWidth.toInt(),
             Layout.Alignment.ALIGN_NORMAL,
@@ -204,14 +204,14 @@ class CalendarItemDrawingDelegate(
             eventWidth.toInt()
         )
 
-        textLayouts[item.description()] = newEventTextLayout
+        textLayouts[item.description] = newEventTextLayout
         return newEventTextLayout
     }
 
     private fun calculateBestContrastingTextColorFor(item: CalendarItem, isRunning: Boolean): Int {
         val basicStrategyColor =
             if (item is CalendarItem.CalendarEvent || isRunning)
-                item.colorString().toColorOrDefault()
+                item.colorString.toColorOrDefault()
             else Color.WHITE
 
         val basicColorContrast =
@@ -229,7 +229,7 @@ class CalendarItemDrawingDelegate(
     }
 
     private fun Canvas.drawCalendarEventItem(calendarItem: CalendarItem) {
-        val originalColor = calendarItem.colorString().toColorOrDefault()
+        val originalColor = calendarItem.colorString.toColorOrDefault()
         val fadedColor = ColorUtils.setAlphaComponent(originalColor, twentyFivePercentIntAlpha)
         val fadedColorOnWhite = ColorUtils.compositeColors(fadedColor, Color.WHITE)
         itemPaint.style = Paint.Style.FILL_AND_STROKE
@@ -256,14 +256,14 @@ class CalendarItemDrawingDelegate(
     }
 
     private fun Canvas.drawStoppedTimeEntryItem(calendarItem: CalendarItem) {
-        itemPaint.color = calendarItem.colorString().toColorOrDefault()
+        itemPaint.color = calendarItem.colorString.toColorOrDefault()
         itemPaint.style = Paint.Style.FILL_AND_STROKE
         calendarItemPaintedBackgroundColor = itemPaint.color
         drawRoundRect(drawingRect, cornerRadius, cornerRadius, itemPaint)
     }
 
     private fun Canvas.drawRunningTimeEntryItem(calendarItem: CalendarItem) {
-        val itemColor = calendarItem.colorString().toColorOrDefault()
+        val itemColor = calendarItem.colorString.toColorOrDefault()
         val calendarFillColor = ColorUtils.setAlphaComponent(itemColor, fivePercentIntAlpha)
         val calendarFillColorOnCalendarBackgroundColor = ColorUtils.compositeColors(calendarFillColor, calendarBackgroundColor)
         val calendarStripeColor = ColorUtils.setAlphaComponent(itemColor, tenPercentIntAlpha)
@@ -351,7 +351,7 @@ class CalendarItemDrawingDelegate(
     }
 
     private fun Canvas.drawEditingHandles(calendarItem: CalendarItem) {
-        val isRunning = calendarItem.isRunning()
+        val isRunning = calendarItem.isRunning
         itemPaint.color = Color.WHITE
         itemPaint.style = Paint.Style.FILL_AND_STROKE
 
@@ -362,7 +362,7 @@ class CalendarItemDrawingDelegate(
 
         itemPaint.style = Paint.Style.STROKE
         itemPaint.strokeWidth = editingHandlesStrokeWidth
-        itemPaint.color = calendarItem.colorString().toColorOrDefault()
+        itemPaint.color = calendarItem.colorString.toColorOrDefault()
 
         drawCircle(drawingRect.right - editingHandlesHorizontalMargins, drawingRect.top, editingHandlesRadius, itemPaint)
         if (!isRunning)
@@ -370,8 +370,8 @@ class CalendarItemDrawingDelegate(
     }
 
     private fun Canvas.drawHourIndicators(calendarItem: CalendarItem) {
-        val startHourLabel = hourFormat.format(calendarItem.startTime())
-        val endHourLabel = hourFormat.format(calendarItem.endTime() ?: OffsetDateTime.now())
+        val startHourLabel = hourFormat.format(calendarItem.startTime)
+        val endHourLabel = hourFormat.format(calendarItem.endTime ?: OffsetDateTime.now())
         drawText(startHourLabel, editingHoursLabelsStartMargin, drawingRect.top + hourLabelsPaint.descent(), hourLabelsPaint)
         drawText(endHourLabel, editingHoursLabelsStartMargin, drawingRect.bottom + hourLabelsPaint.descent(), hourLabelsPaint)
     }

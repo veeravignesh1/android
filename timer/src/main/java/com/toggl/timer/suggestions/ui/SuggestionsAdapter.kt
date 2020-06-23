@@ -8,8 +8,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.toggl.common.feature.domain.formatForDisplay
 import com.toggl.timer.R
-import com.toggl.timer.log.domain.formatForDisplay
 import com.toggl.timer.suggestions.domain.Suggestion
 import com.toggl.timer.suggestions.domain.SuggestionViewModel
 

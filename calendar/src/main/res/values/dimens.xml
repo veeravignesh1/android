@@ -37,4 +37,5 @@
     <dimen name="default_calendar_calendar_event_bottom_line_height">2dp</dimen>
     <dimen name="default_calendar_calendar_icon_size">24dp</dimen>
     <dimen name="default_calendar_calendarIcon_right_inset_margin">4dp</dimen>
+    <dimen name="contextual_menu_project_dot_size">10dp</dimen>
 </resources>

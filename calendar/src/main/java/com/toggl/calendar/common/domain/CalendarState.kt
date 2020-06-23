@@ -3,6 +3,7 @@ package com.toggl.calendar.common.domain
 import arrow.optics.optics
 import com.toggl.environment.services.calendar.Calendar
 import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime
 data class CalendarState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
+    val clients: Map<Long, Client>,
     val editableTimeEntry: EditableTimeEntry?,
     val localState: LocalState
 ) {

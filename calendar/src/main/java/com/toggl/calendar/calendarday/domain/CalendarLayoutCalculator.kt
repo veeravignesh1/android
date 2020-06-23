@@ -52,7 +52,7 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
         val now = timeService.now()
         val group = buckets.last()
         val maxEndTime = group.map { calculateEndTimeWith(it, now) }.max() ?: OffsetDateTime.MIN
-        if (calendarItem.startTime() < maxEndTime)
+        if (calendarItem.startTime < maxEndTime)
             group.add(calendarItem)
         else
             buckets.add(mutableListOf(calendarItem))
@@ -152,7 +152,7 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
         var positionToInsert = -1
         val now = timeService.now()
         val column = columns.firstOrNull {
-            val lastItem = it.lastOrNull { el -> calculateEndTimeWith(el, now) <= item.startTime() }
+            val lastItem = it.lastOrNull { el -> calculateEndTimeWith(el, now) <= item.startTime }
             val index = it.lastIndexOf(lastItem)
             when {
                 index < 0 -> false
@@ -160,7 +160,7 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
                     positionToInsert = it.size
                     true
                 }
-                it[index + 1].startTime() >= calculateEndTimeWith(item, now) -> {
+                it[index + 1].startTime >= calculateEndTimeWith(item, now) -> {
                     positionToInsert += 1
                     true
                 }
@@ -173,21 +173,21 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
     private fun calculateEndTimeWith(item: CalendarItem, now: OffsetDateTime): OffsetDateTime {
         val duration = item.duration(now, offsetFromNow)
         return if (duration <= minimumDurationForUIPurposes)
-            item.startTime() + minimumDurationForUIPurposes
+            item.startTime + minimumDurationForUIPurposes
         else item.endTime(now, offsetFromNow)
     }
 
     private fun CalendarItem.endTime(now: OffsetDateTime, offsetFromNow: Duration = Duration.ZERO): OffsetDateTime {
-        return endTime() ?: now + offsetFromNow
+        return endTime ?: now + offsetFromNow
     }
 
     private fun CalendarItem.duration(now: OffsetDateTime, offsetFromNow: Duration = Duration.ZERO): Duration =
         when (this) {
-            is CalendarItem.TimeEntry -> timeEntry.duration ?: (now + offsetFromNow).absoluteDurationBetween(startTime())
+            is CalendarItem.TimeEntry -> timeEntry.duration ?: (now + offsetFromNow).absoluteDurationBetween(startTime)
             is CalendarItem.CalendarEvent -> calendarEvent.duration
             is CalendarItem.SelectedItem -> when (selectedCalendarItem) {
                 is SelectedCalendarItem.SelectedTimeEntry -> selectedCalendarItem.editableTimeEntry.duration
-                    ?: (now + offsetFromNow).absoluteDurationBetween(startTime())
+                    ?: (now + offsetFromNow).absoluteDurationBetween(startTime)
                 is SelectedCalendarItem.SelectedCalendarEvent -> selectedCalendarItem.calendarEvent.duration
             }
         }

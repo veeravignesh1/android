@@ -420,12 +420,12 @@ internal class CalendarItemsSelectorTest {
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size)
             assertThat(selectedTimeEntries).allMatch {
                 it is CalendarItem.TimeEntry && it.timeEntry.description == "Expected" ||
-                    it is CalendarItem.SelectedItem && it.description() == "Expected"
+                    it is CalendarItem.SelectedItem && it.description == "Expected"
             }
             val condition = Condition<CalendarItem>(
                 Predicate {
                     it is CalendarItem.SelectedItem &&
-                        it.duration() == Duration.ofMinutes(20) &&
+                        it.duration == Duration.ofMinutes(20) &&
                         it.selectedCalendarItem.toEditableTimeEntry().ids.first() == 1L
                 },
                 "TimeEntry duration was updated"
@@ -487,7 +487,7 @@ internal class CalendarItemsSelectorTest {
                     it is CalendarItem.SelectedItem &&
                         it.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
                         it.selectedCalendarItem.toEditableTimeEntry().ids.isEmpty() &&
-                        it.duration() == Duration.ofMinutes(30)
+                        it.duration == Duration.ofMinutes(30)
                 },
                 "New timeEntry was added to the list"
             )
@@ -549,7 +549,7 @@ internal class CalendarItemsSelectorTest {
                 when (it) {
                     is CalendarItem.TimeEntry -> it.timeEntry.description == "Expected"
                     is CalendarItem.CalendarEvent -> it.calendarEvent.description == "Expected"
-                    is CalendarItem.SelectedItem -> it.description() == "Expected"
+                    is CalendarItem.SelectedItem -> it.description == "Expected"
                 }
             }
         }

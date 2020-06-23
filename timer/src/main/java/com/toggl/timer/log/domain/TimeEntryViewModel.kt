@@ -1,8 +1,6 @@
 package com.toggl.timer.log.domain
 
-import androidx.core.graphics.toColorInt
-import androidx.core.text.buildSpannedString
-import androidx.core.text.color
+import com.toggl.common.feature.domain.ProjectViewModel
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -25,27 +23,6 @@ data class FlatTimeEntryViewModel(
     override val billable: Boolean,
     override val hasTags: Boolean
 ) : TimeEntryViewModel(), TimeEntryContentViewModel
-
-data class ProjectViewModel(
-    val id: Long,
-    val name: String,
-    val color: String,
-    val clientName: String?
-)
-
-fun ProjectViewModel?.formatForDisplay(taskName: String? = null) =
-    if (this == null) ""
-    else
-        buildSpannedString {
-            color(color.toColorInt()) {
-                append(name)
-            }
-            append(" ")
-            append(clientName ?: "")
-            if (taskName != null) {
-                append(": $taskName")
-            }
-        }
 
 data class DayHeaderViewModel(
     val dayTitle: String,

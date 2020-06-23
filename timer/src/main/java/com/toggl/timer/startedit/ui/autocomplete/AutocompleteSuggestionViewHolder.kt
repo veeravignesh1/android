@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.timer.R
-import com.toggl.timer.log.domain.formatForDisplay
+import com.toggl.common.feature.domain.formatForDisplay
 
 abstract class AutocompleteSuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var label: TextView = itemView.findViewById(R.id.label)

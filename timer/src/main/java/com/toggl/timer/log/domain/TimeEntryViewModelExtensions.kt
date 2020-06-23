@@ -1,5 +1,6 @@
 package com.toggl.timer.log.domain
 
+import com.toggl.common.feature.domain.ProjectViewModel
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
@@ -34,7 +35,8 @@ fun List<TimeEntry>.toTimeEntryGroupViewModel(
         hasTags = first().tagIds.isNotEmpty()
     )
 
-fun Project.toProjectViewModel(clients: Map<Long, Client>) = ProjectViewModel(id, name, color, clients[clientId]?.name)
+fun Project.toProjectViewModel(clients: Map<Long, Client>) =
+    ProjectViewModel(id, name, color, clients[clientId]?.name)
 
 fun List<TimeEntry>.totalDuration(): Duration =
     fold(Duration.ZERO) { acc, timeEntry -> acc + timeEntry.duration }

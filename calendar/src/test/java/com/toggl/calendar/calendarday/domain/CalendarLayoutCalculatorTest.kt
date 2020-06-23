@@ -89,13 +89,13 @@ class CalendarLayoutCalculatorTest {
 
         layoutAttributes shouldHaveSize calendarItems.size
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 1
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 1
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[2].startTime() && it.totalColumns == 1
+            it.startTime == calendarItems[2].startTime && it.totalColumns == 1
         }
     }
 
@@ -123,14 +123,14 @@ class CalendarLayoutCalculatorTest {
         layoutAttributes shouldHaveSize calendarItems.size
 
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 2 && it.columnIndex == 0
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 2 && it.columnIndex == 0
         }
 
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 2 && it.columnIndex == 1
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 2 && it.columnIndex == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[2].startTime() && it.totalColumns == 1
+            it.startTime == calendarItems[2].startTime && it.totalColumns == 1
         }
     }
 
@@ -154,10 +154,10 @@ class CalendarLayoutCalculatorTest {
         layoutAttributes shouldHaveSize calendarItems.size
 
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 2 && it.columnIndex == 0
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 2 && it.columnIndex == 0
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 2 && it.columnIndex == 1
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 2 && it.columnIndex == 1
         }
     }
 
@@ -183,13 +183,13 @@ class CalendarLayoutCalculatorTest {
 
         layoutAttributes shouldHaveSize calendarItems.size
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 2 && it.columnIndex == 0
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 2 && it.columnIndex == 0
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 2 && it.columnIndex == 1
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 2 && it.columnIndex == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[2].startTime() && it.totalColumns == 2 && it.columnIndex == 0
+            it.startTime == calendarItems[2].startTime && it.totalColumns == 2 && it.columnIndex == 0
         }
     }
 
@@ -223,19 +223,19 @@ class CalendarLayoutCalculatorTest {
 
         layoutAttributes shouldHaveSize calendarItems.size
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 3 && it.columnIndex == 0
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 3 && it.columnIndex == 0
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 3 && it.columnIndex == 1
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 3 && it.columnIndex == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[2].startTime() && it.totalColumns == 3 && it.columnIndex == 2
+            it.startTime == calendarItems[2].startTime && it.totalColumns == 3 && it.columnIndex == 2
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[3].startTime() && it.totalColumns == 2 && it.columnIndex == 0
+            it.startTime == calendarItems[3].startTime && it.totalColumns == 2 && it.columnIndex == 0
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[4].startTime() && it.totalColumns == 2 && it.columnIndex == 1
+            it.startTime == calendarItems[4].startTime && it.totalColumns == 2 && it.columnIndex == 1
         }
     }
 
@@ -274,19 +274,19 @@ class CalendarLayoutCalculatorTest {
         layoutAttributes shouldHaveSize calendarItems.size
 
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 3 && it.columnIndex == 1
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 3 && it.columnIndex == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 3 && it.columnIndex == 0
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 3 && it.columnIndex == 0
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[2].startTime() && it.totalColumns == 3 && it.columnIndex == 2
+            it.startTime == calendarItems[2].startTime && it.totalColumns == 3 && it.columnIndex == 2
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[3].startTime() && it.totalColumns == 2 && calendarItems[3].duration() == it.duration() && it.columnIndex == 1
+            it.startTime == calendarItems[3].startTime && it.totalColumns == 2 && calendarItems[3].duration == it.duration && it.columnIndex == 1
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[4].startTime() && it.totalColumns == 2 && calendarItems[4].duration() == it.duration() && it.columnIndex == 0
+            it.startTime == calendarItems[4].startTime && it.totalColumns == 2 && calendarItems[4].duration == it.duration && it.columnIndex == 0
         }
     }
 
@@ -317,13 +317,13 @@ class CalendarLayoutCalculatorTest {
 
         layoutAttributes shouldHaveSize calendarItems.size
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[0].startTime() && it.totalColumns == 3 && it.columnIndex == 2
+            it.startTime == calendarItems[0].startTime && it.totalColumns == 3 && it.columnIndex == 2
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[1].startTime() && it.totalColumns == 3 && it.columnIndex == 0
+            it.startTime == calendarItems[1].startTime && it.totalColumns == 3 && it.columnIndex == 0
         }
         assertThat(layoutAttributes).matchesOnlyOnce {
-            it.startTime() == calendarItems[2].startTime() && it.totalColumns == 3 && it.columnIndex == 1
+            it.startTime == calendarItems[2].startTime && it.totalColumns == 3 && it.columnIndex == 1
         }
     }
 
