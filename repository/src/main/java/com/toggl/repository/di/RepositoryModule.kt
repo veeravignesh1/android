@@ -1,5 +1,6 @@
 package com.toggl.repository.di
 
+import android.content.SharedPreferences
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
@@ -11,6 +12,7 @@ import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
@@ -29,8 +31,9 @@ class RepositoryModule {
         clientDao: ClientDao,
         tagDao: TagDao,
         taskDao: TaskDao,
+        sharedPreferences: SharedPreferences,
         timeService: TimeService
-    ) = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, taskDao, timeService)
+    ) = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, taskDao, sharedPreferences, timeService)
 
     @Provides
     @Singleton
@@ -60,5 +63,10 @@ class RepositoryModule {
     @Provides
     @Singleton
     fun taskRepository(repository: Repository): TaskRepository =
+        repository
+
+    @Provides
+    @Singleton
+    fun settingsRepository(repository: Repository): SettingsRepository =
         repository
 }

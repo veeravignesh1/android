@@ -1,5 +1,6 @@
 package com.toggl.repository
 
+import android.content.SharedPreferences
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.StartTimeEntryDatabaseResult
@@ -38,8 +39,9 @@ class RepositoryTest : StringSpec() {
     private val workspaceDao = mockk<WorkspaceDao>()
     private val clientDao = mockk<ClientDao>()
     private val taskDao = mockk<TaskDao>()
+    private val sharedPreferences = mockk<SharedPreferences>()
     private val timeService = mockk<TimeService>()
-    private var repository = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, taskDao, timeService)
+    private var repository = Repository(projectDao, timeEntryDao, workspaceDao, clientDao, tagDao, taskDao, sharedPreferences, timeService)
 
     override fun beforeTest(testCase: TestCase) {
         super.beforeTest(testCase)

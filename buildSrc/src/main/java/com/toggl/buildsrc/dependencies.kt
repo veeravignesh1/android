@@ -67,6 +67,12 @@ object Libs {
         const val browser = "androidx.browser:browser:1.0.0"
         const val fragment = "androidx.fragment:fragment:1.0.0"
 
+        object Preference {
+            private const val version = "1.1.0"
+            const val core = "androidx.preference:preference:$version"
+            const val ktx = "androidx.preference:preference-ktx:$version"
+        }
+
         object Test {
             const val core = "androidx.test:core:1.2.0"
             const val runner = "androidx.test:runner:1.2.0"

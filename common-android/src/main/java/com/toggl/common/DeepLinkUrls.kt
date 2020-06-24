@@ -13,6 +13,7 @@ class DeepLinkUrls(resources: Resources) {
     val timeEntriesProjectDialog = resources.getString(R.string.deep_link_project_dialog).toUri()
     val calendar = resources.getString(R.string.deep_link_calendar).toUri()
     val reports = resources.getString(R.string.deep_link_reports).toUri()
+    val settings = resources.getString(R.string.deep_link_settings).toUri()
 }
 
 val Context.deepLinks: DeepLinkUrls

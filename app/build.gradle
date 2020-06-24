@@ -56,12 +56,15 @@ dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
 
     implementation project(':calendar')
+    implementation project(':settings')
     implementation project(':database-android')
     implementation project(':onboarding')
     implementation project(':reports')
     implementation project(':repository')
     implementation project(':timer')
 
+    implementation Libs.AndroidX.Preference.core
+    implementation Libs.AndroidX.Preference.ktx
     implementation Libs.Kotlin.stdlib
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler

@@ -46,6 +46,7 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.Dagger.dagger
     kapt Libs.Dagger.compiler
+    api Libs.AndroidX.coreKtx
     api Libs.Google.firebaseAnalytics
     api Libs.Microsoft.appCenterAnalytics
 

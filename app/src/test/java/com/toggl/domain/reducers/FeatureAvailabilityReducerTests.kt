@@ -1,6 +1,7 @@
 package com.toggl.domain.reducers
 
 import com.toggl.architecture.core.Reducer
+import com.toggl.architecture.core.isOrWraps
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
@@ -16,7 +17,7 @@ import io.mockk.verify
 class FeatureAvailabilityReducerTests : FreeSpec() {
     init {
 
-        val allActions = listOf(
+        val allActions: List<AppAction> = listOf(
             AppAction.Loading(LoadingAction.StartLoading),
             AppAction.Timer(TimerAction.StartEditTimeEntry(StartEditAction.BillableTapped)),
             AppAction.Onboarding(OnboardingAction.LoginTapped)
@@ -77,5 +78,5 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
     }
 
     private fun actionIsPremium(appAction: AppAction) =
-        appAction.isToggleBillableAction()
+        appAction.isOrWraps<StartEditAction.BillableTapped>()
 }

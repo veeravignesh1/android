@@ -2,6 +2,7 @@ package com.toggl.domain
 
 import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
+import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
@@ -15,6 +16,9 @@ import com.toggl.timer.common.domain.TimerState
 
 data class AppState(
     val user: Loadable<User> = Loadable.Uninitialized,
+    val userPreferences: UserPreferences = UserPreferences(
+        false
+    ),
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),
     val tasks: Map<Long, Task> = mapOf(),

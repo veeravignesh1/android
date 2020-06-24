@@ -14,9 +14,6 @@ fun mapAppStateToCalendarState(appState: AppState): CalendarState =
         appState.calendarLocalState
     )
 
-fun mapAppActionToCalendarAction(appAction: AppAction): CalendarAction? =
-    if (appAction is AppAction.Calendar) appAction.calendar else null
-
 fun mapCalendarStateToAppState(appState: AppState, calendarState: CalendarState): AppState =
     appState.copy(
         projects = calendarState.projects,

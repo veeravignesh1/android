@@ -37,4 +37,11 @@
         android:label="CalendarFragment">
         <deepLink app:uri="@string/deep_link_calendar" />
     </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.toggl.settings.ui.SettingsFragment"
+        android:label="SettingsFragment">
+        <deepLink app:uri="@string/deep_link_settings" />
+    </fragment>
 </navigation>

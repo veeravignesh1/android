@@ -1,5 +1,6 @@
 package com.toggl.domain.loading
 
+import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
@@ -15,6 +16,7 @@ sealed class LoadingAction {
     data class ClientsLoaded(val clients: List<Client>) : LoadingAction()
     data class TasksLoaded(val tasks: List<Task>) : LoadingAction()
     data class TimeEntriesLoaded(val timeEntries: List<TimeEntry>) : LoadingAction()
+    data class UserPreferencesLoaded(val userPreferences: UserPreferences) : LoadingAction()
 }
 
 fun LoadingAction.formatForDebug() =
@@ -26,4 +28,5 @@ fun LoadingAction.formatForDebug() =
         is LoadingAction.ClientsLoaded -> "Loaded ${clients.size} clients"
         is LoadingAction.TagsLoaded -> "Loaded ${tags.size} tags"
         is LoadingAction.TasksLoaded -> "Loaded ${tasks.size} tasks"
+        is LoadingAction.UserPreferencesLoaded -> "Loaded $userPreferences"
     }

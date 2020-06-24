@@ -12,14 +12,17 @@ import com.toggl.domain.loading.LoadProjectsEffect
 import com.toggl.domain.loading.LoadTagsEffect
 import com.toggl.domain.loading.LoadTasksEffect
 import com.toggl.domain.loading.LoadTimeEntriesEffect
+import com.toggl.domain.loading.LoadUserPreferencesEffect
 import com.toggl.domain.loading.LoadWorkspacesEffect
 import com.toggl.domain.loading.LoadingAction
 import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.loading.LoadingState
+import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -38,6 +41,7 @@ class LoadingReducerTests : FreeCoroutineSpec() {
         val workspaceRepository = mockk<WorkspaceRepository>()
         val tagRepository = mockk<TagRepository>()
         val taskRepository = mockk<TaskRepository>()
+        val settingsRepository = mockk<SettingsRepository>()
         val reducer = LoadingReducer(
             projectRepository,
             clientRepository,
@@ -45,9 +49,12 @@ class LoadingReducerTests : FreeCoroutineSpec() {
             workspaceRepository,
             tagRepository,
             taskRepository,
+            settingsRepository,
             dispatcherProvider
         )
-        val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf(), listOf())
+        val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf(), listOf(),
+            UserPreferences(true)
+        )
 
         "The LoadingReducer" - {
             "when receiving a Start Loading action" - {
@@ -71,7 +78,8 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                         LoadClientsEffect::class,
                         LoadTagsEffect::class,
                         LoadTasksEffect::class,
-                        LoadTimeEntriesEffect::class
+                        LoadTimeEntriesEffect::class,
+                        LoadUserPreferencesEffect::class
                     )
                 }
             }

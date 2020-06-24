@@ -1,5 +1,7 @@
 package com.toggl.repository
 
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
@@ -12,6 +14,7 @@ import com.toggl.database.models.DatabaseTag
 import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
+import com.toggl.models.domain.UserPreferences
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
@@ -27,6 +30,7 @@ import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
 import com.toggl.repository.extensions.toModelWithoutTags
 import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
@@ -40,8 +44,9 @@ class Repository(
     private val clientDao: ClientDao,
     private val tagDao: TagDao,
     private val taskDao: TaskDao,
+    private val sharedPreferences: SharedPreferences,
     private val timeService: TimeService
-) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository, TagRepository, TaskRepository {
+) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository, TagRepository, TaskRepository, SettingsRepository {
 
     override suspend fun loadProjects(): List<Project> =
         projectDao.getAll().map(DatabaseProject::toModel)
@@ -129,5 +134,18 @@ class Repository(
         return timeEntryWithTags
             .apply(timeEntryDao::updateTimeEntryWithTags)
             .let(DatabaseTimeEntryWithTags::toModel)
+    }
+
+    override suspend fun loadUserPreferences(): UserPreferences =
+        with(sharedPreferences) {
+            return UserPreferences(
+                isManualModeEnabled = getBoolean(SettingsRepository.isManualModeEnabled, false)
+            )
+        }
+
+    override suspend fun saveUserPreferences(userPreferences: UserPreferences) {
+        sharedPreferences.edit {
+            putBoolean(SettingsRepository.isManualModeEnabled, userPreferences.isManualModeEnabled)
+        }
     }
 }

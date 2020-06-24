@@ -6,6 +6,7 @@ import com.toggl.calendar.calendarday.ui.CalendarDayStoreViewModel
 import com.toggl.calendar.contextualmenu.ui.ContextualMenuStoreViewModel
 import com.toggl.calendar.datepicker.ui.CalendarDatePickerStoreViewModel
 import com.toggl.onboarding.ui.LoginViewModel
+import com.toggl.settings.ui.SettingsStoreViewModel
 import com.toggl.timer.log.ui.TimeEntriesLogStoreViewModel
 import com.toggl.timer.project.ui.ProjectStoreViewModel
 import com.toggl.timer.running.ui.RunningTimeEntryStoreViewModel
@@ -62,6 +63,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SuggestionsStoreViewModel::class)
     abstract fun bindSuggestionsStoreViewModel(viewModel: SuggestionsStoreViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingsStoreViewModel::class)
+    abstract fun bindSettingsStoreViewModel(viewModel: SettingsStoreViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: TogglViewModelFactory): ViewModelProvider.Factory

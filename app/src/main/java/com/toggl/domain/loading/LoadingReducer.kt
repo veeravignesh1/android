@@ -8,6 +8,7 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.extensions.effects
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
+import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
@@ -23,6 +24,7 @@ class LoadingReducer @Inject constructor(
     private val workspaceRepository: WorkspaceRepository,
     private val tagsRepository: TagRepository,
     private val taskRepository: TaskRepository,
+    private val settingsRepository: SettingsRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<LoadingState, LoadingAction> {
 
@@ -37,7 +39,8 @@ class LoadingReducer @Inject constructor(
                 LoadClientsEffect(clientRepository, dispatcherProvider),
                 LoadTagsEffect(tagsRepository, dispatcherProvider),
                 LoadTasksEffect(taskRepository, dispatcherProvider),
-                LoadTimeEntriesEffect(timeEntryRepository, dispatcherProvider)
+                LoadTimeEntriesEffect(timeEntryRepository, dispatcherProvider),
+                LoadUserPreferencesEffect(settingsRepository, dispatcherProvider)
             )
             is LoadingAction.TimeEntriesLoaded -> state.mutateWithoutEffects { copy(timeEntries = action.timeEntries) }
             is LoadingAction.WorkspacesLoaded -> state.mutateWithoutEffects { copy(workspaces = action.workspaces) }
@@ -45,5 +48,6 @@ class LoadingReducer @Inject constructor(
             is LoadingAction.ClientsLoaded -> state.mutateWithoutEffects { copy(clients = action.clients) }
             is LoadingAction.TagsLoaded -> state.mutateWithoutEffects { copy(tags = action.tags) }
             is LoadingAction.TasksLoaded -> state.mutateWithoutEffects { copy(tasks = action.tasks) }
+            is LoadingAction.UserPreferencesLoaded -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
         }
 }

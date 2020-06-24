@@ -42,11 +42,11 @@ class AnalyticsReducer @Inject constructor(
 
     private fun AppAction.toEvents(state: MutableValue<AppState>): List<Event> =
         when (this) {
-            is AppAction.Timer -> when (timer) {
-                is TimerAction.StartEditTimeEntry -> timer.action.toEvents(state)
-                is TimerAction.TimeEntriesLog -> timer.action.toEvents()
-                is TimerAction.RunningTimeEntry -> timer.action.toEvents()
-                is TimerAction.Suggestions -> timer.action.toEvents(state)
+            is AppAction.Timer -> when (val timerAction = action) {
+                is TimerAction.StartEditTimeEntry -> timerAction.action.toEvents(state)
+                is TimerAction.TimeEntriesLog -> timerAction.action.toEvents()
+                is TimerAction.RunningTimeEntry -> timerAction.action.toEvents()
+                is TimerAction.Suggestions -> timerAction.action.toEvents(state)
                 else -> emptyList()
             }
             else -> emptyList()

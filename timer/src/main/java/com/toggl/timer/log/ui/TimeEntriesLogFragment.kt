@@ -2,7 +2,11 @@ package com.toggl.timer.log.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,6 +18,7 @@ import androidx.recyclerview.widget.MergeAdapter
 import com.google.android.material.snackbar.Snackbar
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants.timeEntryDeletionDelayMs
+import com.toggl.common.DeepLinkUrls
 import com.toggl.common.deepLinks
 import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.environment.services.time.TimeService
@@ -87,9 +92,21 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         super.onAttach(context)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
 
         recycler_view.adapter = mergeAdapter
         val swipeCallback = createSwipeActionCallback(requireContext())
@@ -153,6 +170,17 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
             }
             show()
         }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.settings_action -> {
+                findNavController().navigate(DeepLinkUrls(resources).settings)
+                return true
+            }
+            else -> {}
+        }
+        return false
     }
 
     private fun onLogItemSwiped(adapterPosition: Int, swipeDirection: SwipeDirection) {

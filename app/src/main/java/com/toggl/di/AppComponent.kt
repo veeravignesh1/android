@@ -9,6 +9,8 @@ import com.toggl.environment.di.EnvironmentModule
 import com.toggl.onboarding.di.OnboardingComponent
 import com.toggl.onboarding.di.OnboardingModule
 import com.toggl.repository.di.RepositoryModule
+import com.toggl.settings.di.SettingsComponent
+import com.toggl.settings.di.SettingsModule
 import com.toggl.timer.di.TimerComponent
 import com.toggl.timer.di.TimerModule
 import com.toggl.ui.MainActivity
@@ -25,6 +27,7 @@ import javax.inject.Singleton
         OnboardingModule::class,
         TimerModule::class,
         CalendarModule::class,
+        SettingsModule::class,
         EnvironmentModule::class,
         DatabaseModule::class,
         RepositoryModule::class
@@ -52,4 +55,7 @@ interface AppComponent {
 
     @Singleton
     fun calendarComponent(): CalendarComponent.Factory
+
+    @Singleton
+    fun settingsComponent(): SettingsComponent.Factory
 }

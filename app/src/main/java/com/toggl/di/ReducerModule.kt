@@ -10,6 +10,7 @@ import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
 import com.toggl.domain.reducers.createAppReducer
 import com.toggl.onboarding.domain.reducers.OnboardingReducer
+import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
 import dagger.Module
 import dagger.Provides
@@ -30,6 +31,7 @@ class ReducerModule {
         onboardingReducer: OnboardingReducer,
         timerReducer: TimerReducer,
         calendarReducer: CalendarReducer,
+        settingsReducer: SettingsReducer,
         analyticsReducer: AnalyticsReducer
     ): Reducer<AppState, AppAction> =
         createAppReducer(
@@ -37,6 +39,7 @@ class ReducerModule {
             onboardingReducer,
             timerReducer,
             calendarReducer,
+            settingsReducer,
             analyticsReducer
         )
 

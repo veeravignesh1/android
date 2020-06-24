@@ -1,5 +1,6 @@
 package com.toggl.domain.loading
 
+import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
@@ -13,5 +14,6 @@ data class LoadingState(
     val clients: Collection<Client>,
     val tags: Collection<Tag>,
     val tasks: Collection<Task>,
-    val timeEntries: Collection<TimeEntry>
+    val timeEntries: Collection<TimeEntry>,
+    val userPreferences: UserPreferences
 )

@@ -1,6 +1,8 @@
 package com.toggl.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.toggl.TogglApplication
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.StoreScopeProvider
@@ -13,12 +15,16 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.mappings.mapAppStateToCalendarState
 import com.toggl.domain.mappings.mapAppStateToOnboardingState
+import com.toggl.domain.mappings.mapAppStateToSettingsState
 import com.toggl.domain.mappings.mapAppStateToTimerState
 import com.toggl.domain.mappings.mapCalendarActionToAppAction
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
+import com.toggl.domain.mappings.mapSettingsActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
 import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.onboarding.domain.states.OnboardingState
+import com.toggl.settings.domain.SettingsAction
+import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerState
 import dagger.Module
@@ -34,6 +40,10 @@ class AppModule {
 
     @Provides
     fun provideContext(application: TogglApplication): Context = application.applicationContext
+
+    @Provides
+    fun provideSharedPreferences(application: TogglApplication): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(application)
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -75,6 +85,14 @@ class AppModule {
         store.view(
             mapToLocalState = ::mapAppStateToCalendarState,
             mapToGlobalAction = ::mapCalendarActionToAppAction
+        )
+
+    @Provides
+    @ExperimentalCoroutinesApi
+    fun settingsStore(store: Store<AppState, AppAction>): Store<SettingsState, SettingsAction> =
+        store.view(
+            mapToLocalState = ::mapAppStateToSettingsState,
+            mapToGlobalAction = ::mapSettingsActionToAppAction
         )
 
     @Provides

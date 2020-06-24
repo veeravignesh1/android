@@ -9,6 +9,8 @@ import com.toggl.di.DaggerAppComponent
 import com.toggl.initializers.AppInitializers
 import com.toggl.onboarding.di.OnboardingComponent
 import com.toggl.onboarding.di.OnboardingComponentProvider
+import com.toggl.settings.di.SettingsComponent
+import com.toggl.settings.di.SettingsComponentProvider
 import com.toggl.timer.di.TimerComponent
 import com.toggl.timer.di.TimerComponentProvider
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +22,7 @@ class TogglApplication : Application(),
     OnboardingComponentProvider,
     TimerComponentProvider,
     CalendarComponentProvider,
+    SettingsComponentProvider,
     StoreScopeProvider {
 
     @Inject
@@ -47,9 +50,12 @@ class TogglApplication : Application(),
     override fun provideTimerComponent(): TimerComponent =
         appComponent.timerComponent().create()
 
-    override fun getStoreScope(): CoroutineScope =
-        this
-
     override fun provideCalendarComponent(): CalendarComponent =
         appComponent.calendarComponent().create()
+
+    override fun provideSettingsComponent(): SettingsComponent =
+        appComponent.settingsComponent().create()
+
+    override fun getStoreScope(): CoroutineScope =
+        this
 }

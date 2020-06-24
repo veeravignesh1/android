@@ -12,11 +12,9 @@ fun mapAppStateToLoadingState(appState: AppState): LoadingState =
         tasks = appState.tasks.values,
         clients = appState.clients.values,
         workspaces = appState.workspaces.values,
-        timeEntries = appState.timeEntries.values
+        timeEntries = appState.timeEntries.values,
+        userPreferences = appState.userPreferences
     )
-
-fun mapAppActionToLoadingAction(appAction: AppAction): LoadingAction? =
-    if (appAction is AppAction.Loading) appAction.loading else null
 
 fun mapLoadingStateToAppState(appState: AppState, loadingState: LoadingState): AppState =
     appState.copy(
@@ -25,7 +23,8 @@ fun mapLoadingStateToAppState(appState: AppState, loadingState: LoadingState): A
         tasks = loadingState.tasks.associateBy { it.id },
         clients = loadingState.clients.associateBy { it.id },
         workspaces = loadingState.workspaces.associateBy { it.id },
-        timeEntries = loadingState.timeEntries.associateBy { it.id }
+        timeEntries = loadingState.timeEntries.associateBy { it.id },
+        userPreferences = loadingState.userPreferences
     )
 
 fun mapLoadingActionToAppAction(loadingAction: LoadingAction): AppAction =
