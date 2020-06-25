@@ -15,7 +15,9 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.domain.states.OnboardingState
+import com.toggl.settings.domain.SelectedSetting
 import com.toggl.timer.common.domain.TimerState
+import java.time.DayOfWeek
 
 data class AppState(
     val user: Loadable<User> = Loadable.Uninitialized,
@@ -24,8 +26,13 @@ data class AppState(
         is24HourClock = false,
         selectedWorkspaceId = 1,
         dateFormat = DateFormat.DDMMYYYY_dash,
-        durationFormat = DurationFormat.Improved
+        durationFormat = DurationFormat.Improved,
+        firstDayOfTheWeek = DayOfWeek.MONDAY,
+        shouldGroupSimilarTimeEntries = true,
+        hasCellSwipeActions = true
+
     ),
+    val selectedSetting: SelectedSetting? = null,
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),
     val tasks: Map<Long, Task> = mapOf(),
