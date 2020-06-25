@@ -13,5 +13,6 @@ interface SettingsRepository {
         const val dateFormat = "dateFormat"
         const val durationFormat = "durationFormat"
         const val firstDayOfTheWeek = "firstDayOfTheWeek"
+        const val shouldGroupSimilarTimeEntries = "shouldGroupSimilarTimeEntries"
     }
 }

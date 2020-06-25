@@ -8,7 +8,8 @@ data class UserPreferences(
     val selectedWorkspaceId: Long,
     val dateFormat: DateFormat,
     val durationFormat: DurationFormat,
-    val firstDayOfTheWeek: DayOfWeek
+    val firstDayOfTheWeek: DayOfWeek,
+    val shouldGroupSimilarTimeEntries: Boolean
 )
 
 enum class DateFormat {

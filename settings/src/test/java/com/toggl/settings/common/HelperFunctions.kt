@@ -35,14 +35,16 @@ fun createUserPreferences(
     selectedWorkspaceId: Long = 1,
     dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
     durationFormat: DurationFormat = DurationFormat.Classic,
-    firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY
+    firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
+    shouldGroupSimilarTimeEntries: Boolean = false
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
     is24HourClock = is24HourClock,
     selectedWorkspaceId = selectedWorkspaceId,
     dateFormat = dateFormat,
     durationFormat = durationFormat,
-    firstDayOfTheWeek = firstDayOfTheWeek
+    firstDayOfTheWeek = firstDayOfTheWeek,
+    shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries
 )
 
 fun createSettingsReducer(

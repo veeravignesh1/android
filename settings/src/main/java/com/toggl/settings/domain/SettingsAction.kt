@@ -16,6 +16,7 @@ sealed class SettingsAction {
     data class DateFormatSelected(val dateFormat: DateFormat) : SettingsAction()
     data class DurationFormatSelected(val durationFormat: DurationFormat) : SettingsAction()
     data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek): SettingsAction()
+    data class GroupSimilarTimeEntriesToggled(val shouldGroupSimilarTimeEntries: Boolean): SettingsAction()
 
     companion object
 }
@@ -30,4 +31,5 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.DateFormatSelected -> "DateFormatSelected dateFormat: $dateFormat"
         is SettingsAction.DurationFormatSelected -> "DurationFormatSelected durationFormat: $durationFormat"
         is SettingsAction.FirstDayOfTheWeekSelected -> "FirstDayOfTheWeekSelected day: $firstDayOfTheWeek"
+        is SettingsAction.GroupSimilarTimeEntriesToggled -> "GroupSimilarTimeEntriesToggled shouldGroupSimilarTimeEntries: $shouldGroupSimilarTimeEntries"
     }

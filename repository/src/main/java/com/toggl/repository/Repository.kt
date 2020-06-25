@@ -147,7 +147,8 @@ class Repository(
                 selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, 0),
                 dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, DateFormat.MMDDYYYY_slash.name)!!),
                 durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!),
-                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value))
+                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value)),
+                shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, false)
             )
         }
 
@@ -159,6 +160,7 @@ class Repository(
             putString(SettingsRepository.dateFormat, userPreferences.dateFormat.name)
             putString(SettingsRepository.durationFormat, userPreferences.durationFormat.name)
             putInt(SettingsRepository.firstDayOfTheWeek, userPreferences.firstDayOfTheWeek.value)
+            putBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, userPreferences.shouldGroupSimilarTimeEntries)
         }
     }
 }

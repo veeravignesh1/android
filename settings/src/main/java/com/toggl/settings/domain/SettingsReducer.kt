@@ -28,6 +28,7 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.DateFormatSelected -> state.updateUserPreferences { copy(dateFormat = action.dateFormat) }
             is SettingsAction.DurationFormatSelected -> state.updateUserPreferences { copy(durationFormat = action.durationFormat) }
             is SettingsAction.FirstDayOfTheWeekSelected -> state.updateUserPreferences { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
+            is SettingsAction.GroupSimilarTimeEntriesToggled -> state.updateUserPreferences { copy(shouldGroupSimilarTimeEntries = action.shouldGroupSimilarTimeEntries) }
         }
 
     private fun MutableValue<SettingsState>.updateUserPreferences(updateBlock: UserPreferences.() -> UserPreferences) =
