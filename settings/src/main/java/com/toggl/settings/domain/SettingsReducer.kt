@@ -21,6 +21,7 @@ class SettingsReducer @Inject constructor(
     ): List<Effect<SettingsAction>> =
         when (action) {
             is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
+            is SettingsAction.SettingTapped -> state.mutateWithoutEffects { copy(selectedSetting = action.selectedSetting) }
             is SettingsAction.ManualModeToggled -> state.updateUserPreferences { copy(isManualModeEnabled = action.isManual) }
             is SettingsAction.Use24HourClockToggled -> state.updateUserPreferences { copy(is24HourClock = action.is24HourClock) }
             is SettingsAction.WorkspaceSelected -> state.updateUserPreferences { copy(selectedWorkspaceId = action.selectedWorkspaceId) }

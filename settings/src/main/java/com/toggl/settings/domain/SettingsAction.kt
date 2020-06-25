@@ -8,6 +8,7 @@ import com.toggl.models.domain.UserPreferences
 @optics
 sealed class SettingsAction {
     data class UserPreferencesUpdated(val userPreferences: UserPreferences) : SettingsAction()
+    data class SettingTapped(val selectedSetting: SelectedSetting) : SettingsAction()
     data class ManualModeToggled(val isManual: Boolean) : SettingsAction()
     data class Use24HourClockToggled(val is24HourClock: Boolean) : SettingsAction()
     data class WorkspaceSelected(val selectedWorkspaceId: Long) : SettingsAction()
@@ -20,6 +21,7 @@ sealed class SettingsAction {
 fun SettingsAction.formatForDebug() =
     when (this) {
         is SettingsAction.UserPreferencesUpdated -> "User preferences updated: $userPreferences"
+        is SettingsAction.SettingTapped -> "Settings tapped: $selectedSetting"
         is SettingsAction.ManualModeToggled -> "ManualModeToggled manual: $isManual"
         is SettingsAction.Use24HourClockToggled -> "Use24HourClockToggled is24HourClock: $is24HourClock"
         is SettingsAction.WorkspaceSelected -> "WorkspaceSelected workspaceId: $selectedWorkspaceId"

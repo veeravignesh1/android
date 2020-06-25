@@ -10,6 +10,7 @@ import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
+import com.toggl.settings.domain.SelectedSetting
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.settings.domain.SettingsState
 import io.kotlintest.matchers.collections.shouldBeEmpty
@@ -20,9 +21,11 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
 
 fun createSettingsState(
-    userPreferences: UserPreferences = createUserPreferences()
+    userPreferences: UserPreferences = createUserPreferences(),
+    selectedSetting: SelectedSetting? = null
 ) = SettingsState(
-    userPreferences = userPreferences
+    userPreferences = userPreferences,
+    selectedSetting = selectedSetting
 )
 
 fun createUserPreferences(
