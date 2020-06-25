@@ -17,6 +17,8 @@ import com.toggl.domain.loading.LoadWorkspacesEffect
 import com.toggl.domain.loading.LoadingAction
 import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.loading.LoadingState
+import com.toggl.models.domain.DateFormat
+import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
@@ -53,7 +55,13 @@ class LoadingReducerTests : FreeCoroutineSpec() {
             dispatcherProvider
         )
         val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf(), listOf(),
-            UserPreferences(true)
+            UserPreferences(
+                isManualModeEnabled = true,
+                is24HourClock = false,
+                selectedWorkspaceId = 1,
+                dateFormat = DateFormat.DDMMYYYY_dash,
+                durationFormat = DurationFormat.Decimal
+            )
         )
 
         "The LoadingReducer" - {

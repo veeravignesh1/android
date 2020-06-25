@@ -1,9 +1,9 @@
 package com.toggl.settings.domain
 
-import com.toggl.models.domain.UserPreferences
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
+import com.toggl.settings.common.createUserPreferences
 import com.toggl.settings.common.testReduceNoEffects
 import com.toggl.settings.common.testReduceState
 import io.kotlintest.matchers.boolean.shouldBeTrue
@@ -19,9 +19,9 @@ class UserPreferencesUpdatedActionTests : CoroutineTest() {
 
     @Test
     fun `Should update user preferences`() = runBlockingTest {
-        val initialState = createSettingsState(isManualModeEnabled = false)
+        val initialState = createSettingsState(createUserPreferences(isManualModeEnabled = false))
         val action = SettingsAction.UserPreferencesUpdated(
-            UserPreferences(
+            createUserPreferences(
                 isManualModeEnabled = true
             )
         )
@@ -36,7 +36,7 @@ class UserPreferencesUpdatedActionTests : CoroutineTest() {
         reducer.testReduceNoEffects(
             createSettingsState(),
             SettingsAction.UserPreferencesUpdated(
-                UserPreferences(
+                createUserPreferences(
                     isManualModeEnabled = true
                 )
             )

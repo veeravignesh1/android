@@ -6,6 +6,8 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
+import com.toggl.models.domain.DateFormat
+import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.domain.SettingsReducer
@@ -18,11 +20,23 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
 
 fun createSettingsState(
-    isManualModeEnabled: Boolean = false
+    userPreferences: UserPreferences = createUserPreferences()
 ) = SettingsState(
-    userPreferences = UserPreferences(
-        isManualModeEnabled = isManualModeEnabled
-    )
+    userPreferences = userPreferences
+)
+
+fun createUserPreferences(
+    isManualModeEnabled: Boolean = false,
+    is24HourClock: Boolean = false,
+    selectedWorkspaceId: Long = 1,
+    dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
+    durationFormat: DurationFormat = DurationFormat.Classic
+) = UserPreferences(
+    isManualModeEnabled = isManualModeEnabled,
+    is24HourClock = is24HourClock,
+    selectedWorkspaceId = selectedWorkspaceId,
+    dateFormat = dateFormat,
+    durationFormat = durationFormat
 )
 
 fun createSettingsReducer(

@@ -22,6 +22,10 @@ class SettingsReducer @Inject constructor(
         when (action) {
             is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
             is SettingsAction.ManualModeToggled -> state.updateUserPreferences { copy(isManualModeEnabled = action.isManual) }
+            is SettingsAction.Use24HourClockToggled -> state.updateUserPreferences { copy(is24HourClock = action.is24HourClock) }
+            is SettingsAction.WorkspaceSelected -> state.updateUserPreferences { copy(selectedWorkspaceId = action.selectedWorkspaceId) }
+            is SettingsAction.DateFormatSelected -> state.updateUserPreferences { copy(dateFormat = action.dateFormat) }
+            is SettingsAction.DurationFormatSelected -> state.updateUserPreferences { copy(durationFormat = action.durationFormat) }
         }
 
     private fun MutableValue<SettingsState>.updateUserPreferences(updateBlock: UserPreferences.() -> UserPreferences) =

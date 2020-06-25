@@ -16,6 +16,8 @@ import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.models.domain.UserPreferences
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.DateFormat
+import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
@@ -139,13 +141,21 @@ class Repository(
     override suspend fun loadUserPreferences(): UserPreferences =
         with(sharedPreferences) {
             return UserPreferences(
-                isManualModeEnabled = getBoolean(SettingsRepository.isManualModeEnabled, false)
+                isManualModeEnabled = getBoolean(SettingsRepository.isManualModeEnabled, false),
+                is24HourClock = getBoolean(SettingsRepository.is24HourClock, false),
+                selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, 0),
+                dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, DateFormat.MMDDYYYY_slash.name)!!),
+                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!)
             )
         }
 
     override suspend fun saveUserPreferences(userPreferences: UserPreferences) {
         sharedPreferences.edit {
             putBoolean(SettingsRepository.isManualModeEnabled, userPreferences.isManualModeEnabled)
+            putBoolean(SettingsRepository.is24HourClock, userPreferences.is24HourClock)
+            putLong(SettingsRepository.selectedWorkspaceId, userPreferences.selectedWorkspaceId)
+            putString(SettingsRepository.dateFormat, userPreferences.dateFormat.name)
+            putString(SettingsRepository.durationFormat, userPreferences.durationFormat.name)
         }
     }
 }

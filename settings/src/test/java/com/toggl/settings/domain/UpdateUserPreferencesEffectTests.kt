@@ -1,9 +1,12 @@
 package com.toggl.settings.domain
 
-import com.toggl.models.domain.UserPreferences
+import com.toggl.models.domain.DateFormat
+import com.toggl.models.domain.DurationFormat
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
+import com.toggl.settings.common.createUserPreferences
 import io.kotlintest.matchers.boolean.shouldBeTrue
+import io.kotlintest.shouldBe
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -17,7 +20,13 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
 
     @Test
     fun `Should save and return new user preferences`() = runBlockingTest {
-        val newUserPreferences = UserPreferences(isManualModeEnabled = true)
+        val newUserPreferences = createUserPreferences(
+            isManualModeEnabled = true,
+            is24HourClock = true,
+            selectedWorkspaceId = 1,
+            dateFormat = DateFormat.DDMMYYYY_dash,
+            durationFormat = DurationFormat.Decimal
+        )
         val settingsRepository = mockk<SettingsRepository>(relaxUnitFun = true)
         val resultAction = UpdateUserPreferencesEffect(
             newUserPreferences,
@@ -26,6 +35,11 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
         ).execute()
 
         resultAction.userPreferences.isManualModeEnabled.shouldBeTrue()
+        resultAction.userPreferences.is24HourClock.shouldBeTrue()
+        resultAction.userPreferences.selectedWorkspaceId shouldBe 1
+        resultAction.userPreferences.dateFormat shouldBe DateFormat.DDMMYYYY_dash
+        resultAction.userPreferences.durationFormat shouldBe DurationFormat.Decimal
+
         coVerify { settingsRepository.saveUserPreferences(newUserPreferences) }
     }
 }

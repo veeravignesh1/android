@@ -1,12 +1,18 @@
 package com.toggl.settings.domain
 
 import arrow.optics.optics
+import com.toggl.models.domain.DateFormat
+import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
 
 @optics
 sealed class SettingsAction {
     data class UserPreferencesUpdated(val userPreferences: UserPreferences) : SettingsAction()
     data class ManualModeToggled(val isManual: Boolean) : SettingsAction()
+    data class Use24HourClockToggled(val is24HourClock: Boolean) : SettingsAction()
+    data class WorkspaceSelected(val selectedWorkspaceId: Long) : SettingsAction()
+    data class DateFormatSelected(val dateFormat: DateFormat) : SettingsAction()
+    data class DurationFormatSelected(val durationFormat: DurationFormat) : SettingsAction()
 
     companion object
 }
@@ -15,4 +21,8 @@ fun SettingsAction.formatForDebug() =
     when (this) {
         is SettingsAction.UserPreferencesUpdated -> "User preferences updated: $userPreferences"
         is SettingsAction.ManualModeToggled -> "ManualModeToggled manual: $isManual"
+        is SettingsAction.Use24HourClockToggled -> "Use24HourClockToggled is24HourClock: $is24HourClock"
+        is SettingsAction.WorkspaceSelected -> "WorkspaceSelected workspaceId: $selectedWorkspaceId"
+        is SettingsAction.DateFormatSelected -> "DateFormatSelected dateFormat: $dateFormat"
+        is SettingsAction.DurationFormatSelected -> "DurationFormatSelected durationFormat: $durationFormat"
     }

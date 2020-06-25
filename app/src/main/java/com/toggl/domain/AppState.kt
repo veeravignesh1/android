@@ -5,6 +5,8 @@ import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Client
+import com.toggl.models.domain.DateFormat
+import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
@@ -18,7 +20,11 @@ import com.toggl.timer.common.domain.TimerState
 data class AppState(
     val user: Loadable<User> = Loadable.Uninitialized,
     val userPreferences: UserPreferences = UserPreferences(
-        false
+        isManualModeEnabled = false,
+        is24HourClock = false,
+        selectedWorkspaceId = 1,
+        dateFormat = DateFormat.DDMMYYYY_dash,
+        durationFormat = DurationFormat.Improved
     ),
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),

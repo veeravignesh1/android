@@ -8,5 +8,9 @@ interface SettingsRepository {
 
     companion object {
         const val isManualModeEnabled = "isManualModeEnabled"
+        const val selectedWorkspaceId = "selectedWorkspaceId"
+        const val is24HourClock = "is24HourClock"
+        const val dateFormat = "dateFormat"
+        const val durationFormat = "durationFormat"
     }
 }
