@@ -15,9 +15,9 @@ sealed class SettingsAction {
     data class WorkspaceSelected(val selectedWorkspaceId: Long) : SettingsAction()
     data class DateFormatSelected(val dateFormat: DateFormat) : SettingsAction()
     data class DurationFormatSelected(val durationFormat: DurationFormat) : SettingsAction()
-    data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek): SettingsAction()
-    data class GroupSimilarTimeEntriesToggled(val shouldGroupSimilarTimeEntries: Boolean): SettingsAction()
-    data class CellSwipeActionsToggled(val hasCellSwipeActions: Boolean): SettingsAction()
+    data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek) : SettingsAction()
+    data class GroupSimilarTimeEntriesToggled(val shouldGroupSimilarTimeEntries: Boolean) : SettingsAction()
+    data class CellSwipeActionsToggled(val hasCellSwipeActions: Boolean) : SettingsAction()
 
     companion object
 }

@@ -30,7 +30,6 @@ data class AppState(
         firstDayOfTheWeek = DayOfWeek.MONDAY,
         shouldGroupSimilarTimeEntries = true,
         hasCellSwipeActions = true
-
     ),
     val selectedSetting: SelectedSetting? = null,
     val workspaces: Map<Long, Workspace> = mapOf(),
