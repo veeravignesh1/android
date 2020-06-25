@@ -14,5 +14,6 @@ interface SettingsRepository {
         const val durationFormat = "durationFormat"
         const val firstDayOfTheWeek = "firstDayOfTheWeek"
         const val shouldGroupSimilarTimeEntries = "shouldGroupSimilarTimeEntries"
+        const val hasCellSwipeActions = "hasCellSwipeActions"
     }
 }

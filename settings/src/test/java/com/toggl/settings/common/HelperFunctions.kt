@@ -36,7 +36,8 @@ fun createUserPreferences(
     dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
     durationFormat: DurationFormat = DurationFormat.Classic,
     firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
-    shouldGroupSimilarTimeEntries: Boolean = false
+    shouldGroupSimilarTimeEntries: Boolean = false,
+    hasCellSwipeActions: Boolean = false
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
     is24HourClock = is24HourClock,
@@ -44,7 +45,8 @@ fun createUserPreferences(
     dateFormat = dateFormat,
     durationFormat = durationFormat,
     firstDayOfTheWeek = firstDayOfTheWeek,
-    shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries
+    shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries,
+    hasCellSwipeActions = hasCellSwipeActions
 )
 
 fun createSettingsReducer(

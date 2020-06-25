@@ -148,7 +148,8 @@ class Repository(
                 dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, DateFormat.MMDDYYYY_slash.name)!!),
                 durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!),
                 firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value)),
-                shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, false)
+                shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, false),
+                hasCellSwipeActions = getBoolean(SettingsRepository.hasCellSwipeActions, false)
             )
         }
 
@@ -161,6 +162,7 @@ class Repository(
             putString(SettingsRepository.durationFormat, userPreferences.durationFormat.name)
             putInt(SettingsRepository.firstDayOfTheWeek, userPreferences.firstDayOfTheWeek.value)
             putBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, userPreferences.shouldGroupSimilarTimeEntries)
+            putBoolean(SettingsRepository.hasCellSwipeActions, userPreferences.hasCellSwipeActions)
         }
     }
 }
