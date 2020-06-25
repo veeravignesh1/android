@@ -1,10 +1,14 @@
 package com.toggl.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -18,11 +22,13 @@ import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import com.toggl.timer.suggestions.ui.SuggestionsStoreViewModel
-import javax.inject.Inject
 import kotlinx.android.synthetic.main.main_activity.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigationProvider {
+
+    private val calendarPermissionRequestCode: Int = 1234
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -46,6 +52,8 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigation
 
         bottom_navigation.setOnNavigationItemSelectedListener(::changeTab)
         bottom_navigation.setOnNavigationItemReselectedListener(::scrollUpOnTab)
+
+        requestCalendarPermissionIfNeeded()
     }
 
     private fun changeTab(menuItem: MenuItem): Boolean {
@@ -67,5 +75,16 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigation
 
     private fun scrollUpOnTab(menuItem: MenuItem) {
         Log.i("MainActivity", menuItem.title.toString())
+    }
+
+    private fun requestCalendarPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+            return
+
+        val calendarPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+        if (calendarPermission == PackageManager.PERMISSION_GRANTED)
+            return
+
+        requestPermissions(arrayOf(Manifest.permission.READ_CALENDAR), calendarPermissionRequestCode)
     }
 }
