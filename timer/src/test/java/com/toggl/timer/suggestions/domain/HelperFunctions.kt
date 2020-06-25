@@ -1,6 +1,7 @@
 package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.Constants
+import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
@@ -13,12 +14,14 @@ fun createInitialState(
     timeEntries: List<TimeEntry> = emptyList(),
     maxNumberOfSuggestions: Int = Constants.Suggestions.maxNumberOfSuggestions,
     suggestions: List<Suggestion> = emptyList(),
-    clients: Map<Long, Client> = emptyMap()
+    clients: Map<Long, Client> = emptyMap(),
+    calendarEvents: Map<String, CalendarEvent> = emptyMap()
 ) = SuggestionsState(
     user = user,
     projects = projects.associateBy { it.id },
     clients = clients,
     timeEntries = timeEntries.associateBy { it.id },
     maxNumberOfSuggestions = maxNumberOfSuggestions,
-    suggestions = suggestions
+    suggestions = suggestions,
+    calendarEvents = calendarEvents
 )

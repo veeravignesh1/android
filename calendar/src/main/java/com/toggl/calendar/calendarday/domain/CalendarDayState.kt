@@ -23,7 +23,7 @@ data class CalendarDayState(
             CalendarDayState(
                 calendarState.timeEntries,
                 calendarState.projects,
-                calendarState.localState.calendarEvents,
+                calendarState.calendarEvents,
                 calendarState.localState.selectedItem,
                 calendarState.localState.selectedDate,
                 calendarState.localState.calendars
@@ -33,8 +33,8 @@ data class CalendarDayState(
             calendarState.copy(
                 timeEntries = calendarDayState.timeEntries,
                 projects = calendarDayState.projects,
+                calendarEvents = calendarDayState.events,
                 localState = calendarState.localState.copy(
-                    calendarEvents = calendarDayState.events,
                     selectedItem = calendarDayState.selectedItem,
                     selectedDate = calendarDayState.date,
                     calendars = calendarDayState.calendars

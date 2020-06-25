@@ -10,6 +10,7 @@ fun mapAppStateToCalendarState(appState: AppState): CalendarState =
         appState.timeEntries,
         appState.projects,
         appState.clients,
+        appState.calendarEvents,
         appState.editableTimeEntry,
         appState.calendarLocalState
     )

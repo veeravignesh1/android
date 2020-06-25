@@ -14,16 +14,16 @@ data class CalendarState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
+    val calendarEvents: Map<String, CalendarEvent>,
     val editableTimeEntry: EditableTimeEntry?,
     val localState: LocalState
 ) {
     data class LocalState internal constructor(
         internal val selectedDate: OffsetDateTime,
-        internal val calendarEvents: Map<String, CalendarEvent>,
         internal val selectedItem: SelectedCalendarItem?,
         internal val calendars: List<Calendar>
     ) {
-        constructor() : this(OffsetDateTime.now(), mapOf(), null, listOf())
+        constructor() : this(OffsetDateTime.now(), null, listOf())
     }
 
     companion object

@@ -3,6 +3,7 @@ package com.toggl.timer.common.domain
 import arrow.optics.optics
 import com.toggl.architecture.Loadable
 import com.toggl.common.Constants
+import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
@@ -28,6 +29,7 @@ data class TimerState(
     val workspaces: Map<Long, Workspace>,
     val timeEntries: Map<Long, TimeEntry>,
     val editableTimeEntry: EditableTimeEntry?,
+    val calendarEvents: Map<String, CalendarEvent>,
     val localState: LocalState
 ) {
     data class LocalState internal constructor(

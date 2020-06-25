@@ -2,7 +2,6 @@ package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.Constants
 import com.toggl.environment.services.calendar.CalendarEvent
-import com.toggl.environment.services.calendar.CalendarService
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
@@ -11,10 +10,10 @@ import com.toggl.timer.common.createCalendarEvent
 import io.kotlintest.matchers.boolean.shouldBeTrue
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.collections.shouldHaveSize
+import io.kotlintest.should
 import io.kotlintest.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -31,36 +30,46 @@ import java.util.stream.Stream
 class CalendarSuggestionProviderTest : CoroutineTest() {
 
     private val timeService = mockk<TimeService> { every { now() } returns now }
-    private val calendarService = mockk<CalendarService> { every { getAvailableCalendars() } returns emptyList() }
     private val provider = CalendarSuggestionProvider(
         timeService,
-        calendarService,
         dispatcherProvider,
         Constants.Suggestions.maxNumberOfCalendarSuggestions
     )
 
     @Test
     fun `gets events within 1 hour before or after now`() = runBlockingTest {
-
+        val calendarSuggestionsProvider = CalendarSuggestionProvider(
+            timeService,
+            dispatcherProvider,
+            300
+        )
         val span = Duration.ofHours(1)
         val expectedStartOfRange = now - span
         val expectedEndOfRange = now + span
-        val initialState = createInitialState()
-        every { calendarService.getCalendarEvents(any(), any(), any()) } returns emptyList()
+        val calendarEvents = (-61..61).map {
+            CalendarEvent(
+                it.toString(),
+                now + Duration.ofMinutes(it.toLong()),
+                Duration.ofMinutes(30),
+                "Cool Event",
+                "",
+                ""
+            )
+        }
+        val initialState = createInitialState(calendarEvents = calendarEvents.associateBy { it.id })
 
-        provider.getSuggestions(initialState)
-
-        verify {
-            calendarService.getCalendarEvents(expectedStartOfRange, expectedEndOfRange, any())
+        val suggestions = calendarSuggestionsProvider.getSuggestions(initialState)
+        suggestions.shouldHaveSize(121) // out of bounds (123 - 2 == 121)
+        suggestions.forEach { suggestion ->
+            suggestion.should { it is Suggestion.Calendar && it.calendarEvent.startTime > expectedStartOfRange && it.calendarEvent.startTime < expectedEndOfRange }
         }
     }
 
     @Test
     fun `does not include calendar events without a description`() = runBlockingTest {
 
-        val initialState = createInitialState()
-        val calendarEvents = listOf(createCalendarEvent(description = ""))
-        every { calendarService.getCalendarEvents(any(), any(), any()) } returns calendarEvents
+        val calendarEvents = listOf(createCalendarEvent(description = "", startTime = now))
+        val initialState = createInitialState(calendarEvents = calendarEvents.associateBy { it.id })
 
         val suggestions = provider.getSuggestions(initialState)
 
@@ -71,9 +80,9 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
     fun `creates the suggestions using the default workspace id of the current user`() = runBlockingTest {
 
         val user = User(ApiToken.Invalid, 10)
-        val initialState = createInitialState(user = user)
-        val calendarEvents = listOf("This is valid", "This is also valid").map { createCalendarEvent(description = it) }
-        every { calendarService.getCalendarEvents(any(), any(), any()) } returns calendarEvents
+        val calendarEvents =
+            listOf("This is valid", "This is also valid").map { createCalendarEvent(description = it, startTime = now) }
+        val initialState = createInitialState(user = user, calendarEvents = calendarEvents.associateBy { it.id })
 
         val suggestions = provider.getSuggestions(initialState)
 
@@ -86,9 +95,9 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
         val maxSuggestionNumber = Constants.Suggestions.maxNumberOfCalendarSuggestions
 
         val user = User(ApiToken.Invalid, 10)
-        val initialState = createInitialState(user = user)
-        val calendarEvents = listOf("This is valid", "This is also valid").map { createCalendarEvent(description = it) }
-        every { calendarService.getCalendarEvents(any(), any(), any()) } returns calendarEvents
+        val calendarEvents =
+            listOf("This is valid", "This is also valid").map { createCalendarEvent(description = it, startTime = now) }
+        val initialState = createInitialState(user = user, calendarEvents = calendarEvents.associateBy { it.id })
 
         val suggestions = provider.getSuggestions(initialState)
 
@@ -98,10 +107,8 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
     @ParameterizedTest
     @MethodSource("calendarEvents")
     fun `sorts by the distance between the event start and now`(testData: CalendarTestData) = runBlockingTest {
-
-        every { calendarService.getCalendarEvents(any(), any(), any()) } returns testData.events
-
-        val suggestion = provider.getSuggestions(createInitialState()).filterIsInstance<Suggestion.Calendar>().single()
+        val suggestionsState = createInitialState(calendarEvents = testData.events.associateBy { it.id })
+        val suggestion = provider.getSuggestions(suggestionsState).filterIsInstance<Suggestion.Calendar>().single()
 
         suggestion.calendarEvent shouldBe testData.closestEvent
     }
@@ -115,17 +122,17 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
         fun calendarEvents(): Stream<CalendarTestData> = Stream.of(
             CalendarTestData(
                 listOf(
-                    createCalendarEvent(description = "Test", startTime = now.plusMinutes(1)),
-                    createCalendarEvent(description = "Test", startTime = now.plusMinutes(2)),
-                    createCalendarEvent(description = "Test", startTime = now.plusMinutes(3))
-                ), createCalendarEvent(description = "Test", startTime = now.plusMinutes(1))
+                    createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(1)),
+                    createCalendarEvent(id = "b", description = "B", startTime = now.plusMinutes(2)),
+                    createCalendarEvent(id = "c", description = "C", startTime = now.plusMinutes(3))
+                ), createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(1))
             ),
             CalendarTestData(
                 listOf(
-                    createCalendarEvent(description = "Test", startTime = now.plusMinutes(3)),
-                    createCalendarEvent(description = "Test", startTime = now.minusMinutes(1)),
-                    createCalendarEvent(description = "Test", startTime = now.plusMinutes(2))
-                ), createCalendarEvent(description = "Test", startTime = now.minusMinutes(1))
+                    createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(3)),
+                    createCalendarEvent(id = "b", description = "B", startTime = now.minusMinutes(1)),
+                    createCalendarEvent(id = "c", description = "C", startTime = now.plusMinutes(2))
+                ), createCalendarEvent(id = "b", description = "B", startTime = now.minusMinutes(1))
             )
         )
     }

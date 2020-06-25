@@ -2,6 +2,7 @@ package com.toggl.domain
 
 import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
+import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
@@ -27,6 +28,7 @@ data class AppState(
     val timeEntries: Map<Long, TimeEntry> = mapOf(),
     val editableTimeEntry: EditableTimeEntry? = null,
     val calendarPermissionWasGranted: Boolean = false,
+    val calendarEvents: Map<String, CalendarEvent> = mapOf(),
     val onboardingLocalState: OnboardingState.LocalState = OnboardingState.LocalState(),
     val timerLocalState: TimerState.LocalState = TimerState.LocalState(),
     val calendarLocalState: CalendarState.LocalState = CalendarState.LocalState()
