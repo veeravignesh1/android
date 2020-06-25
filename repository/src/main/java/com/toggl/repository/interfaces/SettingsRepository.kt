@@ -12,5 +12,6 @@ interface SettingsRepository {
         const val is24HourClock = "is24HourClock"
         const val dateFormat = "dateFormat"
         const val durationFormat = "durationFormat"
+        const val firstDayOfTheWeek = "firstDayOfTheWeek"
     }
 }

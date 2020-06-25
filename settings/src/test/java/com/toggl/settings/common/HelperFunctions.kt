@@ -19,6 +19,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
+import java.time.DayOfWeek
 
 fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
@@ -33,13 +34,15 @@ fun createUserPreferences(
     is24HourClock: Boolean = false,
     selectedWorkspaceId: Long = 1,
     dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
-    durationFormat: DurationFormat = DurationFormat.Classic
+    durationFormat: DurationFormat = DurationFormat.Classic,
+    firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
     is24HourClock = is24HourClock,
     selectedWorkspaceId = selectedWorkspaceId,
     dateFormat = dateFormat,
-    durationFormat = durationFormat
+    durationFormat = durationFormat,
+    firstDayOfTheWeek = firstDayOfTheWeek
 )
 
 fun createSettingsReducer(

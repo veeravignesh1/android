@@ -27,6 +27,7 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.WorkspaceSelected -> state.updateUserPreferences { copy(selectedWorkspaceId = action.selectedWorkspaceId) }
             is SettingsAction.DateFormatSelected -> state.updateUserPreferences { copy(dateFormat = action.dateFormat) }
             is SettingsAction.DurationFormatSelected -> state.updateUserPreferences { copy(durationFormat = action.durationFormat) }
+            is SettingsAction.FirstDayOfTheWeekSelected -> state.updateUserPreferences { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
         }
 
     private fun MutableValue<SettingsState>.updateUserPreferences(updateBlock: UserPreferences.() -> UserPreferences) =

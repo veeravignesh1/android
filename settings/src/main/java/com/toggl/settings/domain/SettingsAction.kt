@@ -4,6 +4,7 @@ import arrow.optics.optics
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
+import java.time.DayOfWeek
 
 @optics
 sealed class SettingsAction {
@@ -14,6 +15,7 @@ sealed class SettingsAction {
     data class WorkspaceSelected(val selectedWorkspaceId: Long) : SettingsAction()
     data class DateFormatSelected(val dateFormat: DateFormat) : SettingsAction()
     data class DurationFormatSelected(val durationFormat: DurationFormat) : SettingsAction()
+    data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek): SettingsAction()
 
     companion object
 }
@@ -27,4 +29,5 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.WorkspaceSelected -> "WorkspaceSelected workspaceId: $selectedWorkspaceId"
         is SettingsAction.DateFormatSelected -> "DateFormatSelected dateFormat: $dateFormat"
         is SettingsAction.DurationFormatSelected -> "DurationFormatSelected durationFormat: $durationFormat"
+        is SettingsAction.FirstDayOfTheWeekSelected -> "FirstDayOfTheWeekSelected day: $firstDayOfTheWeek"
     }

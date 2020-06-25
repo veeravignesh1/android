@@ -38,6 +38,7 @@ import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
+import java.time.DayOfWeek
 
 class Repository(
     private val projectDao: ProjectDao,
@@ -145,7 +146,8 @@ class Repository(
                 is24HourClock = getBoolean(SettingsRepository.is24HourClock, false),
                 selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, 0),
                 dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, DateFormat.MMDDYYYY_slash.name)!!),
-                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!)
+                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!),
+                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value))
             )
         }
 
@@ -156,6 +158,7 @@ class Repository(
             putLong(SettingsRepository.selectedWorkspaceId, userPreferences.selectedWorkspaceId)
             putString(SettingsRepository.dateFormat, userPreferences.dateFormat.name)
             putString(SettingsRepository.durationFormat, userPreferences.durationFormat.name)
+            putInt(SettingsRepository.firstDayOfTheWeek, userPreferences.firstDayOfTheWeek.value)
         }
     }
 }
