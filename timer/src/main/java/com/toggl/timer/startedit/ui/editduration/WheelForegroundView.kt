@@ -104,10 +104,10 @@ class WheelForegroundView @JvmOverloads constructor(
             invalidate()
         }
 
-    private var minimumStartTime: OffsetDateTime = OffsetDateTime.MIN
-    private var maximumStartTime: OffsetDateTime = OffsetDateTime.now()
-    private var minimumEndTime: OffsetDateTime = OffsetDateTime.now()
-    private var maximumEndTime: OffsetDateTime = OffsetDateTime.MAX
+    var minimumStartTime: OffsetDateTime = OffsetDateTime.MIN
+    var maximumStartTime: OffsetDateTime = OffsetDateTime.now()
+    var minimumEndTime: OffsetDateTime = OffsetDateTime.now()
+    var maximumEndTime: OffsetDateTime = OffsetDateTime.MAX
 
     private val startTimeChannel = ConflatedBroadcastChannel<OffsetDateTime>(OffsetDateTime.now())
     private var startTimeAngle = 0.0

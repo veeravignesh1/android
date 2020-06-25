@@ -30,9 +30,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.architecture.extensions.select
+import com.toggl.common.Constants
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
-import com.toggl.common.ui.Position
-import com.toggl.common.ui.above
 import com.toggl.common.deepLinks
 import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.displayMetrics
@@ -44,6 +43,8 @@ import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.sheet.AlphaSlideAction
 import com.toggl.common.sheet.BottomSheetCallback
+import com.toggl.common.ui.Position
+import com.toggl.common.ui.above
 import com.toggl.common.ui.showTooltip
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
@@ -61,9 +62,9 @@ import com.toggl.timer.startedit.domain.ProjectTagChipSelector
 import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.StartEditState
 import com.toggl.timer.startedit.domain.TemporalInconsistency
+import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionsPopup
 import com.toggl.timer.startedit.ui.chips.ChipAdapter
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
-import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionsPopup
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -204,7 +205,11 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         store.state
             .mapNotNull { it.editableTimeEntry }
-            .distinctUntilChanged { old, new -> old.ids == new.ids && old.startTime == new.startTime }
+            .distinctUntilChanged { old, new ->
+                old.ids == new.ids &&
+                    old.startTime == new.startTime &&
+                    old.duration == new.duration
+            }
             .onEach {
                 scheduleTimeEntryStartTimeAndDurationIndicators(it)
                 handleStartStopElementsState(it)
@@ -548,11 +553,18 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 }
 
                 if (!wheel_foreground.isEditing()) {
-                    val startTime = editableTimeEntry.startTime ?: timeService.now()
-                    val endTime = startTime + durationForDisplaying
-                    wheel_foreground.startTime = editableTimeEntry.startTime ?: timeService.now()
-                    wheel_foreground.endTime = endTime
-                    wheel_foreground.isRunning = editableTimeEntry.duration == null
+                    val newStartTime = editableTimeEntry.startTime ?: timeService.now()
+                    val newEndTime = newStartTime + durationForDisplaying
+                    val maxDuration = Duration.ofHours(Constants.TimeEntry.maxDurationInHours)
+                    with(wheel_foreground) {
+                        minimumStartTime = newEndTime - maxDuration
+                        maximumStartTime = newEndTime
+                        minimumEndTime = newStartTime
+                        maximumEndTime = newStartTime + maxDuration
+                        startTime = newStartTime
+                        endTime = newEndTime
+                        isRunning = editableTimeEntry.duration == null
+                    }
                 }
 
                 if (!wheel_duration_input.hasFocus()) {
