@@ -33,6 +33,7 @@ import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.time.DayOfWeek
 
 @ExperimentalCoroutinesApi
 class LoadingReducerTests : FreeCoroutineSpec() {
@@ -60,7 +61,10 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 is24HourClock = false,
                 selectedWorkspaceId = 1,
                 dateFormat = DateFormat.DDMMYYYY_dash,
-                durationFormat = DurationFormat.Decimal
+                durationFormat = DurationFormat.Decimal,
+                firstDayOfTheWeek = DayOfWeek.MONDAY,
+                shouldGroupSimilarTimeEntries = true,
+                hasCellSwipeActions = true
             )
         )
 
