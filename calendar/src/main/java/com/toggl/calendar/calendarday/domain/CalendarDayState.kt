@@ -3,7 +3,7 @@ package com.toggl.calendar.calendarday.domain
 import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.environment.services.calendar.CalendarEvent
-import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.common.feature.navigation.BackStack
 import com.toggl.environment.services.calendar.Calendar
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
@@ -13,8 +13,8 @@ import java.time.OffsetDateTime
 data class CalendarDayState(
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
+    val backStack: BackStack,
     val events: Map<String, CalendarEvent>,
-    val selectedItem: SelectedCalendarItem?,
     val date: OffsetDateTime,
     val calendars: List<Calendar>
 ) {
@@ -23,8 +23,8 @@ data class CalendarDayState(
             CalendarDayState(
                 calendarState.timeEntries,
                 calendarState.projects,
+                calendarState.backStack,
                 calendarState.calendarEvents,
-                calendarState.localState.selectedItem,
                 calendarState.localState.selectedDate,
                 calendarState.localState.calendars
             )
@@ -33,9 +33,9 @@ data class CalendarDayState(
             calendarState.copy(
                 timeEntries = calendarDayState.timeEntries,
                 projects = calendarDayState.projects,
+                backStack = calendarDayState.backStack,
                 calendarEvents = calendarDayState.events,
                 localState = calendarState.localState.copy(
-                    selectedItem = calendarDayState.selectedItem,
                     selectedDate = calendarDayState.date,
                     calendars = calendarDayState.calendars
                 )

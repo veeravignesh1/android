@@ -1,19 +1,15 @@
 package com.toggl.calendar.common
 
 import com.toggl.architecture.DispatcherProvider
-import com.toggl.calendar.calendarday.domain.CalendarDayState
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.calendar.calendarday.domain.CalendarDayReducer
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
-import com.toggl.environment.services.calendar.Calendar
 import com.toggl.environment.services.calendar.CalendarService
 import com.toggl.environment.services.time.TimeService
-import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeTypeOf
@@ -23,6 +19,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
 import java.time.Duration
 import java.time.OffsetDateTime
+import kotlin.contracts.ExperimentalContracts
 
 fun createTimeEntry(
     id: Long,
@@ -64,22 +61,7 @@ fun createCalendarEvent(
     calendarId
 )
 
-fun createInitialState(
-    timeEntries: List<TimeEntry> = listOf(),
-    calendarEvents: List<CalendarEvent> = listOf(),
-    projects: List<Project> = listOf(),
-    selectedItem: SelectedCalendarItem? = null,
-    date: OffsetDateTime = OffsetDateTime.now(),
-    calendars: List<Calendar> = listOf()
-) = CalendarDayState(
-    timeEntries.associateBy { it.id },
-    projects.associateBy { it.id },
-    calendarEvents.associateBy { it.id },
-    selectedItem,
-    date,
-    calendars
-)
-
+@ExperimentalContracts
 fun createCalendarDayReducer(
     calendarService: CalendarService = mockk(),
     timeService: TimeService = mockk(),

@@ -33,4 +33,13 @@
   <color name="clickable_text_secondary">#2196F3</color>
   <color name="thumb_background">#FFFFFF</color>
   <color name="thumb_border">#CECECF</color>
+  <color name="calendar_contextual_menu_action_start">#E57CD8</color>
+  <color name="calendar_contextual_menu_action_stop">#FF897A</color>
+  <color name="calendar_contextual_menu_action_continue">#E57CD8</color>
+  <color name="calendar_contextual_menu_action_save">#FFDE91</color>
+  <color name="calendar_contextual_menu_action_edit">#D3BAFA</color>
+  <color name="calendar_contextual_menu_action_delete">#FF897A</color>
+  <color name="calendar_contextual_menu_action_discard">#D5D0D8</color>
+  <color name="calendar_contextual_menu_action_copy">#FDE5DC</color>
+  <color name="black40percent">#65000000</color>
 </resources>

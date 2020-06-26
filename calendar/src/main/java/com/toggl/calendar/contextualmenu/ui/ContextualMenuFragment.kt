@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.toggl.architecture.extensions.select
 import com.toggl.calendar.R
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuAction
 import com.toggl.calendar.contextualmenu.domain.ContextualMenuDisplaySelector
-import com.toggl.calendar.contextualmenu.domain.ContextualMenuLabelsViewModel
+import com.toggl.calendar.contextualmenu.domain.ContextualMenuViewModel
 import com.toggl.calendar.di.CalendarComponentProvider
 import com.toggl.common.feature.domain.formatForDisplay
 import kotlinx.android.synthetic.main.fragment_contextualmenu.*
@@ -32,6 +33,8 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
 
     private val store: ContextualMenuStoreViewModel by viewModels { viewModelFactory }
 
+    private val contextualMenuAdapter = ContextualMenuActionsAdapter { store.dispatch(it) }
+
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as CalendarComponentProvider)
             .provideCalendarComponent().inject(this)
@@ -43,9 +46,12 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        actions_recycler_view.adapter = contextualMenuAdapter
+        actions_recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
         store.state
             .select(contextualMenuDisplaySelector)
-            .onEach { updateContextualMenuLabels(it) }
+            .onEach { updateContextualMenu(it) }
             .launchIn(lifecycleScope)
 
         cancel_button.setOnClickListener {
@@ -53,17 +59,18 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
         }
     }
 
-    private fun updateContextualMenuLabels(contextualMenuLabelsViewModel: ContextualMenuLabelsViewModel) {
-        description.text = contextualMenuLabelsViewModel.description
-        period_label.text = contextualMenuLabelsViewModel.periodLabel
+    private fun updateContextualMenu(contextualMenuViewModel: ContextualMenuViewModel) {
+        description.text = contextualMenuViewModel.description
+        period_label.text = contextualMenuViewModel.periodLabel
+        contextualMenuAdapter.submitList(contextualMenuViewModel.contextualMenuActions.actions)
 
-        when (contextualMenuLabelsViewModel) {
-            is ContextualMenuLabelsViewModel.TimeEntryContextualMenu -> updateProjectInfo(contextualMenuLabelsViewModel)
-            is ContextualMenuLabelsViewModel.CalendarEventContextualMenu -> updateCalendarInfo(contextualMenuLabelsViewModel)
+        when (contextualMenuViewModel) {
+            is ContextualMenuViewModel.TimeEntryContextualMenu -> updateProjectInfo(contextualMenuViewModel)
+            is ContextualMenuViewModel.CalendarEventContextualMenu -> updateCalendarInfo(contextualMenuViewModel)
         }
     }
 
-    private fun updateCalendarInfo(viewModel: ContextualMenuLabelsViewModel.CalendarEventContextualMenu) {
+    private fun updateCalendarInfo(viewModel: ContextualMenuViewModel.CalendarEventContextualMenu) {
         if (viewModel.calendarColor != null && viewModel.calendarName != null) {
             project_dot.visibility = View.VISIBLE
             project_label.visibility = View.VISIBLE
@@ -75,7 +82,7 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
         }
     }
 
-    private fun updateProjectInfo(viewModel: ContextualMenuLabelsViewModel.TimeEntryContextualMenu) {
+    private fun updateProjectInfo(viewModel: ContextualMenuViewModel.TimeEntryContextualMenu) {
         if (viewModel.projectViewModel != null) {
             project_dot.visibility = View.VISIBLE
             project_label.visibility = View.VISIBLE

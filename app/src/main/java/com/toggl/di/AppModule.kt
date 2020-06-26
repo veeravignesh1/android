@@ -11,6 +11,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
 import com.toggl.calendar.common.domain.CalendarAction
 import com.toggl.calendar.common.domain.CalendarState
+import com.toggl.common.DeepLinkUrls
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.mappings.mapAppStateToCalendarState
@@ -30,16 +31,20 @@ import com.toggl.timer.common.domain.TimerState
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Singleton
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
+import javax.inject.Singleton
 
 @Module(includes = [AppModuleBinds::class])
 class AppModule {
 
     @Provides
     fun provideContext(application: TogglApplication): Context = application.applicationContext
+
+    @Provides
+    @Singleton
+    fun deeplinkUrls(application: TogglApplication) = DeepLinkUrls.fromResources(application.resources)
 
     @Provides
     fun provideSharedPreferences(application: TogglApplication): SharedPreferences =

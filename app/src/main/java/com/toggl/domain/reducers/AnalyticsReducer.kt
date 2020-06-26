@@ -4,6 +4,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.noEffect
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -19,6 +20,7 @@ import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin
 import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin.LogSwipe
 import com.toggl.environment.services.analytics.parameters.TimeEntryStopOrigin.Manual
 import com.toggl.models.common.SwipeDirection
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.running.domain.RunningTimeEntryAction
@@ -57,7 +59,7 @@ class AnalyticsReducer @Inject constructor(
             StartEditAction.CloseButtonTapped,
             StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
             StartEditAction.DoneButtonTapped ->
-                state().editableTimeEntry?.let {
+                state().backStack.getRouteParam<EditableTimeEntry>()?.let {
                     Event.editViewClosed(
                         if (it.isRepresentingGroup()) EditViewCloseReason.GroupSave
                         else EditViewCloseReason.Save

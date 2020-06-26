@@ -4,9 +4,12 @@ import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
+import com.toggl.common.feature.models.SelectedCalendarItem
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
@@ -16,12 +19,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.OffsetDateTime
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @ExperimentalCoroutinesApi
 @DisplayName("The ItemTappedActionTests action")
 internal class ItemTappedActionTests : CoroutineTest() {
 
-    private val state = createCalendarDayState()
+    private val initialState = createInitialState()
     private val reducer = createCalendarDayReducer(dispatcherProvider = dispatcherProvider)
 
     private val timeEntry = createTimeEntry(1)
@@ -31,28 +36,45 @@ internal class ItemTappedActionTests : CoroutineTest() {
     private val calendarEventItemToBeSelected = CalendarItem.CalendarEvent(calendarEvent)
 
     @Test
-    fun `should set selectedItem correctly when timeEntry is tapped`() = runBlockingTest {
+    fun `should set selectedItem correctly when timeEntry is tapped and there already is another item selected`() = runBlockingTest {
+        val initialState = initialState.copy(backStack = listOf(Route.ContextualMenu(SelectedCalendarItem.SelectedCalendarEvent(calendarEvent))))
         reducer.testReduceState(
-            state,
+            initialState,
             CalendarDayAction.ItemTapped(timeEntryItemToBeSelected)
         ) { state ->
-            state shouldBe state.copy(selectedItem = SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
+            state shouldBe initialState.copy(backStack = initialState.backStack.setRouteParam {
+                Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
+            })
+        }
+    }
+
+    @Test
+    fun `should set selectedItem correctly when timeEntry is tapped`() = runBlockingTest {
+        reducer.testReduceState(
+            initialState,
+            CalendarDayAction.ItemTapped(timeEntryItemToBeSelected)
+        ) { state ->
+            state shouldBe initialState.copy(backStack = initialState.backStack.push(
+                Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
+            ))
         }
     }
 
     @Test
     fun `should set selectedItem correctly when calendarEvent is tapped`() = runBlockingTest {
         reducer.testReduceState(
-            state,
+            initialState,
             CalendarDayAction.ItemTapped(calendarEventItemToBeSelected)
         ) { state ->
-            state shouldBe state.copy(selectedItem = SelectedCalendarItem.SelectedCalendarEvent(calendarEvent))
+            state shouldBe initialState.copy(backStack = initialState.backStack.push(
+                Route.ContextualMenu(SelectedCalendarItem.SelectedCalendarEvent(calendarEvent))
+            ))
         }
     }
 
     @Test
     fun `shouldn't return any effect`() = runBlockingTest {
-        reducer.testReduceNoEffects(state, CalendarDayAction.ItemTapped(timeEntryItemToBeSelected))
-        reducer.testReduceNoEffects(state, CalendarDayAction.ItemTapped(calendarEventItemToBeSelected))
+        reducer.testReduceNoEffects(initialState, CalendarDayAction.ItemTapped(timeEntryItemToBeSelected))
+        reducer.testReduceNoEffects(initialState, CalendarDayAction.ItemTapped(calendarEventItemToBeSelected))
     }
 }

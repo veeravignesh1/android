@@ -14,8 +14,7 @@ data class EditableTimeEntry(
     val billable: Boolean = false,
     val projectId: Long? = null,
     val taskId: Long? = null,
-    val tagIds: List<Long> = listOf(),
-    val editableProject: EditableProject? = null
+    val tagIds: List<Long> = listOf()
 ) {
     companion object {
         fun empty(workspaceId: Long) = EditableTimeEntry(workspaceId = workspaceId)
@@ -37,8 +36,7 @@ data class EditableTimeEntry(
                 billable = timeEntry.billable,
                 projectId = timeEntry.projectId,
                 tagIds = timeEntry.tagIds,
-                taskId = timeEntry.taskId,
-                editableProject = null
+                taskId = timeEntry.taskId
             )
 
         fun fromGroup(timeEntries: Collection<TimeEntry>): EditableTimeEntry {
@@ -51,8 +49,7 @@ data class EditableTimeEntry(
                 billable = sample.billable,
                 projectId = sample.projectId,
                 tagIds = sample.tagIds,
-                taskId = sample.taskId,
-                editableProject = null
+                taskId = sample.taskId
             )
         }
     }

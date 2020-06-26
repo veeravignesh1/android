@@ -84,12 +84,14 @@ class ProjectReducer @Inject constructor(
                 }
             }
             is ProjectAction.ProjectCreated -> state.mutate {
-                val (token, currentQuery) = timeEntryDescription.findTokenAndQueryMatchesForAutocomplete(projectToken, cursorPosition)
+                val (token, currentQuery) = editableTimeEntry.description.findTokenAndQueryMatchesForAutocomplete(projectToken, cursorPosition)
                 val delimiter = "$token$currentQuery"
                 copy(
                     projects = projects + (action.project.id to action.project),
-                    timeEntryProjectId = action.project.id,
-                    timeEntryDescription = timeEntryDescription.substringBeforeLast(delimiter)
+                    editableTimeEntry = editableTimeEntry.copy(
+                        projectId = action.project.id,
+                        description = editableTimeEntry.description.substringBeforeLast(delimiter)
+                    )
                 )
             } returnEffect effectOf(ProjectAction.Close)
             ProjectAction.Close -> noEffect()

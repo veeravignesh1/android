@@ -2,14 +2,15 @@ package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
-import com.toggl.calendar.common.createInitialState
 import com.toggl.calendar.common.createTimeEntry
-import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.models.domain.EditableTimeEntry
@@ -22,7 +23,9 @@ import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @ExperimentalCoroutinesApi
 @DisplayName("The TimeEntryDragged action")
 class TimeEntryDraggedActionTests : CoroutineTest() {
@@ -94,7 +97,11 @@ class TimeEntryDraggedActionTests : CoroutineTest() {
         val newStart = startTime.minusHours(1)
         reducer.testReduceState(initialState, CalendarDayAction.TimeEntryDragged(newStart)) { state ->
             state shouldBe initialState.copy(
-                selectedItem = SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry.copy(startTime = newStart))
+                backStack = state.backStack.setRouteParam {
+                    Route.ContextualMenu(
+                        SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry.copy(startTime = newStart))
+                    )
+                }
             )
         }
     }

@@ -2,7 +2,7 @@ package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.createTimeEntry
-import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.shouldEmitTimeEntryAction
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
@@ -22,7 +22,9 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.OffsetDateTime
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @ExperimentalCoroutinesApi
 @DisplayName("The ContinueButtonTapped action")
 internal class ContinueButtonTappedActionTests {

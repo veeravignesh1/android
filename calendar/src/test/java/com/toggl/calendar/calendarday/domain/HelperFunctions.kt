@@ -1,18 +1,25 @@
 package com.toggl.calendar.calendarday.domain
 
-import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.common.feature.models.SelectedCalendarItem
+import com.toggl.common.feature.navigation.Route
 import com.toggl.environment.services.calendar.Calendar
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import java.time.OffsetDateTime
-import java.time.ZoneOffset
 
-fun createCalendarDayState(
-    timeEntries: Map<Long, TimeEntry> = mapOf(),
-    projects: Map<Long, Project> = mapOf(),
-    calendarEvents: Map<String, CalendarEvent> = mapOf(),
+fun createInitialState(
+    timeEntries: List<TimeEntry> = listOf(),
+    calendarEvents: List<CalendarEvent> = listOf(),
+    projects: List<Project> = listOf(),
     selectedItem: SelectedCalendarItem? = null,
-    date: OffsetDateTime = OffsetDateTime.of(2020, 1, 1, 1, 1, 1, 1, ZoneOffset.UTC),
+    date: OffsetDateTime = OffsetDateTime.now(),
     calendars: List<Calendar> = listOf()
-) = CalendarDayState(timeEntries, projects, calendarEvents, selectedItem, date, calendars)
+) = CalendarDayState(
+    timeEntries.associateBy { it.id },
+    projects.associateBy { it.id },
+    if (selectedItem == null) emptyList() else listOf(Route.ContextualMenu(selectedItem)),
+    calendarEvents.associateBy { it.id },
+    date,
+    calendars
+)

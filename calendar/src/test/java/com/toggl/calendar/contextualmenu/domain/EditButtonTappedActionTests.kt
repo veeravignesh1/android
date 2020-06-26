@@ -1,11 +1,13 @@
 package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.calendar.common.createCalendarEvent
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
+import com.toggl.common.feature.models.SelectedCalendarItem
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
@@ -16,7 +18,9 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @ExperimentalCoroutinesApi
 @DisplayName("The EditButtonTapped action")
 internal class EditButtonTappedActionTests {
@@ -42,7 +46,11 @@ internal class EditButtonTappedActionTests {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
 
         reducer.testReduceState(initialState, ContextualMenuAction.EditButtonTapped) { state ->
-            state shouldBe initialState.copy(editableTimeEntry = timeEntry)
+            state shouldBe initialState.copy(
+                backStack = state.backStack.setRouteParam {
+                    Route.StartEdit(timeEntry)
+                }
+            )
         }
     }
 

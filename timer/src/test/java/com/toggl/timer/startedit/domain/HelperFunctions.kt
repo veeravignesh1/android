@@ -24,6 +24,7 @@ fun createInitialState(
         tags = tags.associateBy { it.id },
         tasks = mapOf(),
         clients = mapOf(),
+        backStack = emptyList(),
         projects = projects.associateBy { it.id },
         workspaces = workspaces.associateBy { it.id },
         timeEntries = timeEntries.associateBy { it.id },

@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
@@ -94,29 +95,6 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 it shouldBe initialState.copy(
                     autocompleteSuggestions = emptyList(),
                     editableTimeEntry = initialEditableTimeEntry.copy(
-                        projectId = project.id,
-                        workspaceId = project.workspaceId
-                    )
-                )
-            }
-        }
-
-        @ParameterizedTest
-        @MethodSource("projects")
-        fun `should clear any editable project information in the editable time entry`(project: Project) = runBlockingTest {
-            val initialEditableTimeEntry = EditableTimeEntry.empty(1).copy(
-                editableProject = EditableProject(workspaceId = 1)
-            )
-            val suggestion = AutocompleteSuggestion.Project(project)
-
-            reducer.testReduceState(
-                initialState,
-                StartEditAction.AutocompleteSuggestionTapped(suggestion)
-            ) {
-                it shouldBe initialState.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        editableProject = null,
                         projectId = project.id,
                         workspaceId = project.workspaceId
                     )
@@ -321,11 +299,12 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry.editableProject.shouldNotBeNull()
+                val editableProject = it.backStack.getRouteParam<EditableProject>()
+                editableProject.shouldNotBeNull()
 
-                it.editableTimeEntry.editableProject?.name shouldBe projectName
-                it.editableTimeEntry.editableProject?.workspaceId shouldBe 1
-                Project.defaultColors.shouldContain(it.editableTimeEntry.editableProject!!.color)
+                editableProject.name shouldBe projectName
+                editableProject.workspaceId shouldBe 1
+                Project.defaultColors.shouldContain(editableProject.color)
             }
         }
 

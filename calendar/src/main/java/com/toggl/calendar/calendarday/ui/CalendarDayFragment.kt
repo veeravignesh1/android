@@ -13,25 +13,24 @@ import com.toggl.calendar.R
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarItemsSelector
 import com.toggl.calendar.di.CalendarComponentProvider
+import com.toggl.common.feature.navigation.BottomSheetNavigator
 import kotlinx.android.synthetic.main.fragment_calendarday.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 
 class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var calendarItemsSelector: CalendarItemsSelector
-
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var calendarItemsSelector: CalendarItemsSelector
+    @Inject lateinit var bottomSheetNavigator: BottomSheetNavigator
     private val store: CalendarDayStoreViewModel by viewModels { viewModelFactory }
+
+    private lateinit var customNavigator: BottomSheetNavigator
 
     override fun onAttach(context: Context) {
         (requireActivity().applicationContext as CalendarComponentProvider)
@@ -77,14 +76,13 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
                 store.dispatch(CalendarDayAction.TimeEntryDragged(it))
             }.launchIn(lifecycleScope)
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(contextual_menu_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(contextual_menu_bottom_sheet)
+        behavior.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetNavigator.bottomSheetBehavior = behavior
+    }
 
-        store.state
-            .map { it.selectedItem != null }
-            .onEach { hasSelectedItem ->
-                bottomSheetBehavior.state =
-                    if (hasSelectedItem) BottomSheetBehavior.STATE_EXPANDED
-                    else BottomSheetBehavior.STATE_HIDDEN
-            }.launchIn(lifecycleScope)
+    override fun onDestroyView() {
+        bottomSheetNavigator.bottomSheetBehavior = null
+        super.onDestroyView()
     }
 }

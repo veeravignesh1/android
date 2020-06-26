@@ -10,6 +10,8 @@ import com.toggl.architecture.extensions.toEffect
 import com.toggl.calendar.common.domain.toCalendarEvent
 import com.toggl.calendar.common.domain.toEditableTimeEntry
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
 import com.toggl.common.feature.timeentry.extensions.throwIfNotPersisted
@@ -24,7 +26,9 @@ import com.toggl.repository.extensions.toCreateDto
 import com.toggl.repository.extensions.toStartDto
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @Singleton
 class ContextualMenuReducer @Inject constructor(
     private val timeService: TimeService
@@ -57,7 +61,11 @@ class ContextualMenuReducer @Inject constructor(
                 timeEntryEffect + ContextualMenuAction.Close.toEffect()
             }
             ContextualMenuAction.EditButtonTapped -> {
-                state.mutateWithoutEffects { copy(editableTimeEntry = state.mapToEditableTimeEntry()) }
+                state.mutateWithoutEffects {
+                    val editableTimeEntry = state.mapToEditableTimeEntry()
+                    val route = Route.StartEdit(editableTimeEntry)
+                    copy(backStack = backStack.push(route))
+                }
             }
             ContextualMenuAction.ContinueButtonTapped -> {
                 val editableTimeEntry = state.mapToEditableTimeEntry()

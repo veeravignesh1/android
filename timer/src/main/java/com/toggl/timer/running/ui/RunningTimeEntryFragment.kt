@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.R
 import com.toggl.timer.di.TimerComponentProvider
@@ -47,6 +48,7 @@ class RunningTimeEntryFragment : Fragment(R.layout.fragment_running_time_entry) 
         time_entry_description.isFocusableInTouchMode = true
 
         start_time_entry_card.setOnClickListener {
+            context?.performClickHapticFeedback()
             store.dispatch(RunningTimeEntryAction.CardTapped)
         }
 

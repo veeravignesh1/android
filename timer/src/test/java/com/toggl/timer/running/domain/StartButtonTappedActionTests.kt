@@ -2,9 +2,7 @@ package com.toggl.timer.running.domain
 
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.environment.services.time.TimeService
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.FreeCoroutineSpec
-import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeSingleton
@@ -19,9 +17,7 @@ class StartButtonTappedActionTests : FreeCoroutineSpec() {
     init {
         val timeService = mockk<TimeService> { every { now() } returns OffsetDateTime.MAX }
         val reducer = RunningTimeEntryReducer(timeService)
-        val editableTimeEntry =
-            EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-        val initialState = createInitialState(editableTimeEntry = editableTimeEntry)
+        val initialState = createInitialState()
 
         "The StartButtonTapped action" - {
             reducer.testReduce(

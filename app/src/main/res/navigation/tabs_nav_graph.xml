@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tabs_nav_graph"
     app:startDestination="@id/time_entries_log">
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.toggl.onboarding.ui.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/login_fragment"
+        app:launchSingleTop="true" />
+
     <fragment
         android:id="@+id/time_entries_log"
+        tools:layout="@layout/fragment_time_entries_log"
         android:name="com.toggl.timer.log.ui.TimeEntriesLogFragment"
-        android:label="TimeEntriesLogFragment">
+        android:label="TimeEntriesLogFragment"
+        app:launchSingleTop="true" >
         <deepLink app:uri="@string/deep_link_time_entries_log" />
     </fragment>
 
     <dialog
         android:id="@+id/start_time_entry_dialog"
+        tools:layout="@layout/fragment_dialog_start_edit"
         android:name="com.toggl.timer.startedit.ui.StartEditDialogFragment"
         android:label="StartTimeEntryDialogFragment">
         <deepLink app:uri="@string/deep_link_start_edit_dialog" />
@@ -19,6 +31,7 @@
 
     <dialog
         android:id="@+id/project_dialog"
+        tools:layout="@layout/fragment_dialog_project"
         android:name="com.toggl.timer.project.ui.ProjectDialogFragment"
         android:label="ProjectDialogFragment">
         <deepLink app:uri="@string/deep_link_project_dialog" />
@@ -33,6 +46,7 @@
 
     <fragment
         android:id="@+id/calendar"
+        tools:layout="@layout/fragment_calendarday"
         android:name="com.toggl.calendar.calendarday.ui.CalendarDayFragment"
         android:label="CalendarFragment">
         <deepLink app:uri="@string/deep_link_calendar" />
@@ -41,7 +55,17 @@
     <fragment
         android:id="@+id/settings"
         android:name="com.toggl.settings.ui.SettingsFragment"
+        tools:layout="@layout/fragment_settings"
         android:label="SettingsFragment">
         <deepLink app:uri="@string/deep_link_settings" />
     </fragment>
+
+    <bottom_sheet
+        android:id="@+id/contextual_menu"
+        tools:layout="@layout/fragment_contextualmenu"
+        android:label="ContextualMenuFragment">
+        <deepLink app:uri="@string/deep_link_contextual_menu" />
+    </bottom_sheet>
+
+
 </navigation>

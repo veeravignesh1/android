@@ -5,12 +5,17 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.toEditableTimeEntry
 import com.toggl.calendar.common.domain.toSelectedCalendarItem
 import com.toggl.common.Constants.TimeEntry
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.withoutEffects
+import com.toggl.common.feature.models.SelectedCalendarItem
+import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.getRouteParam
+import com.toggl.common.feature.navigation.push
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.extensions.endTime
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfNew
@@ -22,7 +27,9 @@ import java.time.Duration
 import java.time.OffsetDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @Singleton
 class CalendarDayReducer @Inject constructor(
     private val calendarService: CalendarService,
@@ -36,7 +43,10 @@ class CalendarDayReducer @Inject constructor(
     ): List<Effect<CalendarDayAction>> =
         when (action) {
             is CalendarDayAction.ItemTapped -> state.mutateWithoutEffects {
-                copy(selectedItem = action.calendarItem.toSelectedCalendarItem())
+                val calendarItem = action.calendarItem.toSelectedCalendarItem()
+                val route = Route.ContextualMenu(calendarItem)
+
+                copy(backStack = backStack.pushOrUpdate(route))
             }
             CalendarDayAction.CalendarViewAppeared -> effect(state().run {
                 FetchCalendarEventsEffect(calendarService, date, date, calendars, dispatcherProvider)
@@ -46,7 +56,9 @@ class CalendarDayReducer @Inject constructor(
             }
             is CalendarDayAction.EmptyPositionLongPressed -> state.mutateWithoutEffects {
                 val workspaceId = this.defaultWorkspaceId()
-                copy(selectedItem = createEmptyTimeEntry(workspaceId, action.startTime))
+                val timeEntry = createEmptyTimeEntry(workspaceId, action.startTime)
+                val route = Route.ContextualMenu(timeEntry)
+                copy(backStack = backStack.pushOrUpdate(route))
             }
             is CalendarDayAction.TimeEntryDragged -> state.mutateEditableTimeEntry {
                 it.throwIfRunning()
@@ -87,13 +99,21 @@ class CalendarDayReducer @Inject constructor(
     }
 
     private fun MutableValue<CalendarDayState>.mutateEditableTimeEntry(modifyEditableTimeEntry: (EditableTimeEntry) -> EditableTimeEntry) {
-        val editableTimeEntry = this().selectedItem.toEditableTimeEntry()
-        editableTimeEntry.throwIfNew()
         return mutate {
-            CalendarDayState.selectedItem.modify(this) {
-                (it as SelectedCalendarItem.SelectedTimeEntry).copy(editableTimeEntry = modifyEditableTimeEntry(editableTimeEntry))
-            }
+            val selectableItem = backStack.getRouteParam<SelectedCalendarItem>()
+            val editableTimeEntry = selectableItem.toEditableTimeEntry()
+            editableTimeEntry.throwIfNew()
+
+            copy(backStack = backStack.setRouteParam {
+                Route.ContextualMenu(selectableItem.copy(editableTimeEntry = modifyEditableTimeEntry(editableTimeEntry)))
+            })
         }
+    }
+
+    private fun BackStack.pushOrUpdate(route: Route.ContextualMenu): BackStack {
+        val contextualMenuIsVisible = getRouteParam<SelectedCalendarItem>() != null
+
+        return if (!contextualMenuIsVisible) push(route) else setRouteParam { route }
     }
 
     private fun CalendarDayState.defaultWorkspaceId(): Long = 1L

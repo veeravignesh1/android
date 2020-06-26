@@ -39,4 +39,9 @@
     <string name="start_time_after_stop_time_warning">Start time must be before Stop time!</string>
     <string name="stop_time_before_start_time_warning">Stop time must be after Start time!</string>
     <string name="duration_too_long_warning">Duration can\'t exceed 999 hours!</string>
+    <string name="start">Start</string>
+    <string name="edit">Edit</string>
+    <string name="discard">Discard</string>
+    <string name="save">Save</string>
+    <string name="copy_event_as_time_entry">Copy as a time entry</string>
 </resources>
