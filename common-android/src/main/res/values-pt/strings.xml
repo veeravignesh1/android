@@ -37,4 +37,9 @@
     <string name="start_time_after_stop_time_warning">A hora de início deve ser anterior à hora final!</string>
     <string name="stop_time_before_start_time_warning">A hora final deve ser depois da hora de início!</string>
     <string name="duration_too_long_warning">A duração não pode exceder 999 horas!</string>
+    <string name="start">Iniciar</string>
+    <string name="edit">Editar</string>
+    <string name="discard">Descartar</string>
+    <string name="save">Salvar</string>
+    <string name="copy_event_as_time_entry">Copiar como registro de tempo</string>
 </resources>

@@ -36,4 +36,9 @@
     <string name="start_time_after_stop_time_warning">開始時刻は、終了時刻より前にしてください!</string>
     <string name="stop_time_before_start_time_warning">終了時刻は、開始時刻より後にしてください!</string>
     <string name="duration_too_long_warning">期間は999時間を超えることはできません！</string>
+    <string name="start">開始</string>
+    <string name="edit">編集</string>
+    <string name="discard">破棄する</string>
+    <string name="save">保存</string>
+    <string name="copy_event_as_time_entry">記録をコピー</string>
 </resources>

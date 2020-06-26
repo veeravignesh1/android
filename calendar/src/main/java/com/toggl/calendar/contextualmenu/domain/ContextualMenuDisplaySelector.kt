@@ -4,6 +4,9 @@ import com.toggl.architecture.core.Selector
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.feature.domain.ProjectViewModel
+import com.toggl.common.feature.timeentry.extensions.isRunning
+import com.toggl.common.feature.timeentry.extensions.isStopped
+import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.feature.models.SelectedCalendarItem
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
@@ -11,30 +14,32 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ContextualMenuDisplaySelector @Inject constructor() : Selector<ContextualMenuState, ContextualMenuLabelsViewModel> {
+class ContextualMenuDisplaySelector @Inject constructor() : Selector<ContextualMenuState, ContextualMenuViewModel> {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-    override suspend fun select(state: ContextualMenuState): ContextualMenuLabelsViewModel {
+    override suspend fun select(state: ContextualMenuState): ContextualMenuViewModel {
         return when (state.selectedItem) {
             is SelectedCalendarItem.SelectedTimeEntry -> state.createTimeEntryContextualMenu(state.selectedItem)
             is SelectedCalendarItem.SelectedCalendarEvent -> state.createCalendarEventContextualMenu(state.selectedItem)
         }
     }
 
-    private fun ContextualMenuState.createTimeEntryContextualMenu(selectedItem: SelectedCalendarItem.SelectedTimeEntry): ContextualMenuLabelsViewModel.TimeEntryContextualMenu {
+    private fun ContextualMenuState.createTimeEntryContextualMenu(selectedItem: SelectedCalendarItem.SelectedTimeEntry): ContextualMenuViewModel.TimeEntryContextualMenu {
         val period = formatPeriod(selectedItem)
         val timeEntry = selectedItem.editableTimeEntry
-        return ContextualMenuLabelsViewModel.TimeEntryContextualMenu(
+        val contextualMenuActions = selectedItem.contextualMenuActions
+        return ContextualMenuViewModel.TimeEntryContextualMenu(
             description = timeEntry.description,
             periodLabel = period,
-            projectViewModel = getProjectViewModel(timeEntry.projectId)
+            projectViewModel = getProjectViewModel(timeEntry.projectId),
+            contextualMenuActions = contextualMenuActions
         )
     }
 
-    private fun ContextualMenuState.createCalendarEventContextualMenu(selectedItem: SelectedCalendarItem.SelectedCalendarEvent): ContextualMenuLabelsViewModel.CalendarEventContextualMenu {
+    private fun ContextualMenuState.createCalendarEventContextualMenu(selectedItem: SelectedCalendarItem.SelectedCalendarEvent): ContextualMenuViewModel.CalendarEventContextualMenu {
         val period = formatPeriod(selectedItem)
         val calendarEvent = selectedItem.calendarEvent
-        return ContextualMenuLabelsViewModel.CalendarEventContextualMenu(
+        return ContextualMenuViewModel.CalendarEventContextualMenu(
             description = calendarEvent.description,
             periodLabel = period,
             calendarColor = calendarEvent.color,
@@ -61,4 +66,12 @@ class ContextualMenuDisplaySelector @Inject constructor() : Selector<ContextualM
         val endTime = formatter.format(selectedItem.endTime ?: OffsetDateTime.now())
         return "$startTime - $endTime"
     }
+
+    private val SelectedCalendarItem.SelectedTimeEntry.contextualMenuActions: ContextualMenuActionsViewModel
+        get() = when {
+            this.editableTimeEntry.wasNotYetPersisted() -> ContextualMenuActionsViewModel.NewTimeEntryActions
+            this.editableTimeEntry.isRunning() -> ContextualMenuActionsViewModel.RunningTimeEntryActions
+            this.editableTimeEntry.isStopped() -> ContextualMenuActionsViewModel.StoppedTimeEntryActions
+            else -> throw IllegalStateException("Invalid calendar item type")
+        }
 }
