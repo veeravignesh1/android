@@ -1,13 +1,12 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.createCalendarEvent
-import com.toggl.calendar.common.createInitialState
 import com.toggl.calendar.common.createTimeEntry
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.description
 import com.toggl.calendar.common.domain.duration
 import com.toggl.calendar.common.domain.toEditableTimeEntry
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.mockk.every
@@ -23,6 +22,7 @@ import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.function.Predicate
+import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalCoroutinesApi
 @DisplayName("The calendarItemsSelector")
@@ -374,6 +374,7 @@ internal class CalendarItemsSelectorTest {
         }
     }
 
+    @ExperimentalContracts
     @Nested
     @DisplayName("when there is a time entry selectedItem set in the state")
     inner class TimeEntrySelectedItemCases {

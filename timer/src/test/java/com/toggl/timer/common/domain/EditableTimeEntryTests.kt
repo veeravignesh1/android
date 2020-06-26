@@ -45,6 +45,5 @@ internal class EditableTimeEntryTests {
         editable.startTime shouldBe null
         editable.ids shouldBe emptyList()
         editable.description shouldBe ""
-        editable.editableProject shouldBe null
     }
 }

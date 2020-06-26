@@ -25,14 +25,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants
 import com.toggl.common.Constants.elapsedTimeIndicatorUpdateDelayMs
-import com.toggl.common.deepLinks
 import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.displayMetrics
 import com.toggl.common.extensions.formatForDisplayingDate
@@ -74,7 +72,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -188,19 +185,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.state
             .mapNotNull { it.editableTimeEntry.description }
             .onEach { time_entry_description.setSafeTextPreventingActionDispatching(it) }
-            .launchIn(lifecycleScope)
-
-        store.state
-            .map { it.editableTimeEntry.editableProject != null }
-            .distinctUntilChanged()
-            .drop(1)
-            .onEach { projectDialogIsVisible ->
-                if (projectDialogIsVisible) {
-                    findNavController().navigate(deepLinks.timeEntriesProjectDialog)
-                } else {
-                    findNavController().popBackStack()
-                }
-            }
             .launchIn(lifecycleScope)
 
         store.state

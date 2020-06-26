@@ -10,12 +10,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import kotlin.contracts.ExperimentalContracts
 
+@ExperimentalContracts
 @ExperimentalCoroutinesApi
 @DisplayName("The CalendarEventsFetched action")
 internal class CalendarEventsFetchedActionTests : CoroutineTest() {
 
-    private val initialState = createCalendarDayState()
+    private val initialState = createInitialState()
     private val reducer = createCalendarDayReducer(dispatcherProvider = dispatcherProvider)
 
     private val calendarEvents = listOf(

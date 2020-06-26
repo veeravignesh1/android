@@ -14,7 +14,7 @@ fun mapAppStateToTimerState(appState: AppState): TimerState =
         appState.projects,
         appState.workspaces,
         appState.timeEntries,
-        appState.editableTimeEntry,
+        appState.backStack,
         appState.calendarEvents,
         appState.timerLocalState
     )
@@ -27,8 +27,8 @@ fun mapTimerStateToAppState(appState: AppState, timerState: TimerState): AppStat
         projects = timerState.projects,
         workspaces = timerState.workspaces,
         timeEntries = timerState.timeEntries,
+        backStack = timerState.backStack,
         calendarEvents = timerState.calendarEvents,
-        editableTimeEntry = timerState.editableTimeEntry,
         timerLocalState = timerState.localState
     )
 

@@ -1,6 +1,7 @@
 package com.toggl.timer.project.domain
 
 import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduce
@@ -47,14 +48,14 @@ internal class ProjectCreatedActionTests : CoroutineTest() {
         val initialState = createInitialState(
             EditableProject.createValidBecauseClientsAreDifferent(),
             listOfProjects,
-            description = "Test @Proj"
+            editableTimeEntry = EditableTimeEntry.empty(1).copy(description = "Test @Proj")
         )
         val newProject = createProject(4, "Project 4")
 
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ProjectCreated(newProject)
-        ) { state -> state.timeEntryDescription shouldBe "Test " }
+        ) { state -> state.editableTimeEntry.description shouldBe "Test " }
     }
 
     @Test
@@ -66,7 +67,7 @@ internal class ProjectCreatedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ProjectCreated(newProject)
-        ) { state -> state.timeEntryProjectId shouldBe newProject.id }
+        ) { state -> state.editableTimeEntry.projectId shouldBe newProject.id }
     }
 
     @Test

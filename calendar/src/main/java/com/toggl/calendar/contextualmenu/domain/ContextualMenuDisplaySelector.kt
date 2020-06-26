@@ -1,10 +1,10 @@
 package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.architecture.core.Selector
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.feature.domain.ProjectViewModel
+import com.toggl.common.feature.models.SelectedCalendarItem
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject

@@ -2,10 +2,8 @@ package com.toggl.timer.running.domain
 
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.environment.services.time.TimeService
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.FreeCoroutineSpec
-import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeSingleton
@@ -20,9 +18,7 @@ class StopButtonTappedActionTests : FreeCoroutineSpec() {
         val workspace = mockk<Workspace>()
         val timeService = mockk<TimeService>()
         val reducer = RunningTimeEntryReducer(timeService)
-        val editableTimeEntry =
-            EditableTimeEntry.fromSingle(createTimeEntry(1, description = "Test"))
-        val initialState = createInitialState(editableTimeEntry = editableTimeEntry)
+        val initialState = createInitialState()
 
         coEvery { workspace.id } returns 1
 

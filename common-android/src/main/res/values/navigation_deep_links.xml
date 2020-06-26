@@ -6,5 +6,7 @@
     <string name="deep_link_project_dialog" translatable="false">toggl://projectdialog</string>
     <string name="deep_link_reports" translatable="false">toggl://reports</string>
     <string name="deep_link_calendar" translatable="false">toggl://calendar</string>
+    <string name="deep_link_onboarding" translatable="false">toggl://onboarding</string>
     <string name="deep_link_settings" translatable="false">toggl://settings</string>
+    <string name="deep_link_contextual_menu" translatable="false">toggl://contextualMenu</string>
 </resources>

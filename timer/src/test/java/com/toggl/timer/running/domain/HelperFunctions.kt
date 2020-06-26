@@ -1,13 +1,16 @@
 package com.toggl.timer.running.domain
 
-import com.toggl.models.domain.TimeEntry
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.models.domain.TimeEntry
 
 fun createInitialState(
-    editableTimeEntry: EditableTimeEntry,
     timeEntries: Map<Long, TimeEntry> = mapOf()
 ) =
     RunningTimeEntryState(
-        editableTimeEntry = editableTimeEntry,
+        backStack = emptyList(),
         timeEntries = timeEntries
     )
+
+val RunningTimeEntryState.editableTimeEntry: EditableTimeEntry?
+    get() = backStack.getRouteParam<EditableTimeEntry>()

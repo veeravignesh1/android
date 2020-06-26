@@ -4,12 +4,15 @@ import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.extensions.maybePlus
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import java.time.Duration
 import java.time.OffsetDateTime
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 typealias TimeEntryItem = TimeEntry
 typealias CalendarEventItem = CalendarEvent
@@ -85,11 +88,6 @@ val CalendarItem.isRunning: Boolean
         (this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
             this.selectedCalendarItem.editableTimeEntry.isRunning())
 
-sealed class SelectedCalendarItem {
-    data class SelectedTimeEntry(val editableTimeEntry: EditableTimeEntry) : SelectedCalendarItem()
-    data class SelectedCalendarEvent(val calendarEvent: CalendarEventItem) : SelectedCalendarItem()
-}
-
 val SelectedCalendarItem.startTime: OffsetDateTime
     get() =
         when (this) {
@@ -116,12 +114,18 @@ fun CalendarItem.toSelectedCalendarItem(): SelectedCalendarItem = when (this) {
     is CalendarItem.SelectedItem -> this.selectedCalendarItem
 }
 
-fun SelectedCalendarItem?.toEditableTimeEntry() =
-    when (this) {
+@ExperimentalContracts
+fun SelectedCalendarItem?.toEditableTimeEntry(): EditableTimeEntry {
+    contract {
+        returns() implies (this@toEditableTimeEntry is SelectedCalendarItem.SelectedTimeEntry)
+    }
+
+    return when (this) {
         null -> throw SelectedItemShouldNotBeNullException()
         is SelectedCalendarItem.SelectedCalendarEvent -> throw SelectedItemShouldBeATimeEntryException()
         is SelectedCalendarItem.SelectedTimeEntry -> editableTimeEntry
     }
+}
 
 fun SelectedCalendarItem?.toCalendarEvent() =
     when (this) {

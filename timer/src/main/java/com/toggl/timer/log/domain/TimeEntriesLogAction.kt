@@ -15,8 +15,9 @@ sealed class TimeEntriesLogAction {
     data class ToggleTimeEntryGroupTapped(val groupId: Long) : TimeEntriesLogAction()
     data class CommitDeletion(val ids: List<Long>) : TimeEntriesLogAction()
     object UndoButtonTapped : TimeEntriesLogAction()
-    data class TimeEntryHandling(override val timeEntryAction: TimeEntryAction) : TimeEntriesLogAction(), TimeEntryActionHolder
+    object OpenSettingsButtonTapped : TimeEntriesLogAction()
 
+    data class TimeEntryHandling(override val timeEntryAction: TimeEntryAction) : TimeEntriesLogAction(), TimeEntryActionHolder
     companion object
 }
 
@@ -31,4 +32,5 @@ fun TimeEntriesLogAction.formatForDebug() =
         is TimeEntriesLogAction.CommitDeletion -> "Committed deletion of $ids"
         is TimeEntriesLogAction.UndoButtonTapped -> "Undo button tapped"
         is TimeEntriesLogAction.TimeEntryHandling -> "Time entry action $timeEntryAction"
+        TimeEntriesLogAction.OpenSettingsButtonTapped -> "Open settings button tapped"
     }

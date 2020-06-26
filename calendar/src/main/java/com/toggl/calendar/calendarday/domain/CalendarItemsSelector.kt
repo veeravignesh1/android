@@ -2,8 +2,9 @@ package com.toggl.calendar.calendarday.domain
 
 import com.toggl.architecture.core.Selector
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.common.extensions.maybePlus
+import com.toggl.common.feature.models.SelectedCalendarItem
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.feature.timeentry.extensions.wasPersisted
 import java.time.OffsetDateTime
@@ -51,7 +52,7 @@ class CalendarItemsSelector @Inject constructor(
         val filteredEvents =
             state.events.filterValues { isOnDate(it.startTime, it.startTime + it.duration) }
 
-        val selectedCalendarItem = state.selectedItem
+        val selectedCalendarItem = state.backStack.getRouteParam<SelectedCalendarItem>()
         val replaceSelectedTimeEntryIfNeeded = createReplaceSelectedTimeEntryItemIfNeededMapper(selectedCalendarItem)
         val replaceSelectedCalendarEventIfNeeded = createReplaceSelectedCalendarItemIfNeededMapper(selectedCalendarItem)
 

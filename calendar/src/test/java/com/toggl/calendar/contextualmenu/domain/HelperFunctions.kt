@@ -1,7 +1,8 @@
 package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.calendar.common.createCalendarEvent
-import com.toggl.calendar.common.domain.SelectedCalendarItem
+import com.toggl.common.feature.models.SelectedCalendarItem
+import com.toggl.common.feature.navigation.Route
 import com.toggl.environment.services.calendar.Calendar
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
@@ -17,9 +18,9 @@ fun createInitialState(
     selectedItem: SelectedCalendarItem = SelectedCalendarItem.SelectedCalendarEvent(calendarEvent = createCalendarEvent())
 ) = ContextualMenuState(
     timeEntries.associateBy { it.id },
-    projects.associateBy { it.id },
-    clients.associateBy { it.id },
-    calendars,
-    editableTimeEntry,
-    selectedItem
+    selectedItem = selectedItem,
+    backStack = if (editableTimeEntry != null) listOf(Route.StartEdit(editableTimeEntry)) else emptyList(),
+    projects = projects.associateBy { it.id },
+    clients = clients.associateBy { it.id },
+    calendars = calendars
 )

@@ -1,7 +1,11 @@
 package com.toggl.timer.project.domain
 
 import arrow.optics.optics
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.getRouteParam
+import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.HSVColor
@@ -10,25 +14,24 @@ import com.toggl.timer.common.domain.TimerState
 @optics
 data class ProjectState(
     val editableProject: EditableProject,
+    val editableTimeEntry: EditableTimeEntry,
     val projects: Map<Long, Project>,
     val workspaces: Map<Long, Workspace>,
-    val timeEntryProjectId: Long?,
-    val timeEntryDescription: String,
     val cursorPosition: Int,
     val customColor: HSVColor
 ) {
     companion object {
 
         fun fromTimerState(timerState: TimerState): ProjectState? {
-            val editableProject = timerState.editableTimeEntry?.editableProject ?: return null
+            val editableTimeEntry = timerState.backStack.getRouteParam<EditableTimeEntry>() ?: return null
+            val editableProject = timerState.backStack.getRouteParam<EditableProject>() ?: return null
 
             return ProjectState(
                 editableProject = editableProject,
+                editableTimeEntry = editableTimeEntry,
                 projects = timerState.projects,
                 workspaces = timerState.workspaces,
                 customColor = timerState.localState.customColor,
-                timeEntryProjectId = timerState.editableTimeEntry.projectId,
-                timeEntryDescription = timerState.editableTimeEntry.description,
                 cursorPosition = timerState.localState.cursorPosition
             )
         }
@@ -37,12 +40,10 @@ data class ProjectState(
             projectState?.let {
                 timerState.copy(
                     projects = projectState.projects,
-                    editableTimeEntry = timerState.editableTimeEntry?.copy(
-                        description = projectState.timeEntryDescription,
-                        projectId = projectState.timeEntryProjectId,
-                        editableProject = projectState.editableProject
-                    ),
-                    localState = timerState.localState.copy(customColor = projectState.customColor)
+                    localState = timerState.localState.copy(customColor = projectState.customColor),
+                    backStack = timerState.backStack
+                        .setRouteParam { Route.StartEdit(projectState.editableTimeEntry) }
+                        .setRouteParam { Route.Project(projectState.editableProject) }
                 )
             } ?: timerState
     }

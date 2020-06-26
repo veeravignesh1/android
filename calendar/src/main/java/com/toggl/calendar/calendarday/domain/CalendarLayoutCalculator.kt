@@ -1,9 +1,9 @@
 package com.toggl.calendar.calendarday.domain
 
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.calendar.common.domain.SelectedCalendarItem
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.environment.services.time.TimeService
 import java.time.Duration
 import java.time.OffsetDateTime

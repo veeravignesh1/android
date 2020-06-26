@@ -3,6 +3,7 @@ package com.toggl.timer.project.domain
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.HSVColor
 
@@ -11,15 +12,14 @@ fun createInitialState(
     projects: List<Project> = listOf(),
     workspaces: List<Workspace> = listOf(),
     customColor: HSVColor = HSVColor.defaultCustomColor,
-    description: String = ""
+    editableTimeEntry: EditableTimeEntry = EditableTimeEntry.empty(1)
 ) = ProjectState(
     editableProject = editableProject,
     projects = projects.associateBy { it.id },
     workspaces = workspaces.associateBy { it.id },
     customColor = customColor,
-    timeEntryDescription = description,
-    timeEntryProjectId = null,
-    cursorPosition = description.length
+    editableTimeEntry = editableTimeEntry,
+    cursorPosition = editableTimeEntry.description.length
 )
 
 fun createProject(
