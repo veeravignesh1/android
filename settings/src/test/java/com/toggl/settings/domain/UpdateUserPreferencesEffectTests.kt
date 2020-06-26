@@ -13,6 +13,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import java.time.DayOfWeek
 
 @ExperimentalCoroutinesApi
 @DisplayName("The UpdateUserPreferences effect")
@@ -25,7 +26,10 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
             is24HourClock = true,
             selectedWorkspaceId = 1,
             dateFormat = DateFormat.DDMMYYYY_dash,
-            durationFormat = DurationFormat.Decimal
+            durationFormat = DurationFormat.Decimal,
+            firstDayOfTheWeek = DayOfWeek.WEDNESDAY,
+            shouldGroupSimilarTimeEntries = true,
+            hasCellSwipeActions = true
         )
         val settingsRepository = mockk<SettingsRepository>(relaxUnitFun = true)
         val resultAction = UpdateUserPreferencesEffect(
@@ -39,6 +43,9 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
         resultAction.userPreferences.selectedWorkspaceId shouldBe 1
         resultAction.userPreferences.dateFormat shouldBe DateFormat.DDMMYYYY_dash
         resultAction.userPreferences.durationFormat shouldBe DurationFormat.Decimal
+        resultAction.userPreferences.firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
+        resultAction.userPreferences.shouldGroupSimilarTimeEntries.shouldBeTrue()
+        resultAction.userPreferences.hasCellSwipeActions.shouldBeTrue()
 
         coVerify { settingsRepository.saveUserPreferences(newUserPreferences) }
     }
