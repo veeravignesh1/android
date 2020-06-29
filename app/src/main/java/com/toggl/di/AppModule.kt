@@ -1,9 +1,9 @@
 package com.toggl.di
 
+import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
-import com.toggl.TogglApplication
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.StoreScopeProvider
 import com.toggl.architecture.core.FlowStore
@@ -30,25 +30,32 @@ import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerState
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
 
-@Module(includes = [AppModuleBinds::class])
-class AppModule {
-
-    @Provides
-    fun provideContext(application: TogglApplication): Context = application.applicationContext
+@Module
+@InstallIn(ApplicationComponent::class)
+object AppModule {
 
     @Provides
     @Singleton
-    fun deeplinkUrls(application: TogglApplication) = DeepLinkUrls.fromResources(application.resources)
+    fun provideSharedPreferences(
+        @ApplicationContext context: Context
+    ): SharedPreferences =
+        PreferenceManager.getDefaultSharedPreferences(context)
 
     @Provides
-    fun provideSharedPreferences(application: TogglApplication): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(application)
+    @Singleton
+    fun deeplinkUrls(
+        @ApplicationContext context: Context
+    ) = DeepLinkUrls.fromResources(context.resources)
 
     @FlowPreview
     @ExperimentalCoroutinesApi
@@ -58,16 +65,29 @@ class AppModule {
     fun appStore(
         @ProvideLoggingReducer reducer: Reducer<AppState, AppAction>,
         dispatcherProvider: DispatcherProvider,
-        storeScopeProvider: StoreScopeProvider
+        application: Application
     ): Store<AppState, AppAction> {
         return FlowStore.create(
             initialState = AppState(),
             reducer = reducer,
             dispatcherProvider = dispatcherProvider,
-            storeScopeProvider = storeScopeProvider
+            storeScopeProvider = application as StoreScopeProvider
         )
     }
 
+    @Provides
+    @Singleton
+    fun dispatcherProvider() =
+        DispatcherProvider(
+            io = Dispatchers.IO,
+            computation = Dispatchers.Default,
+            main = Dispatchers.Main
+        )
+}
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object AppViewModelModule {
     @Provides
     @ExperimentalCoroutinesApi
     fun onboardingStore(store: Store<AppState, AppAction>): Store<OnboardingState, OnboardingAction> =
@@ -98,14 +118,5 @@ class AppModule {
         store.view(
             mapToLocalState = ::mapAppStateToSettingsState,
             mapToGlobalAction = ::mapSettingsActionToAppAction
-        )
-
-    @Provides
-    @Singleton
-    fun dispatcherProvider() =
-        DispatcherProvider(
-            io = Dispatchers.IO,
-            computation = Dispatchers.Default,
-            main = Dispatchers.Main
         )
 }

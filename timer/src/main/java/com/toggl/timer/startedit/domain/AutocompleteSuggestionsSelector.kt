@@ -7,10 +7,10 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.log.domain.getProjectViewModelFor
 import com.toggl.timer.log.domain.toProjectViewModel
 import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionViewModel
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@FragmentScoped
 class AutocompleteSuggestionsSelector @Inject constructor() : Selector<StartEditState, List<AutocompleteSuggestionViewModel>> {
     override suspend fun select(state: StartEditState): List<AutocompleteSuggestionViewModel> {
         val suggestions = state.autocompleteSuggestions

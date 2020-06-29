@@ -67,6 +67,12 @@ object Libs {
         const val browser = "androidx.browser:browser:1.0.0"
         const val fragment = "androidx.fragment:fragment:1.0.0"
 
+        object Hilt {
+            private const val version = "1.0.0-alpha01"
+            const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
+            const val compiler = "androidx.hilt:hilt-compiler:$version"
+        }
+
         object Preference {
             private const val version = "1.1.0"
             const val core = "androidx.preference:preference:$version"
@@ -107,12 +113,14 @@ object Libs {
             const val ui = "androidx.navigation:navigation-ui-ktx:$version"
         }
     }
+    object Hilt {
+        private const val version = "2.28-alpha"
 
-    object Dagger {
-        private const val version = "2.27"
-        const val dagger = "com.google.dagger:dagger:$version"
-        const val compiler = "com.google.dagger:dagger-compiler:$version"
+        const val gradlePlugin = "com.google.dagger:hilt-android-gradle-plugin:$version"
+        const val hilt = "com.google.dagger:hilt-android:$version"
+        const val compiler = "com.google.dagger:hilt-android-compiler:$version"
     }
+
 
     object Microsoft {
         const val appCenterAnalytics = "com.microsoft.appcenter:appcenter-analytics:3.1.0"

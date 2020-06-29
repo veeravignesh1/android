@@ -4,6 +4,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -39,8 +40,10 @@ dependencies {
     api project(':architecture')
     api project(':repository')
 
-    implementation Libs.Dagger.dagger
-    kapt Libs.Dagger.compiler
+    implementation Libs.AndroidX.Hilt.viewModel
+    kapt Libs.AndroidX.Hilt.compiler
+    implementation Libs.Hilt.hilt
+    kapt Libs.Hilt.compiler
 
     testImplementation Libs.Test.Jupiter.api
     testRuntimeOnly Libs.Test.Jupiter.engine

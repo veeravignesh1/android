@@ -1,6 +1,5 @@
 package com.toggl.timer.project.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -24,12 +22,12 @@ import com.toggl.common.extensions.setSafeText
 import com.toggl.common.feature.extensions.toColor
 import com.toggl.models.domain.Project
 import com.toggl.timer.R
-import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.tryHidingKeyboard
 import com.toggl.timer.extensions.tryShowingKeyboardFor
 import com.toggl.timer.project.domain.ColorViewModel
 import com.toggl.timer.project.domain.ProjectAction
 import com.toggl.timer.project.domain.ProjectColorSelector
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dialog_project.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -41,12 +39,9 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import java.lang.ref.WeakReference
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class ProjectDialogFragment : BottomSheetDialogFragment() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @ExperimentalCoroutinesApi
     private val coloPickerVisibilityRequestFlow = MutableStateFlow(false)
@@ -54,16 +49,10 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
     @FlowPreview
     @ExperimentalCoroutinesApi
     private val adapter = ColorAdapter(::onColorTapped)
-    private val store: ProjectStoreViewModel by viewModels { viewModelFactory }
+    private val store: ProjectStoreViewModel by viewModels()
 
     private lateinit var projectNameChangedListener: TextWatcher
     private lateinit var colorPickerAnimator: ColorPickerAnimator
-
-    override fun onAttach(context: Context) {
-        (requireActivity().applicationContext as TimerComponentProvider)
-            .provideTimerComponent().inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,6 +4,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 kapt {
     correctErrorTypes = true
@@ -44,8 +45,10 @@ dependencies {
     api project(':api')
 
     implementation Libs.Kotlin.stdlib
-    implementation Libs.Dagger.dagger
-    kapt Libs.Dagger.compiler
+    implementation Libs.AndroidX.Hilt.viewModel
+    kapt Libs.AndroidX.Hilt.compiler
+    implementation Libs.Hilt.hilt
+    kapt Libs.Hilt.compiler
     api Libs.AndroidX.coreKtx
     api Libs.Google.firebaseAnalytics
     api Libs.Microsoft.appCenterAnalytics

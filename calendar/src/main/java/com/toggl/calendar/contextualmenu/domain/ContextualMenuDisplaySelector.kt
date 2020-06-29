@@ -8,12 +8,12 @@ import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.isStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.feature.models.SelectedCalendarItem
+import dagger.hilt.android.scopes.FragmentScoped
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@FragmentScoped
 class ContextualMenuDisplaySelector @Inject constructor() : Selector<ContextualMenuState, ContextualMenuViewModel> {
     private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 

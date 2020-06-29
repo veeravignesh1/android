@@ -1,18 +1,16 @@
 package com.toggl.calendar.calendarday.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.toggl.architecture.extensions.select
 import com.toggl.calendar.R
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarItemsSelector
-import com.toggl.calendar.di.CalendarComponentProvider
+import dagger.hilt.android.AndroidEntryPoint
 import com.toggl.common.feature.navigation.BottomSheetNavigator
 import kotlinx.android.synthetic.main.fragment_calendarday.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,21 +21,13 @@ import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 
+@AndroidEntryPoint
 class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
-    @Inject lateinit var calendarItemsSelector: CalendarItemsSelector
     @Inject lateinit var bottomSheetNavigator: BottomSheetNavigator
-    private val store: CalendarDayStoreViewModel by viewModels { viewModelFactory }
+    @Inject lateinit var calendarItemsSelector: CalendarItemsSelector
 
-    private lateinit var customNavigator: BottomSheetNavigator
-
-    override fun onAttach(context: Context) {
-        (requireActivity().applicationContext as CalendarComponentProvider)
-            .provideCalendarComponent().inject(this)
-
-        super.onAttach(context)
-    }
+    private val store: CalendarDayStoreViewModel by viewModels()
 
     @FlowPreview
     @ExperimentalContracts

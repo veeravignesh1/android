@@ -3,10 +3,10 @@ package com.toggl.timer.project.domain
 import com.toggl.architecture.core.Selector
 import com.toggl.models.domain.Project
 import com.toggl.models.extensions.isPro
+import dagger.hilt.android.scopes.FragmentScoped
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@FragmentScoped
 class ProjectColorSelector @Inject constructor() : Selector<ProjectState, List<ColorViewModel>> {
     override suspend fun select(state: ProjectState): List<ColorViewModel> = sequence {
 

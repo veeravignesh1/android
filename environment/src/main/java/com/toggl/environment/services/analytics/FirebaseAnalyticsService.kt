@@ -1,11 +1,16 @@
 package com.toggl.environment.services.analytics
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class FirebaseAnalyticsService @Inject constructor(context: Context) : AnalyticsService {
+class FirebaseAnalyticsService @Inject constructor(
+    @ApplicationContext context: Context
+) : AnalyticsService {
+    @SuppressLint("MissingPermission")
     private val firebaseAnalytics = FirebaseAnalytics.getInstance(context)
 
     override fun track(event: Event) =

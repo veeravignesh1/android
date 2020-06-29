@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.MergeAdapter
@@ -21,7 +20,6 @@ import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
 import com.toggl.timer.R
-import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.log.domain.FlatTimeEntryViewModel
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.log.domain.TimeEntriesLogSelector
@@ -31,6 +29,7 @@ import com.toggl.timer.suggestions.domain.SuggestionsAction
 import com.toggl.timer.suggestions.ui.SuggestionsAdapter
 import com.toggl.timer.suggestions.ui.SuggestionsLogSelector
 import com.toggl.timer.suggestions.ui.SuggestionsStoreViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_time_entries_log.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,22 +39,15 @@ import kotlinx.coroutines.flow.onEach
 import java.util.Locale
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
-    @Inject
-    lateinit var timeService: TimeService
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var timeService: TimeService
+    @Inject lateinit var timeEntriesLogSelector: TimeEntriesLogSelector
+    @Inject lateinit var suggestionsLogSelector: SuggestionsLogSelector
 
-    @Inject
-    lateinit var timeEntriesLogSelector: TimeEntriesLogSelector
-
-    @Inject
-    lateinit var suggestionsLogSelector: SuggestionsLogSelector
-
-    private val store: TimeEntriesLogStoreViewModel by viewModels { viewModelFactory }
-
-    private val suggestionsStore: SuggestionsStoreViewModel by viewModels { viewModelFactory }
+    private val store: TimeEntriesLogStoreViewModel by viewModels()
+    private val suggestionsStore: SuggestionsStoreViewModel by viewModels()
 
     private val timeEntriesAdapter = TimeEntriesLogAdapter(
         {
@@ -88,12 +80,6 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
     }
 
     private var snackbar: Snackbar? = null
-
-    override fun onAttach(context: Context) {
-        (requireActivity().applicationContext as TimerComponentProvider)
-            .provideTimerComponent().inject(this)
-        super.onAttach(context)
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
