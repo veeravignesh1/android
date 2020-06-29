@@ -1,4 +1,4 @@
-package com.toggl.settings.domain
+package com.toggl.models.domain
 
 enum class SelectedSetting {
     Workspace,

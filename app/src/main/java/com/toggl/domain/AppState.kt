@@ -15,7 +15,7 @@ import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.domain.states.OnboardingState
-import com.toggl.settings.domain.SelectedSetting
+import com.toggl.models.domain.SelectedSetting
 import com.toggl.timer.common.domain.TimerState
 import java.time.DayOfWeek
 

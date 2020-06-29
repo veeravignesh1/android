@@ -1,5 +1,6 @@
 package com.toggl.settings.di
 
+import com.toggl.settings.ui.EditSettingsFragment
 import com.toggl.settings.ui.SettingsFragment
 import dagger.Subcomponent
 
@@ -11,6 +12,7 @@ interface SettingsComponent {
     }
 
     fun inject(fragment: SettingsFragment)
+    fun inject(fragment: EditSettingsFragment)
 }
 
 interface SettingsComponentProvider {

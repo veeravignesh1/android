@@ -4,13 +4,13 @@ import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
-import com.toggl.settings.domain.SelectedSetting
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.settings.domain.SettingsState
 import io.kotlintest.matchers.collections.shouldBeEmpty
@@ -23,10 +23,10 @@ import java.time.DayOfWeek
 
 fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
-    selectedSetting: SelectedSetting? = null
+    backStack: BackStack = emptyList()
 ) = SettingsState(
     userPreferences = userPreferences,
-    selectedSetting = selectedSetting
+    backStack = backStack
 )
 
 fun createUserPreferences(

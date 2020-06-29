@@ -1,5 +1,7 @@
 package com.toggl.settings.domain
 
+import com.toggl.common.feature.navigation.Route
+import com.toggl.models.domain.SelectedSetting
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
@@ -18,11 +20,11 @@ class SettingTappedActionTests : CoroutineTest() {
     private val reducer = createSettingsReducer(dispatcherProvider = dispatcherProvider)
 
     @Test
-    fun `Should return correct effect`() = runBlockingTest {
+    fun `Should modify back stack correctly`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
             SettingsAction.SettingTapped(SelectedSetting.About)
-        ) { state -> state.selectedSetting shouldBe SelectedSetting.About }
+        ) { state -> state.backStack.last() shouldBe Route.SettingsEdit(SelectedSetting.About) }
     }
 
     @Test

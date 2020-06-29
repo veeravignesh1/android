@@ -5,6 +5,7 @@ import com.toggl.common.DeepLinkUrls
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.models.domain.SelectedSetting
 
 sealed class Route {
     object Onboarding : Route()
@@ -13,6 +14,7 @@ sealed class Route {
     data class Project(override val parameter: EditableProject) : Route(), ParameterRoute<EditableProject>
     data class ContextualMenu(override val parameter: SelectedCalendarItem) : Route(), ParameterRoute<SelectedCalendarItem>
     object Settings : Route()
+    data class SettingsEdit(override val parameter: SelectedSetting) : Route(), ParameterRoute<SelectedSetting>
 }
 
 interface ParameterRoute<P> {
@@ -27,6 +29,7 @@ fun Route.isSameTypeAs(otherRoute: Route) =
         is Route.Project -> otherRoute is Route.Project
         is Route.ContextualMenu -> otherRoute is Route.ContextualMenu
         Route.Settings -> otherRoute is Route.Settings
+        is Route.SettingsEdit -> otherRoute is Route.SettingsEdit
     }
 
 fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
@@ -37,5 +40,19 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         is Route.Project -> deepLinks.projectDialog
         is Route.ContextualMenu -> deepLinks.contextualMenu
         Route.Settings -> deepLinks.settings
+        is Route.SettingsEdit -> when (this.parameter) {
+            SelectedSetting.Workspace -> deepLinks.workspace
+            SelectedSetting.DateFormat -> deepLinks.dateFormat
+            SelectedSetting.DurationFormat -> deepLinks.durationFormat
+            SelectedSetting.FirstDayOfTheWeek -> deepLinks.firstDayOfTheWeek
+            SelectedSetting.CalendarSettings -> deepLinks.calendarSettings
+            SelectedSetting.SmartAlert -> deepLinks.smartAlert
+            SelectedSetting.SubmitFeedback -> deepLinks.submitFeedback
+            SelectedSetting.About -> deepLinks.about
+            SelectedSetting.PrivacyPolicy -> deepLinks.privacyPolicy
+            SelectedSetting.TermsOfService -> deepLinks.termsOfService
+            SelectedSetting.Licenses -> deepLinks.licenses
+            SelectedSetting.Help -> deepLinks.help
+        }
     }
 }
