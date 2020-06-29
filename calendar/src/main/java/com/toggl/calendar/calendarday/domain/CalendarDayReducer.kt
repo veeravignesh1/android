@@ -8,6 +8,8 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.calendar.common.domain.toEditableTimeEntry
 import com.toggl.calendar.common.domain.toSelectedCalendarItem
 import com.toggl.common.Constants.TimeEntry
+import com.toggl.common.extensions.toBeginningOfTheDay
+import com.toggl.common.extensions.toEndOfTheDay
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.withoutEffects
 import com.toggl.common.feature.models.SelectedCalendarItem
@@ -49,7 +51,7 @@ class CalendarDayReducer @Inject constructor(
                 copy(backStack = backStack.pushOrUpdate(route))
             }
             CalendarDayAction.CalendarViewAppeared -> effect(state().run {
-                FetchCalendarEventsEffect(calendarService, date, date, calendars, dispatcherProvider)
+                FetchCalendarEventsEffect(calendarService, date.toBeginningOfTheDay(), date.toEndOfTheDay(), calendars, dispatcherProvider)
             })
             is CalendarDayAction.CalendarEventsFetched -> state.mutateWithoutEffects {
                 copy(events = action.calendarEvents.associateBy { it.id })

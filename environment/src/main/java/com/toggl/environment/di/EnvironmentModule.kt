@@ -1,14 +1,14 @@
 package com.toggl.environment.di
 
+import android.content.Context
 import android.app.Activity
 import android.os.Build
 import com.toggl.environment.services.analytics.AnalyticsService
 import com.toggl.environment.services.analytics.AppCenterAnalyticsService
 import com.toggl.environment.services.analytics.CompositeAnalyticsService
 import com.toggl.environment.services.analytics.FirebaseAnalyticsService
-import com.toggl.environment.services.calendar.Calendar
-import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.environment.services.calendar.CalendarService
+import com.toggl.environment.services.calendar.CursorCalendarService
 import com.toggl.environment.services.permissions.LollipopPermissionService
 import com.toggl.environment.services.permissions.MarshmallowPermissionService
 import com.toggl.environment.services.permissions.PermissionService
@@ -19,7 +19,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ApplicationComponent
-import java.time.OffsetDateTime
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
 @Module
@@ -38,19 +38,7 @@ object EnvironmentModule {
 
     @Provides
     @Singleton
-    fun calendarService() = object : CalendarService {
-        override fun getAvailableCalendars(): List<Calendar> {
-            return emptyList()
-        }
-
-        override fun getCalendarEvents(
-            fromStartDate: OffsetDateTime,
-            toEndDate: OffsetDateTime,
-            fromCalendars: List<Calendar>
-        ): List<CalendarEvent> {
-            return emptyList()
-        }
-    }
+    fun calendarService(@ApplicationContext context: Context): CalendarService = CursorCalendarService(context)
 }
 
 @Module
