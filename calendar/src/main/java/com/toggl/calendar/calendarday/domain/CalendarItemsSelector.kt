@@ -7,11 +7,11 @@ import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.feature.timeentry.extensions.wasPersisted
+import dagger.hilt.android.scopes.FragmentScoped
 import java.time.OffsetDateTime
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
+@FragmentScoped
 class CalendarItemsSelector @Inject constructor(
     private val calendarLayoutCalculator: CalendarLayoutCalculator
 ) : Selector<CalendarDayState, List<CalendarItem>> {

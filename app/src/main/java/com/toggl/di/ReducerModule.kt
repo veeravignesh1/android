@@ -14,15 +14,16 @@ import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
-import javax.inject.Singleton
 
 @Module
-class ReducerModule {
+@InstallIn(ApplicationComponent::class)
+object ReducerModule {
 
     @Provides
-    @Singleton
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @ProvideAppReducer
@@ -44,7 +45,6 @@ class ReducerModule {
         )
 
     @Provides
-    @Singleton
     @ProvideFeatureAvailabilityReducer
     fun featureAvailabilityReducer(
         @ProvideAppReducer innerReducer: Reducer<AppState, AppAction>
@@ -52,7 +52,6 @@ class ReducerModule {
         FeatureAvailabilityReducer(innerReducer)
 
     @Provides
-    @Singleton
     @ProvideLoggingReducer
     fun loggingReducer(
         @ProvideFeatureAvailabilityReducer innerReducer: Reducer<AppState, AppAction>

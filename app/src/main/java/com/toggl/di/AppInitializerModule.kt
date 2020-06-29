@@ -1,18 +1,16 @@
 package com.toggl.di
 
-import android.app.Application
-import com.toggl.TogglApplication
 import com.toggl.initializers.AppCenterInitializer
 import com.toggl.initializers.AppInitializer
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import dagger.multibindings.IntoSet
 
 @Module
-abstract class AppModuleBinds {
-    @Binds
-    abstract fun provideApplication(bind: TogglApplication): Application
-
+@InstallIn(ApplicationComponent::class)
+abstract class AppInitializerModule {
     @Binds
     @IntoSet
     abstract fun provideAppCenterInitializer(bind: AppCenterInitializer): AppInitializer

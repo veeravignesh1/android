@@ -18,10 +18,13 @@ import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Singleton
 
 @Module
-class RepositoryModule {
+@InstallIn(ApplicationComponent::class)
+object RepositoryModule {
     @Provides
     @Singleton
     fun repository(

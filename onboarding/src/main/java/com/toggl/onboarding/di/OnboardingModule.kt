@@ -4,10 +4,13 @@ import com.toggl.api.login.LoginApi
 import com.toggl.api.login.MockLoginApi
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Singleton
 
-@Module(subcomponents = [OnboardingComponent::class])
-class OnboardingModule {
+@Module
+@InstallIn(ApplicationComponent::class)
+object OnboardingModule {
     @Provides
     @Singleton
     fun loginApi(): LoginApi =

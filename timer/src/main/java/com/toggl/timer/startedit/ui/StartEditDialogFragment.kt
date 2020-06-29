@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -50,7 +49,6 @@ import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
-import com.toggl.timer.di.TimerComponentProvider
 import com.toggl.timer.extensions.formatForDisplaying
 import com.toggl.timer.extensions.tryHidingKeyboard
 import com.toggl.timer.extensions.tryShowingKeyboardFor
@@ -63,6 +61,7 @@ import com.toggl.timer.startedit.domain.TemporalInconsistency
 import com.toggl.timer.startedit.ui.autocomplete.AutocompleteSuggestionsPopup
 import com.toggl.timer.startedit.ui.chips.ChipAdapter
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -84,11 +83,11 @@ import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 import com.toggl.common.android.R as CommonR
 
+@AndroidEntryPoint
 @ExperimentalContracts
 class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     @Inject lateinit var timeService: TimeService
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var projectTagChipSelector: ProjectTagChipSelector
     @Inject lateinit var autocompleteSuggestionsSelector: AutocompleteSuggestionsSelector
 
@@ -102,7 +101,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
     private val adapter = ChipAdapter(::onChipTapped)
     private val bottomSheetCallback = BottomSheetCallback()
-    private val store: StartEditStoreViewModel by viewModels { viewModelFactory }
+    private val store: StartEditStoreViewModel by viewModels()
     private val dispatchingCancelListener: DialogInterface.OnCancelListener = DialogInterface.OnCancelListener {
         store.dispatch(StartEditAction.DateTimePickingCancelled)
     }
@@ -110,8 +109,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     @FlowPreview
     @ExperimentalCoroutinesApi
     override fun onAttach(context: Context) {
-        (requireActivity().applicationContext as TimerComponentProvider)
-            .provideTimerComponent().inject(this)
         super.onAttach(context)
 
         val activeButtonColor = ContextCompat.getColor(context, CommonR.color.button_active)

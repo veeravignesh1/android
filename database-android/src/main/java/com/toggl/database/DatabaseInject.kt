@@ -10,29 +10,19 @@ import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
-@Module(
-    includes = [
-        RoomDatabaseModule::class,
-        DatabaseDaoModule::class
-    ]
-)
-class DatabaseModule
-
 @Module
-class RoomDatabaseModule {
+@InstallIn(ApplicationComponent::class)
+object DatabaseModule {
     @Provides
     @Singleton
-    fun appDatabase(applicationContext: Context): TogglDatabase =
-        Room.databaseBuilder(
-            applicationContext,
-            TogglRoomDatabase::class.java, "toggl.db"
-        ).build()
-}
+    fun appDatabase(@ApplicationContext context: Context): TogglDatabase =
+        Room.databaseBuilder(context, TogglRoomDatabase::class.java, "toggl.db").build()
 
-@Module
-class DatabaseDaoModule {
     @Provides
     @Singleton
     fun timeEntryDao(appDatabase: TogglDatabase): TimeEntryDao = appDatabase.timeEntryDao()

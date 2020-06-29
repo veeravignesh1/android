@@ -40,35 +40,23 @@ import com.toggl.timer.suggestions.domain.SuggestionsReducer
 import com.toggl.timer.suggestions.domain.SuggestionsState
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.components.FragmentComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.FragmentScoped
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
 
-@Module(subcomponents = [TimerComponent::class])
-class TimerModule {
-
+@Module
+@InstallIn(FragmentComponent::class)
+object FragmentTimerModule {
     @Provides
-    @MaxNumberOfMostUsedSuggestions
-    internal fun maxNumberOfMostUsedSuggestions() = Constants.Suggestions.maxNumberOfMostUsedSuggestions
-
-    @Provides
-    @MaxNumberOfCalendarSuggestions
-    internal fun maxNumberOfCalendarSuggestions() = Constants.Suggestions.maxNumberOfCalendarSuggestions
-
-    @Provides
-    internal fun suggestionProvider(
-        calendarSuggestionProvider: CalendarSuggestionProvider,
-        mostUsedSuggestionProvider: MostUsedSuggestionProvider
-    ): SuggestionProvider =
-        ComposeSuggestionProvider(
-            Constants.Suggestions.maxNumberOfSuggestions,
-            calendarSuggestionProvider,
-            mostUsedSuggestionProvider
-        )
-
-    @Provides
+    @FragmentScoped
     internal fun timeEntriesLogSelector(
-        context: Context,
+        @ApplicationContext context: Context,
         timeService: TimeService
     ): TimeEntriesLogSelector {
         val todayString = context.getString(R.string.today)
@@ -82,11 +70,17 @@ class TimerModule {
     }
 
     @Provides
-    internal fun projectTagChipSelector(context: Context) =
+    @FragmentScoped
+    internal fun projectTagChipSelector(@ApplicationContext context: Context) =
         ProjectTagChipSelector(
             context.getString(R.string.add_project),
             context.getString(R.string.add_tags)
         )
+}
+
+@Module
+@InstallIn(ActivityRetainedComponent::class)
+object ViewModelTimerModule {
 
     @ExperimentalCoroutinesApi
     @Provides
@@ -126,6 +120,30 @@ class TimerModule {
         store.optionalView(
             mapToLocalState = SuggestionsState.Companion::fromTimerState,
             mapToGlobalAction = TimerAction::Suggestions
+        )
+}
+
+@Module
+@InstallIn(ApplicationComponent::class)
+object ApplicationTimerModule {
+
+    @Provides
+    @MaxNumberOfMostUsedSuggestions
+    internal fun maxNumberOfMostusedSuggestions() = Constants.Suggestions.maxNumberOfMostUsedSuggestions
+
+    @Provides
+    @MaxNumberOfCalendarSuggestions
+    internal fun maxNumberOfCalendarSuggestions() = Constants.Suggestions.maxNumberOfCalendarSuggestions
+
+    @Provides
+    internal fun suggestionProvider(
+        calendarSuggestionProvider: CalendarSuggestionProvider,
+        mostUsedSuggestionProvider: MostUsedSuggestionProvider
+    ): SuggestionProvider =
+        ComposeSuggestionProvider(
+            Constants.Suggestions.maxNumberOfSuggestions,
+            calendarSuggestionProvider,
+            mostUsedSuggestionProvider
         )
 
     @ExperimentalCoroutinesApi

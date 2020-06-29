@@ -8,16 +8,15 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.toggl.architecture.Loadable
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.onboarding.R
-import com.toggl.onboarding.di.OnboardingComponentProvider
 import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.onboarding.domain.states.email
 import com.toggl.onboarding.domain.states.password
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -26,20 +25,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
+@AndroidEntryPoint
 class LoginFragment : Fragment(R.layout.login_fragment) {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    private val store: LoginViewModel by viewModels { viewModelFactory }
-
-    override fun onAttach(context: Context) {
-        (requireActivity().applicationContext as OnboardingComponentProvider)
-            .provideLoginComponent().inject(this)
-        super.onAttach(context)
-    }
+    private val store: LoginViewModel by viewModels()
 
     @FlowPreview
     @ExperimentalCoroutinesApi
