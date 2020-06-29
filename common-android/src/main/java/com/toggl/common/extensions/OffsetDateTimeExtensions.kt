@@ -2,6 +2,7 @@ package com.toggl.common.extensions
 
 import com.toggl.common.Constants.ClockMath.secondsInAMinute
 import java.time.Duration
+import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -58,3 +59,9 @@ fun OffsetDateTime.maybePlus(duration: Duration?): OffsetDateTime? {
     if (duration == null) return null
     return this + duration
 }
+
+fun OffsetDateTime.toBeginningOfTheDay(): OffsetDateTime =
+    this.with(LocalTime.MIN)
+
+fun OffsetDateTime.toEndOfTheDay(): OffsetDateTime =
+    this.with(LocalTime.MAX)
