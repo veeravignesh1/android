@@ -34,23 +34,25 @@ fun createSettingsState(
 
 fun createUserPreferences(
     isManualModeEnabled: Boolean = false,
-    is24HourClock: Boolean = false,
+    is24HourClockEnabled: Boolean = false,
+    isCalendarIntegrationEnabled: Boolean = false,
+    isCellSwipeActionsEnabled: Boolean = false,
+    isGroupSimilarTimeEntriesEnabled: Boolean = false,
     selectedWorkspaceId: Long = 1,
     dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
     durationFormat: DurationFormat = DurationFormat.Classic,
     firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
-    shouldGroupSimilarTimeEntries: Boolean = false,
-    hasCellSwipeActions: Boolean = false,
     smartAlertsOption: SmartAlertsOption = SmartAlertsOption.Disabled
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
-    is24HourClock = is24HourClock,
+    is24HourClockEnabled = is24HourClockEnabled,
+    isCalendarIntegrationEnabled = isCalendarIntegrationEnabled,
+    isCellSwipeActionsEnabled = isCellSwipeActionsEnabled,
+    isGroupSimilarTimeEntriesEnabled = isGroupSimilarTimeEntriesEnabled,
     selectedWorkspaceId = selectedWorkspaceId,
     dateFormat = dateFormat,
     durationFormat = durationFormat,
     firstDayOfTheWeek = firstDayOfTheWeek,
-    shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries,
-    hasCellSwipeActions = hasCellSwipeActions,
     smartAlertsOption = smartAlertsOption
 )
 

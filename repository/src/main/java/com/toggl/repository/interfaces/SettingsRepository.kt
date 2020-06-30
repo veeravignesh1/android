@@ -8,13 +8,14 @@ interface SettingsRepository {
 
     companion object {
         const val isManualModeEnabled = "isManualModeEnabled"
+        const val is24HourClockEnabled = "is24HourClockEnabled"
+        const val isGroupSimilarTimeEntriesEnabled = "isGroupSimilarTimeEntriesEnabled"
+        const val isCellSwipeActionsEnabled = "isCellSwipeActionsEnabled"
+        const val isCalendarIntegrationEnabled = "isCalendarIntegrationEnabled"
         const val selectedWorkspaceId = "selectedWorkspaceId"
-        const val is24HourClock = "is24HourClock"
+        const val smartAlertsOption = "smartAlertsOption"
         const val dateFormat = "dateFormat"
         const val durationFormat = "durationFormat"
         const val firstDayOfTheWeek = "firstDayOfTheWeek"
-        const val shouldGroupSimilarTimeEntries = "shouldGroupSimilarTimeEntries"
-        const val hasCellSwipeActions = "hasCellSwipeActions"
-        const val smartAlertsOption = "smartAlertsOption"
     }
 }

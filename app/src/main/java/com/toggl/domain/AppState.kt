@@ -5,8 +5,6 @@ import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
-import com.toggl.models.domain.DateFormat
-import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
@@ -16,7 +14,6 @@ import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.timer.common.domain.TimerState
-import java.time.DayOfWeek
 
 data class AppState(
     val user: Loadable<User> = Loadable.Uninitialized,

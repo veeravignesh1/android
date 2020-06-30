@@ -4,26 +4,28 @@ import java.time.DayOfWeek
 
 data class UserPreferences(
     val isManualModeEnabled: Boolean,
-    val is24HourClock: Boolean,
+    val is24HourClockEnabled: Boolean,
+    val isGroupSimilarTimeEntriesEnabled: Boolean,
+    val isCellSwipeActionsEnabled: Boolean,
+    val isCalendarIntegrationEnabled: Boolean,
     val selectedWorkspaceId: Long,
     val dateFormat: DateFormat,
     val durationFormat: DurationFormat,
     val firstDayOfTheWeek: DayOfWeek,
-    val shouldGroupSimilarTimeEntries: Boolean,
-    val hasCellSwipeActions: Boolean,
     val smartAlertsOption: SmartAlertsOption
 ) {
     companion object {
         val defaultUserPreferences = UserPreferences(
             isManualModeEnabled = false,
-            is24HourClock = false,
+            is24HourClockEnabled = false,
             selectedWorkspaceId = 1,
             dateFormat = DateFormat.DDMMYYYY_dash,
             durationFormat = DurationFormat.Improved,
             firstDayOfTheWeek = DayOfWeek.MONDAY,
-            shouldGroupSimilarTimeEntries = true,
-            hasCellSwipeActions = true,
-            smartAlertsOption = SmartAlertsOption.Disabled
+            isGroupSimilarTimeEntriesEnabled = true,
+            isCellSwipeActionsEnabled = true,
+            smartAlertsOption = SmartAlertsOption.Disabled,
+            isCalendarIntegrationEnabled = false
         )
     }
 }

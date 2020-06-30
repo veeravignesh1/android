@@ -24,14 +24,15 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
     fun `Should save and return new user preferences`() = runBlockingTest {
         val newUserPreferences = createUserPreferences(
             isManualModeEnabled = true,
-            is24HourClock = true,
+            is24HourClockEnabled = true,
+            isGroupSimilarTimeEntriesEnabled = true,
+            isCellSwipeActionsEnabled = true,
+            smartAlertsOption = SmartAlertsOption.MinutesBefore15,
+            isCalendarIntegrationEnabled = true,
             selectedWorkspaceId = 1,
             dateFormat = DateFormat.DDMMYYYY_dash,
             durationFormat = DurationFormat.Decimal,
-            firstDayOfTheWeek = DayOfWeek.WEDNESDAY,
-            shouldGroupSimilarTimeEntries = true,
-            hasCellSwipeActions = true,
-            smartAlertsOption = SmartAlertsOption.MinutesBefore15
+            firstDayOfTheWeek = DayOfWeek.WEDNESDAY
         )
         val settingsRepository = mockk<SettingsRepository>(relaxUnitFun = true)
         val resultAction = UpdateUserPreferencesEffect(
@@ -42,14 +43,15 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
 
         with(resultAction.userPreferences) {
             isManualModeEnabled.shouldBeTrue()
-            is24HourClock.shouldBeTrue()
+            is24HourClockEnabled.shouldBeTrue()
             selectedWorkspaceId shouldBe 1
             dateFormat shouldBe DateFormat.DDMMYYYY_dash
             durationFormat shouldBe DurationFormat.Decimal
             firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
-            shouldGroupSimilarTimeEntries.shouldBeTrue()
-            hasCellSwipeActions.shouldBeTrue()
+            isGroupSimilarTimeEntriesEnabled.shouldBeTrue()
+            isCellSwipeActionsEnabled.shouldBeTrue()
             smartAlertsOption shouldBe SmartAlertsOption.MinutesBefore15
+            isCalendarIntegrationEnabled.shouldBeTrue()
         }
 
         coVerify { settingsRepository.saveUserPreferences(newUserPreferences) }

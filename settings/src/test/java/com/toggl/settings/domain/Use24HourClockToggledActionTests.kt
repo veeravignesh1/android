@@ -23,7 +23,7 @@ class Use24HourClockToggledActionTests : CoroutineTest() {
     fun `Should return correct effect`() = runBlockingTest {
         reducer.testReduceEffects(
             initialState,
-            SettingsAction.Use24HourClockToggled(is24HourClock = true)
+            SettingsAction.Use24HourClockToggled(is24HourClockEnabled = true)
         ) { effects ->
             effects.shouldBeSingleton()
             effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
@@ -34,7 +34,7 @@ class Use24HourClockToggledActionTests : CoroutineTest() {
     fun `Shouldn't change the state`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
-            SettingsAction.Use24HourClockToggled(is24HourClock = true)
+            SettingsAction.Use24HourClockToggled(is24HourClockEnabled = true)
         ) { state -> state shouldBe initialState }
     }
 }

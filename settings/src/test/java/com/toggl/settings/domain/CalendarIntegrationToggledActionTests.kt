@@ -14,8 +14,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
-@DisplayName("The ManualModeToggled action")
-class ManualModeToggledActionTests : CoroutineTest() {
+@DisplayName("The CalendarIntegrationToggled action")
+class CalendarIntegrationToggledActionTests : CoroutineTest() {
     private val initialState = createSettingsState()
     private val reducer = createSettingsReducer(dispatcherProvider = dispatcherProvider)
 
@@ -23,7 +23,7 @@ class ManualModeToggledActionTests : CoroutineTest() {
     fun `Should return correct effect`() = runBlockingTest {
         reducer.testReduceEffects(
             initialState,
-            SettingsAction.ManualModeToggled(isManualEnabled = true)
+            SettingsAction.CalendarIntegrationToggled(isCalendarIntegrationEnabled = true)
         ) { effects ->
             effects.shouldBeSingleton()
             effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
@@ -34,7 +34,7 @@ class ManualModeToggledActionTests : CoroutineTest() {
     fun `Shouldn't change the state`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
-            SettingsAction.ManualModeToggled(isManualEnabled = true)
+            SettingsAction.CalendarIntegrationToggled(isCalendarIntegrationEnabled = true)
         ) { state -> state shouldBe initialState }
     }
 }
