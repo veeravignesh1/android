@@ -23,9 +23,11 @@ import java.time.DayOfWeek
 
 fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
+    feedbackMessage: String = "",
     backStack: BackStack = emptyList()
 ) = SettingsState(
     userPreferences = userPreferences,
+    feedbackMessage = feedbackMessage,
     backStack = backStack
 )
 

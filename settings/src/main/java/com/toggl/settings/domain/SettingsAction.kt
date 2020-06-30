@@ -19,6 +19,7 @@ sealed class SettingsAction {
     data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek) : SettingsAction()
     data class GroupSimilarTimeEntriesToggled(val shouldGroupSimilarTimeEntries: Boolean) : SettingsAction()
     data class CellSwipeActionsToggled(val hasCellSwipeActions: Boolean) : SettingsAction()
+    data class FeedbackEntered(val feedbackMessage: String) : SettingsAction()
 
     companion object
 }
@@ -35,4 +36,5 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.FirstDayOfTheWeekSelected -> "FirstDayOfTheWeekSelected day: $firstDayOfTheWeek"
         is SettingsAction.GroupSimilarTimeEntriesToggled -> "GroupSimilarTimeEntriesToggled shouldGroupSimilarTimeEntries: $shouldGroupSimilarTimeEntries"
         is SettingsAction.CellSwipeActionsToggled -> "CellSwipeActionsToggled hasCellSwipeActions: $hasCellSwipeActions"
+        is SettingsAction.FeedbackEntered -> "FeedbackEntered feedbackMessage: $feedbackMessage"
     }

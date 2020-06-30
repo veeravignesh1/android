@@ -15,7 +15,6 @@ import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.domain.states.OnboardingState
-import com.toggl.models.domain.SelectedSetting
 import com.toggl.timer.common.domain.TimerState
 import java.time.DayOfWeek
 
@@ -31,7 +30,7 @@ data class AppState(
         shouldGroupSimilarTimeEntries = true,
         hasCellSwipeActions = true
     ),
-    val selectedSetting: SelectedSetting? = null,
+    val feedbackMessage: String = "",
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),
     val tasks: Map<Long, Task> = mapOf(),

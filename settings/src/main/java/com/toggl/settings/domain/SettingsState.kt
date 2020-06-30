@@ -7,6 +7,7 @@ import com.toggl.models.domain.UserPreferences
 @optics
 data class SettingsState(
     val userPreferences: UserPreferences,
+    val feedbackMessage: String,
     val backStack: BackStack
 ) {
     companion object
