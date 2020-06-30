@@ -2,6 +2,7 @@ package com.toggl.settings.domain
 
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createUserPreferences
@@ -29,7 +30,8 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
             durationFormat = DurationFormat.Decimal,
             firstDayOfTheWeek = DayOfWeek.WEDNESDAY,
             shouldGroupSimilarTimeEntries = true,
-            hasCellSwipeActions = true
+            hasCellSwipeActions = true,
+            smartAlertsOption = SmartAlertsOption.MinutesBefore15
         )
         val settingsRepository = mockk<SettingsRepository>(relaxUnitFun = true)
         val resultAction = UpdateUserPreferencesEffect(
@@ -38,14 +40,17 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
             dispatcherProvider
         ).execute()
 
-        resultAction.userPreferences.isManualModeEnabled.shouldBeTrue()
-        resultAction.userPreferences.is24HourClock.shouldBeTrue()
-        resultAction.userPreferences.selectedWorkspaceId shouldBe 1
-        resultAction.userPreferences.dateFormat shouldBe DateFormat.DDMMYYYY_dash
-        resultAction.userPreferences.durationFormat shouldBe DurationFormat.Decimal
-        resultAction.userPreferences.firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
-        resultAction.userPreferences.shouldGroupSimilarTimeEntries.shouldBeTrue()
-        resultAction.userPreferences.hasCellSwipeActions.shouldBeTrue()
+        with(resultAction.userPreferences) {
+            isManualModeEnabled.shouldBeTrue()
+            is24HourClock.shouldBeTrue()
+            selectedWorkspaceId shouldBe 1
+            dateFormat shouldBe DateFormat.DDMMYYYY_dash
+            durationFormat shouldBe DurationFormat.Decimal
+            firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
+            shouldGroupSimilarTimeEntries.shouldBeTrue()
+            hasCellSwipeActions.shouldBeTrue()
+            smartAlertsOption shouldBe SmartAlertsOption.MinutesBefore15
+        }
 
         coVerify { settingsRepository.saveUserPreferences(newUserPreferences) }
     }

@@ -4,6 +4,7 @@ import arrow.optics.optics
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SelectedSetting
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
 import java.time.DayOfWeek
 
@@ -19,6 +20,7 @@ sealed class SettingsAction {
     data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek) : SettingsAction()
     data class GroupSimilarTimeEntriesToggled(val shouldGroupSimilarTimeEntries: Boolean) : SettingsAction()
     data class CellSwipeActionsToggled(val hasCellSwipeActions: Boolean) : SettingsAction()
+    data class SmartAlertsOptionSelected(val smartAlertsOption: SmartAlertsOption) : SettingsAction()
     data class FeedbackEntered(val feedbackMessage: String) : SettingsAction()
 
     companion object
@@ -37,4 +39,5 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.GroupSimilarTimeEntriesToggled -> "GroupSimilarTimeEntriesToggled shouldGroupSimilarTimeEntries: $shouldGroupSimilarTimeEntries"
         is SettingsAction.CellSwipeActionsToggled -> "CellSwipeActionsToggled hasCellSwipeActions: $hasCellSwipeActions"
         is SettingsAction.FeedbackEntered -> "FeedbackEntered feedbackMessage: $feedbackMessage"
+        is SettingsAction.SmartAlertsOptionSelected -> "SmartAlertsOptionSelected smartAlertsOption: $smartAlertsOption"
     }

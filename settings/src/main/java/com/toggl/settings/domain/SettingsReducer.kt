@@ -35,6 +35,7 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.FirstDayOfTheWeekSelected -> state.updateUserPreferences { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
             is SettingsAction.GroupSimilarTimeEntriesToggled -> state.updateUserPreferences { copy(shouldGroupSimilarTimeEntries = action.shouldGroupSimilarTimeEntries) }
             is SettingsAction.CellSwipeActionsToggled -> state.updateUserPreferences { copy(hasCellSwipeActions = action.hasCellSwipeActions) }
+            is SettingsAction.SmartAlertsOptionSelected -> state.updateUserPreferences { copy(smartAlertsOption = action.smartAlertsOption) }
             is SettingsAction.FeedbackEntered -> state.mutateWithoutEffects { copy(feedbackMessage = action.feedbackMessage) }
         }
 

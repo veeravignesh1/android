@@ -19,6 +19,7 @@ import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
@@ -141,15 +142,17 @@ class Repository(
 
     override suspend fun loadUserPreferences(): UserPreferences =
         with(sharedPreferences) {
+            val default = UserPreferences.defaultUserPreferences
             return UserPreferences(
-                isManualModeEnabled = getBoolean(SettingsRepository.isManualModeEnabled, false),
-                is24HourClock = getBoolean(SettingsRepository.is24HourClock, false),
-                selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, 0),
-                dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, DateFormat.MMDDYYYY_slash.name)!!),
-                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!),
-                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value)),
-                shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, false),
-                hasCellSwipeActions = getBoolean(SettingsRepository.hasCellSwipeActions, false)
+                isManualModeEnabled = getBoolean(SettingsRepository.isManualModeEnabled, default.isManualModeEnabled),
+                is24HourClock = getBoolean(SettingsRepository.is24HourClock, default.is24HourClock),
+                selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, default.selectedWorkspaceId),
+                dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, default.dateFormat.name)!!),
+                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, default.durationFormat.name)!!),
+                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, default.firstDayOfTheWeek.value)),
+                shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, default.shouldGroupSimilarTimeEntries),
+                hasCellSwipeActions = getBoolean(SettingsRepository.hasCellSwipeActions, default.hasCellSwipeActions),
+                smartAlertsOption = SmartAlertsOption.valueOf(getString(SettingsRepository.smartAlertsOption, default.smartAlertsOption.name)!!)
             )
         }
 
@@ -163,6 +166,7 @@ class Repository(
             putInt(SettingsRepository.firstDayOfTheWeek, userPreferences.firstDayOfTheWeek.value)
             putBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, userPreferences.shouldGroupSimilarTimeEntries)
             putBoolean(SettingsRepository.hasCellSwipeActions, userPreferences.hasCellSwipeActions)
+            putString(SettingsRepository.smartAlertsOption, userPreferences.smartAlertsOption.name)
         }
     }
 }

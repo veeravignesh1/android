@@ -20,16 +20,7 @@ import java.time.DayOfWeek
 
 data class AppState(
     val user: Loadable<User> = Loadable.Uninitialized,
-    val userPreferences: UserPreferences = UserPreferences(
-        isManualModeEnabled = false,
-        is24HourClock = false,
-        selectedWorkspaceId = 1,
-        dateFormat = DateFormat.DDMMYYYY_dash,
-        durationFormat = DurationFormat.Improved,
-        firstDayOfTheWeek = DayOfWeek.MONDAY,
-        shouldGroupSimilarTimeEntries = true,
-        hasCellSwipeActions = true
-    ),
+    val userPreferences: UserPreferences = UserPreferences.defaultUserPreferences,
     val feedbackMessage: String = "",
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),

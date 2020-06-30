@@ -9,6 +9,7 @@ import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.domain.SettingsReducer
@@ -39,7 +40,8 @@ fun createUserPreferences(
     durationFormat: DurationFormat = DurationFormat.Classic,
     firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
     shouldGroupSimilarTimeEntries: Boolean = false,
-    hasCellSwipeActions: Boolean = false
+    hasCellSwipeActions: Boolean = false,
+    smartAlertsOption: SmartAlertsOption = SmartAlertsOption.Disabled
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
     is24HourClock = is24HourClock,
@@ -48,7 +50,8 @@ fun createUserPreferences(
     durationFormat = durationFormat,
     firstDayOfTheWeek = firstDayOfTheWeek,
     shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries,
-    hasCellSwipeActions = hasCellSwipeActions
+    hasCellSwipeActions = hasCellSwipeActions,
+    smartAlertsOption = smartAlertsOption
 )
 
 fun createSettingsReducer(

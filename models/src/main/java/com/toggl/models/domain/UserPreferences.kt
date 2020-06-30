@@ -10,8 +10,23 @@ data class UserPreferences(
     val durationFormat: DurationFormat,
     val firstDayOfTheWeek: DayOfWeek,
     val shouldGroupSimilarTimeEntries: Boolean,
-    val hasCellSwipeActions: Boolean
-)
+    val hasCellSwipeActions: Boolean,
+    val smartAlertsOption: SmartAlertsOption
+) {
+    companion object {
+        val defaultUserPreferences = UserPreferences(
+            isManualModeEnabled = false,
+            is24HourClock = false,
+            selectedWorkspaceId = 1,
+            dateFormat = DateFormat.DDMMYYYY_dash,
+            durationFormat = DurationFormat.Improved,
+            firstDayOfTheWeek = DayOfWeek.MONDAY,
+            shouldGroupSimilarTimeEntries = true,
+            hasCellSwipeActions = true,
+            smartAlertsOption = SmartAlertsOption.Disabled
+        )
+    }
+}
 
 enum class DateFormat {
     MMDDYYYY_slash,
@@ -26,4 +41,14 @@ enum class DurationFormat {
     Classic,
     Improved,
     Decimal
+}
+
+enum class SmartAlertsOption {
+    Disabled,
+    WhenEventStarts,
+    MinutesBefore5,
+    MinutesBefore10,
+    MinutesBefore15,
+    MinutesBefore30,
+    MinutesBefore60,
 }
