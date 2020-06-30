@@ -27,6 +27,18 @@ class RouterTests : CoroutineTest() {
         mockk(),
         mockk(),
         mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
+        mockk(),
         mockk()
     )
 

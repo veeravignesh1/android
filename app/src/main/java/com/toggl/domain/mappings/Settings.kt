@@ -6,10 +6,10 @@ import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsState
 
 fun mapAppStateToSettingsState(appState: AppState): SettingsState =
-    SettingsState(appState.userPreferences)
+    SettingsState(appState.userPreferences, appState.backStack)
 
 fun mapSettingsStateToAppState(appState: AppState, settingsState: SettingsState): AppState =
-    appState.copy(userPreferences = settingsState.userPreferences)
+    appState.copy(userPreferences = settingsState.userPreferences, backStack = settingsState.backStack)
 
 fun mapSettingsActionToAppAction(settingsAction: SettingsAction): AppAction =
     AppAction.Settings(settingsAction)

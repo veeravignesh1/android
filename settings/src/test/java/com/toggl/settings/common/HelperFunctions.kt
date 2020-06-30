@@ -4,6 +4,7 @@ import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.models.domain.DateFormat
@@ -18,11 +19,14 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
+import java.time.DayOfWeek
 
 fun createSettingsState(
-    userPreferences: UserPreferences = createUserPreferences()
+    userPreferences: UserPreferences = createUserPreferences(),
+    backStack: BackStack = emptyList()
 ) = SettingsState(
-    userPreferences = userPreferences
+    userPreferences = userPreferences,
+    backStack = backStack
 )
 
 fun createUserPreferences(
@@ -30,13 +34,19 @@ fun createUserPreferences(
     is24HourClock: Boolean = false,
     selectedWorkspaceId: Long = 1,
     dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
-    durationFormat: DurationFormat = DurationFormat.Classic
+    durationFormat: DurationFormat = DurationFormat.Classic,
+    firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
+    shouldGroupSimilarTimeEntries: Boolean = false,
+    hasCellSwipeActions: Boolean = false
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
     is24HourClock = is24HourClock,
     selectedWorkspaceId = selectedWorkspaceId,
     dateFormat = dateFormat,
-    durationFormat = durationFormat
+    durationFormat = durationFormat,
+    firstDayOfTheWeek = firstDayOfTheWeek,
+    shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries,
+    hasCellSwipeActions = hasCellSwipeActions
 )
 
 fun createSettingsReducer(
