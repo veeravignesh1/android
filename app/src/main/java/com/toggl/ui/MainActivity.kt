@@ -19,7 +19,7 @@ import com.toggl.common.feature.navigation.Router
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
-import com.toggl.environment.services.permissions.PermissionService
+import com.toggl.environment.services.permissions.PermissionRequesterService
 import com.toggl.environment.services.permissions.requestCalendarPermissionIfNeeded
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
@@ -35,7 +35,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigationProvider {
     @Inject lateinit var router: Router
     @Inject lateinit var store: Store<AppState, AppAction>
-    @Inject lateinit var permissionService: PermissionService
+    @Inject lateinit var permissionService: PermissionRequesterService
     @Inject lateinit var bottomSheetNavigator: BottomSheetNavigator
 
     override var isBottomNavigationVisible: Boolean
@@ -46,7 +46,10 @@ class MainActivity : AppCompatActivity(R.layout.main_activity), BottomNavigation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        permissionService.requestCalendarPermissionIfNeeded()
+        lifecycleScope.launchWhenResumed {
+            permissionService.requestCalendarPermissionIfNeeded()
+        }
+
         store.dispatch(AppAction.Loading(LoadingAction.StartLoading))
 
         val navController = setUpNavigation()

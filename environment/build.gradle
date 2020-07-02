@@ -50,6 +50,8 @@ dependencies {
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.compiler
     api Libs.AndroidX.coreKtx
+    api Libs.AndroidX.appcompat
+    api Libs.AndroidX.activityKtx
     api Libs.Google.firebaseAnalytics
     api Libs.Microsoft.appCenterAnalytics
 

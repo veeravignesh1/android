@@ -64,7 +64,9 @@ class LoadingReducerTests : FreeCoroutineSpec() {
                 durationFormat = DurationFormat.Decimal,
                 firstDayOfTheWeek = DayOfWeek.MONDAY,
                 shouldGroupSimilarTimeEntries = true,
-                hasCellSwipeActions = true
+                hasCellSwipeActions = true,
+                isCalendarIntegrationEnabled = true,
+                calendarIds = emptyList()
             )
         )
 

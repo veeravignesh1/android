@@ -1,17 +1,22 @@
 package com.toggl.environment.di
 
-import android.content.Context
+import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.toggl.environment.services.analytics.AnalyticsService
 import com.toggl.environment.services.analytics.AppCenterAnalyticsService
 import com.toggl.environment.services.analytics.CompositeAnalyticsService
 import com.toggl.environment.services.analytics.FirebaseAnalyticsService
 import com.toggl.environment.services.calendar.CalendarService
 import com.toggl.environment.services.calendar.CursorCalendarService
-import com.toggl.environment.services.permissions.LollipopPermissionService
-import com.toggl.environment.services.permissions.MarshmallowPermissionService
-import com.toggl.environment.services.permissions.PermissionService
+import com.toggl.environment.services.permissions.LollipopPermissionRequesterService
+import com.toggl.environment.services.permissions.MarshmallowPermissionRequesterService
+import com.toggl.environment.services.permissions.PermissionCheckerService
+import com.toggl.environment.services.permissions.PermissionRequesterService
 import com.toggl.environment.services.time.JavaTimeService
 import com.toggl.environment.services.time.TimeService
 import dagger.Module
@@ -39,6 +44,16 @@ object EnvironmentModule {
     @Provides
     @Singleton
     fun calendarService(@ApplicationContext context: Context): CalendarService = CursorCalendarService(context)
+
+    @Provides
+    @Singleton
+    fun permissionCheckerService(@ApplicationContext context: Context): PermissionCheckerService =
+        object : PermissionCheckerService {
+            override fun hasCalendarPermission(): Boolean {
+                val calendarPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALENDAR)
+                return calendarPermission == PackageManager.PERMISSION_GRANTED
+            }
+        }
 }
 
 @Module
@@ -46,7 +61,7 @@ object EnvironmentModule {
 object EnvironmentActivityModule {
 
     @Provides
-    fun permissionService(activity: Activity): PermissionService =
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) LollipopPermissionService()
-        else MarshmallowPermissionService(activity)
+    fun permissionRequesterService(activity: Activity): PermissionRequesterService =
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) LollipopPermissionRequesterService()
+        else MarshmallowPermissionRequesterService(activity as AppCompatActivity)
 }

@@ -8,12 +8,14 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.push
+import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import javax.inject.Inject
 
 class SettingsReducer @Inject constructor(
     private val settingsRepository: SettingsRepository,
+    private val permissionCheckerService: PermissionCheckerService,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<SettingsState, SettingsAction> {
 
@@ -35,6 +37,22 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.FirstDayOfTheWeekSelected -> state.updateUserPreferences { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
             is SettingsAction.GroupSimilarTimeEntriesToggled -> state.updateUserPreferences { copy(shouldGroupSimilarTimeEntries = action.shouldGroupSimilarTimeEntries) }
             is SettingsAction.CellSwipeActionsToggled -> state.updateUserPreferences { copy(hasCellSwipeActions = action.hasCellSwipeActions) }
+            is SettingsAction.CalendarPermissionRequested -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = true) }
+            is SettingsAction.CalendarPermissionReceived -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = false) }
+            is SettingsAction.AllowCalendarAccessToggled -> {
+                val isEnablingCalendarAccess = action.isCalendarAccessEnabled
+                val effects = state.updateUserPreferences {
+                    if (isEnablingCalendarAccess) {
+                        copy(isCalendarIntegrationEnabled = isEnablingCalendarAccess)
+                    } else {
+                        copy(isCalendarIntegrationEnabled = isEnablingCalendarAccess, calendarIds = emptyList())
+                    }
+                }
+                if (isEnablingCalendarAccess && !permissionCheckerService.hasCalendarPermission())
+                    effects + effect(RequestCalendarPermissionEffect())
+                else
+                    effects
+            }
         }
 
     private fun MutableValue<SettingsState>.updateUserPreferences(updateBlock: UserPreferences.() -> UserPreferences) =

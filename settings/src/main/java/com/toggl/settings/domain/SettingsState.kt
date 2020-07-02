@@ -7,6 +7,7 @@ import com.toggl.models.domain.UserPreferences
 @optics
 data class SettingsState(
     val userPreferences: UserPreferences,
+    val shouldRequestCalendarPermission: Boolean,
     val backStack: BackStack
 ) {
     companion object

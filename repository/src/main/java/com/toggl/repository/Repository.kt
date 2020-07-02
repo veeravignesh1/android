@@ -149,7 +149,9 @@ class Repository(
                 durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!),
                 firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value)),
                 shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, false),
-                hasCellSwipeActions = getBoolean(SettingsRepository.hasCellSwipeActions, false)
+                hasCellSwipeActions = getBoolean(SettingsRepository.hasCellSwipeActions, false),
+                isCalendarIntegrationEnabled = getBoolean(SettingsRepository.isCalendarIntegrationEnabled, false),
+                calendarIds = getStringSet(SettingsRepository.calendarIds, emptySet())?.toList() ?: emptyList()
             )
         }
 
@@ -163,6 +165,8 @@ class Repository(
             putInt(SettingsRepository.firstDayOfTheWeek, userPreferences.firstDayOfTheWeek.value)
             putBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, userPreferences.shouldGroupSimilarTimeEntries)
             putBoolean(SettingsRepository.hasCellSwipeActions, userPreferences.hasCellSwipeActions)
+            putBoolean(SettingsRepository.isCalendarIntegrationEnabled, userPreferences.isCalendarIntegrationEnabled)
+            putStringSet(SettingsRepository.calendarIds, userPreferences.calendarIds.toSet())
         }
     }
 }

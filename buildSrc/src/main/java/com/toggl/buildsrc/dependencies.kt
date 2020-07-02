@@ -66,6 +66,7 @@ object Libs {
         const val recyclerview = "androidx.recyclerview:recyclerview:1.2.0-alpha03"
         const val browser = "androidx.browser:browser:1.0.0"
         const val fragment = "androidx.fragment:fragment:1.0.0"
+        const val activityKtx = "androidx.activity:activity-ktx:1.2.0-alpha06"
 
         object Hilt {
             private const val version = "1.0.0-alpha01"

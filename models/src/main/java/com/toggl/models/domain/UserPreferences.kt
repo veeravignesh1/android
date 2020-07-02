@@ -10,7 +10,9 @@ data class UserPreferences(
     val durationFormat: DurationFormat,
     val firstDayOfTheWeek: DayOfWeek,
     val shouldGroupSimilarTimeEntries: Boolean,
-    val hasCellSwipeActions: Boolean
+    val hasCellSwipeActions: Boolean,
+    val isCalendarIntegrationEnabled: Boolean,
+    val calendarIds: List<String>
 )
 
 enum class DateFormat {

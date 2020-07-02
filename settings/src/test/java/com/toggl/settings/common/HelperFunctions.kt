@@ -7,6 +7,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
+import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.UserPreferences
@@ -23,9 +24,11 @@ import java.time.DayOfWeek
 
 fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
+    shouldRequestCalendarPermission: Boolean = false,
     backStack: BackStack = emptyList()
 ) = SettingsState(
     userPreferences = userPreferences,
+    shouldRequestCalendarPermission = shouldRequestCalendarPermission,
     backStack = backStack
 )
 
@@ -37,7 +40,9 @@ fun createUserPreferences(
     durationFormat: DurationFormat = DurationFormat.Classic,
     firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
     shouldGroupSimilarTimeEntries: Boolean = false,
-    hasCellSwipeActions: Boolean = false
+    hasCellSwipeActions: Boolean = false,
+    isCalendarIntegrationEnabled: Boolean = false,
+    calendarIds: List<String> = emptyList()
 ) = UserPreferences(
     isManualModeEnabled = isManualModeEnabled,
     is24HourClock = is24HourClock,
@@ -46,13 +51,16 @@ fun createUserPreferences(
     durationFormat = durationFormat,
     firstDayOfTheWeek = firstDayOfTheWeek,
     shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries,
-    hasCellSwipeActions = hasCellSwipeActions
+    hasCellSwipeActions = hasCellSwipeActions,
+    isCalendarIntegrationEnabled = isCalendarIntegrationEnabled,
+    calendarIds = calendarIds
 )
 
 fun createSettingsReducer(
     settingsRepository: SettingsRepository = mockk(),
+    permissionCheckerService: PermissionCheckerService = mockk(relaxed = true),
     dispatcherProvider: DispatcherProvider
-) = SettingsReducer(settingsRepository, dispatcherProvider)
+) = SettingsReducer(settingsRepository, permissionCheckerService, dispatcherProvider)
 
 fun <T> T.toMutableValue(setFunction: (T) -> Unit) =
     MutableValue({ this }, setFunction)

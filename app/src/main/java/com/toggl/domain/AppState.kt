@@ -8,6 +8,7 @@ import com.toggl.models.domain.Client
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
+import com.toggl.models.domain.SelectedSetting
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
@@ -15,7 +16,6 @@ import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.domain.states.OnboardingState
-import com.toggl.models.domain.SelectedSetting
 import com.toggl.timer.common.domain.TimerState
 import java.time.DayOfWeek
 
@@ -29,7 +29,9 @@ data class AppState(
         durationFormat = DurationFormat.Improved,
         firstDayOfTheWeek = DayOfWeek.MONDAY,
         shouldGroupSimilarTimeEntries = true,
-        hasCellSwipeActions = true
+        hasCellSwipeActions = true,
+        isCalendarIntegrationEnabled = false,
+        calendarIds = emptyList()
     ),
     val selectedSetting: SelectedSetting? = null,
     val workspaces: Map<Long, Workspace> = mapOf(),
@@ -40,6 +42,7 @@ data class AppState(
     val timeEntries: Map<Long, TimeEntry> = mapOf(),
     val backStack: BackStack = emptyList(),
     val calendarPermissionWasGranted: Boolean = false,
+    val shouldRequestCalendarPermission: Boolean = false,
     val calendarEvents: Map<String, CalendarEvent> = mapOf(),
     val onboardingLocalState: OnboardingState.LocalState = OnboardingState.LocalState(),
     val timerLocalState: TimerState.LocalState = TimerState.LocalState(),

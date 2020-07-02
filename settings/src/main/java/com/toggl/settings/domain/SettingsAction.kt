@@ -19,7 +19,9 @@ sealed class SettingsAction {
     data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek) : SettingsAction()
     data class GroupSimilarTimeEntriesToggled(val shouldGroupSimilarTimeEntries: Boolean) : SettingsAction()
     data class CellSwipeActionsToggled(val hasCellSwipeActions: Boolean) : SettingsAction()
-
+    data class AllowCalendarAccessToggled(val isCalendarAccessEnabled: Boolean) : SettingsAction()
+    data class CalendarPermissionReceived(val granted: Boolean) : SettingsAction()
+    object CalendarPermissionRequested : SettingsAction()
     companion object
 }
 
@@ -35,4 +37,7 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.FirstDayOfTheWeekSelected -> "FirstDayOfTheWeekSelected day: $firstDayOfTheWeek"
         is SettingsAction.GroupSimilarTimeEntriesToggled -> "GroupSimilarTimeEntriesToggled shouldGroupSimilarTimeEntries: $shouldGroupSimilarTimeEntries"
         is SettingsAction.CellSwipeActionsToggled -> "CellSwipeActionsToggled hasCellSwipeActions: $hasCellSwipeActions"
+        is SettingsAction.AllowCalendarAccessToggled -> "AllowCalendarAccessToggled isCalendarAccessEnabled: $isCalendarAccessEnabled"
+        is SettingsAction.CalendarPermissionReceived -> "CalendarPermissionReceived was granted = $granted"
+        SettingsAction.CalendarPermissionRequested -> "CalendarPermissionRequested"
     }
