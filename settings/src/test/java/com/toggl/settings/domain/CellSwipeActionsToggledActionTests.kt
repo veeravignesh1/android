@@ -23,7 +23,7 @@ class CellSwipeActionsToggledActionTests : CoroutineTest() {
     fun `Should return correct effect`() = runBlockingTest {
         reducer.testReduceEffects(
             initialState,
-            SettingsAction.CellSwipeActionsToggled(hasCellSwipeActions = true)
+            SettingsAction.CellSwipeActionsToggled
         ) { effects ->
             effects.shouldBeSingleton()
             effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
@@ -34,7 +34,7 @@ class CellSwipeActionsToggledActionTests : CoroutineTest() {
     fun `Shouldn't change the state`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
-            SettingsAction.CellSwipeActionsToggled(hasCellSwipeActions = true)
+            SettingsAction.CellSwipeActionsToggled
         ) { state -> state shouldBe initialState }
     }
 }

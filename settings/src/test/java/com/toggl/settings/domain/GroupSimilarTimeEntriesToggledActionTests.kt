@@ -23,7 +23,7 @@ class GroupSimilarTimeEntriesToggledActionTests : CoroutineTest() {
     fun `Should return correct effect`() = runBlockingTest {
         reducer.testReduceEffects(
             initialState,
-            SettingsAction.GroupSimilarTimeEntriesToggled(shouldGroupSimilarTimeEntries = false)
+            SettingsAction.GroupSimilarTimeEntriesToggled
         ) { effects ->
             effects.shouldBeSingleton()
             effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
@@ -34,7 +34,7 @@ class GroupSimilarTimeEntriesToggledActionTests : CoroutineTest() {
     fun `Shouldn't change the state`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
-            SettingsAction.GroupSimilarTimeEntriesToggled(shouldGroupSimilarTimeEntries = false)
+            SettingsAction.GroupSimilarTimeEntriesToggled
         ) { state -> state shouldBe initialState }
     }
 }

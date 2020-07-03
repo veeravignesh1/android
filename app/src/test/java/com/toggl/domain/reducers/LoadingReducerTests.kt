@@ -19,6 +19,7 @@ import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.loading.LoadingState
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
@@ -57,15 +58,16 @@ class LoadingReducerTests : FreeCoroutineSpec() {
         )
         val emptyState = LoadingState(listOf(), listOf(), listOf(), listOf(), listOf(), listOf(),
             UserPreferences(
-                isManualModeEnabled = true,
-                is24HourClock = false,
+                manualModeEnabled = true,
+                twentyFourHourClockEnabled = false,
                 selectedWorkspaceId = 1,
                 dateFormat = DateFormat.DDMMYYYY_dash,
                 durationFormat = DurationFormat.Decimal,
                 firstDayOfTheWeek = DayOfWeek.MONDAY,
-                shouldGroupSimilarTimeEntries = true,
-                hasCellSwipeActions = true,
-                isCalendarIntegrationEnabled = true,
+                groupSimilarTimeEntriesEnabled = true,
+                cellSwipeActionsEnabled = true,
+                smartAlertsOption = SmartAlertsOption.Disabled,
+                calendarIntegrationEnabled = true,
                 calendarIds = emptyList()
             )
         )

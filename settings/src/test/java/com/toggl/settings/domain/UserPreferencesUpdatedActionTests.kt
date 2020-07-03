@@ -19,16 +19,16 @@ class UserPreferencesUpdatedActionTests : CoroutineTest() {
 
     @Test
     fun `Should update user preferences`() = runBlockingTest {
-        val initialState = createSettingsState(createUserPreferences(isManualModeEnabled = false))
+        val initialState = createSettingsState(createUserPreferences(manualModeEnabled = false))
         val action = SettingsAction.UserPreferencesUpdated(
             createUserPreferences(
-                isManualModeEnabled = true
+                manualModeEnabled = true
             )
         )
         reducer.testReduceState(
             initialState,
             action
-        ) { state -> state.userPreferences.isManualModeEnabled.shouldBeTrue() }
+        ) { state -> state.userPreferences.manualModeEnabled.shouldBeTrue() }
     }
 
     @Test
@@ -37,7 +37,7 @@ class UserPreferencesUpdatedActionTests : CoroutineTest() {
             createSettingsState(),
             SettingsAction.UserPreferencesUpdated(
                 createUserPreferences(
-                    isManualModeEnabled = true
+                    manualModeEnabled = true
                 )
             )
         )

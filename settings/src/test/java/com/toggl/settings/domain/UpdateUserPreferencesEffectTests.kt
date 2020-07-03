@@ -2,6 +2,7 @@ package com.toggl.settings.domain
 
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createUserPreferences
@@ -22,14 +23,17 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
     @Test
     fun `Should save and return new user preferences`() = runBlockingTest {
         val newUserPreferences = createUserPreferences(
-            isManualModeEnabled = true,
-            is24HourClock = true,
+            manualModeEnabled = true,
+            twentyFourHourClockEnabled = true,
+            groupSimilarTimeEntriesEnabled = true,
+            cellSwipeActionsEnabled = true,
+            calendarIntegrationEnabled = true,
+            calendarIds = listOf("one", "two"),
             selectedWorkspaceId = 1,
             dateFormat = DateFormat.DDMMYYYY_dash,
             durationFormat = DurationFormat.Decimal,
             firstDayOfTheWeek = DayOfWeek.WEDNESDAY,
-            shouldGroupSimilarTimeEntries = true,
-            hasCellSwipeActions = true
+            smartAlertsOption = SmartAlertsOption.MinutesBefore15
         )
         val settingsRepository = mockk<SettingsRepository>(relaxUnitFun = true)
         val resultAction = UpdateUserPreferencesEffect(
@@ -38,14 +42,19 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
             dispatcherProvider
         ).execute()
 
-        resultAction.userPreferences.isManualModeEnabled.shouldBeTrue()
-        resultAction.userPreferences.is24HourClock.shouldBeTrue()
-        resultAction.userPreferences.selectedWorkspaceId shouldBe 1
-        resultAction.userPreferences.dateFormat shouldBe DateFormat.DDMMYYYY_dash
-        resultAction.userPreferences.durationFormat shouldBe DurationFormat.Decimal
-        resultAction.userPreferences.firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
-        resultAction.userPreferences.shouldGroupSimilarTimeEntries.shouldBeTrue()
-        resultAction.userPreferences.hasCellSwipeActions.shouldBeTrue()
+        with(resultAction.userPreferences) {
+            manualModeEnabled.shouldBeTrue()
+            twentyFourHourClockEnabled.shouldBeTrue()
+            groupSimilarTimeEntriesEnabled.shouldBeTrue()
+            cellSwipeActionsEnabled.shouldBeTrue()
+            calendarIntegrationEnabled.shouldBeTrue()
+            calendarIds shouldBe listOf("one", "two")
+            selectedWorkspaceId shouldBe 1
+            dateFormat shouldBe DateFormat.DDMMYYYY_dash
+            durationFormat shouldBe DurationFormat.Decimal
+            firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
+            smartAlertsOption shouldBe SmartAlertsOption.MinutesBefore15
+        }
 
         coVerify { settingsRepository.saveUserPreferences(newUserPreferences) }
     }

@@ -19,6 +19,7 @@ import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
@@ -141,32 +142,35 @@ class Repository(
 
     override suspend fun loadUserPreferences(): UserPreferences =
         with(sharedPreferences) {
+            val default = UserPreferences.default
             return UserPreferences(
-                isManualModeEnabled = getBoolean(SettingsRepository.isManualModeEnabled, false),
-                is24HourClock = getBoolean(SettingsRepository.is24HourClock, false),
-                selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, 0),
-                dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, DateFormat.MMDDYYYY_slash.name)!!),
-                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, DurationFormat.Classic.name)!!),
-                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, DayOfWeek.MONDAY.value)),
-                shouldGroupSimilarTimeEntries = getBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, false),
-                hasCellSwipeActions = getBoolean(SettingsRepository.hasCellSwipeActions, false),
-                isCalendarIntegrationEnabled = getBoolean(SettingsRepository.isCalendarIntegrationEnabled, false),
-                calendarIds = getStringSet(SettingsRepository.calendarIds, emptySet())?.toList() ?: emptyList()
+                manualModeEnabled = getBoolean(SettingsRepository.manualModeEnabled, default.manualModeEnabled),
+                twentyFourHourClockEnabled = getBoolean(SettingsRepository.twentyFourHourClockEnabled, default.twentyFourHourClockEnabled),
+                groupSimilarTimeEntriesEnabled = getBoolean(SettingsRepository.groupSimilarTimeEntriesEnabled, default.groupSimilarTimeEntriesEnabled),
+                cellSwipeActionsEnabled = getBoolean(SettingsRepository.cellSwipeActionsEnabled, default.cellSwipeActionsEnabled),
+                calendarIntegrationEnabled = getBoolean(SettingsRepository.calendarIntegrationEnabled, false),
+                calendarIds = getStringSet(SettingsRepository.calendarIds, emptySet())?.toList() ?: emptyList(),
+                selectedWorkspaceId = getLong(SettingsRepository.selectedWorkspaceId, default.selectedWorkspaceId),
+                dateFormat = DateFormat.valueOf(getString(SettingsRepository.dateFormat, default.dateFormat.name)!!),
+                durationFormat = DurationFormat.valueOf(getString(SettingsRepository.durationFormat, default.durationFormat.name)!!),
+                firstDayOfTheWeek = DayOfWeek.of(getInt(SettingsRepository.firstDayOfTheWeek, default.firstDayOfTheWeek.value)),
+                smartAlertsOption = SmartAlertsOption.valueOf(getString(SettingsRepository.smartAlertsOption, default.smartAlertsOption.name)!!)
             )
         }
 
     override suspend fun saveUserPreferences(userPreferences: UserPreferences) {
         sharedPreferences.edit {
-            putBoolean(SettingsRepository.isManualModeEnabled, userPreferences.isManualModeEnabled)
-            putBoolean(SettingsRepository.is24HourClock, userPreferences.is24HourClock)
+            putBoolean(SettingsRepository.manualModeEnabled, userPreferences.manualModeEnabled)
+            putBoolean(SettingsRepository.twentyFourHourClockEnabled, userPreferences.twentyFourHourClockEnabled)
+            putBoolean(SettingsRepository.groupSimilarTimeEntriesEnabled, userPreferences.groupSimilarTimeEntriesEnabled)
+            putBoolean(SettingsRepository.cellSwipeActionsEnabled, userPreferences.cellSwipeActionsEnabled)
+            putBoolean(SettingsRepository.calendarIntegrationEnabled, userPreferences.calendarIntegrationEnabled)
+            putStringSet(SettingsRepository.calendarIds, userPreferences.calendarIds.toSet())
             putLong(SettingsRepository.selectedWorkspaceId, userPreferences.selectedWorkspaceId)
             putString(SettingsRepository.dateFormat, userPreferences.dateFormat.name)
             putString(SettingsRepository.durationFormat, userPreferences.durationFormat.name)
             putInt(SettingsRepository.firstDayOfTheWeek, userPreferences.firstDayOfTheWeek.value)
-            putBoolean(SettingsRepository.shouldGroupSimilarTimeEntries, userPreferences.shouldGroupSimilarTimeEntries)
-            putBoolean(SettingsRepository.hasCellSwipeActions, userPreferences.hasCellSwipeActions)
-            putBoolean(SettingsRepository.isCalendarIntegrationEnabled, userPreferences.isCalendarIntegrationEnabled)
-            putStringSet(SettingsRepository.calendarIds, userPreferences.calendarIds.toSet())
+            putString(SettingsRepository.smartAlertsOption, userPreferences.smartAlertsOption.name)
         }
     }
 }

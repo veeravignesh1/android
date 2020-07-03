@@ -23,7 +23,7 @@ class ManualModeToggledActionTests : CoroutineTest() {
     fun `Should return correct effect`() = runBlockingTest {
         reducer.testReduceEffects(
             initialState,
-            SettingsAction.ManualModeToggled(isManual = true)
+            SettingsAction.ManualModeToggled
         ) { effects ->
             effects.shouldBeSingleton()
             effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
@@ -34,7 +34,7 @@ class ManualModeToggledActionTests : CoroutineTest() {
     fun `Shouldn't change the state`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
-            SettingsAction.ManualModeToggled(isManual = true)
+            SettingsAction.ManualModeToggled
         ) { state -> state shouldBe initialState }
     }
 }

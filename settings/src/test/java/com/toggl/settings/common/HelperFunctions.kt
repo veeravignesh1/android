@@ -10,6 +10,7 @@ import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.domain.SettingsReducer
@@ -33,26 +34,28 @@ fun createSettingsState(
 )
 
 fun createUserPreferences(
-    isManualModeEnabled: Boolean = false,
-    is24HourClock: Boolean = false,
+    manualModeEnabled: Boolean = false,
+    twentyFourHourClockEnabled: Boolean = false,
+    cellSwipeActionsEnabled: Boolean = false,
+    groupSimilarTimeEntriesEnabled: Boolean = false,
+    calendarIntegrationEnabled: Boolean = false,
+    calendarIds: List<String> = emptyList(),
     selectedWorkspaceId: Long = 1,
     dateFormat: DateFormat = DateFormat.DDMMYYYY_dash,
     durationFormat: DurationFormat = DurationFormat.Classic,
     firstDayOfTheWeek: DayOfWeek = DayOfWeek.WEDNESDAY,
-    shouldGroupSimilarTimeEntries: Boolean = false,
-    hasCellSwipeActions: Boolean = false,
-    isCalendarIntegrationEnabled: Boolean = false,
-    calendarIds: List<String> = emptyList()
+    smartAlertsOption: SmartAlertsOption = SmartAlertsOption.Disabled
 ) = UserPreferences(
-    isManualModeEnabled = isManualModeEnabled,
-    is24HourClock = is24HourClock,
+    manualModeEnabled = manualModeEnabled,
+    twentyFourHourClockEnabled = twentyFourHourClockEnabled,
+    cellSwipeActionsEnabled = cellSwipeActionsEnabled,
+    groupSimilarTimeEntriesEnabled = groupSimilarTimeEntriesEnabled,
+    calendarIntegrationEnabled = calendarIntegrationEnabled,
     selectedWorkspaceId = selectedWorkspaceId,
     dateFormat = dateFormat,
     durationFormat = durationFormat,
     firstDayOfTheWeek = firstDayOfTheWeek,
-    shouldGroupSimilarTimeEntries = shouldGroupSimilarTimeEntries,
-    hasCellSwipeActions = hasCellSwipeActions,
-    isCalendarIntegrationEnabled = isCalendarIntegrationEnabled,
+    smartAlertsOption = smartAlertsOption,
     calendarIds = calendarIds
 )
 

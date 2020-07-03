@@ -14,8 +14,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @ExperimentalCoroutinesApi
-@DisplayName("The Use24HourClockToggled action")
-class Use24HourClockToggledActionTests : CoroutineTest() {
+@DisplayName("The CalendarIntegrationToggled action")
+class UserCalendarIntegrationToggledActionTests : CoroutineTest() {
     private val initialState = createSettingsState()
     private val reducer = createSettingsReducer(dispatcherProvider = dispatcherProvider)
 
@@ -23,7 +23,7 @@ class Use24HourClockToggledActionTests : CoroutineTest() {
     fun `Should return correct effect`() = runBlockingTest {
         reducer.testReduceEffects(
             initialState,
-            SettingsAction.Use24HourClockToggled
+            SettingsAction.UserCalendarIntegrationToggled("id")
         ) { effects ->
             effects.shouldBeSingleton()
             effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
@@ -34,7 +34,7 @@ class Use24HourClockToggledActionTests : CoroutineTest() {
     fun `Shouldn't change the state`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
-            SettingsAction.Use24HourClockToggled
+            SettingsAction.UserCalendarIntegrationToggled("id")
         ) { state -> state shouldBe initialState }
     }
 }

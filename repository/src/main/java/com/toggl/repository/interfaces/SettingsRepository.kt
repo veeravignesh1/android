@@ -7,15 +7,16 @@ interface SettingsRepository {
     suspend fun saveUserPreferences(userPreferences: UserPreferences)
 
     companion object {
-        const val isManualModeEnabled = "isManualModeEnabled"
+        const val manualModeEnabled = "manualModeEnabled"
+        const val twentyFourHourClockEnabled = "twentyFourHourClockEnabled"
+        const val groupSimilarTimeEntriesEnabled = "groupSimilarTimeEntriesEnabled"
+        const val cellSwipeActionsEnabled = "cellSwipeActionsEnabled"
+        const val calendarIntegrationEnabled = "calendarIntegrationEnabled"
+        const val calendarIds = "calendarIds"
         const val selectedWorkspaceId = "selectedWorkspaceId"
-        const val is24HourClock = "is24HourClock"
+        const val smartAlertsOption = "smartAlertsOption"
         const val dateFormat = "dateFormat"
         const val durationFormat = "durationFormat"
         const val firstDayOfTheWeek = "firstDayOfTheWeek"
-        const val shouldGroupSimilarTimeEntries = "shouldGroupSimilarTimeEntries"
-        const val hasCellSwipeActions = "hasCellSwipeActions"
-        const val isCalendarIntegrationEnabled = "isCalendarIntegrationEnabled"
-        const val calendarIds = "calendarIds"
     }
 }

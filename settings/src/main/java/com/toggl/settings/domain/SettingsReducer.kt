@@ -29,32 +29,37 @@ class SettingsReducer @Inject constructor(
                 val editRoute = Route.SettingsEdit(action.selectedSetting)
                 copy(backStack = backStack.push(editRoute))
             }
-            is SettingsAction.ManualModeToggled -> state.updateUserPreferences { copy(isManualModeEnabled = action.isManual) }
-            is SettingsAction.Use24HourClockToggled -> state.updateUserPreferences { copy(is24HourClock = action.is24HourClock) }
-            is SettingsAction.WorkspaceSelected -> state.updateUserPreferences { copy(selectedWorkspaceId = action.selectedWorkspaceId) }
-            is SettingsAction.DateFormatSelected -> state.updateUserPreferences { copy(dateFormat = action.dateFormat) }
-            is SettingsAction.DurationFormatSelected -> state.updateUserPreferences { copy(durationFormat = action.durationFormat) }
-            is SettingsAction.FirstDayOfTheWeekSelected -> state.updateUserPreferences { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
-            is SettingsAction.GroupSimilarTimeEntriesToggled -> state.updateUserPreferences { copy(shouldGroupSimilarTimeEntries = action.shouldGroupSimilarTimeEntries) }
-            is SettingsAction.CellSwipeActionsToggled -> state.updateUserPreferences { copy(hasCellSwipeActions = action.hasCellSwipeActions) }
+            is SettingsAction.ManualModeToggled -> state.updatePrefs { copy(manualModeEnabled = !manualModeEnabled) }
+            is SettingsAction.Use24HourClockToggled -> state.updatePrefs { copy(twentyFourHourClockEnabled = !twentyFourHourClockEnabled) }
+            is SettingsAction.CellSwipeActionsToggled -> state.updatePrefs { copy(cellSwipeActionsEnabled = !cellSwipeActionsEnabled) }
+            is SettingsAction.GroupSimilarTimeEntriesToggled -> state.updatePrefs { copy(groupSimilarTimeEntriesEnabled = !groupSimilarTimeEntriesEnabled) }
+            is SettingsAction.WorkspaceSelected -> state.updatePrefs { copy(selectedWorkspaceId = action.selectedWorkspaceId) }
+            is SettingsAction.DateFormatSelected -> state.updatePrefs { copy(dateFormat = action.dateFormat) }
+            is SettingsAction.DurationFormatSelected -> state.updatePrefs { copy(durationFormat = action.durationFormat) }
+            is SettingsAction.FirstDayOfTheWeekSelected -> state.updatePrefs { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
+            is SettingsAction.SmartAlertsOptionSelected -> state.updatePrefs { copy(smartAlertsOption = action.smartAlertsOption) }
+            is SettingsAction.UserCalendarIntegrationToggled -> state.updatePrefs {
+                if (calendarIds.contains(action.calendarId)) copy(calendarIds = calendarIds - action.calendarId)
+                else copy(calendarIds = calendarIds + action.calendarId)
+            }
+            is SettingsAction.AllowCalendarAccessToggled -> state.handleAllowCalendarAccessToggled()
             is SettingsAction.CalendarPermissionRequested -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = true) }
             is SettingsAction.CalendarPermissionReceived -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = false) }
-            is SettingsAction.AllowCalendarAccessToggled -> {
-                val isEnablingCalendarAccess = action.isCalendarAccessEnabled
-                val effects = state.updateUserPreferences {
-                    if (isEnablingCalendarAccess) {
-                        copy(isCalendarIntegrationEnabled = isEnablingCalendarAccess)
-                    } else {
-                        copy(isCalendarIntegrationEnabled = isEnablingCalendarAccess, calendarIds = emptyList())
-                    }
-                }
-                if (isEnablingCalendarAccess && !permissionCheckerService.hasCalendarPermission())
-                    effects + effect(RequestCalendarPermissionEffect())
-                else
-                    effects
-            }
         }
 
-    private fun MutableValue<SettingsState>.updateUserPreferences(updateBlock: UserPreferences.() -> UserPreferences) =
+    private fun MutableValue<SettingsState>.handleAllowCalendarAccessToggled(): List<Effect<SettingsAction>> {
+        val updatePrefsEffects = updatePrefs {
+            copy(
+                calendarIntegrationEnabled = !calendarIntegrationEnabled,
+                calendarIds = if (calendarIntegrationEnabled) calendarIds else emptyList()
+            )
+        }
+        return if (!this().userPreferences.calendarIntegrationEnabled && !permissionCheckerService.hasCalendarPermission())
+            updatePrefsEffects + RequestCalendarPermissionEffect()
+        else
+            updatePrefsEffects
+    }
+
+    private fun MutableValue<SettingsState>.updatePrefs(updateBlock: UserPreferences.() -> UserPreferences) =
         effect(UpdateUserPreferencesEffect(this().userPreferences.updateBlock(), settingsRepository, dispatcherProvider))
 }

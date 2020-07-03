@@ -5,6 +5,7 @@ import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
+import com.toggl.settings.common.createUserPreferences
 import com.toggl.settings.common.testReduce
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.types.shouldBeInstanceOf
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The AllowCalendarAccessToggled action")
 class AllowCalendarAccessToggledActionTests : CoroutineTest() {
-    private val initialState = createSettingsState()
     private val permissionChecker: PermissionCheckerService = mockk(relaxed = true)
     private val settingsRepository: SettingsRepository = mockk(relaxed = true)
     private val reducer =
@@ -41,12 +41,15 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
 
         @Test
         fun `Should just emit the UpdateUserPreferencesEffect when switching on`() = runBlockingTest {
+            val disabledCalendarInitialState = createSettingsState(createUserPreferences(
+                calendarIntegrationEnabled = false
+            ))
             reducer.testReduce(
-                initialState,
-                SettingsAction.AllowCalendarAccessToggled(isCalendarAccessEnabled = true)
+                disabledCalendarInitialState,
+                SettingsAction.AllowCalendarAccessToggled
             ) { state, effects ->
                 effects.shouldBeSingleton()
-                state shouldBe initialState
+                state shouldBe disabledCalendarInitialState
                 effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
             }
         }
@@ -54,19 +57,22 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
         @Test
         fun `Should emit the UpdateUserPreferencesEffect when switching off and clear selected calendar ids`() =
             runBlockingTest {
+                val enabledCalendarInitialState = createSettingsState(createUserPreferences(
+                    calendarIntegrationEnabled = true
+                ))
                 reducer.testReduce(
-                    initialState,
-                    SettingsAction.AllowCalendarAccessToggled(isCalendarAccessEnabled = false)
+                    enabledCalendarInitialState,
+                    SettingsAction.AllowCalendarAccessToggled
                 ) { state, effects ->
                     effects.shouldBeSingleton()
-                    state shouldBe initialState
+                    state shouldBe enabledCalendarInitialState
                     effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
 
                     effects.first().execute()
                     coVerify(exactly = 1) {
                         settingsRepository.saveUserPreferences(
-                            initialState.userPreferences.copy(
-                                isCalendarIntegrationEnabled = false,
+                            enabledCalendarInitialState.userPreferences.copy(
+                                calendarIntegrationEnabled = false,
                                 calendarIds = emptyList()
                             )
                         )
@@ -84,24 +90,30 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
 
         @Test
         fun `Should just emit the UpdateUserPreferencesEffect when switching off`() = runBlockingTest {
+            val enabledCalendarInitialState = createSettingsState(createUserPreferences(
+                calendarIntegrationEnabled = true
+            ))
             reducer.testReduce(
-                initialState,
-                SettingsAction.AllowCalendarAccessToggled(isCalendarAccessEnabled = false)
+                enabledCalendarInitialState,
+                SettingsAction.AllowCalendarAccessToggled
             ) { state, effects ->
                 effects.shouldBeSingleton()
-                state shouldBe initialState
+                state shouldBe enabledCalendarInitialState
                 effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
             }
         }
 
         @Test
         fun `Should just emit the UpdateUserPreferencesEffect and the RequestCalendarPermissionEffect when switching on`() = runBlockingTest {
+            val disabledCalendarInitialState = createSettingsState(createUserPreferences(
+                calendarIntegrationEnabled = false
+            ))
             reducer.testReduce(
-                initialState,
-                SettingsAction.AllowCalendarAccessToggled(isCalendarAccessEnabled = true)
+                disabledCalendarInitialState,
+                SettingsAction.AllowCalendarAccessToggled
             ) { state, effects ->
                 effects.size shouldBe 2
-                state shouldBe initialState
+                state shouldBe disabledCalendarInitialState
                 effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
                 effects.last().shouldBeInstanceOf<RequestCalendarPermissionEffect>()
             }

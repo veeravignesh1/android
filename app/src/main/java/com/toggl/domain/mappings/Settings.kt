@@ -6,7 +6,11 @@ import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsState
 
 fun mapAppStateToSettingsState(appState: AppState): SettingsState =
-    SettingsState(appState.userPreferences, appState.shouldRequestCalendarPermission, appState.backStack)
+    SettingsState(
+        appState.userPreferences,
+        appState.shouldRequestCalendarPermission,
+        appState.backStack
+    )
 
 fun mapSettingsStateToAppState(appState: AppState, settingsState: SettingsState): AppState =
     appState.copy(
