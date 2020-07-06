@@ -256,6 +256,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         time_entry_description
             .onDescriptionChanged
             .distinctUntilChanged()
+            .map { StartEditAction.DescriptionEntered(it.text, it.cursorPosition) }
             .onEach { store.dispatch(it) }
             .launchIn(lifecycleScope)
 

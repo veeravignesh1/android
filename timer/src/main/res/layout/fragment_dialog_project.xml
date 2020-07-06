@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/project_layout"
-    android:background="@color/modal_card"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/modal_card">
 
     <ImageView
         android:id="@+id/close_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/grid_2"
         android:layout_marginStart="@dimen/grid_2"
+        android:layout_marginTop="@dimen/grid_2"
         android:background="?selectableItemBackgroundBorderless"
         android:tint="@color/text_on_surface"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/close_action">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/project_props"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -75,17 +75,17 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="@dimen/grid_1" />
 
-            <com.toggl.timer.startedit.ui.autocomplete.AutocompleteTextInputEditText
+            <com.toggl.common.ui.AutocompleteTextInputEditText
                 android:id="@+id/project_name_edit_text"
-                android:background="@android:color/transparent"
-                tools:ignore="Autofill"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="text"
                 android:layout_marginTop="@dimen/grid_3"
+                android:background="@android:color/transparent"
+                android:inputType="text"
                 app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="Autofill" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/private_chip"
@@ -96,7 +96,7 @@
                 app:chipIcon="@drawable/ic_private"
                 app:chipIconVisible="true"
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
-                app:layout_constraintTop_toBottomOf="@id/project_name_edit_text"  />
+                app:layout_constraintTop_toBottomOf="@id/project_name_edit_text" />
 
             <HorizontalScrollView
                 android:id="@+id/client_workspace_container"
@@ -104,10 +104,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/grid_2"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/private_chip"
+                app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
                 app:layout_constraintStart_toEndOf="@+id/project_color_indicator"
+                app:layout_constraintTop_toBottomOf="@id/private_chip"
                 app:layout_constraintVertical_bias="0">
 
                 <com.google.android.material.chip.ChipGroup
@@ -142,83 +142,106 @@
                 app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
                 app:layout_constraintTop_toTopOf="@id/client_workspace_container" />
 
+            <com.toggl.common.ui.AutocompleteTextInputEditText
+                android:id="@+id/client_workspace_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/modal_card"
+                android:inputType="text"
+                android:hint="@string/search_for_workspaces"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
+                app:layout_constraintStart_toEndOf="@id/start_vertical_gridline"
+                app:layout_constraintTop_toBottomOf="@id/private_chip"
+                app:layout_constraintVertical_bias="0"
+                tools:ignore="Autofill" />
+
+            <ImageView
+                android:padding="4dp"
+                android:id="@+id/cancel_pick"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_close"
+                app:layout_constraintBottom_toBottomOf="@id/client_workspace_edit_text"
+                app:layout_constraintEnd_toEndOf="@id/client_workspace_edit_text"
+                app:layout_constraintTop_toTopOf="@id/client_workspace_edit_text" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/color_picker_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                tools:layout_height="@dimen/premium_color_picker_height"
-                app:layout_constraintTop_toBottomOf="@id/client_workspace_container"
                 app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
-                app:layout_constraintStart_toStartOf="@id/start_vertical_gridline">
+                app:layout_constraintStart_toStartOf="@id/start_vertical_gridline"
+                app:layout_constraintTop_toBottomOf="@id/client_workspace_container"
+                tools:layout_height="0dp">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/color_palette"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/color_picker_height"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:spanCount="5"
                     tools:itemCount="15"
-                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    tools:listitem="@layout/fragment_dialog_project_color_item"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/color_picker_height" />
+                    tools:listitem="@layout/fragment_dialog_project_color_item" />
 
                 <androidx.constraintlayout.widget.Group
                     android:id="@+id/custom_color_picker"
-                    tools:visibility="visible"
-                    app:constraint_referenced_ids="custom_color_picker_divider, hue_saturation_picker, value_picker, custom_project_color_indicator, custom_project_color_label, color_done_button"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="custom_color_picker_divider, hue_saturation_picker, value_picker, custom_project_color_indicator, custom_project_color_label, color_done_button"
+                    tools:visibility="visible" />
 
                 <View
                     android:id="@+id/custom_color_picker_divider"
                     style="@style/Divider"
                     android:layout_width="0dp"
-                    app:layout_constraintTop_toBottomOf="@id/color_palette"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/color_palette" />
 
                 <View
                     android:id="@+id/custom_project_color_indicator"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:background="@drawable/circle_shape"
                     android:layout_marginTop="@dimen/grid_2"
+                    android:background="@drawable/circle_shape"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/custom_color_picker_divider" />
 
                 <TextView
                     android:id="@+id/custom_project_color_label"
-                    android:text="@string/custom_project_color"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/grid_1"
+                    android:text="@string/custom_project_color"
+                    app:layout_constraintBottom_toBottomOf="@id/custom_project_color_indicator"
                     app:layout_constraintStart_toEndOf="@id/custom_project_color_indicator"
-                    app:layout_constraintTop_toTopOf="@id/custom_project_color_indicator"
-                    app:layout_constraintBottom_toBottomOf="@id/custom_project_color_indicator"/>
+                    app:layout_constraintTop_toTopOf="@id/custom_project_color_indicator" />
 
                 <com.toggl.timer.project.ui.ColorHueSaturationPicker
                     android:id="@+id/hue_saturation_picker"
-                    android:layout_marginTop="@dimen/grid_2"
-                    app:layout_constraintTop_toBottomOf="@id/custom_project_color_indicator"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/hs_picker_height"
-                    />
+                    android:layout_marginTop="@dimen/grid_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/custom_project_color_indicator" />
 
                 <com.toggl.timer.project.ui.ColorValueSlider
                     android:id="@+id/value_picker"
-                    android:layout_marginTop="@dimen/grid_2"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/color_value_picker_height"
+                    android:layout_marginTop="@dimen/grid_2"
+                    android:maxHeight="@dimen/color_value_picker_height"
                     android:thumb="@drawable/circle_thumb"
                     android:thumbOffset="-4dp"
-                    android:maxHeight="@dimen/color_value_picker_height"
-                    app:layout_constraintTop_toBottomOf="@id/hue_saturation_picker"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    />
+                    app:layout_constraintTop_toBottomOf="@id/hue_saturation_picker" />
 
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/color_picker_barrier"
@@ -229,12 +252,12 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/color_done_button"
-                    android:text="@string/done"
                     style="@style/Widget.MaterialComponents.Button.TextButton"
-                    app:layout_constraintTop_toBottomOf="@id/color_picker_barrier"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/done_button_height" />
+                    android:layout_height="@dimen/done_button_height"
+                    android:text="@string/done"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/color_picker_barrier" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>

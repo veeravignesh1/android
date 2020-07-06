@@ -1,4 +1,4 @@
-package com.toggl.timer.startedit.ui.autocomplete
+package com.toggl.common.ui
 
 import android.content.Context
 import android.text.TextWatcher
@@ -6,7 +6,6 @@ import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputEditText
 import com.toggl.common.extensions.doSafeAfterTextChanged
 import com.toggl.common.extensions.setSafeText
-import com.toggl.timer.startedit.domain.StartEditAction.DescriptionEntered
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -21,8 +20,9 @@ class AutocompleteTextInputEditText : TextInputEditText {
 
     private var shouldEmit = true
     private var descriptionChangeListener: TextWatcher? = null
+
     // HACK: onSelectionChanged runs before the constructor, so this needs to be nullable
-    private val channel: ConflatedBroadcastChannel<DescriptionEntered>? = ConflatedBroadcastChannel()
+    private val channel: ConflatedBroadcastChannel<TextAndPosition>? = ConflatedBroadcastChannel()
 
     val onDescriptionChanged = channel!!.asFlow()
 
@@ -32,7 +32,7 @@ class AutocompleteTextInputEditText : TextInputEditText {
             if (!shouldEmit)
                 return@doSafeAfterTextChanged
 
-            channel?.offer(DescriptionEntered(text.toString(), selectionEnd))
+            channel?.offer(TextAndPosition(text.toString(), selectionEnd))
         }
     }
 
@@ -52,6 +52,8 @@ class AutocompleteTextInputEditText : TextInputEditText {
         if (!shouldEmit)
             return
 
-        channel?.offer(DescriptionEntered(text.toString(), selectionEnd))
+        channel?.offer(TextAndPosition(text.toString(), selectionEnd))
     }
+
+    data class TextAndPosition(val text: String, val cursorPosition: Int)
 }
