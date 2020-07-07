@@ -55,5 +55,8 @@ class Event private constructor(val name: String, val parameters: Map<String, St
                 "DistinctWorkspaceCount" to workspaceCount.toString()
             ) + providerCounts
         )
+
+        fun groupTimeEntriesSettingsChanged(state: Boolean) =
+            Event("GroupTimeEntriesSettingsChanged", mapOf("State" to state.toString().capitalize()))
     }
 }

@@ -21,6 +21,7 @@ import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin
 import com.toggl.environment.services.analytics.parameters.TimeEntryStopOrigin.Manual
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.settings.domain.SettingsAction
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import com.toggl.timer.running.domain.RunningTimeEntryAction
@@ -51,6 +52,7 @@ class AnalyticsReducer @Inject constructor(
                 is TimerAction.Suggestions -> timerAction.action.toEvents(state)
                 else -> emptyList()
             }
+            is AppAction.Settings -> action.toEvents(state)
             else -> emptyList()
         }
 
@@ -128,4 +130,12 @@ class AnalyticsReducer @Inject constructor(
             }
             else -> emptyList()
         }
+
+    private fun SettingsAction.toEvents(state: MutableValue<AppState>): List<Event> =
+        listOfNotNull(
+            when (this) {
+                SettingsAction.GroupSimilarTimeEntriesToggled -> Event.groupTimeEntriesSettingsChanged(!state().userPreferences.groupSimilarTimeEntriesEnabled)
+                else -> null
+            }
+        )
 }
