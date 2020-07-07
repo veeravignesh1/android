@@ -12,6 +12,7 @@ import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.dto.StartTimeEntryDTO
+import com.toggl.repository.dto.CreateTimeEntryDTO
 import com.toggl.repository.interfaces.TimeEntryRepository
 import javax.inject.Inject
 
