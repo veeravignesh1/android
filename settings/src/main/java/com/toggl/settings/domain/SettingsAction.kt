@@ -6,6 +6,7 @@ import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SelectedSetting
 import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
+import com.toggl.models.validation.Email
 import java.time.DayOfWeek
 
 @optics
@@ -25,6 +26,8 @@ sealed class SettingsAction {
     object AllowCalendarAccessToggled : SettingsAction()
     object CalendarPermissionRequested : SettingsAction()
     data class CalendarPermissionReceived(val granted: Boolean) : SettingsAction()
+    data class UpdateEmail(val email: Email.Valid) : SettingsAction()
+    data class UpdateName(val name: String) : SettingsAction()
     companion object
 }
 
@@ -45,4 +48,6 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.AllowCalendarAccessToggled -> "AllowCalendarAccessToggled"
         is SettingsAction.CalendarPermissionReceived -> "CalendarPermissionReceived was granted = $granted"
         SettingsAction.CalendarPermissionRequested -> "CalendarPermissionRequested"
+        is SettingsAction.UpdateEmail -> "UpdateEmail email $email"
+        is SettingsAction.UpdateName -> "UpdateName name $name"
     }

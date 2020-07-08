@@ -12,7 +12,7 @@ class MockLoginApi : LoginApi {
         delay(2000)
 
         return when (val token = "12345678901234567890123456789012".toApiToken()) {
-            is ApiToken.Valid -> User(token, 1)
+            is ApiToken.Valid -> User(token, Email.from("test@test.com") as Email.Valid, "", 1)
             ApiToken.Invalid -> throw NotImplementedError()
         }
     }

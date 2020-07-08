@@ -7,9 +7,10 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 
 fun createInitialState(
-    user: User = User(ApiToken.Invalid, defaultWorkspaceId = 10),
+    user: User = User(ApiToken.Invalid, Email.from("valid@email.com") as Email.Valid, "name", defaultWorkspaceId = 10),
     projects: List<Project> = emptyList(),
     timeEntries: List<TimeEntry> = emptyList(),
     maxNumberOfSuggestions: Int = Constants.Suggestions.maxNumberOfSuggestions,

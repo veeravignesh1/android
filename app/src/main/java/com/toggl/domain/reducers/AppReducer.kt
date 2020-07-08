@@ -2,6 +2,7 @@ package com.toggl.domain.reducers
 
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.combine
+import com.toggl.architecture.core.optionalPullback
 import com.toggl.architecture.core.pullback
 import com.toggl.architecture.core.unwrap
 import com.toggl.calendar.di.CalendarReducer
@@ -67,7 +68,7 @@ fun createAppReducer(
             mapToGlobalState = ::mapCalendarStateToAppState,
             mapToGlobalAction = ::mapCalendarActionToAppAction
         ),
-        settingsReducer.pullback(
+        settingsReducer.optionalPullback(
             mapToLocalState = ::mapAppStateToSettingsState,
             mapToLocalAction = AppAction::unwrap,
             mapToGlobalState = ::mapSettingsStateToAppState,

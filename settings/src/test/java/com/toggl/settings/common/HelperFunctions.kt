@@ -11,7 +11,10 @@ import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SmartAlertsOption
+import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
+import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.settings.domain.SettingsState
@@ -25,10 +28,12 @@ import java.time.DayOfWeek
 
 fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
+    user: User = User(ApiToken.from("token"), Email.from("test@test.com") as Email.Valid, "", 1),
     shouldRequestCalendarPermission: Boolean = false,
     backStack: BackStack = emptyList()
 ) = SettingsState(
     userPreferences = userPreferences,
+    user = user,
     shouldRequestCalendarPermission = shouldRequestCalendarPermission,
     backStack = backStack
 )

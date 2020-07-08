@@ -5,6 +5,7 @@ import com.toggl.environment.services.calendar.CalendarEvent
 import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createCalendarEvent
 import io.kotlintest.matchers.boolean.shouldBeTrue
@@ -79,7 +80,7 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
     @Test
     fun `creates the suggestions using the default workspace id of the current user`() = runBlockingTest {
 
-        val user = User(ApiToken.Invalid, 10)
+        val user = User(ApiToken.Invalid, Email.from("valid@email.com") as Email.Valid, "name", 10)
         val calendarEvents =
             listOf("This is valid", "This is also valid").map { createCalendarEvent(description = it, startTime = now) }
         val initialState = createInitialState(user = user, calendarEvents = calendarEvents.associateBy { it.id })
@@ -94,7 +95,7 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
 
         val maxSuggestionNumber = Constants.Suggestions.maxNumberOfCalendarSuggestions
 
-        val user = User(ApiToken.Invalid, 10)
+        val user = User(ApiToken.Invalid, Email.from("valid@email.com") as Email.Valid, "name", 10)
         val calendarEvents =
             listOf("This is valid", "This is also valid").map { createCalendarEvent(description = it, startTime = now) }
         val initialState = createInitialState(user = user, calendarEvents = calendarEvents.associateBy { it.id })

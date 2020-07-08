@@ -51,6 +51,8 @@ abstract class TheOnboardingReducer :
         val validEmail = Email.from("validemail@toggl.com")
         val validUser = User(
             ApiToken.from("12345678901234567890123456789012"),
+            Email.from("valid@email.com") as Email.Valid,
+            "name",
             1
         )
     }

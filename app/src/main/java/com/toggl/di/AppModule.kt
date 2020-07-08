@@ -115,7 +115,7 @@ object AppViewModelModule {
     @Provides
     @ExperimentalCoroutinesApi
     fun settingsStore(store: Store<AppState, AppAction>): Store<SettingsState, SettingsAction> =
-        store.view(
+        store.optionalView(
             mapToLocalState = ::mapAppStateToSettingsState,
             mapToGlobalAction = ::mapSettingsActionToAppAction
         )
