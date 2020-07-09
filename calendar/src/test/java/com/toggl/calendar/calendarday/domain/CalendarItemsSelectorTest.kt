@@ -60,7 +60,7 @@ internal class CalendarItemsSelectorTest {
                 emptyList(),
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size)
             assertThat(selectedTimeEntries).allMatch { it is CalendarItem.TimeEntry && it.timeEntry.description == "Expected" }
@@ -83,7 +83,7 @@ internal class CalendarItemsSelectorTest {
                 emptyList(),
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isZero
         }
@@ -121,7 +121,7 @@ internal class CalendarItemsSelectorTest {
                 emptyList(),
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size)
             assertThat(selectedTimeEntries).allMatch { it is CalendarItem.TimeEntry && it.timeEntry.description == "Expected" }
@@ -156,7 +156,7 @@ internal class CalendarItemsSelectorTest {
                 expectedEvents + notExpectedEvents,
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedEvents.size)
             assertThat(selectedTimeEntries).allMatch { it is CalendarItem.CalendarEvent && it.calendarEvent.description == "Expected" }
@@ -177,7 +177,7 @@ internal class CalendarItemsSelectorTest {
                 calendarEvents = notExpectedEvents,
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isZero
         }
@@ -213,7 +213,7 @@ internal class CalendarItemsSelectorTest {
                 calendarEvents = expectedEvents + notExpectedEventsThatStartTheDayBefore + notExpectedEventsThatEndTheDayAfter,
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedEvents.size)
             assertThat(selectedTimeEntries).allMatch { it is CalendarItem.CalendarEvent && it.calendarEvent.description == "Expected" }
@@ -264,7 +264,7 @@ internal class CalendarItemsSelectorTest {
                 expectedEvents + notExpectedEvents,
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size + expectedEvents.size)
             assertThat(selectedTimeEntries).allMatch {
@@ -300,7 +300,7 @@ internal class CalendarItemsSelectorTest {
                 notExpectedEvents,
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isZero
         }
@@ -361,7 +361,7 @@ internal class CalendarItemsSelectorTest {
                 expectedEvents + notExpectedEventsThatEndTheDayAfter + notExpectedEventsThatStartTheDayBefore,
                 date = date
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size + expectedEvents.size)
             assertThat(selectedTimeEntries).allMatch {
@@ -416,7 +416,7 @@ internal class CalendarItemsSelectorTest {
                 date = date,
                 selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry)
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size)
             assertThat(selectedTimeEntries).allMatch {
@@ -476,7 +476,7 @@ internal class CalendarItemsSelectorTest {
                 date = date,
                 selectedItem = SelectedCalendarItem.SelectedTimeEntry(editableTimeEntry)
             )
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size + 1)
             val otherExistingSelectedTimeEntriesMatch = Condition<CalendarItem>(
@@ -543,7 +543,7 @@ internal class CalendarItemsSelectorTest {
                 selectedItem = SelectedCalendarItem.SelectedCalendarEvent(expectedEvents[0])
             )
 
-            val selectedTimeEntries = selector.select(state)
+            val selectedTimeEntries = selector.select(state)(date)
 
             assertThat(selectedTimeEntries).size().isEqualTo(expectedTimeEntries.size + expectedEvents.size)
             assertThat(selectedTimeEntries).allMatch {

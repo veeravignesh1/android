@@ -17,6 +17,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
@@ -36,7 +37,7 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
         super.onViewCreated(view, savedInstanceState)
 
         store.state
-            .select(calendarItemsSelector)
+            .map { calendarItemsSelector.select(it).invoke(it.date) }
             .distinctUntilChanged()
             .onEach { calendar_widget.updateList(it) }
             .launchIn(lifecycleScope)

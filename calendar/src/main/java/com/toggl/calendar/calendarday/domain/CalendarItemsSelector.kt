@@ -14,10 +14,10 @@ import javax.inject.Inject
 @FragmentScoped
 class CalendarItemsSelector @Inject constructor(
     private val calendarLayoutCalculator: CalendarLayoutCalculator
-) : Selector<CalendarDayState, List<CalendarItem>> {
+) : Selector<CalendarDayState, (OffsetDateTime) -> List<CalendarItem>> {
 
-    override suspend fun select(state: CalendarDayState): List<CalendarItem> {
-        val localDate = state.date.toLocalDate()
+    override suspend fun select(state: CalendarDayState): (OffsetDateTime) -> List<CalendarItem> = { input: OffsetDateTime ->
+        val localDate = input.toLocalDate()
         val projects = state.projects
         fun isOnDate(startTime: OffsetDateTime, endTime: OffsetDateTime?) =
             startTime.toLocalDate() == localDate && (endTime == null || endTime.toLocalDate() == localDate)
@@ -76,7 +76,7 @@ class CalendarItemsSelector @Inject constructor(
                 )
             } else emptySequence()
 
-        return (timeEntries + calendarEvents + newSelectedItem)
+        (timeEntries + calendarEvents + newSelectedItem)
             .toList()
             .run(calendarLayoutCalculator::calculateLayoutAttributes)
     }
