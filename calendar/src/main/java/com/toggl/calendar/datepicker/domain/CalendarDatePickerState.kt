@@ -6,15 +6,25 @@ import java.time.OffsetDateTime
 
 @optics
 data class CalendarDatePickerState(
-    val date: OffsetDateTime
+    val selectedDate: OffsetDateTime,
+    val availableDates: List<OffsetDateTime>,
+    val visibleDates: List<OffsetDateTime>
 ) {
     companion object {
         fun fromCalendarState(calendarState: CalendarState) =
-            CalendarDatePickerState(calendarState.localState.selectedDate)
+            CalendarDatePickerState(
+                selectedDate = calendarState.localState.selectedDate,
+                availableDates = calendarState.localState.availableDates,
+                visibleDates = calendarState.localState.visibleDates
+            )
 
         fun toCalendarState(calendarState: CalendarState, datePickerState: CalendarDatePickerState) =
             calendarState.copy(
-                localState = calendarState.localState.copy(selectedDate = datePickerState.date)
+                localState = calendarState.localState.copy(
+                    selectedDate = datePickerState.selectedDate,
+                    availableDates = datePickerState.availableDates,
+                    visibleDates = datePickerState.visibleDates
+                )
             )
     }
 }

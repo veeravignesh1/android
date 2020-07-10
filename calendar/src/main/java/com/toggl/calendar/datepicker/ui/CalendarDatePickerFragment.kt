@@ -21,7 +21,7 @@ class CalendarDatePickerFragment : Fragment(R.layout.fragment_calendardatepicker
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        store.dispatch(CalendarDatePickerAction.ExampleAction)
+        store.dispatch(CalendarDatePickerAction.OnViewAppeared)
 
         store.state
             .onEach { _ -> }

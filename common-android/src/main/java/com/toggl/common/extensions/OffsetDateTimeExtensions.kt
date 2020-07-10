@@ -1,11 +1,13 @@
 package com.toggl.common.extensions
 
 import com.toggl.common.Constants.ClockMath.secondsInAMinute
+import java.time.DayOfWeek
 import java.time.Duration
 import java.time.LocalTime
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
 import kotlin.math.absoluteValue
 
 private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -65,3 +67,18 @@ fun OffsetDateTime.toBeginningOfTheDay(): OffsetDateTime =
 
 fun OffsetDateTime.toEndOfTheDay(): OffsetDateTime =
     this.with(LocalTime.MAX)
+
+fun OffsetDateTime.beginningOfWeek(beginningOfWeek: DayOfWeek): OffsetDateTime {
+    val offset = (7 + this.dayOfWeek.value - beginningOfWeek.value) % 7
+    return this.plusDays(-offset.toLong())
+}
+
+fun ClosedRange<OffsetDateTime>.toList(step: TemporalUnit = ChronoUnit.DAYS): List<OffsetDateTime> {
+    return sequence {
+        var current = start
+        while (current <= endInclusive) {
+            yield(current)
+            current = current.plus(1, step)
+        }
+    }.toList()
+}

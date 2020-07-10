@@ -58,7 +58,16 @@ dependencies {
     testImplementation Libs.Test.robolectric
     testImplementation Libs.AndroidX.Test.core
     testImplementation Libs.AndroidX.Test.runner
+    testImplementation Libs.Test.Jupiter.api
+    testRuntimeOnly Libs.Test.Jupiter.engine
+    testImplementation Libs.Test.Jupiter.params
     testImplementation Libs.Test.assertJ
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.kotlinTest
+    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.Test.kotlinTestJunit
+    testImplementation Libs.Test.kotlinCoroutineTest
     androidTestImplementation Libs.AndroidX.Test.runner
     androidTestImplementation Libs.AndroidX.Test.espressoCore
 }
