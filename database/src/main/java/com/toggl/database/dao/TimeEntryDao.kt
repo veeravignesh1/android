@@ -83,6 +83,9 @@ interface TimeEntryDao {
     @Query("SELECT * FROM time_entries WHERE NOT isDeleted")
     fun getAllTimeEntriesWithTags(): List<DatabaseTimeEntryWithTags>
 
+    @Query("SELECT count(*) FROM time_entries WHERE NOT isDeleted")
+    fun count(): Int
+
     @Transaction
     @Update
     fun updateTimeEntryWithTags(databaseTimeEntryWithTags: DatabaseTimeEntryWithTags) {

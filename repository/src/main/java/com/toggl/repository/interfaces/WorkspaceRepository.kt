@@ -4,4 +4,5 @@ import com.toggl.models.domain.Workspace
 
 interface WorkspaceRepository {
     suspend fun loadWorkspaces(): List<Workspace>
+    suspend fun workspacesCount(): Int
 }

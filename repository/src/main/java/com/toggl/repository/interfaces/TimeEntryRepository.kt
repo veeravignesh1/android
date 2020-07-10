@@ -11,6 +11,7 @@ data class StartTimeEntryResult(
 
 interface TimeEntryRepository {
     suspend fun loadTimeEntries(): List<TimeEntry>
+    suspend fun timeEntriesCount(): Int
     suspend fun startTimeEntry(startTimeEntryDTO: StartTimeEntryDTO): StartTimeEntryResult
     suspend fun createTimeEntry(createTimeEntryDTO: CreateTimeEntryDTO): TimeEntry
     suspend fun stopRunningTimeEntry(): TimeEntry?

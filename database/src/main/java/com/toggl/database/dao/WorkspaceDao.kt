@@ -12,6 +12,9 @@ interface WorkspaceDao {
     @Query("SELECT * FROM workspaces")
     fun getAll(): List<DatabaseWorkspace>
 
+    @Query("SELECT count(*) FROM workspaces")
+    fun count(): Int
+
     @Query("SELECT * FROM workspaces WHERE id = :id")
     fun getOne(id: Long): DatabaseWorkspace
 

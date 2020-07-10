@@ -7,4 +7,15 @@ dependencies {
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.core
+    implementation Libs.Square.retrofit
+    implementation Libs.Google.gson
+
+    testImplementation Libs.Test.Jupiter.api
+    testRuntimeOnly Libs.Test.Jupiter.engine
+    testImplementation Libs.Test.Jupiter.params
+    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.slf4j
+    testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.kotlinTest
+    testImplementation Libs.Test.kotlinTestJunit
 }

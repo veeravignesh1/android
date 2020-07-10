@@ -26,6 +26,10 @@ sealed class SettingsAction {
     object AllowCalendarAccessToggled : SettingsAction()
     object CalendarPermissionRequested : SettingsAction()
     data class CalendarPermissionReceived(val granted: Boolean) : SettingsAction()
+    data class SendFeedbackTapped(val feedbackMessage: String) : SettingsAction()
+    object FeedbackSent : SettingsAction()
+    object SendFeedbackResultSeen : SettingsAction()
+    data class SetSendFeedbackError(val throwable: Throwable) : SettingsAction()
     data class UpdateEmail(val email: Email.Valid) : SettingsAction()
     data class UpdateName(val name: String) : SettingsAction()
     companion object
@@ -47,7 +51,11 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.UserCalendarIntegrationToggled -> "UserCalendarIntegrationToggled calendarId: $calendarId"
         is SettingsAction.AllowCalendarAccessToggled -> "AllowCalendarAccessToggled"
         is SettingsAction.CalendarPermissionReceived -> "CalendarPermissionReceived was granted = $granted"
+        is SettingsAction.SendFeedbackTapped -> "SendFeedbackTapped feedbackMessage: $feedbackMessage"
+        is SettingsAction.SetSendFeedbackError -> "Setting SendFeedback error $throwable"
         SettingsAction.CalendarPermissionRequested -> "CalendarPermissionRequested"
+        SettingsAction.FeedbackSent -> "FeedbackSent"
+        SettingsAction.SendFeedbackResultSeen -> "SendFeedbackResultSeen"
         is SettingsAction.UpdateEmail -> "UpdateEmail email $email"
         is SettingsAction.UpdateName -> "UpdateName name $name"
     }

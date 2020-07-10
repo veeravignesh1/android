@@ -1,6 +1,9 @@
 package com.toggl.settings.domain
 
+import com.toggl.api.feedback.FeedbackApi
 import com.toggl.architecture.DispatcherProvider
+import com.toggl.architecture.Failure
+import com.toggl.architecture.Loadable
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
@@ -9,6 +12,7 @@ import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.push
 import com.toggl.environment.services.permissions.PermissionCheckerService
+import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import javax.inject.Inject
@@ -16,6 +20,9 @@ import javax.inject.Inject
 class SettingsReducer @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val permissionCheckerService: PermissionCheckerService,
+    private val platformInfo: PlatformInfo,
+    private val feedbackDataBuilder: FeedbackDataBuilder,
+    private val feedbackApi: FeedbackApi,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<SettingsState, SettingsAction> {
 
@@ -45,6 +52,21 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.AllowCalendarAccessToggled -> state.handleAllowCalendarAccessToggled()
             is SettingsAction.CalendarPermissionRequested -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = true) }
             is SettingsAction.CalendarPermissionReceived -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = false) }
+            is SettingsAction.SendFeedbackTapped -> {
+                state.mutate {
+                    SettingsState.localState.modify(this) {
+                        it.copy(sendFeedbackRequest = Loadable.Loading())
+                    }
+                }
+                effect(
+                    SendFeedbackEffect(action.feedbackMessage, state().user, platformInfo, feedbackDataBuilder, feedbackApi, dispatcherProvider)
+                )
+            }
+            is SettingsAction.FeedbackSent -> state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Loaded(Unit))
+            is SettingsAction.SendFeedbackResultSeen -> state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Uninitialized)
+            is SettingsAction.SetSendFeedbackError -> state.updateSendFeedbackRequestStateWithoutEffects(
+                Loadable.Error(Failure(action.throwable, ""))
+            )
             is SettingsAction.UpdateEmail -> state.mutateWithoutEffects { copy(user = user.copy(email = action.email)) }
             is SettingsAction.UpdateName -> state.mutateWithoutEffects { copy(user = user.copy(name = action.name)) }
         }
@@ -64,4 +86,11 @@ class SettingsReducer @Inject constructor(
 
     private fun MutableValue<SettingsState>.updatePrefs(updateBlock: UserPreferences.() -> UserPreferences) =
         effect(UpdateUserPreferencesEffect(this().userPreferences.updateBlock(), settingsRepository, dispatcherProvider))
+
+    private fun MutableValue<SettingsState>.updateSendFeedbackRequestStateWithoutEffects(loadable: Loadable<Unit>) =
+        mutateWithoutEffects<SettingsState, SettingsAction> {
+            SettingsState.localState.modify(this) {
+                it.copy(sendFeedbackRequest = loadable)
+            }
+        }
 }

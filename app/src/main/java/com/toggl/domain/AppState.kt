@@ -13,6 +13,7 @@ import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.domain.states.OnboardingState
+import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerState
 
 data class AppState(
@@ -30,5 +31,6 @@ data class AppState(
     val calendarEvents: Map<String, CalendarEvent> = mapOf(),
     val onboardingLocalState: OnboardingState.LocalState = OnboardingState.LocalState(),
     val timerLocalState: TimerState.LocalState = TimerState.LocalState(),
-    val calendarLocalState: CalendarState.LocalState = CalendarState.LocalState()
+    val calendarLocalState: CalendarState.LocalState = CalendarState.LocalState(),
+    val settingsLocalState: SettingsState.LocalState = SettingsState.LocalState()
 )

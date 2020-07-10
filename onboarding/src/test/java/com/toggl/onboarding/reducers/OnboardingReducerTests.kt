@@ -50,10 +50,11 @@ abstract class TheOnboardingReducer :
         val validPassword = Password.from("avalidpassword")
         val validEmail = Email.from("validemail@toggl.com")
         val validUser = User(
-            ApiToken.from("12345678901234567890123456789012"),
-            Email.from("valid@email.com") as Email.Valid,
-            "name",
-            1
+            id = 0,
+            apiToken = ApiToken.from("12345678901234567890123456789012"),
+            defaultWorkspaceId = 1,
+            email = validEmail as Email.Valid,
+            name = "name"
         )
     }
 

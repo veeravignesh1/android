@@ -45,6 +45,7 @@ object Libs {
         const val firebasePerformance = "com.google.firebase:firebase-perf:19.0.7"
         const val firebasePerformancePluginClassPath = "com.google.firebase:perf-plugin:1.3.1"
         const val firebaseAnalytics = "com.google.firebase:firebase-analytics:17.4.0"
+        const val gson = "com.google.code.gson:gson:2.8.6"
     }
 
     object Kotlin {
@@ -122,7 +123,6 @@ object Libs {
         const val compiler = "com.google.dagger:hilt-android-compiler:$version"
     }
 
-
     object Microsoft {
         const val appCenterAnalytics = "com.microsoft.appcenter:appcenter-analytics:3.1.0"
     }
@@ -132,5 +132,10 @@ object Libs {
         const val optics = "io.arrow-kt:arrow-optics:$version"
         const val syntax = "io.arrow-kt:arrow-syntax:$version"
         const val meta = "io.arrow-kt:arrow-meta:$version"
+    }
+
+    object Square {
+        const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
+        const val gsonConverter = "com.squareup.retrofit2:converter-gson:2.9.0"
     }
 }

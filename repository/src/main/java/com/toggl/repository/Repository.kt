@@ -74,6 +74,8 @@ class Repository(
     override suspend fun loadTimeEntries(): List<TimeEntry> =
         timeEntryDao.getAllTimeEntriesWithTags().map(DatabaseTimeEntryWithTags::toModel)
 
+    override suspend fun timeEntriesCount(): Int = timeEntryDao.count()
+
     override suspend fun createTag(tag: Tag): Tag {
         val databaseTag = DatabaseTag(
             name = tag.name,
@@ -103,6 +105,8 @@ class Repository(
             return@let listOf(workspace.copy(id = workspaceId))
                 .map(DatabaseWorkspace::toModel)
         }
+
+    override suspend fun workspacesCount(): Int = workspaceDao.count()
 
     override suspend fun loadClients() = clientDao.getAll().map(DatabaseClient::toModel)
 
