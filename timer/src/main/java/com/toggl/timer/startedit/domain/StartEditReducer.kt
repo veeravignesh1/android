@@ -10,22 +10,25 @@ import com.toggl.architecture.extensions.toEffects
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
+import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.timeentry.TimeEntryAction.CreateTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.EditTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
-import com.toggl.environment.services.time.TimeService
-import com.toggl.models.common.AutocompleteSuggestion
-import com.toggl.repository.Repository
-import com.toggl.models.domain.EditableProject
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.common.feature.timeentry.extensions.isNew
 import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.isRunningOrNew
 import com.toggl.common.feature.timeentry.extensions.isStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
+import com.toggl.environment.services.time.TimeService
+import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
+import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.repository.Repository
 import com.toggl.repository.exceptions.StartTimeShouldNotBeNullException
 import com.toggl.repository.extensions.toCreateDto
 import com.toggl.repository.extensions.toStartDto
@@ -33,9 +36,6 @@ import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetExcept
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
-import com.toggl.common.extensions.absoluteDurationBetween
-import com.toggl.common.feature.navigation.Route
-import com.toggl.common.feature.navigation.push
 import com.toggl.timer.startedit.domain.TemporalInconsistency.DurationTooLong
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterCurrentTime
 import com.toggl.timer.startedit.domain.TemporalInconsistency.StartTimeAfterStopTime
@@ -132,22 +132,22 @@ class StartEditReducer @Inject constructor(
                 state.mutate { copy(autocompleteSuggestions = emptyList()) }
 
                 when (action.autocompleteSuggestion) {
-                    is AutocompleteSuggestion.TimeEntry -> state.mutateWithoutEffects {
+                    is StartEditSuggestions.TimeEntry -> state.mutateWithoutEffects {
                         modifyWithTimeEntrySuggestion(action.autocompleteSuggestion)
                     }
-                    is AutocompleteSuggestion.Project -> state.mutateWithoutEffects {
+                    is StartEditSuggestions.Project -> state.mutateWithoutEffects {
                         modifyWithProjectSuggestion(action.autocompleteSuggestion)
                     }
-                    is AutocompleteSuggestion.Task -> state.mutateWithoutEffects {
+                    is StartEditSuggestions.Task -> state.mutateWithoutEffects {
                         modifyWithTaskSuggestion(action.autocompleteSuggestion)
                     }
-                    is AutocompleteSuggestion.Tag -> state.mutateWithoutEffects {
+                    is StartEditSuggestions.Tag -> state.mutateWithoutEffects {
                         modifyWithTagSuggestion(action.autocompleteSuggestion)
                     }
-                    is AutocompleteSuggestion.CreateProject -> state.mutateWithoutEffects {
+                    is StartEditSuggestions.CreateProject -> state.mutateWithoutEffects {
                         modifyWithCreateProjectSuggestion(action.autocompleteSuggestion)
                     }
-                    is AutocompleteSuggestion.CreateTag -> {
+                    is StartEditSuggestions.CreateTag -> {
                         val tagCreationSuggestion = action.autocompleteSuggestion
                         state.mutate {
                             modifyWithCreateTagSuggestion()
@@ -281,7 +281,7 @@ class StartEditReducer @Inject constructor(
             it.copy(description = it.description.substringBeforeLast(delimiter))
         }
 
-    private fun StartEditState.modifyWithProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Project): StartEditState =
+    private fun StartEditState.modifyWithProjectSuggestion(autocompleteSuggestion: StartEditSuggestions.Project): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             val projectSuggestion = autocompleteSuggestion.project
             val (token, currentQuery) = it.description.findTokenAndQueryMatchesForAutocomplete(projectToken, cursorPosition)
@@ -293,7 +293,7 @@ class StartEditReducer @Inject constructor(
             )
         }
 
-    private fun StartEditState.modifyWithTimeEntrySuggestion(autocompleteSuggestion: AutocompleteSuggestion.TimeEntry): StartEditState =
+    private fun StartEditState.modifyWithTimeEntrySuggestion(autocompleteSuggestion: StartEditSuggestions.TimeEntry): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             val timeEntrySuggestion = autocompleteSuggestion.timeEntry
             it.copy(
@@ -306,7 +306,7 @@ class StartEditReducer @Inject constructor(
             )
         }
 
-    private fun StartEditState.modifyWithTagSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Tag): StartEditState =
+    private fun StartEditState.modifyWithTagSuggestion(autocompleteSuggestion: StartEditSuggestions.Tag): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             val tagSuggestion = autocompleteSuggestion.tag
             if (tags[tagSuggestion.id] == null) throw TagDoesNotExistException()
@@ -318,7 +318,7 @@ class StartEditReducer @Inject constructor(
             )
         }
 
-    private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: AutocompleteSuggestion.CreateProject): StartEditState {
+    private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: StartEditSuggestions.CreateProject): StartEditState {
         val editableProject = EditableProject(
             name = autocompleteSuggestion.name,
             workspaceId = 1
@@ -327,7 +327,7 @@ class StartEditReducer @Inject constructor(
         return copy(backStack = backStack.push(route))
     }
 
-    private fun StartEditState.modifyWithTaskSuggestion(autocompleteSuggestion: AutocompleteSuggestion.Task): StartEditState =
+    private fun StartEditState.modifyWithTaskSuggestion(autocompleteSuggestion: StartEditSuggestions.Task): StartEditState =
         StartEditState.editableTimeEntry.modify(this) {
             val taskSuggestion = autocompleteSuggestion.task
             if (this.projects[taskSuggestion.projectId] == null) throw ProjectDoesNotExistException()

@@ -3,7 +3,6 @@ package com.toggl.timer.project.domain
 import com.toggl.common.feature.extensions.toHex
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.validation.HSVColor
-import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
@@ -11,7 +10,6 @@ import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.kotlintest.shouldBe
 import io.mockk.every
-import io.mockk.mockk
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -21,8 +19,7 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The ColorValueChanged action")
 internal class ColorValueChangedActionTests : CoroutineTest() {
-    private val repository = mockk<ProjectRepository>()
-    private val reducer = ProjectReducer(repository, dispatcherProvider)
+    private val reducer = createProjectReducer(dispatcherProvider = dispatcherProvider)
 
     init {
         mockkStatic("com.toggl.common.feature.extensions.ColorExtensionsKt")

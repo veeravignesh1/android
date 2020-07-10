@@ -17,7 +17,7 @@ import kotlin.math.min
 class AutocompleteSuggestionsPopup(
     context: Context,
     private val anchorTextView: WeakReference<TextView>,
-    onSuggestionTapped: (AutocompleteSuggestion) -> Unit = {}
+    onSuggestionTapped: (AutocompleteSuggestion.StartEditSuggestions) -> Unit = {}
 ) {
     private val itemHeight = context.resources.getDimensionPixelSize(R.dimen.suggestions_popup_item_height)
     private val popupMaxHeight = itemHeight * 6

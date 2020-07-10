@@ -20,8 +20,10 @@ import com.toggl.common.extensions.requestFocus
 import com.toggl.common.extensions.setOvalBackground
 import com.toggl.common.extensions.setSafeText
 import com.toggl.common.feature.extensions.toColor
+import com.toggl.common.ui.LifecycleAwareAutocompletePopup
 import com.toggl.common.ui.Position
-import com.toggl.common.ui.UiDrivenAutocompletePopup
+import com.toggl.models.common.AutocompleteSuggestion.ProjectSuggestions
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.R
@@ -29,10 +31,11 @@ import com.toggl.timer.extensions.tryHidingKeyboard
 import com.toggl.timer.extensions.tryShowingKeyboardFor
 import com.toggl.timer.project.domain.ColorViewModel
 import com.toggl.timer.project.domain.ProjectAction
+import com.toggl.timer.project.domain.ProjectAutocompleteQuery
 import com.toggl.timer.project.domain.ProjectColorSelector
 import com.toggl.timer.project.domain.ProjectState
-import com.toggl.timer.project.ui.autocomplete.WorkspaceSuggestionsAdapter
-import com.toggl.timer.project.ui.autocomplete.WorkspaceViewHolder
+import com.toggl.timer.project.ui.autocomplete.ProjectAutocompleteSuggestionViewHolder
+import com.toggl.timer.project.ui.autocomplete.ProjectAutocompleteSuggestionsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dialog_project.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,9 +56,6 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
     @ExperimentalCoroutinesApi
     private val coloPickerVisibilityRequestFlow = MutableStateFlow(false)
 
-    @ExperimentalCoroutinesApi
-    private val workspacePickerRequestFlow = MutableStateFlow(false)
-
     @FlowPreview
     @ExperimentalCoroutinesApi
     private val adapter = ColorAdapter(::onColorTapped)
@@ -66,8 +66,7 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
 
     @ExperimentalCoroutinesApi
     @FlowPreview
-    private lateinit var workspaceSuggestionsPopup: UiDrivenAutocompletePopup<Workspace, WorkspaceViewHolder>
-    private lateinit var workspaceSuggestionsAdapter: WorkspaceSuggestionsAdapter
+    private lateinit var autocompleteSuggestionsPopup: LifecycleAwareAutocompletePopup<ProjectSuggestions, ProjectAutocompleteSuggestionViewHolder>
     private lateinit var autocompleteSuggestionsRevealAnimator: AutocompleteSuggestionsRevealAnimator
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,17 +112,20 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             project_name_edit_text?.clearFocus()
         }
 
-        workspaceSuggestionsAdapter = WorkspaceSuggestionsAdapter {
-            store.dispatch(ProjectAction.WorkspacePicked(it))
-            workspacePickerRequestFlow.value = false
+        val suggestionsAdapter = ProjectAutocompleteSuggestionsAdapter {
+            when (it) {
+                is ProjectSuggestions.Workspace -> store.dispatch(ProjectAction.WorkspacePicked(it.workspace))
+                is ProjectSuggestions.Client -> store.dispatch(ProjectAction.ClientPicked(it.client))
+                is ProjectSuggestions.CreateClient -> store.dispatch(ProjectAction.CreateClientSuggestionTapped(it.name))
+            }
+            store.dispatch(ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.None))
         }
-
-        workspaceSuggestionsPopup = UiDrivenAutocompletePopup(
+        autocompleteSuggestionsPopup = LifecycleAwareAutocompletePopup(
             requireContext(),
             client_workspace_edit_text,
-            workspaceSuggestionsAdapter,
+            suggestionsAdapter,
             viewLifecycleOwner
-        ) { item, query -> item.name.contains(query) }
+        )
 
         project_name_edit_text.requestFocus {
             activity?.tryShowingKeyboardFor(project_name_edit_text)
@@ -142,11 +144,15 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         }
 
         workspace_chip.setOnClickListener {
-            workspacePickerRequestFlow.value = true
+            store.dispatch(ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.WorkspaceQuery("")))
+        }
+
+        client_chip.setOnClickListener {
+            store.dispatch(ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.ClientQuery("")))
         }
 
         cancel_pick.setOnClickListener {
-            workspacePickerRequestFlow.value = false
+            store.dispatch(ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.None))
         }
 
         create_button.setOnClickListener {
@@ -185,9 +191,9 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .map { it.workspaces.values.toList() }
+            .map { it.autocompleteSuggestions }
             .distinctUntilChanged()
-            .onEach { workspaceSuggestionsPopup.updateAutocompleteSuggestions(it) }
+            .onEach { suggestionsAdapter.submitList(it) }
             .launchIn(lifecycleScope)
 
         store.state
@@ -196,17 +202,31 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             .onEach { workspace_chip.text = it.name }
             .launchIn(lifecycleScope)
 
+        store.state
+            .distinctUntilChangedBy { it.editableProject.clientId }
+            .map { it.selectedClient() }
+            .onEach { client_chip.text = it?.name ?: getString(R.string.add_client) }
+            .launchIn(lifecycleScope)
+
         val hasMoreThanOneWorkspaceFlow = store.state
             .map { it.workspaces.size > 1 }
             .distinctUntilChanged()
 
-        hasMoreThanOneWorkspaceFlow
-            .onEach { hasMoreThanOneWorkspace ->
-                workspace_chip.isClickable = hasMoreThanOneWorkspace
-                if (!hasMoreThanOneWorkspace) {
-                    workspacePickerRequestFlow.value = false
-                }
-            }
+        coloPickerVisibilityRequestFlow.onEach { isPickingColor -> client_chip.isClickable = !isPickingColor }
+            .launchIn(lifecycleScope)
+
+        coloPickerVisibilityRequestFlow
+            .combine(hasMoreThanOneWorkspaceFlow) { isPickingColor, hasMoreThanOneWorkspace -> !isPickingColor && hasMoreThanOneWorkspace }
+            .onEach { canShowWorkspacePicker -> workspace_chip.isClickable = canShowWorkspacePicker }
+            .launchIn(lifecycleScope)
+
+        val autoCompleteQueryFlow = store.state
+            .map { it.autocompleteQuery }
+            .distinctUntilChanged()
+
+        autoCompleteQueryFlow
+            .map { it is ProjectAutocompleteQuery.None }
+            .onEach { isNotPickingClientOrWorkspace -> project_color_indicator.isClickable = isNotPickingClientOrWorkspace }
             .launchIn(lifecycleScope)
 
         store.state
@@ -240,9 +260,34 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             .onEach { (shouldShow, colorIsPremium) -> toggleColorPicker(shouldShow, colorIsPremium) }
             .launchIn(lifecycleScope)
 
-        workspacePickerRequestFlow
-            .combine(hasMoreThanOneWorkspaceFlow) { wasRequested, canShow -> wasRequested && canShow }
-            .onEach { shouldShow -> toggleWorkspaceAutocomplete(shouldShow) }
+        val autocompleteSuggestionsSizeFlow = store.state
+            .map { it.autocompleteSuggestions.size }
+
+        autoCompleteQueryFlow
+            .combine(hasMoreThanOneWorkspaceFlow) { query, hasMoreThanOneWorkspace ->
+                if (query !is ProjectAutocompleteQuery.WorkspaceQuery || hasMoreThanOneWorkspace) query
+                else ProjectAutocompleteQuery.None
+            }
+            .combine(autocompleteSuggestionsSizeFlow) { target, size -> target to size }
+            .onEach { (query, size) -> toggleAutocompletePopup(query, size) }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.autocompleteQuery }
+            .distinctUntilChanged()
+            .onEach { client_workspace_edit_text.setSafeText(it.name) }
+            .launchIn(lifecycleScope)
+
+        client_workspace_edit_text.onDescriptionChanged
+            .combine(autoCompleteQueryFlow) { (text, _), target ->
+                when (target) {
+                    ProjectAutocompleteQuery.None -> ProjectAutocompleteQuery.None
+                    is ProjectAutocompleteQuery.WorkspaceQuery -> ProjectAutocompleteQuery.WorkspaceQuery(text)
+                    is ProjectAutocompleteQuery.ClientQuery -> ProjectAutocompleteQuery.ClientQuery(text)
+                }
+            }
+            .distinctUntilChanged()
+            .onEach { store.dispatch(ProjectAction.AutocompleteDescriptionEntered(it)) }
             .launchIn(lifecycleScope)
 
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
@@ -251,16 +296,19 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
 
     @ExperimentalCoroutinesApi
     @FlowPreview
-    private fun toggleWorkspaceAutocomplete(shouldShow: Boolean) {
-        if (shouldShow) {
-            workspaceSuggestionsPopup.isShowing = true
-            client_workspace_edit_text.hint = getString(R.string.search_for_workspaces)
-            autocompleteSuggestionsRevealAnimator.revealEditText()
-            workspaceSuggestionsPopup.show(Position.Above)
-        } else {
-            workspaceSuggestionsPopup.isShowing = false
-            workspaceSuggestionsPopup.dismiss()
+    private fun toggleAutocompletePopup(query: ProjectAutocompleteQuery, size: Int) {
+        if (query is ProjectAutocompleteQuery.None) {
+            autocompleteSuggestionsPopup.isShowing = false
+            autocompleteSuggestionsPopup.dismiss()
             autocompleteSuggestionsRevealAnimator.hideEditText()
+        } else {
+            autocompleteSuggestionsPopup.isShowing = true
+            client_workspace_edit_text.hint = getString(
+                if (query is ProjectAutocompleteQuery.WorkspaceQuery) R.string.search_for_workspaces
+                else R.string.search_for_clients
+            )
+            autocompleteSuggestionsRevealAnimator.revealEditText()
+            autocompleteSuggestionsPopup.show(Position.Above, size)
         }
     }
 
@@ -311,5 +359,9 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
     private fun ProjectState.selectedWorkspace(): Workspace {
         return workspaces[editableProject.workspaceId]
             ?: throw IllegalStateException("Editable time entry's workspace Id doesn't exist")
+    }
+
+    private fun ProjectState.selectedClient(): Client? {
+        return clients[editableProject.clientId]
     }
 }

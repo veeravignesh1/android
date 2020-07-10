@@ -41,4 +41,5 @@
     <string name="discard">破棄する</string>
     <string name="save">保存</string>
     <string name="copy_event_as_time_entry">記録をコピー</string>
+    <string name="no_client">クライアントがありません</string>
 </resources>

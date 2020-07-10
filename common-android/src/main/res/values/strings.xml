@@ -45,4 +45,7 @@
     <string name="save">Save</string>
     <string name="copy_event_as_time_entry">Copy as a time entry</string>
     <string name="search_for_workspaces">Search for workspaces</string>
+    <string name="search_for_clients">Search for clients</string>
+    <string name="no_client">No client</string>
+    <string name="create_client">Create client</string>
 </resources>

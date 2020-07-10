@@ -1,7 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.common.feature.navigation.getRouteParam
-import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
@@ -46,7 +46,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @MethodSource("timeEntries")
         fun `The editableTimeEntry details should be updated`(timeEntrySuggestion: TimeEntry) = runBlockingTest {
             val initialEditableTimeEntry = EditableTimeEntry.empty(1)
-            val suggestion = AutocompleteSuggestion.TimeEntry(timeEntrySuggestion)
+            val suggestion = StartEditSuggestions.TimeEntry(timeEntrySuggestion)
 
             reducer.testReduceState(
                 initialState,
@@ -69,7 +69,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @ParameterizedTest
         @MethodSource("timeEntries")
         fun `should return no effect`(timeEntrySuggestion: TimeEntry) = runBlockingTest {
-            val suggestion = AutocompleteSuggestion.TimeEntry(timeEntrySuggestion)
+            val suggestion = StartEditSuggestions.TimeEntry(timeEntrySuggestion)
 
             reducer.testReduceNoEffects(
                 initialState,
@@ -86,7 +86,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @MethodSource("projects")
         fun `should set the project information to the editable time entry`(project: Project) = runBlockingTest {
             val initialEditableTimeEntry = EditableTimeEntry.empty(1)
-            val suggestion = AutocompleteSuggestion.Project(project)
+            val suggestion = StartEditSuggestions.Project(project)
 
             reducer.testReduceState(
                 initialState,
@@ -108,7 +108,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such @${project.name}"
             )
-            val suggestion = AutocompleteSuggestion.Project(project)
+            val suggestion = StartEditSuggestions.Project(project)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length
@@ -137,7 +137,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such # @ @ @ @${project.name}"
             )
-            val suggestion = AutocompleteSuggestion.Project(project)
+            val suggestion = StartEditSuggestions.Project(project)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length
@@ -166,7 +166,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such # @ # @ @${project.name} Description"
             )
-            val suggestion = AutocompleteSuggestion.Project(project)
+            val suggestion = StartEditSuggestions.Project(project)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length - " Description".length
@@ -190,7 +190,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @ParameterizedTest
         @MethodSource("projects")
         fun `should return no effect`(project: Project) = runBlockingTest {
-            val suggestion = AutocompleteSuggestion.Project(project)
+            val suggestion = StartEditSuggestions.Project(project)
 
             reducer.testReduceNoEffects(
                 initialState,
@@ -207,7 +207,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @MethodSource("tags")
         fun `The editableTimeEntry details should be updated`(tagTestData: TheoryHolder.TagTestData) = runBlockingTest {
             val tag = tagTestData.tag
-            val suggestion = AutocompleteSuggestion.Tag(tag)
+            val suggestion = StartEditSuggestions.Tag(tag)
 
             reducer.testReduceState(
                 initialState.copy(tags = tagTestData.tags),
@@ -222,7 +222,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @MethodSource("tags")
         fun `should return no effect`(tagTestData: TheoryHolder.TagTestData) = runBlockingTest {
             val tag = tagTestData.tag
-            val suggestion = AutocompleteSuggestion.Tag(tag)
+            val suggestion = StartEditSuggestions.Tag(tag)
 
             reducer.testReduceNoEffects(
                 initialState.copy(tags = tagTestData.tags),
@@ -232,7 +232,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @Test
         fun `should throw exception when adding non existing tag`() = runBlockingTest {
-            val suggestion = AutocompleteSuggestion.Tag(Tag(1L, "Tag 1", 1))
+            val suggestion = StartEditSuggestions.Tag(Tag(1L, "Tag 1", 1))
 
             reducer.testReduceException(
                 initialState.copy(tags = emptyMap()),
@@ -247,7 +247,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 description = "Such #tag"
             )
             val tag = Tag(1L, "Tag 1", 1)
-            val suggestion = AutocompleteSuggestion.Tag(tag)
+            val suggestion = StartEditSuggestions.Tag(tag)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length,
@@ -269,7 +269,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     description = "Such #tag #tag #tag much"
                 )
                 val tag = Tag(1L, "Tag 1", 1)
-                val suggestion = AutocompleteSuggestion.Tag(tag)
+                val suggestion = StartEditSuggestions.Tag(tag)
                 val initialState = initialState.copy(
                     editableTimeEntry = initialEditableTimeEntry,
                     cursorPosition = initialEditableTimeEntry.description.length,
@@ -290,7 +290,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
     inner class CreateProjectSuggestions {
 
         private val projectName = "Project name"
-        private val suggestion = AutocompleteSuggestion.CreateProject(projectName)
+        private val suggestion = StartEditSuggestions.CreateProject(projectName)
 
         @Test
         fun `The editableProject should be initialized`() = runBlockingTest {
@@ -331,7 +331,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 description = "@${testTask.name}"
             )
             val initialStateWithProjects = initialState.copy(projects = testProjects)
-            val suggestion = AutocompleteSuggestion.Task(testTask)
+            val suggestion = StartEditSuggestions.Task(testTask)
 
             reducer.testReduceState(
                 initialStateWithProjects,
@@ -354,7 +354,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @ParameterizedTest
         @MethodSource("tasks")
         fun `should return no effect`(taskTestData: TheoryHolder.TaskTestData) = runBlockingTest {
-            val suggestion = AutocompleteSuggestion.Task(taskTestData.task)
+            val suggestion = StartEditSuggestions.Task(taskTestData.task)
             val initialStateWithProjects = initialState.copy(projects = taskTestData.projects)
 
             reducer.testReduceNoEffects(
@@ -366,7 +366,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
         @ParameterizedTest
         @MethodSource("tasksWithNonExistingProjects")
         fun `should throw exception when task points to a non existent project`(taskTestData: TheoryHolder.TaskWithNonExistingProjectTestData) = runBlockingTest {
-            val suggestion = AutocompleteSuggestion.Task(taskTestData.task)
+            val suggestion = StartEditSuggestions.Task(taskTestData.task)
             val initialStateWithProjects = initialState.copy(projects = taskTestData.projects)
 
             reducer.testReduceException(
@@ -383,7 +383,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such @${task.name}"
             )
-            val suggestion = AutocompleteSuggestion.Task(task)
+            val suggestion = StartEditSuggestions.Task(task)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length,
@@ -407,7 +407,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such # @ @ @ @${task.name}"
             )
-            val suggestion = AutocompleteSuggestion.Task(task)
+            val suggestion = StartEditSuggestions.Task(task)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length,
@@ -431,7 +431,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such # @ # @ @${task.name} Description"
             )
-            val suggestion = AutocompleteSuggestion.Task(task)
+            val suggestion = StartEditSuggestions.Task(task)
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length - " Description".length,
@@ -453,7 +453,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @Test
         fun `The TagCreated effect is emitted`() = runBlockingTest {
-            val createTagSuggestion = AutocompleteSuggestion.CreateTag("01234")
+            val createTagSuggestion = StartEditSuggestions.CreateTag("01234")
 
             reducer.testReduceEffects(
                 initialState,
@@ -470,7 +470,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                 description = "Such #tag"
             )
-            val suggestion = AutocompleteSuggestion.CreateTag("tag")
+            val suggestion = StartEditSuggestions.CreateTag("tag")
             val initialState = initialState.copy(
                 editableTimeEntry = initialEditableTimeEntry,
                 cursorPosition = initialEditableTimeEntry.description.length
@@ -490,7 +490,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
                     description = "Such #tag #tag #tag much"
                 )
-                val suggestion = AutocompleteSuggestion.CreateTag("tag much")
+                val suggestion = StartEditSuggestions.CreateTag("tag much")
                 val initialState = initialState.copy(
                     editableTimeEntry = initialEditableTimeEntry,
                     cursorPosition = initialEditableTimeEntry.description.length

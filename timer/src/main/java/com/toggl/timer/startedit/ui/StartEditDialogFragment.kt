@@ -443,7 +443,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         )
     }
 
-    private fun onSuggestionSelected(autocompleteSuggestion: AutocompleteSuggestion) {
+    private fun onSuggestionSelected(autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions) {
         store.dispatch(StartEditAction.AutocompleteSuggestionTapped(autocompleteSuggestion))
     }
 

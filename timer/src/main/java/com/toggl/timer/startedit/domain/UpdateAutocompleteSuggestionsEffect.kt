@@ -4,7 +4,7 @@ import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
-import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
@@ -42,7 +42,7 @@ class UpdateAutocompleteSuggestionsEffect(
             StartEditAction.AutocompleteSuggestionsUpdated(suggestions)
         }
 
-    private fun fetchTimeEntrySuggestionsFor(query: String): List<AutocompleteSuggestion> {
+    private fun fetchTimeEntrySuggestionsFor(query: String): List<StartEditSuggestions> {
         fun TimeEntry.projectNameOrClientContains(word: String): Boolean {
             val project = projectId?.run(projects::get) ?: return false
             return project.nameOrClientContains(word)
@@ -60,7 +60,7 @@ class UpdateAutocompleteSuggestionsEffect(
             return task.name.contains(word, true)
         }
 
-        return fetchSuggestionsFor(query, timeEntries.values, AutocompleteSuggestion::TimeEntry) { timeEntry, word ->
+        return fetchSuggestionsFor(query, timeEntries.values, StartEditSuggestions::TimeEntry) { timeEntry, word ->
             timeEntry.description.contains(word, true) ||
                 timeEntry.projectNameOrClientContains(word) ||
                 timeEntry.tagNamesContain(word) ||
@@ -68,27 +68,27 @@ class UpdateAutocompleteSuggestionsEffect(
         }
     }
 
-    private fun fetchProjectSuggestionsFor(query: String): List<AutocompleteSuggestion> {
-        return listOf(AutocompleteSuggestion.CreateProject(query)) +
-            fetchSuggestionsFor(query, projects.values, AutocompleteSuggestion::Project) { project, word ->
+    private fun fetchProjectSuggestionsFor(query: String): List<StartEditSuggestions> {
+        return listOf(StartEditSuggestions.CreateProject(query)) +
+            fetchSuggestionsFor(query, projects.values, StartEditSuggestions::Project) { project, word ->
                 project.nameOrClientContains(word)
             }
     }
 
-    private fun fetchTaskSuggestionsFor(query: String): List<AutocompleteSuggestion> =
-        fetchSuggestionsFor(query, tasks.values, AutocompleteSuggestion::Task) { task, word ->
+    private fun fetchTaskSuggestionsFor(query: String): List<StartEditSuggestions> =
+        fetchSuggestionsFor(query, tasks.values, StartEditSuggestions::Task) { task, word ->
             task.name.contains(word, true)
         }
 
-    private fun fetchTagSuggestionsFor(query: String): List<AutocompleteSuggestion> {
+    private fun fetchTagSuggestionsFor(query: String): List<StartEditSuggestions> {
         val possibleTags = tags.values.filter { it.workspaceId == currentWorkspaceId }
 
         val tagWithExactNameExistsInWorkspace = possibleTags.any { it.name.equals(query, true) }
         val createSuggestion =
             if (tagWithExactNameExistsInWorkspace || query.isBlank()) emptyList()
-            else listOf(AutocompleteSuggestion.CreateTag(query))
+            else listOf(StartEditSuggestions.CreateTag(query))
 
-        return createSuggestion + fetchSuggestionsFor(query, possibleTags, AutocompleteSuggestion::Tag) { tag, word ->
+        return createSuggestion + fetchSuggestionsFor(query, possibleTags, StartEditSuggestions::Tag) { tag, word ->
             tag.name.contains(word, true)
         }
     }
@@ -96,9 +96,9 @@ class UpdateAutocompleteSuggestionsEffect(
     private fun <T> fetchSuggestionsFor(
         query: String,
         possibleSuggestions: Collection<T>,
-        toSuggestion: (T) -> AutocompleteSuggestion,
+        toSuggestion: (T) -> StartEditSuggestions,
         predicate: (T, String) -> Boolean
-    ): List<AutocompleteSuggestion> {
+    ): List<StartEditSuggestions> {
 
         if (possibleSuggestions.isEmpty())
             return emptyList()

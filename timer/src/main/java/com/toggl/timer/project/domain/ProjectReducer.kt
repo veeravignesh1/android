@@ -4,6 +4,7 @@ import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.effects
 import com.toggl.architecture.extensions.noEffect
@@ -11,15 +12,18 @@ import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.extensions.toHex
+import com.toggl.models.common.AutocompleteSuggestion.ProjectSuggestions
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.isValid
 import com.toggl.repository.extensions.toDto
+import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.startedit.util.findTokenAndQueryMatchesForAutocomplete
 import javax.inject.Inject
 
 class ProjectReducer @Inject constructor(
     private val repository: ProjectRepository,
+    private val clientRepository: ClientRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<ProjectState, ProjectAction> {
 
@@ -80,7 +84,7 @@ class ProjectReducer @Inject constructor(
             }
             is ProjectAction.ClientPicked -> state.mutateWithoutEffects {
                 ProjectState.editableProject.modify(this) {
-                    it.copy(clientId = action.client.id)
+                    it.copy(clientId = action.client?.id)
                 }
             }
             is ProjectAction.ProjectCreated -> state.mutate {
@@ -95,9 +99,63 @@ class ProjectReducer @Inject constructor(
                 )
             } returnEffect effectOf(ProjectAction.Close)
             ProjectAction.Close -> noEffect()
+            is ProjectAction.CreateClientSuggestionTapped -> effect(
+                CreateClientEffect(
+                    dispatcherProvider,
+                    clientRepository,
+                    action.name,
+                    state().editableProject.workspaceId
+                )
+            )
+            is ProjectAction.ClientCreated -> state.mutateWithoutEffects {
+                copy(
+                    clients = clients + (action.client.id to action.client),
+                    editableProject = editableProject.copy(
+                        clientId = action.client.id
+                    )
+                )
+            }
+            is ProjectAction.AutocompleteDescriptionEntered -> state.mutateWithoutEffects {
+                copy(
+                    autocompleteQuery = action.query,
+                    autocompleteSuggestions = suggestionsFor(action.query)
+                )
+            }
         }
 
     private fun createProject(editableProject: EditableProject) = effects(
         CreateProjectEffect(editableProject.toDto(), repository, dispatcherProvider)
     )
+
+    private fun ProjectState.suggestionsFor(autocompleteQuery: ProjectAutocompleteQuery): List<ProjectSuggestions> {
+        return when (autocompleteQuery) {
+            ProjectAutocompleteQuery.None -> emptyList()
+            is ProjectAutocompleteQuery.WorkspaceQuery -> findWorkspacesWithNameOrReturnAll(autocompleteQuery.name)
+            is ProjectAutocompleteQuery.ClientQuery -> generateClientSuggestionsForQuery(autocompleteQuery.name)
+        }
+    }
+
+    private fun ProjectState.findWorkspacesWithNameOrReturnAll(query: String): List<ProjectSuggestions.Workspace> {
+        val filteredWorkspaces = workspaces.values.filter { it.name.contains(query) }
+        return filteredWorkspaces
+            .toList(defaultWhenEmpty = workspaces.values)
+            .map(ProjectSuggestions::Workspace)
+    }
+
+    private fun ProjectState.generateClientSuggestionsForQuery(query: String): List<ProjectSuggestions> {
+        val noClientSuggestion = ProjectSuggestions.Client(null)
+        val clientsOnCurrentWorkspace = clients.values.filter { it.workspaceId == editableProject.workspaceId }
+        val filteredClients = clientsOnCurrentWorkspace.filter { it.name.contains(query) }
+        val existingClientSuggestions = filteredClients
+            .toList(defaultWhenEmpty = clientsOnCurrentWorkspace)
+            .map { ProjectSuggestions.Client(it) }
+        val hasNoClientWithExactNameOnWorkspace = clientsOnCurrentWorkspace.none { it.name == query }
+        val suggestions = listOf(noClientSuggestion) + existingClientSuggestions
+        return if (query.isNotBlank() && hasNoClientWithExactNameOnWorkspace)
+            suggestions + ProjectSuggestions.CreateClient(query)
+        else suggestions
+    }
+
+    private fun <T> Collection<T>.toList(defaultWhenEmpty: Collection<T>) =
+        (if (this.isEmpty()) defaultWhenEmpty else this).toList()
 }

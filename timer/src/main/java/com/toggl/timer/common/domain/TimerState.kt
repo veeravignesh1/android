@@ -16,6 +16,7 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.HSVColor
+import com.toggl.timer.project.domain.ProjectAutocompleteQuery
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.TemporalInconsistency
 import com.toggl.timer.suggestions.domain.Suggestion
@@ -36,13 +37,15 @@ data class TimerState(
     data class LocalState internal constructor(
         internal val expandedGroupIds: Set<Long>,
         internal val entriesPendingDeletion: Set<Long>,
-        internal val autocompleteSuggestions: List<AutocompleteSuggestion>,
+        internal val autocompleteSuggestions: List<AutocompleteSuggestion.StartEditSuggestions>,
         internal val dateTimePickMode: DateTimePickMode,
         internal val temporalInconsistency: TemporalInconsistency,
         internal val cursorPosition: Int,
         internal val customColor: HSVColor,
         internal val maxNumberOfSuggestions: Int,
-        internal val suggestions: List<Suggestion>
+        internal val suggestions: List<Suggestion>,
+        internal val projectAutocompleteQuery: ProjectAutocompleteQuery,
+        internal val projectAutoCompleteSuggestions: List<AutocompleteSuggestion.ProjectSuggestions>
     ) {
         constructor() : this(
             expandedGroupIds = setOf(),
@@ -53,7 +56,9 @@ data class TimerState(
             cursorPosition = 0,
             customColor = HSVColor.defaultCustomColor,
             maxNumberOfSuggestions = Constants.Suggestions.maxNumberOfSuggestions,
-            suggestions = emptyList()
+            suggestions = emptyList(),
+            projectAutocompleteQuery = ProjectAutocompleteQuery.None,
+            projectAutoCompleteSuggestions = emptyList()
         )
     }
 

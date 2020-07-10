@@ -4,6 +4,8 @@ import arrow.optics.optics
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.navigation.setRouteParam
+import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
@@ -17,8 +19,11 @@ data class ProjectState(
     val editableTimeEntry: EditableTimeEntry,
     val projects: Map<Long, Project>,
     val workspaces: Map<Long, Workspace>,
+    val clients: Map<Long, Client>,
     val cursorPosition: Int,
-    val customColor: HSVColor
+    val customColor: HSVColor,
+    val autocompleteQuery: ProjectAutocompleteQuery,
+    val autocompleteSuggestions: List<AutocompleteSuggestion.ProjectSuggestions>
 ) {
     companion object {
 
@@ -31,8 +36,11 @@ data class ProjectState(
                 editableTimeEntry = editableTimeEntry,
                 projects = timerState.projects,
                 workspaces = timerState.workspaces,
+                clients = timerState.clients,
                 customColor = timerState.localState.customColor,
-                cursorPosition = timerState.localState.cursorPosition
+                cursorPosition = timerState.localState.cursorPosition,
+                autocompleteQuery = timerState.localState.projectAutocompleteQuery,
+                autocompleteSuggestions = timerState.localState.projectAutoCompleteSuggestions
             )
         }
 
@@ -40,7 +48,12 @@ data class ProjectState(
             projectState?.let {
                 timerState.copy(
                     projects = projectState.projects,
-                    localState = timerState.localState.copy(customColor = projectState.customColor),
+                    clients = projectState.clients,
+                    localState = timerState.localState.copy(
+                        customColor = projectState.customColor,
+                        projectAutocompleteQuery = projectState.autocompleteQuery,
+                        projectAutoCompleteSuggestions = projectState.autocompleteSuggestions
+                    ),
                     backStack = timerState.backStack
                         .setRouteParam { Route.StartEdit(projectState.editableTimeEntry) }
                         .setRouteParam { Route.Project(projectState.editableProject) }

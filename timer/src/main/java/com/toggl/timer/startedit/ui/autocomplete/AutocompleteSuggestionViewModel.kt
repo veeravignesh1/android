@@ -9,35 +9,35 @@ sealed class AutocompleteSuggestionViewModel {
         val description: String,
         val projectViewModel: ProjectViewModel?,
         val taskName: String?,
-        val autocompleteSuggestion: AutocompleteSuggestion
+        val autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions
     ) : AutocompleteSuggestionViewModel()
 
     data class ProjectAutocompleteSuggestion(
         val id: Long,
         val projectViewModel: ProjectViewModel,
-        val autocompleteSuggestion: AutocompleteSuggestion
+        val autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions
     ) : AutocompleteSuggestionViewModel()
 
     data class TaskAutocompleteSuggestion(
         val id: Long,
         val taskName: String,
         val projectViewModel: ProjectViewModel,
-        val autocompleteSuggestion: AutocompleteSuggestion
+        val autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions
     ) : AutocompleteSuggestionViewModel()
 
     data class TagAutocompleteSuggestion(
         val id: Long,
         val tagName: String,
-        val autocompleteSuggestion: AutocompleteSuggestion
+        val autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions
     ) : AutocompleteSuggestionViewModel()
 
     data class CreateProject(
         val name: String,
-        val autocompleteSuggestion: AutocompleteSuggestion
+        val autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions
     ) : AutocompleteSuggestionViewModel()
 
     data class CreateTag(
         val name: String,
-        val autocompleteSuggestion: AutocompleteSuggestion
+        val autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions
     ) : AutocompleteSuggestionViewModel()
 }

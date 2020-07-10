@@ -16,6 +16,7 @@ import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.models.domain.UserPreferences
 import com.toggl.environment.services.time.TimeService
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
@@ -109,6 +110,17 @@ class Repository(
     override suspend fun workspacesCount(): Int = workspaceDao.count()
 
     override suspend fun loadClients() = clientDao.getAll().map(DatabaseClient::toModel)
+
+    override suspend fun createClient(client: Client): Client {
+        val databaseClient = DatabaseClient(
+            name = client.name,
+            workspaceId = client.workspaceId
+        )
+
+        return clientDao.insert(databaseClient)
+            .run(clientDao::getOne)
+            .run(DatabaseClient::toModel)
+    }
 
     override suspend fun loadTasks(): List<Task> = taskDao.getAll().map(DatabaseTask::toModel)
 

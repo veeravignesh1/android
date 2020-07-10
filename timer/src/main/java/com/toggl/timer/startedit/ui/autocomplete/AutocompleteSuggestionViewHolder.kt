@@ -16,7 +16,7 @@ abstract class AutocompleteSuggestionViewHolder(itemView: View) : RecyclerView.V
 
 class TimeEntrySuggestionViewHolder(
     itemView: View,
-    val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
+    val onTappedListener: (AutocompleteSuggestion.StartEditSuggestions) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
     private var projectLabel: TextView = itemView.findViewById(R.id.project_label)
     private var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
@@ -39,7 +39,7 @@ class TimeEntrySuggestionViewHolder(
 
 class ProjectSuggestionViewHolder(
     itemView: View,
-    val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
+    val onTappedListener: (AutocompleteSuggestion.StartEditSuggestions) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
     var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
 
@@ -54,7 +54,7 @@ class ProjectSuggestionViewHolder(
 
 class TaskSuggestionViewHolder(
     itemView: View,
-    val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
+    val onTappedListener: (AutocompleteSuggestion.StartEditSuggestions) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
     var projectDot: ImageView = itemView.findViewById(R.id.project_dot)
 
@@ -68,7 +68,7 @@ class TaskSuggestionViewHolder(
 
 class TagSuggestionViewHolder(
     itemView: View,
-    val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
+    val onTappedListener: (AutocompleteSuggestion.StartEditSuggestions) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
     fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel.TagAutocompleteSuggestion) {
         itemView.setOnClickListener { onTappedListener(autocompleteSuggestion.autocompleteSuggestion) }
@@ -78,7 +78,7 @@ class TagSuggestionViewHolder(
 
 class CreateEntrySuggestionViewHolder(
     itemView: View,
-    val onTappedListener: (AutocompleteSuggestion) -> Unit = {}
+    val onTappedListener: (AutocompleteSuggestion.StartEditSuggestions) -> Unit = {}
 ) : AutocompleteSuggestionViewHolder(itemView) {
     fun bind(autocompleteSuggestion: AutocompleteSuggestionViewModel) {
         when (autocompleteSuggestion) {
@@ -91,7 +91,7 @@ class CreateEntrySuggestionViewHolder(
         }
     }
 
-    fun bind(stringId: Int, suggestionText: String, autocompleteSuggestion: AutocompleteSuggestion) {
+    fun bind(stringId: Int, suggestionText: String, autocompleteSuggestion: AutocompleteSuggestion.StartEditSuggestions) {
         itemView.setOnClickListener { onTappedListener(autocompleteSuggestion) }
         val createProjectPrefix = label.context.getText(stringId)
         label.text = "$createProjectPrefix $suggestionText"

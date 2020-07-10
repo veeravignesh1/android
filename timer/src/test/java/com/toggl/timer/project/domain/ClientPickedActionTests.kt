@@ -2,13 +2,11 @@ package com.toggl.timer.project.domain
 
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.Client
-import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
 import io.kotlintest.shouldBe
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -17,11 +15,10 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The ClientPicked action")
 internal class ClientPickedActionTests : CoroutineTest() {
-    private val repository = mockk<ProjectRepository>()
-    private val reducer = ProjectReducer(repository, dispatcherProvider)
+    private val reducer = createProjectReducer(dispatcherProvider = dispatcherProvider)
 
     @Test
-    fun `sets the editableProject's clientId property`() = runBlockingTest {
+    fun `sets the editableProject's clientId property when the client isn't null`() = runBlockingTest {
         val editableProject = EditableProject.empty(1)
         val initialState = createInitialState(editableProject = editableProject)
         val client = Client(10, "The New Client", 1)
@@ -30,6 +27,17 @@ internal class ClientPickedActionTests : CoroutineTest() {
             initialState = initialState,
             action = ProjectAction.ClientPicked(client)
         ) { state -> state.editableProject.clientId shouldBe client.id }
+    }
+
+    @Test
+    fun `sets the editableProject's clientId property to null if the client is null`() = runBlockingTest {
+        val editableProject = EditableProject.empty(1).copy(clientId = 1)
+        val initialState = createInitialState(editableProject = editableProject)
+
+        reducer.testReduceState(
+            initialState = initialState,
+            action = ProjectAction.ClientPicked(null)
+        ) { state -> state.editableProject.clientId shouldBe null }
     }
 
     @Test

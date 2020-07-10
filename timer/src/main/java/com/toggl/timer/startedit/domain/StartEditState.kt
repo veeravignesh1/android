@@ -25,7 +25,7 @@ data class StartEditState(
     val timeEntries: Map<Long, TimeEntry>,
     val backStack: BackStack,
     val editableTimeEntry: EditableTimeEntry,
-    val autocompleteSuggestions: List<AutocompleteSuggestion>,
+    val autocompleteSuggestions: List<AutocompleteSuggestion.StartEditSuggestions>,
     val dateTimePickMode: DateTimePickMode,
     val temporalInconsistency: TemporalInconsistency,
     val cursorPosition: Int

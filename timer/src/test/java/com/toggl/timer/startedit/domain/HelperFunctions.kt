@@ -18,7 +18,7 @@ fun createInitialState(
     workspaces: List<Workspace> = listOf(),
     timeEntries: List<TimeEntry> = listOf(),
     editableTimeEntry: EditableTimeEntry = EditableTimeEntry.empty(1),
-    autoCompleteSuggestions: List<AutocompleteSuggestion> = listOf()
+    autoCompleteSuggestions: List<AutocompleteSuggestion.StartEditSuggestions> = listOf()
 ) =
     StartEditState(
         tags = tags.associateBy { it.id },

@@ -104,6 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/grid_2"
                 android:layout_marginBottom="8dp"
+                android:scrollbars="none"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/end_vertical_gridline"
                 app:layout_constraintStart_toEndOf="@+id/project_color_indicator"

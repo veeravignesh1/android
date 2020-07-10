@@ -2,13 +2,11 @@ package com.toggl.timer.project.domain
 
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.Workspace
-import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
 import io.kotlintest.shouldBe
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -17,8 +15,7 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The WorkspacePicked action")
 internal class WorkspacePickedActionTests : CoroutineTest() {
-    private val repository = mockk<ProjectRepository>()
-    private val reducer = ProjectReducer(repository, dispatcherProvider)
+    private val reducer = createProjectReducer(dispatcherProvider = dispatcherProvider)
 
     @Test
     fun `sets the editableProject's workspaceId property`() = runBlockingTest {

@@ -1,26 +1,49 @@
 package com.toggl.timer.project.domain
 
+import com.toggl.architecture.DispatcherProvider
+import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.HSVColor
+import com.toggl.repository.interfaces.ClientRepository
+import com.toggl.repository.interfaces.ProjectRepository
+import io.mockk.mockk
 
 fun createInitialState(
     editableProject: EditableProject = EditableProject.empty(1),
     projects: List<Project> = listOf(),
     workspaces: List<Workspace> = listOf(),
+    clients: List<Client> = listOf(),
     customColor: HSVColor = HSVColor.defaultCustomColor,
-    editableTimeEntry: EditableTimeEntry = EditableTimeEntry.empty(1)
+    editableTimeEntry: EditableTimeEntry = EditableTimeEntry.empty(1),
+    autocompleteQuery: ProjectAutocompleteQuery = ProjectAutocompleteQuery.None,
+    autocompleteSuggestions: List<AutocompleteSuggestion.ProjectSuggestions> = emptyList()
 ) = ProjectState(
     editableProject = editableProject,
     projects = projects.associateBy { it.id },
     workspaces = workspaces.associateBy { it.id },
+    clients = clients.associateBy { it.id },
     customColor = customColor,
     editableTimeEntry = editableTimeEntry,
-    cursorPosition = editableTimeEntry.description.length
+    cursorPosition = editableTimeEntry.description.length,
+    autocompleteQuery = autocompleteQuery,
+    autocompleteSuggestions = autocompleteSuggestions
 )
+
+fun createProjectReducer(
+    projectRepository: ProjectRepository = mockk(),
+    clientRepository: ClientRepository = mockk(),
+    dispatcherProvider: DispatcherProvider = mockk()
+): ProjectReducer =
+    ProjectReducer(
+        repository = projectRepository,
+        clientRepository = clientRepository,
+        dispatcherProvider = dispatcherProvider
+    )
 
 fun createProject(
     id: Long,

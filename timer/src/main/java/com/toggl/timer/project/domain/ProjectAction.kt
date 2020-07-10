@@ -17,9 +17,11 @@ sealed class ProjectAction {
     data class ColorHueSaturationChanged(val hue: Float, val saturation: Float) : ProjectAction()
     data class ColorPicked(val color: String) : ProjectAction()
     data class WorkspacePicked(val workspace: Workspace) : ProjectAction()
-    data class ClientPicked(val client: Client) : ProjectAction()
+    data class ClientPicked(val client: Client?) : ProjectAction()
+    data class CreateClientSuggestionTapped(val name: String) : ProjectAction()
+    data class ClientCreated(val client: Client) : ProjectAction()
     object Close : ProjectAction()
-
+    data class AutocompleteDescriptionEntered(val query: ProjectAutocompleteQuery) : ProjectAction()
     companion object
 }
 
@@ -35,6 +37,9 @@ fun ProjectAction.formatForDebug() =
         is ProjectAction.ColorHueSaturationChanged -> "Color hue changed to $hue and saturation to $saturation"
         is ProjectAction.ColorPicked -> "Selected color $color"
         is ProjectAction.WorkspacePicked -> "Selected workspace with id ${workspace.id}"
-        is ProjectAction.ClientPicked -> "Selected client wit id ${client.id}"
+        is ProjectAction.ClientPicked -> client?.let { "Selected client wit id ${client.id}" } ?: "Selected No client"
+        is ProjectAction.CreateClientSuggestionTapped -> "Tapped create client suggestion with name $name"
         ProjectAction.Close -> "Project view closed"
+        is ProjectAction.ClientCreated -> "Created client with id ${client.id}"
+        is ProjectAction.AutocompleteDescriptionEntered -> "Project auto complete description entered $query"
     }

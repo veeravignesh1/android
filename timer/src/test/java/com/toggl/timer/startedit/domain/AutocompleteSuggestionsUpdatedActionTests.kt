@@ -1,6 +1,6 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.testReduce
@@ -19,7 +19,7 @@ internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
 
     @Test
     fun `should update the list of Autocomplete suggestions`() = runBlockingTest {
-        val expectedSuggestions = listOf(AutocompleteSuggestion.TimeEntry(createTimeEntry(1)))
+        val expectedSuggestions = listOf(StartEditSuggestions.TimeEntry(createTimeEntry(1)))
 
         reducer.testReduce(
             initialState,
@@ -31,7 +31,7 @@ internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
 
     @Test
     fun `shouldn't return any effect`() = runBlockingTest {
-        val expectedSuggestions = listOf(AutocompleteSuggestion.TimeEntry(createTimeEntry(1)))
+        val expectedSuggestions = listOf(StartEditSuggestions.TimeEntry(createTimeEntry(1)))
 
         reducer.testReduce(
             initialState,
