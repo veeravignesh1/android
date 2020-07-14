@@ -5,6 +5,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.Constants
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.environment.services.time.TimeService
@@ -34,6 +35,16 @@ class CalendarDatePickerReducer @Inject constructor(
             )
             is CalendarDatePickerAction.DatesLoaded -> state.mutateWithoutEffects {
                 copy(availableDates = action.availableDates, visibleDates = visibleDates)
+            }
+            is CalendarDatePickerAction.DaySelected -> state.mutateWithoutEffects {
+                copy(selectedDate = action.day)
+            }
+            is CalendarDatePickerAction.DaySwiped -> {
+                val currentDate = state().selectedDate
+                val newDate = if (action.direction == SwipeDirection.Left) currentDate.minusDays(1) else currentDate.plusDays(1)
+
+                if (state().availableDates.contains(newDate)) state.mutateWithoutEffects { copy(selectedDate = newDate) }
+                else noEffect()
             }
             is CalendarDatePickerAction.WeekStripeSwiped -> state.shiftSelectedDateByWeek(action.direction)
         }
