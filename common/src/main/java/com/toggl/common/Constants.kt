@@ -51,4 +51,8 @@ object Constants {
         const val min = 0.3F
         const val max = 1F
     }
+
+    object Calendar {
+        const val datePickerRowItemsCount = 7L
+    }
 }
