@@ -8,6 +8,7 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.push
@@ -52,6 +53,8 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.AllowCalendarAccessToggled -> state.handleAllowCalendarAccessToggled()
             is SettingsAction.CalendarPermissionRequested -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = true) }
             is SettingsAction.CalendarPermissionReceived -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = false) }
+            SettingsAction.SignOutTapped -> effect(SignOutEffect(settingsRepository, dispatcherProvider))
+            SettingsAction.SignOutCompleted -> noEffect()
             is SettingsAction.SendFeedbackTapped -> {
                 state.mutate {
                     SettingsState.localState.modify(this) {

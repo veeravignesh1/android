@@ -6,6 +6,7 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.reducers.AnalyticsReducer
 import com.toggl.domain.loading.LoadingReducer
+import com.toggl.domain.reducers.SignOutReducer
 import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
 import com.toggl.domain.reducers.createAppReducer
@@ -52,9 +53,16 @@ object ReducerModule {
         FeatureAvailabilityReducer(innerReducer)
 
     @Provides
+    @ProvideAuthReducer
+    fun authReducer(
+        @ProvideFeatureAvailabilityReducer innerReducer: Reducer<AppState, AppAction>
+    ): Reducer<AppState, AppAction> =
+        SignOutReducer(innerReducer)
+
+    @Provides
     @ProvideLoggingReducer
     fun loggingReducer(
-        @ProvideFeatureAvailabilityReducer innerReducer: Reducer<AppState, AppAction>
+        @ProvideAuthReducer innerReducer: Reducer<AppState, AppAction>
     ): Reducer<AppState, AppAction> =
         LoggingReducer(innerReducer)
 }

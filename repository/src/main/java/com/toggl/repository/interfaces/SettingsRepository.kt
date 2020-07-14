@@ -5,6 +5,7 @@ import com.toggl.models.domain.UserPreferences
 interface SettingsRepository {
     suspend fun loadUserPreferences(): UserPreferences
     suspend fun saveUserPreferences(userPreferences: UserPreferences)
+    suspend fun signOut()
 
     companion object {
         const val manualModeEnabled = "manualModeEnabled"

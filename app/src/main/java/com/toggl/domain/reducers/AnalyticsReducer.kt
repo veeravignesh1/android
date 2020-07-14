@@ -15,6 +15,7 @@ import com.toggl.environment.services.analytics.parameters.EditViewCloseReason
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason.GroupHeader
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason.RunningTimeEntryCard
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason.SingleTimeEntry
+import com.toggl.environment.services.analytics.parameters.SignOutReason
 import com.toggl.environment.services.analytics.parameters.SuggestionProviderType
 import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin.GroupedLogSwipe
 import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin.LogSwipe
@@ -135,6 +136,7 @@ class AnalyticsReducer @Inject constructor(
         listOfNotNull(
             when (this) {
                 SettingsAction.GroupSimilarTimeEntriesToggled -> Event.groupTimeEntriesSettingsChanged(!state().userPreferences.groupSimilarTimeEntriesEnabled)
+                SettingsAction.SignOutTapped -> Event.signOutTapped(SignOutReason.Settings)
                 else -> null
             }
         )

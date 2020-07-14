@@ -189,4 +189,9 @@ class Repository(
             putString(SettingsRepository.smartAlertsOption, userPreferences.smartAlertsOption.name)
         }
     }
+
+    override suspend fun signOut() {
+        saveUserPreferences(UserPreferences.default)
+        // TODO sync un-synced entities etc
+    }
 }

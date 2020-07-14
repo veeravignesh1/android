@@ -16,3 +16,8 @@ annotation class ProvideAppReducer
 @Qualifier
 @MustBeDocumented
 annotation class ProvideLoggingReducer
+
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+@MustBeDocumented
+annotation class ProvideAuthReducer

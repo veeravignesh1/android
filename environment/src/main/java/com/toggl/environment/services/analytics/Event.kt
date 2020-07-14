@@ -3,6 +3,7 @@ package com.toggl.environment.services.analytics
 import com.toggl.environment.services.analytics.parameters.CalendarSuggestionProviderState
 import com.toggl.environment.services.analytics.parameters.EditViewCloseReason
 import com.toggl.environment.services.analytics.parameters.EditViewOpenReason
+import com.toggl.environment.services.analytics.parameters.SignOutReason
 import com.toggl.environment.services.analytics.parameters.SuggestionProviderType
 import com.toggl.environment.services.analytics.parameters.TimeEntryDeleteOrigin
 import com.toggl.environment.services.analytics.parameters.TimeEntryStopOrigin
@@ -58,5 +59,8 @@ class Event private constructor(val name: String, val parameters: Map<String, St
 
         fun groupTimeEntriesSettingsChanged(state: Boolean) =
             Event("GroupTimeEntriesSettingsChanged", mapOf("State" to state.toString().capitalize()))
+
+        fun signOutTapped(source: SignOutReason) =
+            Event("Logout", mapOf("Source" to source.name))
     }
 }

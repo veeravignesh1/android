@@ -25,6 +25,8 @@ sealed class SettingsAction {
     object GroupSimilarTimeEntriesToggled : SettingsAction()
     object AllowCalendarAccessToggled : SettingsAction()
     object CalendarPermissionRequested : SettingsAction()
+    object SignOutTapped : SettingsAction()
+    object SignOutCompleted : SettingsAction()
     data class CalendarPermissionReceived(val granted: Boolean) : SettingsAction()
     data class SendFeedbackTapped(val feedbackMessage: String) : SettingsAction()
     object FeedbackSent : SettingsAction()
@@ -56,6 +58,8 @@ fun SettingsAction.formatForDebug() =
         SettingsAction.CalendarPermissionRequested -> "CalendarPermissionRequested"
         SettingsAction.FeedbackSent -> "FeedbackSent"
         SettingsAction.SendFeedbackResultSeen -> "SendFeedbackResultSeen"
+        SettingsAction.SignOutTapped -> "SignOutTapped"
+        SettingsAction.SignOutCompleted -> "SignOutCompleted"
         is SettingsAction.UpdateEmail -> "UpdateEmail email $email"
         is SettingsAction.UpdateName -> "UpdateName name $name"
     }
