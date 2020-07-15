@@ -32,17 +32,18 @@ import java.time.DayOfWeek
 
 fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
-    shouldRequestCalendarPermission: Boolean = false,
-    sendFeedbackRequest: Loadable<Unit> = Loadable.Uninitialized,
-    backStack: BackStack = emptyList()
-) = SettingsState(
-    user = User(
+    user: User = User(
         id = 0,
         apiToken = ApiToken.from(""),
         defaultWorkspaceId = 1L,
         email = Email.from("email@valid.com") as Email.Valid,
         name = ""
     ),
+    shouldRequestCalendarPermission: Boolean = false,
+    sendFeedbackRequest: Loadable<Unit> = Loadable.Uninitialized,
+    backStack: BackStack = emptyList()
+) = SettingsState(
+    user = user,
     userPreferences = userPreferences,
     shouldRequestCalendarPermission = shouldRequestCalendarPermission,
     backStack = backStack,

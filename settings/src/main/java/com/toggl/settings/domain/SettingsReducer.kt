@@ -8,12 +8,12 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
+import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
-import com.toggl.common.feature.navigation.Route
-import com.toggl.common.feature.navigation.push
 import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
+import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import javax.inject.Inject
@@ -32,11 +32,28 @@ class SettingsReducer @Inject constructor(
         action: SettingsAction
     ): List<Effect<SettingsAction>> =
         when (action) {
-            is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
-            is SettingsAction.SettingTapped -> state.mutateWithoutEffects {
-                val editRoute = Route.SettingsEdit(action.selectedSetting)
-                copy(backStack = backStack.push(editRoute))
+            is SettingsAction.SettingTapped -> when (action.selectedSetting) {
+                SettingsType.Name -> TODO()
+                SettingsType.Email -> TODO()
+                SettingsType.Workspace -> TODO()
+                SettingsType.DateFormat -> TODO()
+                SettingsType.TwentyFourHourClock -> effectOf(SettingsAction.Use24HourClockToggled)
+                SettingsType.DurationFormat -> TODO()
+                SettingsType.FirstDayOfTheWeek -> TODO()
+                SettingsType.GroupSimilar -> effectOf(SettingsAction.GroupSimilarTimeEntriesToggled)
+                SettingsType.CellSwipe -> effectOf(SettingsAction.CellSwipeActionsToggled)
+                SettingsType.ManualMode -> effectOf(SettingsAction.ManualModeToggled)
+                SettingsType.CalendarSettings -> effectOf(SettingsAction.AllowCalendarAccessToggled)
+                SettingsType.SmartAlert -> TODO()
+                SettingsType.SubmitFeedback -> TODO()
+                SettingsType.About -> TODO()
+                SettingsType.PrivacyPolicy -> TODO()
+                SettingsType.TermsOfService -> TODO()
+                SettingsType.Licenses -> TODO()
+                SettingsType.Help -> TODO()
+                SettingsType.SignOut -> TODO()
             }
+            is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
             is SettingsAction.ManualModeToggled -> state.updatePrefs { copy(manualModeEnabled = !manualModeEnabled) }
             is SettingsAction.Use24HourClockToggled -> state.updatePrefs { copy(twentyFourHourClockEnabled = !twentyFourHourClockEnabled) }
             is SettingsAction.CellSwipeActionsToggled -> state.updatePrefs { copy(cellSwipeActionsEnabled = !cellSwipeActionsEnabled) }

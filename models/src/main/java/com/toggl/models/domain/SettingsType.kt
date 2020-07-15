@@ -1,10 +1,16 @@
 package com.toggl.models.domain
 
-enum class SelectedSetting {
+enum class SettingsType {
+    Name,
+    Email,
     Workspace,
     DateFormat,
+    TwentyFourHourClock,
     DurationFormat,
     FirstDayOfTheWeek,
+    GroupSimilar,
+    CellSwipe,
+    ManualMode,
     CalendarSettings,
     SmartAlert,
     SubmitFeedback,
@@ -12,5 +18,6 @@ enum class SelectedSetting {
     PrivacyPolicy,
     TermsOfService,
     Licenses,
-    Help
+    Help,
+    SignOut
 }

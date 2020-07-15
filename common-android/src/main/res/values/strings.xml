@@ -45,6 +45,33 @@
     <string name="save">Save</string>
     <string name="copy_event_as_time_entry">Copy as a time entry</string>
     <string name="search_for_workspaces">Search for workspaces</string>
+
+    <string name="your_profile">Your Profile</string>
+    <string name="date_and_time">Date and Time</string>
+    <string name="timer_defaults">Timer Defaults</string>
+    <string name="calendar_label">Calendar</string>
+    <string name="general">General</string>
+    <string name="sync">Sync</string>
+
+    <string name="name">Name</string>
+    <string name="email_address">Email Address</string>
+    <string name="workspace">Workspace</string>
+    <string name="date_format">Date format</string>
+    <string name="use_24_hour_clock">Use 24-hour clock</string>
+    <string name="duration_format">Duration format</string>
+    <string name="first_day_of_the_week">First day of the week</string>
+    <string name="group_similar_time_entries">Group Similar time entries</string>
+    <string name="cell_swipe_actions">Cell Swipe Actions</string>
+    <string name="manual_mode">Manual mode</string>
+    <string name="calendar_settings">Calendar Settings</string>
+    <string name="smart_alerts">Smart alerts</string>
+    <string name="submit_feedback">Submit Feedback</string>
+    <string name="about">About</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_service">Terms Of Service</string>
+    <string name="licenses">Licenses</string>
+    <string name="help">Help</string>
+    <string name="sign_out">Sign Out</string>
     <string name="search_for_clients">Search for clients</string>
     <string name="no_client">No client</string>
     <string name="create_client">Create client</string>

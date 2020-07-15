@@ -32,13 +32,13 @@ data class UserPreferences(
     }
 }
 
-enum class DateFormat {
-    MMDDYYYY_slash,
-    DDMMYYYY_dash,
-    MMDDYYYY_dash,
-    YYYYMMDD_dash,
-    DDMMYYYY_slash,
-    DDMMYYYY_dot
+enum class DateFormat(val label: String) {
+    MMDDYYYY_slash("MM/DD/YYYY"),
+    DDMMYYYY_dash("DD-MM-YYYY"),
+    MMDDYYYY_dash("MM-DD-YYYY"),
+    YYYYMMDD_dash("YYYY-MM-DD"),
+    DDMMYYYY_slash("DD/MM/YYYY"),
+    DDMMYYYY_dot("DD.MM.YYYY")
 }
 
 enum class DurationFormat {

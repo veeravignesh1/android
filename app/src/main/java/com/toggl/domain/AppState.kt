@@ -12,12 +12,20 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
+import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerState
 
 data class AppState(
-    val user: Loadable<User> = Loadable.Uninitialized,
+    val user: Loadable<User> = Loadable.Loaded(User(
+        1,
+        ApiToken.from("token"),
+        Email.from("test@toggl.com") as Email.Valid,
+        "Test Name",
+        1
+    )),
     val userPreferences: UserPreferences = UserPreferences.default,
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),

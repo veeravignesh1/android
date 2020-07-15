@@ -69,6 +69,23 @@ object Libs {
         const val fragment = "androidx.fragment:fragment:1.0.0"
         const val activityKtx = "androidx.activity:activity-ktx:1.2.0-alpha06"
 
+        object Compose {
+            const val version = "0.1.0-dev14"
+            const val runtime = "androidx.compose:compose-runtime:$version"
+            const val compiler = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
+            object UI {
+                const val core = "androidx.ui:ui-core:$version"
+                const val layout = "androidx.ui:ui-layout:$version"
+                const val material = "androidx.ui:ui-material:$version"
+                const val icons = "androidx.ui:ui-material-icons-extended:$version"
+                const val foundation = "androidx.ui:ui-foundation:$version"
+                const val animation = "androidx.ui:ui-animation:$version"
+                const val tooling = "androidx.ui:ui-tooling:$version"
+                const val livedata = "androidx.ui:ui-livedata:$version"
+
+            }
+        }
+
         object Hilt {
             private const val version = "1.0.0-alpha01"
             const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
@@ -96,6 +113,7 @@ object Libs {
             private const val version = "2.2.0"
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
+            const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val commonJava8 = "androidx.lifecycle:lifecycle-common-java8:$version"
             const val compiler = "androidx.lifecycle:lifecycle-compiler:$version"
         }
