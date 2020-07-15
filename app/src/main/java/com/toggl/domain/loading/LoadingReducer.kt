@@ -11,7 +11,6 @@ import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,7 +19,6 @@ import javax.inject.Singleton
 class LoadingReducer @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val clientRepository: ClientRepository,
-    private val timeEntryRepository: TimeEntryRepository,
     private val workspaceRepository: WorkspaceRepository,
     private val tagsRepository: TagRepository,
     private val taskRepository: TaskRepository,
@@ -35,11 +33,9 @@ class LoadingReducer @Inject constructor(
         when (action) {
             LoadingAction.StartLoading -> effects(
                 LoadWorkspacesEffect(workspaceRepository, dispatcherProvider),
-                LoadProjectsEffect(projectRepository, dispatcherProvider),
                 LoadClientsEffect(clientRepository, dispatcherProvider),
                 LoadTagsEffect(tagsRepository, dispatcherProvider),
                 LoadTasksEffect(taskRepository, dispatcherProvider),
-                LoadTimeEntriesEffect(timeEntryRepository, dispatcherProvider),
                 LoadUserPreferencesEffect(settingsRepository, dispatcherProvider)
             )
             is LoadingAction.TimeEntriesLoaded -> state.mutateWithoutEffects { copy(timeEntries = action.timeEntries) }

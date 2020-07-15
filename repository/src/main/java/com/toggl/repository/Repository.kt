@@ -40,6 +40,8 @@ import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.time.DayOfWeek
 
 class Repository(
@@ -53,8 +55,8 @@ class Repository(
     private val timeService: TimeService
 ) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository, TagRepository, TaskRepository, SettingsRepository {
 
-    override suspend fun loadProjects(): List<Project> =
-        projectDao.getAll().map(DatabaseProject::toModel)
+    override fun loadProjects(): Flow<List<Project>> =
+        projectDao.getAll().map { it.map(DatabaseProject::toModel) }
 
     override suspend fun createProject(project: CreateProjectDTO): Project {
         val databaseProject = DatabaseProject(
@@ -72,8 +74,8 @@ class Repository(
             .run(DatabaseProject::toModel)
     }
 
-    override suspend fun loadTimeEntries(): List<TimeEntry> =
-        timeEntryDao.getAllTimeEntriesWithTags().map(DatabaseTimeEntryWithTags::toModel)
+    override fun loadTimeEntries(): Flow<List<TimeEntry>> =
+        timeEntryDao.getAllTimeEntriesWithTags().map { it.map(DatabaseTimeEntryWithTags::toModel) }
 
     override suspend fun timeEntriesCount(): Int = timeEntryDao.count()
 

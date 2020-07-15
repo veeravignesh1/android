@@ -8,10 +8,8 @@ import com.toggl.domain.extensions.createTask
 import com.toggl.domain.extensions.createTimeEntry
 import com.toggl.domain.extensions.toMutableValue
 import com.toggl.domain.loading.LoadClientsEffect
-import com.toggl.domain.loading.LoadProjectsEffect
 import com.toggl.domain.loading.LoadTagsEffect
 import com.toggl.domain.loading.LoadTasksEffect
-import com.toggl.domain.loading.LoadTimeEntriesEffect
 import com.toggl.domain.loading.LoadUserPreferencesEffect
 import com.toggl.domain.loading.LoadWorkspacesEffect
 import com.toggl.domain.loading.LoadingAction
@@ -28,7 +26,6 @@ import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotlintest.shouldBe
@@ -41,7 +38,6 @@ class LoadingReducerTests : FreeCoroutineSpec() {
     init {
         val projectRepository = mockk<ProjectRepository>()
         val clientRepository = mockk<ClientRepository>()
-        val timeEntryRepository = mockk<TimeEntryRepository>()
         val workspaceRepository = mockk<WorkspaceRepository>()
         val tagRepository = mockk<TagRepository>()
         val taskRepository = mockk<TaskRepository>()
@@ -49,7 +45,6 @@ class LoadingReducerTests : FreeCoroutineSpec() {
         val reducer = LoadingReducer(
             projectRepository,
             clientRepository,
-            timeEntryRepository,
             workspaceRepository,
             tagRepository,
             taskRepository,
@@ -90,11 +85,9 @@ class LoadingReducerTests : FreeCoroutineSpec() {
 
                     effects.map { it.javaClass.kotlin } shouldContainExactlyInAnyOrder listOf(
                         LoadWorkspacesEffect::class,
-                        LoadProjectsEffect::class,
                         LoadClientsEffect::class,
                         LoadTagsEffect::class,
                         LoadTasksEffect::class,
-                        LoadTimeEntriesEffect::class,
                         LoadUserPreferencesEffect::class
                     )
                 }

@@ -9,6 +9,7 @@ import com.toggl.architecture.StoreScopeProvider
 import com.toggl.architecture.core.FlowStore
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.core.Store
+import com.toggl.architecture.core.Subscription
 import com.toggl.calendar.common.domain.CalendarAction
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.DeepLinkUrls
@@ -64,12 +65,14 @@ object AppModule {
     @Singleton
     fun appStore(
         @ProvideLoggingReducer reducer: Reducer<AppState, AppAction>,
+        @ProvideAppSubscription subscription: Subscription<AppState, AppAction>,
         dispatcherProvider: DispatcherProvider,
         application: Application
     ): Store<AppState, AppAction> {
         return FlowStore.create(
             initialState = AppState(),
             reducer = reducer,
+            subscription = subscription,
             dispatcherProvider = dispatcherProvider,
             storeScopeProvider = application as StoreScopeProvider
         )
