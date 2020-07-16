@@ -43,7 +43,7 @@ import com.toggl.common.sheet.BottomSheetCallback
 import com.toggl.common.ui.Position
 import com.toggl.common.ui.above
 import com.toggl.common.ui.showTooltip
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace

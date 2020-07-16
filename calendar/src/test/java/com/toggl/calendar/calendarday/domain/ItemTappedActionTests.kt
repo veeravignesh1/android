@@ -10,7 +10,7 @@ import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.navigation.setRouteParam
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi

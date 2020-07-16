@@ -10,7 +10,7 @@ import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.mockk.every

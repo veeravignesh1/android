@@ -19,8 +19,8 @@ import com.toggl.common.feature.navigation.Router
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
-import com.toggl.environment.services.permissions.PermissionRequesterService
-import com.toggl.environment.services.permissions.requestCalendarPermissionIfNeeded
+import com.toggl.common.services.permissions.PermissionRequesterService
+import com.toggl.common.services.permissions.requestCalendarPermissionIfNeeded
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import dagger.hilt.android.AndroidEntryPoint

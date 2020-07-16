@@ -12,7 +12,7 @@ import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.timeentry.TimeEntryAction.StartTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.StopRunningTimeEntry
 import com.toggl.common.feature.timeentry.extensions.runningTimeEntryOrNull
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.repository.extensions.toStartDto
 import com.toggl.timer.running.domain.RunningTimeEntryAction.CardTapped

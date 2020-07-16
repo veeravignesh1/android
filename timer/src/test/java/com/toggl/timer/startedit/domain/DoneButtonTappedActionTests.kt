@@ -1,7 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace

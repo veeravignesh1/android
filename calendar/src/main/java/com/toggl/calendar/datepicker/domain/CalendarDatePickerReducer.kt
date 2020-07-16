@@ -8,7 +8,7 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.Constants
 import com.toggl.common.feature.extensions.mutateWithoutEffects
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
 import com.toggl.repository.interfaces.SettingsRepository
 import javax.inject.Inject

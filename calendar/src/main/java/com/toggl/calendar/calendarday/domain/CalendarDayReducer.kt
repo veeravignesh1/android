@@ -22,8 +22,8 @@ import com.toggl.common.feature.timeentry.extensions.endTime
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfNew
 import com.toggl.common.feature.timeentry.extensions.throwIfRunning
-import com.toggl.environment.services.calendar.CalendarService
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.feature.services.calendar.CalendarService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import java.time.Duration
 import java.time.OffsetDateTime
@@ -51,7 +51,7 @@ class CalendarDayReducer @Inject constructor(
                 copy(backStack = backStack.pushOrUpdate(route))
             }
             CalendarDayAction.CalendarViewAppeared -> effect(state().run {
-                FetchCalendarEventsEffect(calendarService, date.toBeginningOfTheDay(), date.toEndOfTheDay(), calendars, dispatcherProvider)
+                FetchCalendarEventsEffect(calendarService, date.toBeginningOfTheDay(), date.toEndOfTheDay(), dispatcherProvider)
             })
             is CalendarDayAction.CalendarEventsFetched -> state.mutateWithoutEffects {
                 copy(events = action.calendarEvents.associateBy { it.id })

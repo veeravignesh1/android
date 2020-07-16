@@ -7,7 +7,7 @@ import com.toggl.calendar.common.domain.description
 import com.toggl.calendar.common.domain.duration
 import com.toggl.calendar.common.domain.toEditableTimeEntry
 import com.toggl.common.feature.models.SelectedCalendarItem
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.mockk.every
 import io.mockk.mockk

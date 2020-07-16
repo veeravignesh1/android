@@ -1,6 +1,6 @@
 package com.toggl.settings.domain
 
-import com.toggl.environment.services.permissions.PermissionCheckerService
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer

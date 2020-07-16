@@ -11,7 +11,7 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
-import com.toggl.environment.services.permissions.PermissionCheckerService
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.UserPreferences

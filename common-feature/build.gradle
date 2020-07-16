@@ -40,6 +40,12 @@ dependencies {
     api project(':architecture')
     api project(':repository')
 
+    api Libs.Google.firebaseAnalytics
+    api Libs.Microsoft.appCenterAnalytics
+    api Libs.Google.gson
+    api Libs.Square.retrofit
+    api Libs.Square.gsonConverter
+
     implementation Libs.AndroidX.Hilt.viewModel
     kapt Libs.AndroidX.Hilt.compiler
     implementation Libs.Hilt.hilt

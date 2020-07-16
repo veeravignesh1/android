@@ -6,7 +6,7 @@ import com.toggl.common.Constants
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.BackStackAwareState
 import com.toggl.common.feature.navigation.pop
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project

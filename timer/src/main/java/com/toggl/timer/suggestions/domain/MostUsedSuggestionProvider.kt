@@ -2,7 +2,7 @@ package com.toggl.timer.suggestions.domain
 
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.common.extensions.minutesUntil
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.di.MaxNumberOfMostUsedSuggestions

@@ -8,8 +8,8 @@ import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.environment.services.calendar.toEditableTimeEntry
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.feature.services.calendar.toEditableTimeEntry
+import com.toggl.common.services.time.TimeService
 import com.toggl.repository.extensions.toStartDto
 import javax.inject.Inject
 import javax.inject.Singleton

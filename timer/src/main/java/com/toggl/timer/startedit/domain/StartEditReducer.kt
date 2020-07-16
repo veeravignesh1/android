@@ -24,7 +24,7 @@ import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.isRunningOrNew
 import com.toggl.common.feature.timeentry.extensions.isStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry

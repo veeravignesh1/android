@@ -7,7 +7,7 @@ import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.navigation.setRouteParam
-import com.toggl.environment.services.calendar.Calendar
+import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry

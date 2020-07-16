@@ -5,7 +5,7 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty

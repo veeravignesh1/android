@@ -6,7 +6,7 @@ import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.extensions.maybePlus
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.extensions.isRunning
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import java.time.Duration

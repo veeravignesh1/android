@@ -8,7 +8,7 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
 import com.toggl.common.feature.timeentry.extensions.replaceTimeEntryWithId
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.dto.StartTimeEntryDTO

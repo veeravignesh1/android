@@ -1,7 +1,7 @@
 package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.timer.common.createCalendarEvent
 import com.toggl.timer.common.createTimeEntry

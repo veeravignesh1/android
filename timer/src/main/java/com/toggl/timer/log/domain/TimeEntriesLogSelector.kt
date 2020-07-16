@@ -1,7 +1,7 @@
 package com.toggl.timer.log.domain
 
 import com.toggl.architecture.core.Selector
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

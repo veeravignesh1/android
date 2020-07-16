@@ -1,15 +1,15 @@
 package com.toggl.calendar.common
 
 import com.toggl.architecture.DispatcherProvider
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.calendar.calendarday.domain.CalendarDayReducer
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
-import com.toggl.environment.services.calendar.CalendarService
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.feature.services.calendar.CalendarService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeTypeOf

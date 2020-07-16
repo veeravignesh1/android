@@ -2,7 +2,7 @@ package com.toggl.timer.startedit.domain
 
 import arrow.core.mapOf
 import com.toggl.architecture.DispatcherProvider
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag

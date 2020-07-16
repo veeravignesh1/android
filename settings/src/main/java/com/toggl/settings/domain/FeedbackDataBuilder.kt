@@ -1,6 +1,6 @@
 package com.toggl.settings.domain
 
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.FeedbackData
 import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.SettingsRepository

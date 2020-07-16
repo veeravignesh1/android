@@ -1,6 +1,6 @@
 package com.toggl.timer.suggestions.domain
 
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState

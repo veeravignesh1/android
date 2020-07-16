@@ -1,6 +1,6 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.repository.Repository
 import com.toggl.timer.common.CoroutineTest

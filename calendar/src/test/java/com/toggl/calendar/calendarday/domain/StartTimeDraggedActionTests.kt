@@ -12,7 +12,7 @@ import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
 import io.mockk.every

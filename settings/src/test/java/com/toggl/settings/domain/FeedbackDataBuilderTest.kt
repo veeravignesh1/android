@@ -1,6 +1,6 @@
 package com.toggl.settings.domain
 
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SmartAlertsOption

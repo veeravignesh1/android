@@ -3,7 +3,7 @@ package com.toggl.calendar.contextualmenu.domain
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
-import com.toggl.environment.services.calendar.Calendar
+import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project

@@ -2,7 +2,7 @@ package com.toggl.calendar.datepicker.domain
 
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.common.extensions.toList
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.repository.interfaces.SettingsRepository
 import io.mockk.mockk
 import java.time.OffsetDateTime

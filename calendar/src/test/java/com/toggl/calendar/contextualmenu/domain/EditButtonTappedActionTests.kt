@@ -8,7 +8,7 @@ import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.setRouteParam
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.shouldBe
 import io.mockk.every

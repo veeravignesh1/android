@@ -4,7 +4,7 @@ import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.feature.models.SelectedCalendarItem
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit

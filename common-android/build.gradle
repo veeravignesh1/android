@@ -3,6 +3,8 @@ import com.toggl.buildsrc.Libs
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion buildConfig.compileSdk
@@ -41,6 +43,7 @@ android {
 dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':common')
+    api project(':api')
 
     implementation Libs.Kotlin.stdlib
 
@@ -49,11 +52,16 @@ dependencies {
     api Libs.AndroidX.appcompat
     api Libs.AndroidX.recyclerview
     api Libs.AndroidX.coreKtx
+    api Libs.AndroidX.activityKtx
     api Libs.AndroidX.constraintlayout
     api Libs.AndroidX.Lifecycle.extensions
     api Libs.AndroidX.Lifecycle.commonJava8
     api Libs.AndroidX.Lifecycle.viewModel
     api Libs.Google.material
+
+    kapt Libs.AndroidX.Hilt.compiler
+    implementation Libs.Hilt.hilt
+    kapt Libs.Hilt.compiler
 
     testImplementation Libs.Test.robolectric
     testImplementation Libs.AndroidX.Test.core

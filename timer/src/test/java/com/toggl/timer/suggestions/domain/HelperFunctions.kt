@@ -1,7 +1,7 @@
 package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.Constants
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry

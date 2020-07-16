@@ -1,7 +1,7 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce

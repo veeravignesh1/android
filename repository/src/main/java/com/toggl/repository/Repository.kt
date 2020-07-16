@@ -2,6 +2,7 @@ package com.toggl.repository
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.toggl.common.services.time.TimeService
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
@@ -14,8 +15,6 @@ import com.toggl.database.models.DatabaseTag
 import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
-import com.toggl.models.domain.UserPreferences
-import com.toggl.environment.services.time.TimeService
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
@@ -24,15 +23,16 @@ import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.dto.CreateProjectDTO
 import com.toggl.repository.dto.CreateTimeEntryDTO
 import com.toggl.repository.dto.StartTimeEntryDTO
-import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
 import com.toggl.repository.extensions.toModelWithoutTags
+import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.StartTimeEntryResult

@@ -18,8 +18,8 @@ import com.toggl.common.feature.timeentry.extensions.throwIfNotPersisted
 import com.toggl.common.feature.timeentry.extensions.throwIfRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
-import com.toggl.environment.services.calendar.toEditableTimeEntry
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.feature.services.calendar.toEditableTimeEntry
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import com.toggl.repository.extensions.toCreateDto

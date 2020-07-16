@@ -12,7 +12,7 @@ import com.toggl.common.feature.navigation.handleClosableActionsUsing
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryReducer
 import com.toggl.common.feature.timeentry.TimeEntryState
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.timer.R
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.common.domain.TimerReducer

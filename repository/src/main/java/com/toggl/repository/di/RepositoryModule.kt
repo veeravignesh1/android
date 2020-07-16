@@ -1,13 +1,13 @@
 package com.toggl.repository.di
 
 import android.content.SharedPreferences
+import com.toggl.common.services.time.TimeService
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
 import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.WorkspaceDao
-import com.toggl.environment.services.time.TimeService
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.ClientRepository

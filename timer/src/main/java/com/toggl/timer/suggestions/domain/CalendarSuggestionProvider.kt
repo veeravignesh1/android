@@ -2,7 +2,7 @@ package com.toggl.timer.suggestions.domain
 
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.common.extensions.minutesUntil
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.timer.di.MaxNumberOfCalendarSuggestions
 import kotlinx.coroutines.withContext
 import java.time.Duration

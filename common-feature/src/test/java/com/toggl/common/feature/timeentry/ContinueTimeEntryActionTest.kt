@@ -6,7 +6,7 @@ import com.toggl.common.feature.common.testReduceEffects
 import com.toggl.common.feature.common.testReduceException
 import com.toggl.common.feature.common.testReduceState
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.repository.interfaces.TimeEntryRepository
 import io.kotlintest.matchers.collections.shouldBeSingleton
 import io.kotlintest.matchers.types.shouldBeTypeOf

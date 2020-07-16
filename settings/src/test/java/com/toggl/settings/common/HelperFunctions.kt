@@ -9,7 +9,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
-import com.toggl.environment.services.permissions.PermissionCheckerService
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.PlatformInfo

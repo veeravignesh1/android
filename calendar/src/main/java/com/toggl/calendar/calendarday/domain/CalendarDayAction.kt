@@ -2,7 +2,7 @@ package com.toggl.calendar.calendarday.domain
 
 import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarItem
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import java.time.OffsetDateTime
 
 @optics

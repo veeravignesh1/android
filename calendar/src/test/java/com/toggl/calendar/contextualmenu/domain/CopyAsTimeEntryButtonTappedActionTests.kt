@@ -6,7 +6,7 @@ import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe

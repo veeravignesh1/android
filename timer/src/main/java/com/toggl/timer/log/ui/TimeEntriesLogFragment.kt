@@ -17,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.toggl.architecture.extensions.select
 import com.toggl.common.Constants.timeEntryDeletionDelayMs
 import com.toggl.common.extensions.performClickHapticFeedback
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
 import com.toggl.timer.R
 import com.toggl.timer.log.domain.FlatTimeEntryViewModel

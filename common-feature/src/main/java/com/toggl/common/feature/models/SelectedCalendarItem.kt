@@ -1,6 +1,6 @@
 package com.toggl.common.feature.models
 
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
 
 sealed class SelectedCalendarItem {

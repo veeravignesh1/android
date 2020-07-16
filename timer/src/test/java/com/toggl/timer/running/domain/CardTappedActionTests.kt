@@ -1,6 +1,6 @@
 package com.toggl.timer.running.domain
 
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned

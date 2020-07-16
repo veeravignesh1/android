@@ -3,8 +3,8 @@ package com.toggl.calendar.calendarday.domain
 import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.calendar.common.domain.duration
 import com.toggl.calendar.common.domain.startTime
-import com.toggl.environment.services.calendar.CalendarEvent
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.feature.services.calendar.CalendarEvent
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.mockk.every

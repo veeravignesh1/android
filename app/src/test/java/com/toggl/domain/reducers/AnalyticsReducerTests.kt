@@ -5,8 +5,8 @@ import com.toggl.architecture.extensions.noEffect
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
-import com.toggl.environment.services.analytics.AnalyticsService
-import com.toggl.environment.services.analytics.Event
+import com.toggl.common.feature.services.analytics.AnalyticsService
+import com.toggl.common.feature.services.analytics.Event
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.log.domain.TimeEntriesLogAction
 import io.kotlintest.shouldBe

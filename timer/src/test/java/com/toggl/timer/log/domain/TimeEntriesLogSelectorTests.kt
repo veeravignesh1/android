@@ -1,6 +1,6 @@
 package com.toggl.timer.log.domain
 
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry

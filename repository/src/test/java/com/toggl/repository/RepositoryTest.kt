@@ -11,7 +11,7 @@ import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseWorkspace
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.repository.dto.StartTimeEntryDTO

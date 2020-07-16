@@ -2,7 +2,7 @@ package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceEffects
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.mockk.every

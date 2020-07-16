@@ -1,8 +1,8 @@
 package com.toggl.timer.suggestions.domain
 
 import com.toggl.common.Constants
-import com.toggl.environment.services.calendar.CalendarEvent
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.feature.services.calendar.CalendarEvent
+import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createCalendarEvent
 import io.kotlintest.matchers.boolean.shouldBeTrue

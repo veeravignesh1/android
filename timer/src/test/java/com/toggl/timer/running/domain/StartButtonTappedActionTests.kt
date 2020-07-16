@@ -1,7 +1,7 @@
 package com.toggl.timer.running.domain
 
 import com.toggl.common.feature.timeentry.TimeEntryAction
-import com.toggl.environment.services.time.TimeService
+import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.FreeCoroutineSpec
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduce

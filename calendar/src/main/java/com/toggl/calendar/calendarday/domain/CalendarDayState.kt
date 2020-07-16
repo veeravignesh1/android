@@ -2,9 +2,9 @@ package com.toggl.calendar.calendarday.domain
 
 import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
-import com.toggl.environment.services.calendar.CalendarEvent
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.common.feature.navigation.BackStack
-import com.toggl.environment.services.calendar.Calendar
+import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import java.time.OffsetDateTime
