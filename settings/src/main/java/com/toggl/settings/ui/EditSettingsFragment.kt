@@ -109,7 +109,6 @@ class EditSettingsFragment : DialogFragment() {
                 header = settingHeader,
                 dispatcher = store::dispatch
             )
-
         }
     }
 }

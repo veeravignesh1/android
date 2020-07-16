@@ -50,7 +50,6 @@ internal fun ChoiceListWithHeader(
                 }
             }
         }
-
     }
 }
 

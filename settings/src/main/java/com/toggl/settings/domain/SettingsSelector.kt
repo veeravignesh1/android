@@ -7,7 +7,6 @@ import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.settings.R
-import java.time.DayOfWeek
 import javax.inject.Inject
 
 class SettingsSelector @Inject constructor(
