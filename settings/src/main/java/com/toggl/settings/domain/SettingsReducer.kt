@@ -11,6 +11,8 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.SettingsType
@@ -35,11 +37,11 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.SettingTapped -> when (action.selectedSetting) {
                 SettingsType.Name -> TODO()
                 SettingsType.Email -> TODO()
-                SettingsType.Workspace -> TODO()
-                SettingsType.DateFormat -> TODO()
+                SettingsType.Workspace -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.Workspace))) }
+                SettingsType.DateFormat -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.DateFormat))) }
                 SettingsType.TwentyFourHourClock -> effectOf(SettingsAction.Use24HourClockToggled)
-                SettingsType.DurationFormat -> TODO()
-                SettingsType.FirstDayOfTheWeek -> TODO()
+                SettingsType.DurationFormat -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.DurationFormat))) }
+                SettingsType.FirstDayOfTheWeek -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.FirstDayOfTheWeek))) }
                 SettingsType.GroupSimilar -> effectOf(SettingsAction.GroupSimilarTimeEntriesToggled)
                 SettingsType.CellSwipe -> effectOf(SettingsAction.CellSwipeActionsToggled)
                 SettingsType.ManualMode -> effectOf(SettingsAction.ManualModeToggled)
