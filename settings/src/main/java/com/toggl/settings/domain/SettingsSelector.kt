@@ -2,10 +2,12 @@ package com.toggl.settings.domain
 
 import android.content.Context
 import com.toggl.architecture.core.Selector
+import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.settings.R
+import java.time.DayOfWeek
 import javax.inject.Inject
 
 class SettingsSelector @Inject constructor(
@@ -49,12 +51,12 @@ class SettingsSelector @Inject constructor(
             SettingsType.DurationFormat -> SettingsViewModel.ListChoice(
                 context.getString(R.string.duration_format),
                 this,
-                "Dummy Duration"
+                userPreferences.durationFormat.getTranslatedRepresentation(context)
             )
             SettingsType.FirstDayOfTheWeek -> SettingsViewModel.ListChoice(
                 context.getString(R.string.first_day_of_the_week),
                 this,
-                "Dummy Day"
+                userPreferences.firstDayOfTheWeek.getTranslatedRepresentation(context)
             )
             SettingsType.GroupSimilar -> SettingsViewModel.Toggle(
                 context.getString(R.string.group_similar_time_entries),
