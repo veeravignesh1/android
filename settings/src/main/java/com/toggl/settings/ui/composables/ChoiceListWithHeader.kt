@@ -40,8 +40,6 @@ internal fun ChoiceListWithHeader(
         dispatcher.invoke(SettingsAction.DialogDismissed)
     }) {
         TogglTheme {
-
-            // Surface { // with this on, the list is visible, but not aware of dark theme
             Box(backgroundColor = MaterialTheme.colors.background) {
                 ChoiceListWithHeaderWrapper(
                     items = observableItems.items,
@@ -49,7 +47,7 @@ internal fun ChoiceListWithHeader(
                     dispatcher = dispatcher
                 )
             }
-        }  // }
+        }
     }
 }
 
@@ -72,7 +70,11 @@ internal fun ChoiceListWithHeaderWrapper(
                     Row {
                         RadioButton(selected = item.isSelected, onSelect = { item.dispatchSelected(dispatcher) })
                         Spacer(modifier = Modifier.preferredWidth(grid_1))
-                        Text(text = item.label, style = MaterialTheme.typography.body1, color = MaterialTheme.colors.onBackground)
+                        Text(
+                            text = item.label,
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onBackground
+                        )
                     }
                     Spacer(modifier = Modifier.preferredHeight(grid_1))
                 }
