@@ -20,6 +20,7 @@ import com.toggl.settings.R
 import com.toggl.settings.domain.ChoiceListItem
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.getTranslatedRepresentation
+import com.toggl.settings.domain.toPresentableList
 import com.toggl.settings.ui.composables.ChoiceListWithHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -57,52 +58,7 @@ class EditSettingsFragment : DialogFragment() {
     }
 
     private fun displayChoiceList(userPreferences: UserPreferences, settingsType: SettingsType) {
-        val settingHeader: String
-        val settingChoiceListItems: List<ChoiceListItem>
-
-        when (settingsType) {
-            SettingsType.DateFormat -> {
-                settingHeader = getString(R.string.date_format)
-                settingChoiceListItems =
-                    DateFormat.values().map {
-                        ChoiceListItem(
-                            it.label,
-                            userPreferences.dateFormat == it,
-                            selectedAction = SettingsAction.DateFormatSelected(it)
-                        )
-                    }
-            }
-            SettingsType.DurationFormat -> {
-                settingHeader = getString(R.string.duration_format)
-                settingChoiceListItems =
-                    DurationFormat.values().map {
-                        ChoiceListItem(
-                            it.getTranslatedRepresentation(requireContext()),
-                            userPreferences.durationFormat == it,
-                            selectedAction = SettingsAction.DurationFormatSelected(it)
-                        )
-                    }
-            }
-            SettingsType.FirstDayOfTheWeek -> {
-                settingHeader = getString(R.string.first_day_of_the_week)
-                settingChoiceListItems =
-                    DayOfWeek.values().map {
-                        ChoiceListItem(
-                            it.getTranslatedRepresentation(requireContext()),
-                            userPreferences.firstDayOfTheWeek == it,
-                            selectedAction = SettingsAction.FirstDayOfTheWeekSelected(it)
-                        )
-                    }
-            }
-            SettingsType.Workspace -> {
-                settingHeader = getString(R.string.default_workspace)
-                settingChoiceListItems = listOf()
-            }
-            else -> {
-                settingHeader = "UNKNOWN"
-                settingChoiceListItems = listOf()
-            }
-        }
+        val (settingHeader, settingChoiceListItems) = settingsType.toPresentableList(requireContext(), userPreferences)
 
         (view as ViewGroup).setContent(Recomposer.current()) {
             ChoiceListWithHeader(
