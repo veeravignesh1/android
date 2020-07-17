@@ -1,6 +1,7 @@
 package com.toggl.settings.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,14 +59,15 @@ class EditSettingsFragment : DialogFragment() {
     }
 
     private fun displayChoiceList(userPreferences: UserPreferences, settingsType: SettingsType) {
-        val (settingHeader, settingChoiceListItems) = settingsType.toPresentableList(requireContext(), userPreferences)
-
-        (view as ViewGroup).setContent(Recomposer.current()) {
-            ChoiceListWithHeader(
-                items = listOf(settingChoiceListItems).asFlow(),
-                header = settingHeader,
-                dispatcher = store::dispatch
-            )
-        }
+        Log.e("xxaa", "$userPreferences $settingsType")
+        // val (settingHeader, settingChoiceListItems) = settingsType.toPresentableList(requireContext(), userPreferences)
+        //
+        // (view as ViewGroup).setContent(Recomposer.current()) {
+        //     // ChoiceListWithHeader(
+        //     //     items = listOf(settingChoiceListItems).asFlow(),
+        //     //     header = settingHeader,
+        //     //     dispatcher = store::dispatch
+        //     // )
+        // }
     }
 }

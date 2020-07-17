@@ -39,7 +39,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.Name -> TODO()
                 SettingsType.Email -> TODO()
                 SettingsType.Workspace -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.Workspace))) }
-                SettingsType.DateFormat -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.DateFormat))) }
+                SettingsType.DateFormat -> state.mutateWithoutEffects { copy(localState = localState.copy(singleChoiceSettingShowing = SettingsType.DateFormat)) }
                 SettingsType.TwentyFourHourClock -> effectOf(SettingsAction.Use24HourClockToggled)
                 SettingsType.DurationFormat -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.DurationFormat))) }
                 SettingsType.FirstDayOfTheWeek -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.SettingsEdit(SettingsType.FirstDayOfTheWeek))) }
@@ -93,6 +93,7 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.UpdateEmail -> state.mutateWithoutEffects { copy(user = user.copy(email = action.email)) }
             is SettingsAction.UpdateName -> state.mutateWithoutEffects { copy(user = user.copy(name = action.name)) }
             is SettingsAction.SingleChoiceSettingSelected -> state.mutateWithoutEffects { copy(backStack = backStack.popIfInRoute<Route.SettingsEdit>()) }
+            is SettingsAction.DialogDismissed -> state.mutateWithoutEffects { copy(localState = localState.copy(singleChoiceSettingShowing = null)) }
         }
 
     private fun MutableValue<SettingsState>.handleAllowCalendarAccessToggled(): List<Effect<SettingsAction>> {
