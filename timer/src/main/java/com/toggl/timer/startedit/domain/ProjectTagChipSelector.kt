@@ -20,8 +20,8 @@ class ProjectTagChipSelector(
 
         return sequence {
             val projectId = editableTimeEntry.projectId
-            if (projectId != null) {
-                val project = state.projects[projectId] ?: throw ProjectDoesNotExistException()
+            val project = state.projects.getOrDefault(projectId, null)
+            if (project != null) {
                 yield(ChipViewModel.Project(project))
             } else {
                 yield(ChipViewModel.AddProject("$projectToken $addProjectLabel"))
