@@ -21,7 +21,6 @@ import com.toggl.settings.compose.theme.grid_2
 import com.toggl.settings.domain.ChoiceListItem
 import com.toggl.settings.domain.SettingsAction
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlin.random.Random
 
 @Composable
@@ -31,7 +30,15 @@ internal fun ChoiceListWithHeader(
     dispatcher: (SettingsAction) -> Unit = {}
 ) {
     val observableItems by items.collectAsState(initial = listOf())
+    ChoiceListWithHeaderWrapper(items = observableItems, header = header, dispatcher = dispatcher)
+}
 
+@Composable
+internal fun ChoiceListWithHeaderWrapper(
+    items: List<ChoiceListItem>,
+    header: String,
+    dispatcher: (SettingsAction) -> Unit = {}
+) {
     Column(modifier = Modifier.padding(grid_2)) {
         Text(
             text = header,
@@ -39,7 +46,7 @@ internal fun ChoiceListWithHeader(
         )
         Spacer(Modifier.preferredHeight(grid_2))
         RadioGroup {
-            observableItems.forEach { item ->
+            items.forEach { item ->
                 RadioGroupItem(selected = item.isSelected, onSelect = { item.dispatchSelected(dispatcher) }) {
                     Row {
                         RadioButton(selected = item.isSelected, onSelect = { item.dispatchSelected(dispatcher) })
@@ -53,7 +60,7 @@ internal fun ChoiceListWithHeader(
     }
 }
 
-internal val previewItems = (1..5).map {
+internal val previewItems = (0..5).map {
     if (it == 1) ChoiceListItem(
         "Choice selected",
         isSelected = true
@@ -65,7 +72,7 @@ internal val previewHeader = "First day of week"
 @Composable
 fun PreviewChoiceListWithHeaderLight() {
     ThemedPreview {
-        ChoiceListWithHeader(listOf(previewItems).asFlow(), previewHeader)
+        ChoiceListWithHeaderWrapper(previewItems, previewHeader)
     }
 }
 
@@ -73,6 +80,6 @@ fun PreviewChoiceListWithHeaderLight() {
 @Composable
 fun PreviewChoiceListWithHeaderDark() {
     ThemedPreview(darkTheme = true) {
-        ChoiceListWithHeader(listOf(previewItems).asFlow(), previewHeader)
+        ChoiceListWithHeaderWrapper(previewItems, previewHeader)
     }
 }
