@@ -6,13 +6,17 @@ import com.toggl.database.models.DatabaseTag
 import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
+import com.toggl.database.models.DatabaseUser
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
+import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 
 fun DatabaseTimeEntryWithTags.toModel() = TimeEntry(
     timeEntry.id,
@@ -76,4 +80,12 @@ fun DatabaseTask.toModel() = Task(
     projectId,
     workspaceId,
     userId
+)
+
+fun DatabaseUser.toModel() = User(
+    id,
+    ApiToken.from(apiToken) as ApiToken.Valid,
+    Email.from(email) as Email.Valid,
+    name,
+    defaultWorkspaceId
 )

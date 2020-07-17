@@ -32,6 +32,11 @@ sealed class TimerAction {
             val wrapper = timerAction as? Suggestions ?: return null
             return TimeEntryAction.fromTimeEntryActionHolder(wrapper.action)
         }
+
+        fun unwrapRunningTimeEntryActionHolder(timerAction: TimerAction): TimeEntryAction? {
+            val wrapper = timerAction as? RunningTimeEntry ?: return null
+            return TimeEntryAction.fromTimeEntryActionHolder(wrapper.action)
+        }
     }
 }
 

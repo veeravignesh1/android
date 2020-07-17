@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.toggl.calendar.common.validUser
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.services.calendar.Calendar
@@ -16,6 +17,7 @@ fun createInitialState(
     date: OffsetDateTime = OffsetDateTime.now(),
     calendars: List<Calendar> = listOf()
 ) = CalendarDayState(
+    validUser,
     timeEntries.associateBy { it.id },
     projects.associateBy { it.id },
     if (selectedItem == null) emptyList() else listOf(Route.ContextualMenu(selectedItem)),

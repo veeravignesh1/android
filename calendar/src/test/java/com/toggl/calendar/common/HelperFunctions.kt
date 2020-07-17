@@ -11,6 +11,9 @@ import com.toggl.common.feature.timeentry.TimeEntryActionHolder
 import com.toggl.common.feature.services.calendar.CalendarService
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
+import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.mockk.mockk
@@ -20,6 +23,14 @@ import org.junit.jupiter.api.Assertions
 import java.time.Duration
 import java.time.OffsetDateTime
 import kotlin.contracts.ExperimentalContracts
+
+val validUser = User(
+    id = 0,
+    apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
+    defaultWorkspaceId = 1,
+    email = Email.from("valid.mail@toggl.com") as Email.Valid,
+    name = "name"
+)
 
 fun createTimeEntry(
     id: Long,

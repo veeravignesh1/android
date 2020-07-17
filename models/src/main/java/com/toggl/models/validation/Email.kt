@@ -2,6 +2,11 @@ package com.toggl.models.validation
 
 sealed class Email(val email: String) {
     class Valid private constructor(email: String) : Email(email) {
+        override fun equals(other: Any?): Boolean =
+            other is Valid && other.email == email
+
+        override fun hashCode(): Int = email.hashCode()
+
         companion object {
             fun from(email: String) =
                 if (email.isBlank()) Invalid(email)

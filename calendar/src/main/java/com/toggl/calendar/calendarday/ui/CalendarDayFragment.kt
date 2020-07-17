@@ -6,12 +6,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.toggl.architecture.extensions.select
 import com.toggl.calendar.R
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarItemsSelector
 import dagger.hilt.android.AndroidEntryPoint
 import com.toggl.common.feature.navigation.BottomSheetNavigator
+import com.toggl.common.services.permissions.PermissionRequesterService
+import com.toggl.common.services.permissions.requestCalendarPermissionIfNeeded
 import kotlinx.android.synthetic.main.fragment_calendarday.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -27,6 +28,7 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
 
     @Inject lateinit var bottomSheetNavigator: BottomSheetNavigator
     @Inject lateinit var calendarItemsSelector: CalendarItemsSelector
+    @Inject lateinit var permissionService: PermissionRequesterService
 
     private val store: CalendarDayStoreViewModel by viewModels()
 
@@ -35,6 +37,10 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        lifecycleScope.launchWhenResumed {
+            permissionService.requestCalendarPermissionIfNeeded()
+        }
 
         store.state
             .map { calendarItemsSelector.select(it).invoke(it.date) }

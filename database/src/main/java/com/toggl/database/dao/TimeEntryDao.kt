@@ -98,4 +98,7 @@ interface TimeEntryDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAllTimeEntryTagsPairs(databaseTimeEntryTags: List<DatabaseTimeEntryTag>)
+
+    @Query("DELETE FROM time_entries")
+    fun clear()
 }

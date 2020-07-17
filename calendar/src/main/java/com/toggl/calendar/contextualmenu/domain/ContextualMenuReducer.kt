@@ -84,13 +84,13 @@ class ContextualMenuReducer @Inject constructor(
             }
             ContextualMenuAction.StartFromEventButtonTapped -> {
                 val calendarEvent = state.mapToCalendarEvent()
-                val editableTimeEntry = calendarEvent.toEditableTimeEntry(state().defaultWorkspaceId())
+                val editableTimeEntry = calendarEvent.toEditableTimeEntry(state().user.defaultWorkspaceId)
 
                 start(editableTimeEntry) + ContextualMenuAction.Close.toEffect()
             }
             ContextualMenuAction.CopyAsTimeEntryButtonTapped -> {
                 val calendarEvent = state.mapToCalendarEvent()
-                val editableTimeEntry = calendarEvent.toEditableTimeEntry(state().defaultWorkspaceId())
+                val editableTimeEntry = calendarEvent.toEditableTimeEntry(state().user.defaultWorkspaceId)
 
                 create(editableTimeEntry) + ContextualMenuAction.Close.toEffect()
             }
@@ -133,6 +133,4 @@ class ContextualMenuReducer @Inject constructor(
 
     private fun MutableValue<ContextualMenuState>.mapToEditableTimeEntry() =
         mapState { selectedItem.toEditableTimeEntry() }
-
-    private fun ContextualMenuState.defaultWorkspaceId() = 1L
 }

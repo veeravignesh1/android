@@ -1,6 +1,6 @@
 package com.toggl.settings.domain
 
-import com.toggl.api.feedback.FeedbackApi
+import com.toggl.api.feedback.FeedbackApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Failure
 import com.toggl.architecture.Loadable
@@ -22,8 +22,9 @@ class SettingsReducer @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val permissionCheckerService: PermissionCheckerService,
     private val platformInfo: PlatformInfo,
+    private val signOutEffect: SignOutEffect,
     private val feedbackDataBuilder: FeedbackDataBuilder,
-    private val feedbackApi: FeedbackApi,
+    private val feedbackApiClient: FeedbackApiClient,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<SettingsState, SettingsAction> {
 
@@ -51,7 +52,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()
                 SettingsType.Help -> TODO()
-                SettingsType.SignOut -> TODO()
+                SettingsType.SignOut -> effectOf(SettingsAction.SignOutTapped)
             }
             is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
             is SettingsAction.ManualModeToggled -> state.updatePrefs { copy(manualModeEnabled = !manualModeEnabled) }
@@ -70,16 +71,16 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.AllowCalendarAccessToggled -> state.handleAllowCalendarAccessToggled()
             is SettingsAction.CalendarPermissionRequested -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = true) }
             is SettingsAction.CalendarPermissionReceived -> state.mutateWithoutEffects { copy(shouldRequestCalendarPermission = false) }
-            SettingsAction.SignOutTapped -> effect(SignOutEffect(settingsRepository, dispatcherProvider))
+            SettingsAction.SignOutTapped -> effect(signOutEffect)
             SettingsAction.SignOutCompleted -> noEffect()
             is SettingsAction.SendFeedbackTapped -> {
                 state.mutate {
                     SettingsState.localState.modify(this) {
-                        it.copy(sendFeedbackRequest = Loadable.Loading())
+                        it.copy(sendFeedbackRequest = Loadable.Loading)
                     }
                 }
                 effect(
-                    SendFeedbackEffect(action.feedbackMessage, state().user, platformInfo, feedbackDataBuilder, feedbackApi, dispatcherProvider)
+                    SendFeedbackEffect(action.feedbackMessage, state().user, platformInfo, feedbackDataBuilder, feedbackApiClient, dispatcherProvider)
                 )
             }
             is SettingsAction.FeedbackSent -> state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Loaded(Unit))

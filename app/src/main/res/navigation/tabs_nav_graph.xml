@@ -10,7 +10,9 @@
         android:name="com.toggl.onboarding.ui.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/login_fragment"
-        app:launchSingleTop="true" />
+        app:launchSingleTop="true"  >
+        <deepLink app:uri="@string/deep_link_onboarding" />
+    </fragment>
 
     <fragment
         android:id="@+id/time_entries_log"

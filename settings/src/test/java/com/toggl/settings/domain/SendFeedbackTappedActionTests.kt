@@ -24,7 +24,7 @@ class SendFeedbackTappedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             SettingsAction.SendFeedbackTapped("message")
-        ) { state -> state.localState.sendFeedbackRequest.shouldBeTypeOf<Loadable.Loading<Unit>>() }
+        ) { state -> state.localState.sendFeedbackRequest.shouldBeTypeOf<Loadable.Loading>() }
     }
 
     @Test

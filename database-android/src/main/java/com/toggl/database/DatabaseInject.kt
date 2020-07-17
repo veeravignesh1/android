@@ -7,6 +7,7 @@ import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
 import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
+import com.toggl.database.dao.UserDao
 import com.toggl.database.dao.WorkspaceDao
 import dagger.Module
 import dagger.Provides
@@ -46,4 +47,8 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun taskDao(appDatabase: TogglDatabase): TaskDao = appDatabase.taskDao()
+
+    @Provides
+    @Singleton
+    fun userDao(appDatabase: TogglDatabase): UserDao = appDatabase.userDao()
 }

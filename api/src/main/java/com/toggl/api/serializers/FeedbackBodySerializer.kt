@@ -5,7 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.toggl.api.FeedbackBody
+import com.toggl.api.network.FeedbackBody
 import java.lang.reflect.Type
 
 class FeedbackBodySerializer : JsonSerializer<FeedbackBody> {

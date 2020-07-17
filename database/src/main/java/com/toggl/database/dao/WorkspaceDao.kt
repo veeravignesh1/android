@@ -32,4 +32,7 @@ interface WorkspaceDao {
 
     @Delete
     fun delete(databaseWorkspace: DatabaseWorkspace)
+
+    @Query("DELETE FROM workspaces")
+    fun clear()
 }

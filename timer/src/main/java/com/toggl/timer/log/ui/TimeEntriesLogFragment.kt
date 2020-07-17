@@ -127,6 +127,7 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
 
     override fun onDestroyView() {
         snackbar = null
+        (activity as AppCompatActivity).setSupportActionBar(null)
         super.onDestroyView()
     }
 

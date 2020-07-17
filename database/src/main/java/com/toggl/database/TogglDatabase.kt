@@ -5,6 +5,7 @@ import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
 import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
+import com.toggl.database.dao.UserDao
 import com.toggl.database.dao.WorkspaceDao
 
 interface TogglDatabase {
@@ -14,4 +15,5 @@ interface TogglDatabase {
     fun clientDao(): ClientDao
     fun tagDao(): TagDao
     fun taskDao(): TaskDao
+    fun userDao(): UserDao
 }

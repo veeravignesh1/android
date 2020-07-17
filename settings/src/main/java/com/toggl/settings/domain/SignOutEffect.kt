@@ -2,16 +2,19 @@ package com.toggl.settings.domain
 
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
-import com.toggl.repository.interfaces.SettingsRepository
+import com.toggl.repository.interfaces.AppRepository
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SignOutEffect(
-    private val settingsRepository: SettingsRepository,
-    private val dispatcherProvider: DispatcherProvider
+@Singleton
+class SignOutEffect @Inject constructor(
+    private val dispatcherProvider: DispatcherProvider,
+    private val appRepository: AppRepository
 ) : Effect<SettingsAction.SignOutCompleted> {
     override suspend fun execute(): SettingsAction.SignOutCompleted? =
         withContext(dispatcherProvider.io) {
-            settingsRepository.signOut()
+            appRepository.clearAllData()
             SettingsAction.SignOutCompleted
         }
 }

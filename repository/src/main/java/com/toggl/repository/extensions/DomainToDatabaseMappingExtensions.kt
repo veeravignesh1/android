@@ -2,7 +2,9 @@ package com.toggl.repository.extensions
 
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
+import com.toggl.database.models.DatabaseUser
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
 import com.toggl.repository.dto.CreateTimeEntryDTO
 import com.toggl.repository.dto.StartTimeEntryDTO
 
@@ -53,4 +55,12 @@ private fun StartTimeEntryDTO.toDatabaseTimeEntry() = DatabaseTimeEntry(
     projectId = projectId,
     taskId = taskId,
     isDeleted = false
+)
+
+fun User.toDatabaseModel() = DatabaseUser(
+    id,
+    apiToken.toString(),
+    email.toString(),
+    name,
+    defaultWorkspaceId
 )

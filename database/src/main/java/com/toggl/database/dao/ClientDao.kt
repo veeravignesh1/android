@@ -29,4 +29,7 @@ interface ClientDao {
 
     @Delete
     fun delete(client: DatabaseClient)
+
+    @Query("DELETE FROM clients")
+    fun clear()
 }

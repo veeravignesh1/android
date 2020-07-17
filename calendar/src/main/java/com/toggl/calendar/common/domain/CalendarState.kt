@@ -1,6 +1,7 @@
 package com.toggl.calendar.common.domain
 
 import arrow.optics.optics
+import com.toggl.architecture.Loadable
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.BackStackAwareState
 import com.toggl.common.feature.navigation.pop
@@ -9,10 +10,12 @@ import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
 import java.time.OffsetDateTime
 
 @optics
 data class CalendarState(
+    val user: Loadable<User>,
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
@@ -36,6 +39,3 @@ data class CalendarState(
 
     companion object
 }
-
-internal fun CalendarState.pop() =
-    copy(backStack = backStack.pop())

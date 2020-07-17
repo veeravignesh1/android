@@ -29,4 +29,7 @@ interface ProjectDao {
 
     @Delete
     fun delete(databaseProject: DatabaseProject)
+
+    @Query("DELETE FROM projects")
+    fun clear()
 }

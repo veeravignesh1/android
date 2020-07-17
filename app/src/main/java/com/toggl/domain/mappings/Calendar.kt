@@ -7,6 +7,7 @@ import com.toggl.domain.AppState
 
 fun mapAppStateToCalendarState(appState: AppState): CalendarState =
     CalendarState(
+        appState.user,
         appState.timeEntries,
         appState.projects,
         appState.clients,

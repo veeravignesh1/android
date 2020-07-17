@@ -1,6 +1,6 @@
-package com.toggl.common.feature.ext
+package com.toggl.api.extensions
 
-import com.toggl.common.feature.BuildConfig
+import com.toggl.api.BuildConfig
 
 object AppBuildConfig {
     val isBuildTypeRelease: Boolean

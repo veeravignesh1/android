@@ -6,7 +6,7 @@ import com.toggl.models.domain.WorkspaceFeature
 
 @Entity(tableName = "workspaces")
 data class DatabaseWorkspace(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     val id: Long = 0,
     val name: String,
     val features: List<WorkspaceFeature>

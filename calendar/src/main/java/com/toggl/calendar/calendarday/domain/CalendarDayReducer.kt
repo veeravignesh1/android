@@ -57,7 +57,7 @@ class CalendarDayReducer @Inject constructor(
                 copy(events = action.calendarEvents.associateBy { it.id })
             }
             is CalendarDayAction.EmptyPositionLongPressed -> state.mutateWithoutEffects {
-                val workspaceId = this.defaultWorkspaceId()
+                val workspaceId = user.defaultWorkspaceId
                 val timeEntry = createEmptyTimeEntry(workspaceId, action.startTime)
                 val route = Route.ContextualMenu(timeEntry)
                 copy(backStack = backStack.pushOrUpdate(route))
@@ -117,6 +117,4 @@ class CalendarDayReducer @Inject constructor(
 
         return if (!contextualMenuIsVisible) push(route) else setRouteParam { route }
     }
-
-    private fun CalendarDayState.defaultWorkspaceId(): Long = 1L
 }

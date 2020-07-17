@@ -29,7 +29,7 @@ fun createInitialState(
 
 fun createUser(
     id: Long = 0,
-    token: ApiToken = ApiToken.Invalid,
+    token: ApiToken.Valid = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
     workspaceId: Long = 10L,
     email: Email.Valid = Email.from("email@email.com") as Email.Valid,
     name: String = ""

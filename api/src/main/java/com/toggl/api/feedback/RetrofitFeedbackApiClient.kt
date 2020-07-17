@@ -1,13 +1,16 @@
-package com.toggl.api
+package com.toggl.api.feedback
 
-import com.toggl.api.feedback.FeedbackApi
+import com.toggl.api.network.FeedbackApi
+import com.toggl.api.network.FeedbackBody
 import com.toggl.models.domain.FeedbackData
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.User
 import java.time.OffsetDateTime
 import java.util.TimeZone
 
-class ApiClient(private val apiService: ApiService) : FeedbackApi {
+internal class RetrofitFeedbackApiClient(
+    private val feedbackApi: FeedbackApi
+) : FeedbackApiClient {
     private val unspecified = "unspecified"
     private val never = "never"
 
@@ -33,7 +36,8 @@ class ApiClient(private val apiService: ApiService) : FeedbackApi {
             "BuildNumber" to platformInfo.buildNumber,
             "InstallLocation" to platformInfo.installLocation.name
         )
-        apiService.sendFeedback(
+
+        feedbackApi.sendFeedback(
             feedbackBody = FeedbackBody(user.email.toString(), message, data)
         )
     }

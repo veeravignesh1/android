@@ -1,6 +1,6 @@
 package com.toggl.settings.common
 
-import com.toggl.api.feedback.FeedbackApi
+import com.toggl.api.feedback.FeedbackApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Loadable
 import com.toggl.architecture.core.Effect
@@ -22,6 +22,7 @@ import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.domain.FeedbackDataBuilder
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.settings.domain.SettingsState
+import com.toggl.settings.domain.SignOutEffect
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import io.mockk.mockk
@@ -34,7 +35,7 @@ fun createSettingsState(
     userPreferences: UserPreferences = createUserPreferences(),
     user: User = User(
         id = 0,
-        apiToken = ApiToken.from(""),
+        apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
         defaultWorkspaceId = 1L,
         email = Email.from("email@valid.com") as Email.Valid,
         name = ""
@@ -81,13 +82,15 @@ fun createSettingsReducer(
     permissionCheckerService: PermissionCheckerService = mockk(relaxed = true),
     platformInfo: PlatformInfo = mockk(),
     feedbackDataBuilder: FeedbackDataBuilder = mockk(),
-    feedbackApi: FeedbackApi = mockk(),
+    feedbackApiClient: FeedbackApiClient = mockk(),
+    signOutEffect: SignOutEffect = mockk(),
     dispatcherProvider: DispatcherProvider
 ) = SettingsReducer(
     settingsRepository = settingsRepository,
     permissionCheckerService = permissionCheckerService,
     platformInfo = platformInfo,
-    feedbackApi = feedbackApi,
+    signOutEffect = signOutEffect,
+    feedbackApiClient = feedbackApiClient,
     feedbackDataBuilder = feedbackDataBuilder,
     dispatcherProvider = dispatcherProvider
 )

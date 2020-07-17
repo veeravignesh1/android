@@ -101,7 +101,7 @@ object ViewModelTimerModule {
     @ExperimentalCoroutinesApi
     @Provides
     internal fun runningTimeEntryStore(store: Store<TimerState, TimerAction>): Store<RunningTimeEntryState, RunningTimeEntryAction> =
-        store.view(
+        store.optionalView(
             mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
             mapToGlobalAction = TimerAction::RunningTimeEntry
         )
@@ -172,7 +172,7 @@ object ApplicationTimerModule {
                 mapToGlobalState = StartEditState.Companion::toTimerState,
                 mapToGlobalAction = TimerAction::StartEditTimeEntry
             ),
-            runningTimeEntryReducer.decorateWith(timeEntryReducer).pullback(
+            runningTimeEntryReducer.optionalPullback(
                 mapToLocalState = RunningTimeEntryState.Companion::fromTimerState,
                 mapToLocalAction = TimerAction::unwrap,
                 mapToGlobalState = RunningTimeEntryState.Companion::toTimerState,
@@ -227,5 +227,11 @@ object ApplicationTimerModule {
             mapToLocalAction = { TimerAction.unwrapSuggestionsTimeEntryActionHolder(it) },
             mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
             mapToGlobalAction = { localAction -> TimerAction.Suggestions(SuggestionsAction.TimeEntryHandling(localAction)) }
+        ).decorateWith(
+            timeEntryReducer,
+            mapToLocalState = { TimeEntryState(it.timeEntries) },
+            mapToLocalAction = { TimerAction.unwrapRunningTimeEntryActionHolder(it) },
+            mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },
+            mapToGlobalAction = { localAction -> TimerAction.RunningTimeEntry(RunningTimeEntryAction.TimeEntryHandling(localAction)) }
         )
 }

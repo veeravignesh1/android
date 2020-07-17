@@ -6,10 +6,12 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
 import com.toggl.models.domain.Workspace
 
 sealed class LoadingAction {
     object StartLoading : LoadingAction()
+    data class UserLoaded(val user: User?) : LoadingAction()
     data class TagsLoaded(val tags: List<Tag>) : LoadingAction()
     data class WorkspacesLoaded(val workspaces: List<Workspace>) : LoadingAction()
     data class ProjectsLoaded(val projects: List<Project>) : LoadingAction()
@@ -29,4 +31,5 @@ fun LoadingAction.formatForDebug() =
         is LoadingAction.TagsLoaded -> "Loaded ${tags.size} tags"
         is LoadingAction.TasksLoaded -> "Loaded ${tasks.size} tasks"
         is LoadingAction.UserPreferencesLoaded -> "Loaded $userPreferences"
+        is LoadingAction.UserLoaded -> "Loaded $user"
     }

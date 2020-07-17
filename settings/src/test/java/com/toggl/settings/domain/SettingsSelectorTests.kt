@@ -34,7 +34,7 @@ class SettingsSelectorTests : CoroutineTest() {
         )
         val user = User(
             1,
-            ApiToken.from("token"),
+            ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
             Email.from("test@toggl.com") as Email.Valid,
             "Test Name",
             1

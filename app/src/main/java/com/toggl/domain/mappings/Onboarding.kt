@@ -6,10 +6,18 @@ import com.toggl.onboarding.domain.actions.OnboardingAction
 import com.toggl.onboarding.domain.states.OnboardingState
 
 fun mapAppStateToOnboardingState(appState: AppState): OnboardingState =
-    OnboardingState(appState.user, appState.onboardingLocalState)
+    OnboardingState(
+        appState.user,
+        appState.backStack,
+        appState.onboardingLocalState
+    )
 
 fun mapOnboardingStateToAppState(appState: AppState, onboardingState: OnboardingState): AppState =
-    appState.copy(user = onboardingState.user, onboardingLocalState = onboardingState.localState)
+    appState.copy(
+        user = onboardingState.user,
+        backStack = onboardingState.backStack,
+        onboardingLocalState = onboardingState.localState
+    )
 
 fun mapOnboardingActionToAppAction(onboardingAction: OnboardingAction): AppAction =
     AppAction.Onboarding(onboardingAction)

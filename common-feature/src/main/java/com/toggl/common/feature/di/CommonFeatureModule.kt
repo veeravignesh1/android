@@ -6,24 +6,15 @@ import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.toggl.api.ApiClient
-import com.toggl.api.ApiService
-import com.toggl.api.AuthInterceptor
-import com.toggl.api.FeedbackBody
-import com.toggl.api.feedback.FeedbackApi
-import com.toggl.api.serializers.FeedbackBodySerializer
+import com.toggl.api.di.ApiModule
 import com.toggl.common.feature.services.analytics.AnalyticsService
 import com.toggl.common.feature.services.analytics.AppCenterAnalyticsService
 import com.toggl.common.feature.services.analytics.CompositeAnalyticsService
 import com.toggl.common.feature.services.analytics.FirebaseAnalyticsService
 import com.toggl.common.feature.services.calendar.CalendarService
 import com.toggl.common.feature.services.calendar.CursorCalendarService
-import com.toggl.common.feature.ext.AppBuildConfig
 import com.toggl.common.services.permissions.LollipopPermissionRequesterService
 import com.toggl.common.services.permissions.MarshmallowPermissionRequesterService
 import com.toggl.common.services.permissions.PermissionCheckerService
@@ -39,14 +30,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.Locale
 import java.util.TimeZone
 import javax.inject.Singleton
 
-@Module
+@Module(includes = [ ApiModule::class ])
 @InstallIn(ApplicationComponent::class)
 object CommonFeatureModule {
     @Provides
@@ -105,56 +93,6 @@ object CommonFeatureModule {
             installLocation
         )
     }
-
-    @Provides
-    @ApiAuthCredentials
-    fun authCredentials(): String {
-        // TODO: actually get the current logged in user api token
-        val validApiToken = "api token"
-        val authStringBytes = validApiToken.toByteArray(charset = Charsets.UTF_8)
-        return Base64.encodeToString(authStringBytes, Base64.DEFAULT)
-    }
-
-    @Provides
-    fun authInterceptor(@ApiAuthCredentials authString: String?): AuthInterceptor =
-        AuthInterceptor(authString)
-
-    @Provides
-    @BaseApiUrl
-    fun baseEndpointUrl(): String =
-        if (AppBuildConfig.isBuildTypeRelease) "https://mobile.toggl.com"
-        else "https://mobile.toggl.space"
-
-    @Provides
-    @LoggedInOkHttpClient
-    fun okHttpClient(authInterceptor: AuthInterceptor): OkHttpClient = OkHttpClient.Builder()
-        .addInterceptor(authInterceptor)
-        .build()
-
-    @Provides
-    fun providesGson(): Gson = GsonBuilder()
-        .registerTypeAdapter(FeedbackBody::class.java, FeedbackBodySerializer())
-        .create()
-
-    @Provides
-    fun providesApiService(
-        @BaseApiUrl baseUrl: String,
-        @LoggedInOkHttpClient okHttpClient: OkHttpClient,
-        gson: Gson
-    ): ApiService = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
-        .create(ApiService::class.java)
-
-    @Provides
-    @Singleton
-    fun apiClient(apiService: ApiService): ApiClient = ApiClient(apiService)
-
-    @Provides
-    @Singleton
-    fun feedbackApi(apiClient: ApiClient): FeedbackApi = apiClient
 }
 
 @Module

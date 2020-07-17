@@ -9,6 +9,7 @@ import com.toggl.database.models.DatabaseTag
 import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryTag
+import com.toggl.database.models.DatabaseUser
 import com.toggl.database.models.DatabaseWorkspace
 
 @Database(
@@ -19,7 +20,8 @@ import com.toggl.database.models.DatabaseWorkspace
         DatabaseClient::class,
         DatabaseTag::class,
         DatabaseTimeEntryTag::class,
-        DatabaseTask::class
+        DatabaseTask::class,
+        DatabaseUser::class
     ],
     version = 1
 )

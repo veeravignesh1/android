@@ -1,6 +1,7 @@
 package com.toggl.calendar.contextualmenu.domain
 
 import arrow.optics.optics
+import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.BackStack
@@ -11,9 +12,11 @@ import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
 
 @optics
 data class ContextualMenuState(
+    val user: User,
     val timeEntries: Map<Long, TimeEntry>,
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
@@ -22,17 +25,20 @@ data class ContextualMenuState(
     val selectedItem: SelectedCalendarItem
 ) {
     companion object {
-        fun fromCalendarState(calendarState: CalendarState) =
-            calendarState.backStack.getRouteParam<SelectedCalendarItem>()?.let {
-                ContextualMenuState(
-                    calendarState.timeEntries,
-                    calendarState.projects,
-                    calendarState.clients,
-                    calendarState.localState.calendars,
-                    calendarState.backStack,
-                    it
-                )
-            }
+        fun fromCalendarState(calendarState: CalendarState): ContextualMenuState? {
+            val user = calendarState.user as? Loadable.Loaded<User> ?: return null
+            val selectedItem = calendarState.backStack.getRouteParam<SelectedCalendarItem>() ?: return null
+
+            return ContextualMenuState(
+                user.value,
+                calendarState.timeEntries,
+                calendarState.projects,
+                calendarState.clients,
+                calendarState.localState.calendars,
+                calendarState.backStack,
+                selectedItem
+            )
+        }
 
         fun toCalendarState(calendarState: CalendarState, contextualMenuState: ContextualMenuState?) =
             contextualMenuState?.let {

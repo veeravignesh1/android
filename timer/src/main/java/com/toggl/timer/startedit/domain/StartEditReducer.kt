@@ -149,9 +149,10 @@ class StartEditReducer @Inject constructor(
                     }
                     is StartEditSuggestions.CreateTag -> {
                         val tagCreationSuggestion = action.autocompleteSuggestion
+                        val workspaceId = state.mapState { editableTimeEntry.workspaceId }
                         state.mutate {
                             modifyWithCreateTagSuggestion()
-                        } returnEffect effect(CreateTagEffect(dispatcherProvider, repository, tagCreationSuggestion.name, 1))
+                        } returnEffect effect(CreateTagEffect(dispatcherProvider, repository, tagCreationSuggestion.name, workspaceId))
                     }
                 }
             }
@@ -321,7 +322,7 @@ class StartEditReducer @Inject constructor(
     private fun StartEditState.modifyWithCreateProjectSuggestion(autocompleteSuggestion: StartEditSuggestions.CreateProject): StartEditState {
         val editableProject = EditableProject(
             name = autocompleteSuggestion.name,
-            workspaceId = 1
+            workspaceId = editableTimeEntry.workspaceId
         )
         val route = Route.Project(editableProject)
         return copy(backStack = backStack.push(route))

@@ -9,6 +9,7 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.validation.ApiToken
 import io.kotlintest.matchers.collections.shouldBeEmpty
 import io.kotlintest.matchers.types.shouldBeTypeOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -77,6 +78,9 @@ fun createTask(
     workspaceId,
     userId
 )
+
+fun validApiToken() =
+    ApiToken.from("012345678901234567890123456789012") as ApiToken.Valid
 
 suspend fun <State, Action> Reducer<State, Action>.testReduce(
     initialState: State,

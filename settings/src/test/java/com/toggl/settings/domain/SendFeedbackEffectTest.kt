@@ -1,6 +1,6 @@
 package com.toggl.settings.domain
 
-import com.toggl.api.feedback.FeedbackApi
+import com.toggl.api.feedback.FeedbackApiClient
 import com.toggl.models.domain.FeedbackData
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.User
@@ -23,7 +23,7 @@ class SendFeedbackEffectTest : CoroutineTest() {
 
     @Test
     fun `should call the feedback api with the provided user email, message and platformInfo`() = runBlockingTest {
-        val feedbackApi = mockk<FeedbackApi>()
+        val feedbackApi = mockk<FeedbackApiClient>()
         val feedbackDataBuilder = mockk<FeedbackDataBuilder>()
         val expectedFeedbackData = mockk<FeedbackData>()
         coEvery { feedbackApi.sendFeedback(any(), any(), any(), any()) }.returns(Unit)
@@ -33,7 +33,7 @@ class SendFeedbackEffectTest : CoroutineTest() {
         val expectedEmail = Email.from("expected@email.com") as Email.Valid
         val expectedUser = User(
             id = 0,
-            apiToken = ApiToken.from(""),
+            apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
             email = expectedEmail,
             name = "",
             defaultWorkspaceId = 1L
@@ -49,7 +49,7 @@ class SendFeedbackEffectTest : CoroutineTest() {
     @Test
     fun `should return the SetSendFeedbackError action with the right throwable when something goes wrong`() =
         runBlockingTest {
-            val feedbackApi = mockk<FeedbackApi>()
+            val feedbackApi = mockk<FeedbackApiClient>()
             val feedbackDataBuilder = mockk<FeedbackDataBuilder>()
             coEvery { feedbackDataBuilder.assembleFeedbackData() }.returns(mockk())
             val expectedError = mockk<Exception>()
@@ -64,7 +64,7 @@ class SendFeedbackEffectTest : CoroutineTest() {
 
     @Test
     fun `should return the FeedbackSent action with the right throwable when something goes wrong`() = runBlockingTest {
-        val feedbackApi = mockk<FeedbackApi>()
+        val feedbackApi = mockk<FeedbackApiClient>()
         val feedbackDataBuilder = mockk<FeedbackDataBuilder>()
         coEvery { feedbackDataBuilder.assembleFeedbackData() }.returns(mockk())
         coEvery { feedbackApi.sendFeedback(any(), any(), any(), any()) }.returns(Unit)

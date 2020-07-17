@@ -1,10 +1,10 @@
-package com.toggl.api
+package com.toggl.api.network
 
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.io.Serializable
 
-interface ApiService {
+internal interface FeedbackApi {
     @POST("mobile/feedback")
     suspend fun sendFeedback(@Body feedbackBody: FeedbackBody)
 }

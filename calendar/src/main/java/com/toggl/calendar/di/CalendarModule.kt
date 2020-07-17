@@ -39,7 +39,7 @@ object CalendarViewModelModule {
     @ExperimentalCoroutinesApi
     @Provides
     internal fun calendarDayStore(store: Store<CalendarState, CalendarAction>): Store<CalendarDayState, CalendarDayAction> =
-        store.view(
+        store.optionalView(
             mapToLocalState = CalendarDayState.Companion::fromCalendarState,
             mapToGlobalAction = CalendarAction::CalendarDay
         )
@@ -77,7 +77,7 @@ object CalendarApplicationModule {
     ): CalendarReducer {
 
         return combine<CalendarState, CalendarAction>(
-            calendarDayReducer.pullback(
+            calendarDayReducer.optionalPullback(
                 mapToLocalState = CalendarDayState.Companion::fromCalendarState,
                 mapToLocalAction = CalendarAction::unwrap,
                 mapToGlobalState = CalendarDayState.Companion::toCalendarState,

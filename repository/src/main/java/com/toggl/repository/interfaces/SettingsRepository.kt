@@ -5,7 +5,6 @@ import com.toggl.models.domain.UserPreferences
 interface SettingsRepository {
     suspend fun loadUserPreferences(): UserPreferences
     suspend fun saveUserPreferences(userPreferences: UserPreferences)
-    suspend fun signOut()
 
     companion object {
         const val manualModeEnabled = "manualModeEnabled"
@@ -19,5 +18,6 @@ interface SettingsRepository {
         const val dateFormat = "dateFormat"
         const val durationFormat = "durationFormat"
         const val firstDayOfTheWeek = "firstDayOfTheWeek"
+        const val apiToken = "apiToken"
     }
 }

@@ -2,18 +2,21 @@ package com.toggl.repository
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
+import com.toggl.api.ApiTokenProvider
 import com.toggl.common.services.time.TimeService
 import com.toggl.database.dao.ClientDao
 import com.toggl.database.dao.ProjectDao
 import com.toggl.database.dao.TagDao
 import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
+import com.toggl.database.dao.UserDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseClient
 import com.toggl.database.models.DatabaseProject
 import com.toggl.database.models.DatabaseTag
 import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntryWithTags
+import com.toggl.database.models.DatabaseUser
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.DateFormat
@@ -23,15 +26,18 @@ import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
+import com.toggl.models.validation.ApiToken
 import com.toggl.repository.dto.CreateProjectDTO
 import com.toggl.repository.dto.CreateTimeEntryDTO
 import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
 import com.toggl.repository.extensions.toModelWithoutTags
+import com.toggl.repository.interfaces.AppRepository
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.SettingsRepository
@@ -39,6 +45,7 @@ import com.toggl.repository.interfaces.StartTimeEntryResult
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.TimeEntryRepository
+import com.toggl.repository.interfaces.UserRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import java.time.DayOfWeek
 
@@ -49,9 +56,19 @@ class Repository(
     private val clientDao: ClientDao,
     private val tagDao: TagDao,
     private val taskDao: TaskDao,
+    private val userDao: UserDao,
     private val sharedPreferences: SharedPreferences,
     private val timeService: TimeService
-) : ProjectRepository, TimeEntryRepository, WorkspaceRepository, ClientRepository, TagRepository, TaskRepository, SettingsRepository {
+) : WorkspaceRepository,
+    TimeEntryRepository,
+    SettingsRepository,
+    ProjectRepository,
+    ClientRepository,
+    TaskRepository,
+    UserRepository,
+    AppRepository,
+    ApiTokenProvider,
+    TagRepository {
 
     override suspend fun loadProjects(): List<Project> =
         projectDao.getAll().map(DatabaseProject::toModel)
@@ -92,20 +109,7 @@ class Repository(
         tagDao.getAll().map(DatabaseTag::toModel)
 
     override suspend fun loadWorkspaces(): List<Workspace> =
-        workspaceDao.getAll().let {
-            if (it.any())
-                return@let it.map(DatabaseWorkspace::toModel)
-
-            // Automatically create a default workspace
-            val workspace = DatabaseWorkspace(
-                name = "Auto created workspace",
-                features = listOf(WorkspaceFeature.Pro)
-            )
-            val workspaceId = workspaceDao.insert(workspace)
-
-            return@let listOf(workspace.copy(id = workspaceId))
-                .map(DatabaseWorkspace::toModel)
-        }
+        workspaceDao.getAll().map(DatabaseWorkspace::toModel)
 
     override suspend fun workspacesCount(): Int = workspaceDao.count()
 
@@ -126,11 +130,11 @@ class Repository(
 
     override suspend fun startTimeEntry(startTimeEntryDTO: StartTimeEntryDTO): StartTimeEntryResult {
         return timeEntryDao.startTimeEntry(startTimeEntryDTO.toDatabaseModel()).let { (started, stopped) ->
-                StartTimeEntryResult(
-                    started.toModel(),
-                    stopped.firstOrNull()?.toModelWithoutTags()
-                )
-            }
+            StartTimeEntryResult(
+                started.toModel(),
+                stopped.firstOrNull()?.toModelWithoutTags()
+            )
+        }
     }
 
     override suspend fun createTimeEntry(createTimeEntryDTO: CreateTimeEntryDTO): TimeEntry {
@@ -155,6 +159,10 @@ class Repository(
             .apply(timeEntryDao::updateTimeEntryWithTags)
             .let(DatabaseTimeEntryWithTags::toModel)
     }
+
+    override fun getApiToken(): ApiToken =
+        sharedPreferences.getString(SettingsRepository.apiToken, "")
+            ?.let(ApiToken.Companion::from) ?: ApiToken.Invalid
 
     override suspend fun loadUserPreferences(): UserPreferences =
         with(sharedPreferences) {
@@ -190,8 +198,36 @@ class Repository(
         }
     }
 
-    override suspend fun signOut() {
+    override suspend fun clearAllData() {
         saveUserPreferences(UserPreferences.default)
-        // TODO sync un-synced entities etc
+        setApiToken(ApiToken.Invalid)
+        userDao.clear()
+        projectDao.clear()
+        timeEntryDao.clear()
+        workspaceDao.clear()
+        clientDao.clear()
+        tagDao.clear()
+        taskDao.clear()
+        userDao.clear()
+    }
+
+    override suspend fun get(): User? =
+        userDao.getAll().firstOrNull()?.let(DatabaseUser::toModel)
+
+    override suspend fun set(user: User) {
+        // Automatically create a default workspace
+        workspaceDao.insert(DatabaseWorkspace(
+            id = user.defaultWorkspaceId,
+            name = "Auto created workspace",
+            features = listOf(WorkspaceFeature.Pro)
+        ))
+
+        userDao.set(user.toDatabaseModel())
+    }
+
+    private fun setApiToken(apiToken: ApiToken) {
+        sharedPreferences.edit {
+            putString(SettingsRepository.apiToken, apiToken.toString())
+        }
     }
 }

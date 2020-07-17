@@ -1,6 +1,11 @@
-package com.toggl.common.feature.di
+package com.toggl.api.di
 
 import javax.inject.Qualifier
+
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+@MustBeDocumented
+annotation class BaseUrl
 
 @Retention(AnnotationRetention.RUNTIME)
 @Qualifier
@@ -10,9 +15,4 @@ annotation class BaseApiUrl
 @Retention(AnnotationRetention.RUNTIME)
 @Qualifier
 @MustBeDocumented
-annotation class ApiAuthCredentials
-
-@Retention(AnnotationRetention.RUNTIME)
-@Qualifier
-@MustBeDocumented
-annotation class LoggedInOkHttpClient
+annotation class BaseReportsUrl

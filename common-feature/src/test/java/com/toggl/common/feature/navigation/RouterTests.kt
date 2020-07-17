@@ -116,7 +116,6 @@ class RouterTests : CoroutineTest() {
         router.processNewBackStack(newStack, navController)
 
         verifyOrder {
-            navController.navigate(deepLinks.timeEntriesLog)
             navController.popBackStack()
             navController.navigate(deepLinks.onboarding)
         }
@@ -138,7 +137,6 @@ class RouterTests : CoroutineTest() {
         router.processNewBackStack(newStack, navController)
 
         verifyOrder {
-            navController.navigate(deepLinks.timeEntriesLog)
             navController.navigate(deepLinks.startEditDialog)
             navController.navigate(deepLinks.projectDialog)
             navController.popBackStack()

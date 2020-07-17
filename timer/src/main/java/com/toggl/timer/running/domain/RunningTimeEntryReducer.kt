@@ -28,21 +28,24 @@ class RunningTimeEntryReducer @Inject constructor(val timeService: TimeService) 
         action: RunningTimeEntryAction
     ): List<Effect<RunningTimeEntryAction>> =
         when (action) {
-            StartButtonTapped -> effect(
-                TimeEntryHandling(StartTimeEntry(EditableTimeEntry.empty(1L).toStartDto(timeService.now()))).toEffect()
-            )
+            StartButtonTapped -> state.mapState {
+                val dto = EditableTimeEntry
+                    .empty(state().user.defaultWorkspaceId)
+                    .toStartDto(timeService.now())
+
+                val timeEntryAction = TimeEntryHandling(StartTimeEntry(dto))
+                effect(timeEntryAction.toEffect())
+            }
             StopButtonTapped -> effect(TimeEntryHandling(StopRunningTimeEntry).toEffect())
             CardTapped ->
                 state.mutateWithoutEffects {
                     val entryToOpen = timeEntries.runningTimeEntryOrNull()
                         ?.run(EditableTimeEntry.Companion::fromSingle)
-                        ?: EditableTimeEntry.empty(defaultWorkspaceId())
+                        ?: EditableTimeEntry.empty(state().user.defaultWorkspaceId)
 
                     val route = Route.StartEdit(entryToOpen)
                     copy(backStack = backStack.push(route))
                 }
             is TimeEntryHandling -> noEffect()
         }
-
-    private fun RunningTimeEntryState.defaultWorkspaceId() = 1L
 }

@@ -3,6 +3,7 @@ package com.toggl.domain
 import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
@@ -12,20 +13,12 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
-import com.toggl.models.validation.ApiToken
-import com.toggl.models.validation.Email
 import com.toggl.onboarding.domain.states.OnboardingState
 import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerState
 
 data class AppState(
-    val user: Loadable<User> = Loadable.Loaded(User(
-        1,
-        ApiToken.from("token"),
-        Email.from("test@toggl.com") as Email.Valid,
-        "Test Name",
-        1
-    )),
+    val user: Loadable<User> = Loadable.Uninitialized,
     val userPreferences: UserPreferences = UserPreferences.default,
     val workspaces: Map<Long, Workspace> = mapOf(),
     val projects: Map<Long, Project> = mapOf(),
@@ -33,7 +26,7 @@ data class AppState(
     val clients: Map<Long, Client> = mapOf(),
     val tags: Map<Long, Tag> = mapOf(),
     val timeEntries: Map<Long, TimeEntry> = mapOf(),
-    val backStack: BackStack = emptyList(),
+    val backStack: BackStack = listOf(Route.Timer),
     val calendarPermissionWasGranted: Boolean = false,
     val shouldRequestCalendarPermission: Boolean = false,
     val calendarEvents: Map<String, CalendarEvent> = mapOf(),
