@@ -20,7 +20,7 @@ fun SettingsType.toPresentableList(context: Context, userPreferences: UserPrefer
                     ChoiceListItem(
                         it.label,
                         userPreferences.dateFormat == it,
-                        selectedAction = SettingsAction.DateFormatSelected(it)
+                        selectedActions = listOf(SettingsAction.DateFormatSelected(it), SettingsAction.SingleChoiceSettingSelected)
                     )
                 }
         }
@@ -31,7 +31,7 @@ fun SettingsType.toPresentableList(context: Context, userPreferences: UserPrefer
                     ChoiceListItem(
                         it.getTranslatedRepresentation(context),
                         userPreferences.durationFormat == it,
-                        selectedAction = SettingsAction.DurationFormatSelected(it)
+                        selectedActions = listOf(SettingsAction.DurationFormatSelected(it), SettingsAction.SingleChoiceSettingSelected)
                     )
                 }
         }
@@ -42,7 +42,7 @@ fun SettingsType.toPresentableList(context: Context, userPreferences: UserPrefer
                     ChoiceListItem(
                         it.getTranslatedRepresentation(context),
                         userPreferences.firstDayOfTheWeek == it,
-                        selectedAction = SettingsAction.FirstDayOfTheWeekSelected(it)
+                        selectedActions = listOf(SettingsAction.FirstDayOfTheWeekSelected(it), SettingsAction.SingleChoiceSettingSelected)
                     )
                 }
         }

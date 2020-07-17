@@ -12,6 +12,7 @@ import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.popIfInRoute
 import com.toggl.common.feature.navigation.push
 import com.toggl.environment.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
@@ -91,6 +92,7 @@ class SettingsReducer @Inject constructor(
             )
             is SettingsAction.UpdateEmail -> state.mutateWithoutEffects { copy(user = user.copy(email = action.email)) }
             is SettingsAction.UpdateName -> state.mutateWithoutEffects { copy(user = user.copy(name = action.name)) }
+            is SettingsAction.SingleChoiceSettingSelected -> state.mutateWithoutEffects { copy(backStack = backStack.popIfInRoute<Route.SettingsEdit>()) }
         }
 
     private fun MutableValue<SettingsState>.handleAllowCalendarAccessToggled(): List<Effect<SettingsAction>> {

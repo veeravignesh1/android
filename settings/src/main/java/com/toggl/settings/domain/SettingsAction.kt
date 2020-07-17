@@ -19,6 +19,7 @@ sealed class SettingsAction {
     data class DurationFormatSelected(val durationFormat: DurationFormat) : SettingsAction()
     data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek) : SettingsAction()
     data class SmartAlertsOptionSelected(val smartAlertsOption: SmartAlertsOption) : SettingsAction()
+    object SingleChoiceSettingSelected : SettingsAction()
     object ManualModeToggled : SettingsAction()
     object Use24HourClockToggled : SettingsAction()
     object CellSwipeActionsToggled : SettingsAction()
@@ -60,6 +61,7 @@ fun SettingsAction.formatForDebug() =
         SettingsAction.SendFeedbackResultSeen -> "SendFeedbackResultSeen"
         SettingsAction.SignOutTapped -> "SignOutTapped"
         SettingsAction.SignOutCompleted -> "SignOutCompleted"
+        SettingsAction.SingleChoiceSettingSelected -> "SingleChoiceSettingSelected"
         is SettingsAction.UpdateEmail -> "UpdateEmail email $email"
         is SettingsAction.UpdateName -> "UpdateName name $name"
     }

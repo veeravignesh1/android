@@ -8,6 +8,11 @@ fun BackStack.push(route: Route) =
 fun BackStack.pop() =
     this.dropLast(1)
 
+inline fun <reified R : Route> BackStack.popIfInRoute() =
+    if (this.last() is R)
+        this.pop()
+    else this
+
 inline fun <reified P> BackStack.getRouteParam(): P? =
     mapNotNull {
         when {
