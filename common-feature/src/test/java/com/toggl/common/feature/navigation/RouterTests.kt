@@ -39,6 +39,7 @@ class RouterTests : CoroutineTest() {
         mockk(),
         mockk(),
         mockk(),
+        mockk(),
         mockk()
     )
 
@@ -110,14 +111,14 @@ class RouterTests : CoroutineTest() {
     fun `navigates between stacks with the same size`() = runBlockingTest {
 
         val oldStack = listOf(Route.Timer)
-        val newStack = listOf<Route>(Route.Onboarding)
+        val newStack = listOf<Route>(Route.Login)
 
         router.processNewBackStack(oldStack, navController)
         router.processNewBackStack(newStack, navController)
 
         verifyOrder {
             navController.popBackStack()
-            navController.navigate(deepLinks.onboarding)
+            navController.navigate(deepLinks.login)
         }
     }
 

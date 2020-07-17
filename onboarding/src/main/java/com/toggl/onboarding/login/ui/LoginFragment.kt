@@ -1,4 +1,4 @@
-package com.toggl.onboarding.ui
+package com.toggl.onboarding.login.ui
 
 import android.os.Bundle
 import android.view.View
@@ -10,9 +10,7 @@ import com.toggl.architecture.Loadable
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.onboarding.R
-import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.states.email
-import com.toggl.onboarding.domain.states.password
+import com.toggl.onboarding.login.domain.LoginAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.login_fragment.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,16 +31,16 @@ class LoginFragment : Fragment(R.layout.login_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         login_button.setOnClickListener {
-            store.dispatch(OnboardingAction.LoginTapped)
+            store.dispatch(LoginAction.LoginButtonTapped)
         }
 
         email.doOnTextChanged { text, _, _, _ ->
-            val action = OnboardingAction.EmailEntered(text.toString())
+            val action = LoginAction.EmailEntered(text.toString())
             store.dispatch(action)
         }
 
         password.doOnTextChanged { text, _, _, _ ->
-            val action = OnboardingAction.PasswordEntered(text.toString())
+            val action = LoginAction.PasswordEntered(text.toString())
             store.dispatch(action)
         }
 

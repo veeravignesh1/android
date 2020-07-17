@@ -6,7 +6,7 @@
     <string name="deep_link_project_dialog" translatable="false">toggl://project</string>
     <string name="deep_link_reports" translatable="false">toggl://reports</string>
     <string name="deep_link_calendar" translatable="false">toggl://calendar</string>
-    <string name="deep_link_onboarding" translatable="false">toggl://onboarding</string>
+    <string name="deep_link_welcome" translatable="false">toggl://welcome</string>
     <string name="deep_link_contextual_menu" translatable="false">toggl://contextualMenu</string>
     <string name="deep_link_settings" translatable="false">toggl://settings</string>
     <string name="deep_link_settings_workspace" translatable="false">toggl://settings/workspace</string>
@@ -21,4 +21,5 @@
     <string name="deep_link_settings_terms_of_service" translatable="false">toggl://settings/termsofservice</string>
     <string name="deep_link_settings_licenses" translatable="false">toggl://settings/licenses</string>
     <string name="deep_link_settings_help" translatable="false">toggl://settings/help</string>
+    <string name="deep_link_login" translatable="false">toggl://login</string>
 </resources>

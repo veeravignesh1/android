@@ -8,7 +8,8 @@ import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.SettingsType
 
 sealed class Route {
-    object Onboarding : Route()
+    object Welcome : Route()
+    object Login : Route()
     object Timer : Route()
     data class StartEdit(override val parameter: EditableTimeEntry) : Route(), ParameterRoute<EditableTimeEntry>
     data class Project(override val parameter: EditableProject) : Route(), ParameterRoute<EditableProject>
@@ -23,7 +24,8 @@ interface ParameterRoute<P> {
 
 fun Route.isSameTypeAs(otherRoute: Route) =
     when (this) {
-        Route.Onboarding -> otherRoute is Route.Onboarding
+        Route.Welcome -> otherRoute is Route.Welcome
+        Route.Login -> otherRoute is Route.Login
         Route.Timer -> otherRoute is Route.Timer
         is Route.StartEdit -> otherRoute is Route.StartEdit
         is Route.Project -> otherRoute is Route.Project
@@ -34,7 +36,8 @@ fun Route.isSameTypeAs(otherRoute: Route) =
 
 fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
     return when (this) {
-        Route.Onboarding -> deepLinks.onboarding
+        Route.Welcome -> deepLinks.welcome
+        Route.Login -> deepLinks.login
         Route.Timer -> deepLinks.timeEntriesLog
         is Route.StartEdit -> deepLinks.startEditDialog
         is Route.Project -> deepLinks.projectDialog

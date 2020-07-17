@@ -24,7 +24,7 @@ import com.toggl.domain.mappings.mapSettingsActionToAppAction
 import com.toggl.domain.mappings.mapSettingsStateToAppState
 import com.toggl.domain.mappings.mapTimerActionToAppAction
 import com.toggl.domain.mappings.mapTimerStateToAppState
-import com.toggl.onboarding.domain.reducers.OnboardingReducer
+import com.toggl.onboarding.common.domain.OnboardingReducer
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
 import kotlinx.coroutines.ExperimentalCoroutinesApi

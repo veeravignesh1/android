@@ -43,7 +43,7 @@ class LoadingReducer @Inject constructor(
                 copy(user = Loadable.Loading)
             } returnEffect effect(TryLoadingUserEffect(userRepository, dispatcherProvider))
             is LoadingAction.UserLoaded ->
-                if (action.user == null) state.mutateWithoutEffects { copy(user = Loadable.Uninitialized, backStack = listOf(Route.Onboarding)) }
+                if (action.user == null) state.mutateWithoutEffects { copy(user = Loadable.Uninitialized, backStack = listOf(Route.Login)) }
                 else state.mutate { copy(user = Loadable.Loaded(action.user), backStack = listOf(Route.Timer)) } returnEffect effects(
                     LoadWorkspacesEffect(workspaceRepository, dispatcherProvider),
                     LoadProjectsEffect(projectRepository, dispatcherProvider),

@@ -5,8 +5,6 @@ import com.toggl.architecture.Failure
 import com.toggl.architecture.Loadable
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceState
-import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.reducers.OnboardingReducer
 import com.toggl.repository.interfaces.UserRepository
 import io.kotlintest.shouldBe
 import io.mockk.mockk
@@ -20,7 +18,7 @@ import org.junit.jupiter.api.Test
 class SetUserErrorActionTests : CoroutineTest() {
     private val loginApi: LoginApiClient = mockk()
     private val userRepository: UserRepository = mockk()
-    private val reducer = OnboardingReducer(loginApi, userRepository, dispatcherProvider)
+    private val reducer = LoginReducer(loginApi, userRepository, dispatcherProvider)
 
     private val throwable = IllegalAccessException()
 
@@ -28,7 +26,7 @@ class SetUserErrorActionTests : CoroutineTest() {
     fun `sets the user error`() = runBlockingTest {
         val initialState = emptyState()
 
-        reducer.testReduceState(initialState, OnboardingAction.SetUserError(throwable)) { newState ->
+        reducer.testReduceState(initialState, LoginAction.SetUserError(throwable)) { newState ->
             newState shouldBe initialState.copy(
                 user = Loadable.Error(Failure(throwable, ""))
             )

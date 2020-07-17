@@ -166,7 +166,7 @@ class LoadingReducerTests : CoroutineTest() {
                 reducer.reduce(mutableValue, LoadingAction.UserLoaded(null))
 
                 initialState shouldBe emptyState.copy(
-                    backStack = listOf(Route.Onboarding),
+                    backStack = listOf(Route.Login),
                     user = Loadable.Uninitialized
                 )
             }

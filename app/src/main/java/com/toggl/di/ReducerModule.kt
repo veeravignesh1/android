@@ -10,7 +10,7 @@ import com.toggl.domain.reducers.SignOutReducer
 import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
 import com.toggl.domain.reducers.createAppReducer
-import com.toggl.onboarding.domain.reducers.OnboardingReducer
+import com.toggl.onboarding.common.domain.OnboardingReducer
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
 import dagger.Module

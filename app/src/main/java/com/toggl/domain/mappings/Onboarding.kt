@@ -2,8 +2,8 @@ package com.toggl.domain.mappings
 
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
-import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.states.OnboardingState
+import com.toggl.onboarding.common.domain.OnboardingAction
+import com.toggl.onboarding.common.domain.OnboardingState
 
 fun mapAppStateToOnboardingState(appState: AppState): OnboardingState =
     OnboardingState(

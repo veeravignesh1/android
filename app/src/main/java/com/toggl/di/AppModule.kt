@@ -22,8 +22,8 @@ import com.toggl.domain.mappings.mapCalendarActionToAppAction
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapSettingsActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
-import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.states.OnboardingState
+import com.toggl.onboarding.common.domain.OnboardingAction
+import com.toggl.onboarding.common.domain.OnboardingState
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerAction

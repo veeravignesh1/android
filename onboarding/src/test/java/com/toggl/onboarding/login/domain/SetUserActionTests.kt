@@ -6,8 +6,6 @@ import com.toggl.common.feature.navigation.Route
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validUser
-import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.reducers.OnboardingReducer
 import com.toggl.repository.interfaces.UserRepository
 import io.kotlintest.shouldBe
 import io.mockk.mockk
@@ -21,13 +19,13 @@ import org.junit.jupiter.api.Test
 class SetUserActionTests : CoroutineTest() {
     private val loginApi: LoginApiClient = mockk()
     private val userRepository: UserRepository = mockk()
-    private val reducer = OnboardingReducer(loginApi, userRepository, dispatcherProvider)
+    private val reducer = LoginReducer(loginApi, userRepository, dispatcherProvider)
 
     @Test
     fun `sets the user from the state and the route to the timer page`() = runBlockingTest {
         val initialState = emptyState()
 
-        reducer.testReduceState(initialState, OnboardingAction.SetUser(validUser)) { newState ->
+        reducer.testReduceState(initialState, LoginAction.SetUser(validUser)) { newState ->
             newState shouldBe initialState.copy(
                 backStack = listOf(Route.Timer),
                 user = Loadable.Loaded(validUser)

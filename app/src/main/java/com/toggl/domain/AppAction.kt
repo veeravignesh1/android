@@ -3,7 +3,7 @@ package com.toggl.domain
 import com.toggl.architecture.core.ActionWrapper
 import com.toggl.calendar.common.domain.CalendarAction
 import com.toggl.domain.loading.LoadingAction
-import com.toggl.onboarding.domain.actions.OnboardingAction
+import com.toggl.onboarding.common.domain.OnboardingAction
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.timer.common.domain.TimerAction
 

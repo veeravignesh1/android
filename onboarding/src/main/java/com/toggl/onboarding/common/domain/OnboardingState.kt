@@ -1,4 +1,4 @@
-package com.toggl.onboarding.domain.states
+package com.toggl.onboarding.common.domain
 
 import arrow.optics.optics
 import com.toggl.architecture.Loadable
@@ -24,9 +24,3 @@ data class OnboardingState(
 
     companion object
 }
-
-internal val OnboardingState.email: Email
-    get() = localState.email
-
-internal val OnboardingState.password: Password
-    get() = localState.password

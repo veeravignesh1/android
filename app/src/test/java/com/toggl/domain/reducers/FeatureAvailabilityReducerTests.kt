@@ -7,7 +7,8 @@ import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadingAction
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
-import com.toggl.onboarding.domain.actions.OnboardingAction
+import com.toggl.onboarding.common.domain.OnboardingAction
+import com.toggl.onboarding.login.domain.LoginAction
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.startedit.domain.StartEditAction
 import io.kotlintest.specs.FreeSpec
@@ -20,7 +21,7 @@ class FeatureAvailabilityReducerTests : FreeSpec() {
         val allActions: List<AppAction> = listOf(
             AppAction.Loading(LoadingAction.StartLoading),
             AppAction.Timer(TimerAction.StartEditTimeEntry(StartEditAction.BillableTapped)),
-            AppAction.Onboarding(OnboardingAction.LoginTapped)
+            AppAction.Onboarding(OnboardingAction.Login(LoginAction.LoginButtonTapped))
         )
 
         "The FeatureAvailabilityReducer" - {

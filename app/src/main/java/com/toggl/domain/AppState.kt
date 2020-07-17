@@ -13,7 +13,7 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
-import com.toggl.onboarding.domain.states.OnboardingState
+import com.toggl.onboarding.common.domain.OnboardingState
 import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerState
 

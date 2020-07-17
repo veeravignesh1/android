@@ -5,8 +5,6 @@ import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
 import com.toggl.onboarding.common.validUser
-import com.toggl.onboarding.domain.actions.OnboardingAction
-import com.toggl.onboarding.domain.effects.LogUserInEffect
 import com.toggl.repository.interfaces.UserRepository
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
@@ -26,7 +24,13 @@ class LogUserInEffectTests : CoroutineTest() {
     private val userRepository: UserRepository = mockk { coEvery { set(validUser) } returns Unit }
 
     private suspend fun executeEffect() =
-        LogUserInEffect(apiClient, userRepository, dispatcherProvider, validEmail, validPassword).execute()
+        LogUserInEffect(
+            apiClient,
+            userRepository,
+            dispatcherProvider,
+            validEmail,
+            validPassword
+        ).execute()
 
     @Test
     fun `sets the user`() = runBlockingTest {
@@ -39,7 +43,7 @@ class LogUserInEffectTests : CoroutineTest() {
     fun `return a set user action`() = runBlockingTest {
         val action = executeEffect()
 
-        action.shouldBeInstanceOf<OnboardingAction.SetUser> { it.user shouldBe validUser }
+        action.shouldBeInstanceOf<LoginAction.SetUser> { it.user shouldBe validUser }
     }
 
     @Test
@@ -48,6 +52,6 @@ class LogUserInEffectTests : CoroutineTest() {
 
         val action = executeEffect()
 
-        action.shouldBeInstanceOf<OnboardingAction.SetUserError>()
+        action.shouldBeInstanceOf<LoginAction.SetUserError>()
     }
 }

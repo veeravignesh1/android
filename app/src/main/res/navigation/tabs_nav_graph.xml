@@ -7,11 +7,11 @@
 
     <fragment
         android:id="@+id/login"
-        android:name="com.toggl.onboarding.ui.LoginFragment"
+        android:name="com.toggl.onboarding.login.ui.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/login_fragment"
         app:launchSingleTop="true"  >
-        <deepLink app:uri="@string/deep_link_onboarding" />
+        <deepLink app:uri="@string/deep_link_login" />
     </fragment>
 
     <fragment
@@ -64,7 +64,6 @@
     <fragment
         android:id="@+id/settings"
         android:name="com.toggl.settings.ui.SettingsFragment"
-        tools:layout="@layout/fragment_settings"
         android:label="SettingsFragment">
         <deepLink app:uri="@string/deep_link_settings" />
     </fragment>

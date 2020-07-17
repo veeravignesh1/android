@@ -9,7 +9,7 @@ import com.toggl.calendar.common.domain.formatForDebug
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.formatForDebug
-import com.toggl.onboarding.domain.actions.formatForDebug
+import com.toggl.onboarding.common.domain.formatForDebug
 import com.toggl.settings.domain.formatForDebug
 import com.toggl.timer.common.domain.formatForDebug
 
