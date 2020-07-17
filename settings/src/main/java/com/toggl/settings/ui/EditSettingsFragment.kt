@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.ui.core.setContent
 import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SettingsType
@@ -46,7 +47,7 @@ class EditSettingsFragment : DialogFragment() {
         store.state
             .mapNotNull {
                 if (it.backStack.last() is Route.SettingsEdit) {
-                    return@mapNotNull Pair(it.userPreferences, (it.backStack.last() as Route.SettingsEdit).parameter)
+                    return@mapNotNull Pair(it.userPreferences, it.backStack.getRouteParam<SettingsType>()!!)
                 } else {
                     null
                 }
