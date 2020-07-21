@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "95c01e21f7b4e90dd5ffb17d38afb783",
+    "identityHash": "e35a2f098ccc97a8b7cbd331ba3ea589",
     "entities": [
       {
         "tableName": "time_entries",
@@ -77,6 +77,22 @@
               "projectId"
             ],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_projectId` ON `${TABLE_NAME}` (`projectId`)"
+          },
+          {
+            "name": "index_time_entries_workspaceId",
+            "unique": false,
+            "columnNames": [
+              "workspaceId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_workspaceId` ON `${TABLE_NAME}` (`workspaceId`)"
+          },
+          {
+            "name": "index_time_entries_taskId",
+            "unique": false,
+            "columnNames": [
+              "taskId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_taskId` ON `${TABLE_NAME}` (`taskId`)"
           }
         ],
         "foreignKeys": [
@@ -174,7 +190,24 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_projects_workspaceId",
+            "unique": false,
+            "columnNames": [
+              "workspaceId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_projects_workspaceId` ON `${TABLE_NAME}` (`workspaceId`)"
+          },
+          {
+            "name": "index_projects_clientId",
+            "unique": false,
+            "columnNames": [
+              "clientId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_projects_clientId` ON `${TABLE_NAME}` (`clientId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "workspaces",
@@ -261,7 +294,16 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_clients_workspaceId",
+            "unique": false,
+            "columnNames": [
+              "workspaceId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_clients_workspaceId` ON `${TABLE_NAME}` (`workspaceId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "workspaces",
@@ -305,7 +347,16 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_tags_workspaceId",
+            "unique": false,
+            "columnNames": [
+              "workspaceId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tags_workspaceId` ON `${TABLE_NAME}` (`workspaceId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "workspaces",
@@ -344,7 +395,24 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_time_entries_tags_timeEntryId",
+            "unique": false,
+            "columnNames": [
+              "timeEntryId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_tags_timeEntryId` ON `${TABLE_NAME}` (`timeEntryId`)"
+          },
+          {
+            "name": "index_time_entries_tags_tagId",
+            "unique": false,
+            "columnNames": [
+              "tagId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_tags_tagId` ON `${TABLE_NAME}` (`tagId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "time_entries",
@@ -417,7 +485,24 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_tasks_workspaceId",
+            "unique": false,
+            "columnNames": [
+              "workspaceId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tasks_workspaceId` ON `${TABLE_NAME}` (`workspaceId`)"
+          },
+          {
+            "name": "index_tasks_projectId",
+            "unique": false,
+            "columnNames": [
+              "projectId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tasks_projectId` ON `${TABLE_NAME}` (`projectId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "workspaces",
@@ -484,7 +569,16 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_users_defaultWorkspaceId",
+            "unique": false,
+            "columnNames": [
+              "defaultWorkspaceId"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_users_defaultWorkspaceId` ON `${TABLE_NAME}` (`defaultWorkspaceId`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "workspaces",
@@ -503,7 +597,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '95c01e21f7b4e90dd5ffb17d38afb783')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e35a2f098ccc97a8b7cbd331ba3ea589')"
     ]
   }
 }
