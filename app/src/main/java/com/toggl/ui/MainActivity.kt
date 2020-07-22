@@ -1,7 +1,5 @@
 package com.toggl.ui
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -17,7 +15,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.toggl.R
 import com.toggl.architecture.core.Store
 import com.toggl.common.feature.navigation.BottomSheetNavigator
-import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.Router
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -30,7 +27,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.take
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -66,7 +62,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
 
     override fun onResume() {
         super.onResume()
-
         store.dispatch(AppAction.Timer(TimerAction.Suggestions(SuggestionsAction.LoadSuggestions)))
     }
 
