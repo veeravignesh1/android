@@ -14,7 +14,7 @@ import java.time.OffsetDateTime
         ForeignKey(entity = DatabaseWorkspace::class, parentColumns = ["id"], childColumns = ["workspaceId"]),
         ForeignKey(entity = DatabaseTask::class, parentColumns = ["id"], childColumns = ["taskId"])
     ],
-    indices = [Index("projectId")]
+    indices = [Index("projectId"), Index("workspaceId"), Index("taskId")]
 )
 data class DatabaseTimeEntry(
     @PrimaryKey(autoGenerate = true)

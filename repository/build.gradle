@@ -53,9 +53,6 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     api Libs.Coroutines.core
     api Libs.Coroutines.android
-    api Libs.AndroidX.Lifecycle.viewModel
-    implementation Libs.AndroidX.Hilt.viewModel
-    kapt Libs.AndroidX.Hilt.compiler
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.compiler
 

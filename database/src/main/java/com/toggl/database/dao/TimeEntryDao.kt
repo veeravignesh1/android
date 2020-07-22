@@ -59,6 +59,7 @@ interface TimeEntryDao {
     @Query("SELECT * FROM time_entries WHERE NOT isDeleted AND id = :id")
     fun getOneTimeEntry(id: Long): DatabaseTimeEntry
 
+    @Transaction
     @Query("SELECT * FROM time_entries WHERE NOT isDeleted AND id = :id")
     fun getOneTimeEntryWithTags(id: Long): DatabaseTimeEntryWithTags
 
