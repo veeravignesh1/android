@@ -11,6 +11,8 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.SettingsType
@@ -27,6 +29,8 @@ class SettingsReducer @Inject constructor(
     private val feedbackApiClient: FeedbackApiClient,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<SettingsState, SettingsAction> {
+
+    private val helpUri = Uri.parse("https://support.toggl.com/en/articles/2417167-toggl-timer-for-android")
 
     override fun reduce(
         state: MutableValue<SettingsState>,
@@ -51,7 +55,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()
-                SettingsType.Help -> TODO()
+                SettingsType.Help -> state.navigateTo(Route.Browser(helpUri))
                 SettingsType.SignOut -> effectOf(SettingsAction.SignOutTapped)
             }
             is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
@@ -113,5 +117,10 @@ class SettingsReducer @Inject constructor(
             SettingsState.localState.modify(this) {
                 it.copy(sendFeedbackRequest = loadable)
             }
+        }
+
+    private fun MutableValue<SettingsState>.navigateTo(route: Route) =
+        mutateWithoutEffects<SettingsState, SettingsAction> {
+            copy(backStack = backStack.push(route))
         }
 }
