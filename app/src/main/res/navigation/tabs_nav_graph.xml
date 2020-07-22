@@ -68,6 +68,13 @@
         <deepLink app:uri="@string/deep_link_settings" />
     </fragment>
 
+    <fragment
+        android:id="@+id/settings_browser"
+        android:name="com.toggl.settings.ui.BrowserFragment"
+        android:label="BrowserFragment">
+        <deepLink app:uri="@string/deep_link_settings_browser" />
+    </fragment>
+
     <dialog
         android:id="@+id/settings_workspace"
         tools:layout="@layout/fragment_edit_settings"
@@ -124,13 +131,12 @@
         <deepLink app:uri="@string/deep_link_settings_submit_feedback" />
     </dialog>
 
-    <dialog
+    <fragment
         android:id="@+id/settings_about"
-        tools:layout="@layout/fragment_edit_settings"
-        android:name="com.toggl.settings.ui.EditSettingsFragment"
+        android:name="com.toggl.settings.ui.AboutFragment"
         android:label="EditSettingsDialog">
         <deepLink app:uri="@string/deep_link_settings_about" />
-    </dialog>
+    </fragment>
 
     <dialog
         android:id="@+id/settings_privacy_policy"

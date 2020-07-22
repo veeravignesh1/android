@@ -1,5 +1,6 @@
 package com.toggl.settings.domain
 
+import android.net.Uri
 import com.toggl.api.feedback.FeedbackApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Failure
@@ -12,6 +13,7 @@ import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.pop
 import com.toggl.common.feature.navigation.push
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
@@ -51,7 +53,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.CalendarSettings -> effectOf(SettingsAction.AllowCalendarAccessToggled)
                 SettingsType.SmartAlert -> TODO()
                 SettingsType.SubmitFeedback -> TODO()
-                SettingsType.About -> TODO()
+                SettingsType.About -> state.navigateTo(Route.SettingsEdit(SettingsType.About))
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()
@@ -94,6 +96,13 @@ class SettingsReducer @Inject constructor(
             )
             is SettingsAction.UpdateEmail -> state.mutateWithoutEffects { copy(user = user.copy(email = action.email)) }
             is SettingsAction.UpdateName -> state.mutateWithoutEffects { copy(user = user.copy(name = action.name)) }
+            is SettingsAction.CloseBrowser -> state.mutateWithoutEffects {
+                if (backStack.size > 1 && backStack.last() is Route.Browser) {
+                    copy(backStack = backStack.pop())
+                } else {
+                    this
+                }
+            }
         }
 
     private fun MutableValue<SettingsState>.handleAllowCalendarAccessToggled(): List<Effect<SettingsAction>> {

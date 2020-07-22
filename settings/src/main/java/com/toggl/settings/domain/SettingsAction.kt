@@ -34,6 +34,7 @@ sealed class SettingsAction {
     data class SetSendFeedbackError(val throwable: Throwable) : SettingsAction()
     data class UpdateEmail(val email: Email.Valid) : SettingsAction()
     data class UpdateName(val name: String) : SettingsAction()
+    object CloseBrowser : SettingsAction()
     companion object
 }
 
@@ -62,4 +63,5 @@ fun SettingsAction.formatForDebug() =
         SettingsAction.SignOutCompleted -> "SignOutCompleted"
         is SettingsAction.UpdateEmail -> "UpdateEmail email $email"
         is SettingsAction.UpdateName -> "UpdateName name $name"
+        SettingsAction.CloseBrowser -> "CloseBrowser"
     }

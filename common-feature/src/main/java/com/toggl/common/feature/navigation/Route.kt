@@ -45,7 +45,7 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         is Route.Project -> deepLinks.projectDialog
         is Route.ContextualMenu -> deepLinks.contextualMenu
         Route.Settings -> deepLinks.settings
-        is Route.Browser -> deepLinks.settings // ??
+        is Route.Browser -> deepLinks.browser
         is Route.SettingsEdit -> when (this.parameter) {
             SettingsType.Workspace -> deepLinks.workspace
             SettingsType.DateFormat -> deepLinks.dateFormat
