@@ -13,5 +13,4 @@ sealed class AppAction {
     class Timer(override val action: TimerAction) : AppAction(), ActionWrapper<TimerAction>
     class Calendar(override val action: CalendarAction) : AppAction(), ActionWrapper<CalendarAction>
     class Settings(override val action: SettingsAction) : AppAction(), ActionWrapper<SettingsAction>
-    object NavigateBack : AppAction()
 }

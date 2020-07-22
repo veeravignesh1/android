@@ -60,35 +60,14 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         val navController = setUpNavigation()
         store.state
             .map { it.backStack }
-            .onEach {
-                when (val last = it.last()) {
-                    is Route.Browser -> open(last.parameter)
-                    else -> router.processNewBackStack(it, navController)
-                }
-            }
+            .onEach { router.processNewBackStack(it, navController) }
             .launchIn(lifecycleScope)
     }
 
     override fun onResume() {
         super.onResume()
 
-        store.state
-            .take(1)
-            .map { it.backStack }
-            .onEach {
-                if (it.last() is Route.Browser) {
-                    store.dispatch(AppAction.NavigateBack)
-                }
-            }
-            .launchIn(lifecycleScope)
-
         store.dispatch(AppAction.Timer(TimerAction.Suggestions(SuggestionsAction.LoadSuggestions)))
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        store.dispatch(AppAction.NavigateBack)
     }
 
     private fun setUpNavigation(): NavHostController {
@@ -113,10 +92,4 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
             it.setGraph(R.navigation.tabs_nav_graph)
             it.addOnDestinationChangedListener(updateBottomBarVisibilityListener)
         }
-
-    private fun open(uri: Uri) {
-        val openURL = Intent(Intent.ACTION_VIEW)
-        openURL.data = uri
-        startActivity(openURL)
-    }
 }

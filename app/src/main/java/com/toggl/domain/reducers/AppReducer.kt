@@ -40,12 +40,10 @@ fun createAppReducer(
     timerReducer: TimerReducer,
     calendarReducer: CalendarReducer,
     settingsReducer: SettingsReducer,
-    analyticsReducer: AnalyticsReducer,
-    backStackReducer: BackStackReducer
+    analyticsReducer: AnalyticsReducer
 ): AppReducer =
     combine(
         analyticsReducer,
-        backStackReducer,
         loadingReducer.pullback(
             mapToLocalState = ::mapAppStateToLoadingState,
             mapToLocalAction = AppAction::unwrap,

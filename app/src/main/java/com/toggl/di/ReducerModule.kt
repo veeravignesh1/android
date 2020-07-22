@@ -6,7 +6,6 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.reducers.AnalyticsReducer
 import com.toggl.domain.loading.LoadingReducer
-import com.toggl.domain.reducers.BackStackReducer
 import com.toggl.domain.reducers.SignOutReducer
 import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
@@ -43,8 +42,7 @@ object ReducerModule {
             timerReducer,
             calendarReducer,
             settingsReducer,
-            analyticsReducer,
-            BackStackReducer()
+            analyticsReducer
         )
 
     @Provides
