@@ -49,7 +49,7 @@ object Libs {
     }
 
     object Kotlin {
-        private const val version = "1.3.72"
+        private const val version = "1.4-M3"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
@@ -70,19 +70,17 @@ object Libs {
         const val activityKtx = "androidx.activity:activity-ktx:1.2.0-alpha06"
 
         object Compose {
-            const val version = "0.1.0-dev14"
-            const val runtime = "androidx.compose:compose-runtime:$version"
-            const val compiler = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
+            const val version = "0.1.0-dev15"
+            const val runtime = "androidx.compose.runtime:runtime:$version"
+            const val compiler = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
             object UI {
-                const val core = "androidx.ui:ui-core:$version"
-                const val layout = "androidx.ui:ui-layout:$version"
-                const val material = "androidx.ui:ui-material:$version"
-                const val icons = "androidx.ui:ui-material-icons-extended:$version"
-                const val foundation = "androidx.ui:ui-foundation:$version"
-                const val animation = "androidx.ui:ui-animation:$version"
+                const val core = "androidx.compose.ui:ui:$version"
+                const val layout = "androidx.compose.foundation:foundation-layout:$version"
+                const val material = "androidx.compose.material:material:$version"
+                const val icons = "androidx.compose.material:material-icons-extended:$version"
+                const val foundation = "androidx.compose.foundation:foundation:$version"
+                const val animation = "androidx.compose.animation:animation:$version"
                 const val tooling = "androidx.ui:ui-tooling:$version"
-                const val livedata = "androidx.ui:ui-livedata:$version"
-
             }
         }
 
