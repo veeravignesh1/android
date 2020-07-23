@@ -11,6 +11,8 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.SettingsType
@@ -47,7 +49,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.CalendarSettings -> effectOf(SettingsAction.AllowCalendarAccessToggled)
                 SettingsType.SmartAlert -> TODO()
                 SettingsType.SubmitFeedback -> TODO()
-                SettingsType.About -> TODO()
+                SettingsType.About -> state.navigateTo(Route.SettingsEdit(SettingsType.About))
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()
@@ -113,5 +115,10 @@ class SettingsReducer @Inject constructor(
             SettingsState.localState.modify(this) {
                 it.copy(sendFeedbackRequest = loadable)
             }
+        }
+
+    private fun MutableValue<SettingsState>.navigateTo(route: Route) =
+        mutateWithoutEffects<SettingsState, SettingsAction> {
+            copy(backStack = backStack.push(route))
         }
 }

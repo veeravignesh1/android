@@ -124,13 +124,12 @@
         <deepLink app:uri="@string/deep_link_settings_submit_feedback" />
     </dialog>
 
-    <dialog
+    <fragment
         android:id="@+id/settings_about"
-        tools:layout="@layout/fragment_edit_settings"
-        android:name="com.toggl.settings.ui.EditSettingsFragment"
-        android:label="EditSettingsDialog">
+        android:name="com.toggl.settings.ui.AboutFragment"
+        android:label="AboutFragment">
         <deepLink app:uri="@string/deep_link_settings_about" />
-    </dialog>
+    </fragment>
 
     <dialog
         android:id="@+id/settings_privacy_policy"
