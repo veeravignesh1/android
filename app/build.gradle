@@ -31,6 +31,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            manifestPlaceholders = [crashlytics: "true"]
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         adhoc {
@@ -40,6 +41,13 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
+            ext.enableCrashlytics = false
+            manifestPlaceholders = [crashlytics: "false"]
+            crunchPngs false
+
+            firebaseCrashlytics {
+                mappingFileUploadEnabled false
+            }
         }
     }
     compileOptions {

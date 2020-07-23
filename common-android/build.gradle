@@ -59,7 +59,6 @@ dependencies {
     api Libs.AndroidX.Lifecycle.viewModel
     api Libs.Google.material
 
-    kapt Libs.AndroidX.Hilt.compiler
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.compiler
 

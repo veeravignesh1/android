@@ -2,6 +2,7 @@ package com.toggl.database.models
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -9,7 +10,8 @@ import androidx.room.PrimaryKey
     foreignKeys = [
         ForeignKey(entity = DatabaseWorkspace::class, parentColumns = ["id"], childColumns = ["workspaceId"]),
         ForeignKey(entity = DatabaseProject::class, parentColumns = ["id"], childColumns = ["projectId"])
-    ]
+    ],
+    indices = [ Index("workspaceId"), Index("projectId") ]
 )
 data class DatabaseTask(
     @PrimaryKey(autoGenerate = true)
