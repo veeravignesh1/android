@@ -53,7 +53,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.CalendarSettings -> effectOf(SettingsAction.AllowCalendarAccessToggled)
                 SettingsType.SmartAlert -> TODO()
                 SettingsType.SubmitFeedback -> TODO()
-                SettingsType.About -> state.navigateTo(Route.SettingsEdit(SettingsType.About))
+                SettingsType.About -> TODO()
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()

@@ -10,7 +10,6 @@ import com.toggl.common.feature.navigation.Route
 import com.toggl.settings.domain.SettingsAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 
@@ -23,10 +22,9 @@ class BrowserFragment : Fragment() {
 
         store.state
             .take(1)
-            .map { it.backStack.last() }
             .onEach {
-                when (it) {
-                    is Route.Browser -> open(it.parameter)
+                when (val route = it.backStack.last()) {
+                    is Route.Browser -> open(route.parameter)
                     else -> close()
                 }
             }
