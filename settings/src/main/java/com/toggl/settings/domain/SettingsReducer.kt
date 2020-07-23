@@ -36,11 +36,10 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.SettingTapped -> when (action.selectedSetting) {
                 SettingsType.Name -> TODO()
                 SettingsType.Email -> TODO()
-                SettingsType.Workspace -> TODO()
-                SettingsType.DateFormat -> TODO()
+                SettingsType.Workspace, SettingsType.DateFormat, SettingsType.DurationFormat, SettingsType.FirstDayOfTheWeek -> state.handleSingleChoiceSettingNavigation(
+                    action.selectedSetting
+                )
                 SettingsType.TwentyFourHourClock -> effectOf(SettingsAction.Use24HourClockToggled)
-                SettingsType.DurationFormat -> TODO()
-                SettingsType.FirstDayOfTheWeek -> TODO()
                 SettingsType.GroupSimilar -> effectOf(SettingsAction.GroupSimilarTimeEntriesToggled)
                 SettingsType.CellSwipe -> effectOf(SettingsAction.CellSwipeActionsToggled)
                 SettingsType.ManualMode -> effectOf(SettingsAction.ManualModeToggled)
@@ -90,6 +89,7 @@ class SettingsReducer @Inject constructor(
             )
             is SettingsAction.UpdateEmail -> state.mutateWithoutEffects { copy(user = user.copy(email = action.email)) }
             is SettingsAction.UpdateName -> state.mutateWithoutEffects { copy(user = user.copy(name = action.name)) }
+            is SettingsAction.DialogDismissed -> state.mutateWithoutEffects { copy(localState = localState.copy(singleChoiceSettingShowing = null)) }
         }
 
     private fun MutableValue<SettingsState>.handleAllowCalendarAccessToggled(): List<Effect<SettingsAction>> {
@@ -113,5 +113,10 @@ class SettingsReducer @Inject constructor(
             SettingsState.localState.modify(this) {
                 it.copy(sendFeedbackRequest = loadable)
             }
+        }
+
+    private fun MutableValue<SettingsState>.handleSingleChoiceSettingNavigation(settingsType: SettingsType): List<Effect<SettingsAction>> =
+        this.mutateWithoutEffects {
+            copy(localState = localState.copy(singleChoiceSettingShowing = settingsType))
         }
 }
