@@ -52,7 +52,7 @@ class SettingsReducer @Inject constructor(
                 SettingsType.About -> state.navigateTo(Route.SettingsEdit(SettingsType.About))
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
-                SettingsType.Licenses -> TODO()
+                SettingsType.Licenses -> state.navigateTo(Route.SettingsEdit(SettingsType.Licenses))
                 SettingsType.Help -> TODO()
                 SettingsType.SignOut -> effectOf(SettingsAction.SignOutTapped)
             }

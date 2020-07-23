@@ -7,9 +7,11 @@ import androidx.ui.foundation.clickable
 import androidx.ui.layout.Column
 import androidx.ui.layout.padding
 import androidx.ui.material.Divider
+import androidx.ui.material.IconButton
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import androidx.ui.material.TopAppBar
+import androidx.ui.material.icons.filled.ArrowBack
 import androidx.ui.material.ripple.RippleIndication
 import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
@@ -41,7 +43,12 @@ internal fun AboutPage(
             TopAppBar(
                 backgroundColor = MaterialTheme.colors.surface,
                 contentColor = MaterialTheme.colors.onSurface,
-                title = { Text(stringResource(R.string.about)) }
+                title = { Text(stringResource(R.string.about)) },
+                navigationIcon = {
+                    IconButton(onClick = { dispatch(SettingsAction.SettingTapped(SettingsType.About)) }) { // todo: change the action
+                        androidx.ui.foundation.Icon(androidx.ui.material.icons.Icons.Filled.ArrowBack)
+                    }
+                }
             )
         },
         bodyContent = { innerPadding ->

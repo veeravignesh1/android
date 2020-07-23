@@ -147,13 +147,12 @@
         <deepLink app:uri="@string/deep_link_settings_terms_of_service" />
     </dialog>
 
-    <dialog
+    <fragment
         android:id="@+id/settings_licenses"
-        tools:layout="@layout/fragment_edit_settings"
-        android:name="com.toggl.settings.ui.EditSettingsFragment"
-        android:label="EditSettingsDialog">
+        android:name="com.toggl.settings.ui.LicensesFragment"
+        android:label="LicensesFragment">
         <deepLink app:uri="@string/deep_link_settings_licenses" />
-    </dialog>
+    </fragment>
 
     <dialog
         android:id="@+id/settings_help"

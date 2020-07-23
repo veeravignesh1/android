@@ -30,13 +30,24 @@ class SettingTappedActionTests : CoroutineTest() {
     }
 
     @Test
-    fun `The About setting should navigate to the About view`() = runBlockingTest {
+    fun `Tapping the About row in settings should navigate to the About view`() = runBlockingTest {
         reducer.testReduceState(
             initialState,
             SettingsAction.SettingTapped(SettingsType.About)
         ) { state ->
             state.backStack.size shouldBeGreaterThan initialState.backStack.size
             state.backStack.last() shouldBe Route.SettingsEdit(SettingsType.About)
+        }
+    }
+
+    @Test
+    fun `Tapping the Licenses row in settings should navigate to the Licenses view`() = runBlockingTest {
+        reducer.testReduceState(
+            initialState,
+            SettingsAction.SettingTapped(SettingsType.Licenses)
+        ) { state ->
+            state.backStack.size shouldBeGreaterThan initialState.backStack.size
+            state.backStack.last() shouldBe Route.SettingsEdit(SettingsType.Licenses)
         }
     }
 }
