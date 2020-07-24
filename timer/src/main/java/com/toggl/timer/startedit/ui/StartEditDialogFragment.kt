@@ -50,7 +50,7 @@ import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
-import com.toggl.timer.extensions.formatForDisplaying
+import com.toggl.common.feature.extensions.formatForDisplaying
 import com.toggl.timer.extensions.tryHidingKeyboard
 import com.toggl.timer.extensions.tryShowingKeyboardFor
 import com.toggl.timer.startedit.domain.AutocompleteSuggestionsSelector
