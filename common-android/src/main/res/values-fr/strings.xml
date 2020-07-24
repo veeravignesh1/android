@@ -8,7 +8,6 @@
     <string name="calendar">Calendrier</string>
     <string name="settings">Paramètres</string>
     <string name="add_description">Ajouter une description</string>
-    <string name="login">Login</string>
     <string name="today">Aujourd\'hui</string>
     <string name="yesterday">Hier</string>
     <string name="continue_this">Continuer</string>
@@ -68,4 +67,25 @@
     <string name="help">Aide</string>
     <string name="sign_out">Déconnexion</string>
     <string name="no_client">Aucun client</string>
+    <string name="log_in_with_sso">Se connecter avec SSO</string>
+    <string name="sign_in_with_google">Continuer avec Google</string>
+    <string name="sign_up">Inscription</string>
+    <string name="sign_up_call_to_action">Vous n\'avez pas de compte? <u>Criar conta</u></string>
+    <string name="sign_up_message">Bienvenue sur Toggl!\nQuelques préparatifs avant que vous puissiez suivre votre temps.</string>
+    <string name="login">Connexion</string>
+    <string name="login_call_to_action">Avez-vous un compte? <u>Connexion</u></string>
+    <string name="password_reset_message">Renseignez votre adresse email pour réinitialiser votre mot de passe.</string>
+    <string name="send_email">Envoyer un email</string>
+    <string name="continue_with_email">Continuer avec Email</string>
+    <string name="default_workspace">Espace de travail par défaut</string>
+    <string name="monday">Lundi</string>
+    <string name="tuesday">Mardi</string>
+    <string name="wednesday">Mercredi</string>
+    <string name="thursday">Jeudi</string>
+    <string name="friday">Vendredi</string>
+    <string name="saturday">Samedi</string>
+    <string name="sunday">Dimanche</string>
+    <string name="duration_format_classic">Classique (47:06 min)</string>
+    <string name="duration_format_improved">Améliorée (0:47:06)</string>
+    <string name="duration_format_decimal">Décimale (0.79 h)</string>
 </resources>
