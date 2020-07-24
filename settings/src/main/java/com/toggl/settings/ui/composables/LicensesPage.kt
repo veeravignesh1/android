@@ -26,14 +26,15 @@ import com.toggl.settings.R
 import com.toggl.settings.compose.ThemedPreview
 import com.toggl.settings.domain.SettingsAction
 
-
 data class LicenseUsageModel(
     val libraries: List<String>,
-    val license: LicenseModel)
+    val license: LicenseModel
+)
 
 data class LicenseModel(
     val title: String,
-    val text: String)
+    val text: String
+)
 
 private val items = listOf(
     LicenseUsageModel(
