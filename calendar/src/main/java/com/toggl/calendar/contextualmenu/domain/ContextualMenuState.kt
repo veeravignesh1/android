@@ -4,8 +4,10 @@ import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.BackStackAwareState
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
+import com.toggl.common.feature.navigation.pop
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.models.domain.Client
@@ -21,7 +23,7 @@ data class ContextualMenuState(
     val calendars: List<Calendar>,
     val backStack: BackStack,
     val selectedItem: SelectedCalendarItem
-) {
+) : BackStackAwareState<ContextualMenuState> {
     companion object {
         fun fromCalendarState(calendarState: CalendarState): ContextualMenuState? {
             val user = calendarState.user as? Loadable.Loaded<User> ?: return null
@@ -50,4 +52,7 @@ data class ContextualMenuState(
                 )
             } ?: calendarState
     }
+
+    override fun popBackStack(): ContextualMenuState =
+        copy(backStack = backStack.pop())
 }

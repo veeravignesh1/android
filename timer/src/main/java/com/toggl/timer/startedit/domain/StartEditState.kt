@@ -1,8 +1,10 @@
 package com.toggl.timer.startedit.domain
 
 import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.BackStackAwareState
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
+import com.toggl.common.feature.navigation.pop
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
@@ -27,7 +29,7 @@ data class StartEditState(
     val dateTimePickMode: DateTimePickMode,
     val temporalInconsistency: TemporalInconsistency,
     val cursorPosition: Int
-) {
+) : BackStackAwareState<StartEditState> {
     companion object {
         fun fromTimerState(timerState: TimerState): StartEditState? {
 
@@ -64,4 +66,7 @@ data class StartEditState(
                 )
             } ?: timerState
     }
+
+    override fun popBackStack(): StartEditState =
+        copy(backStack = backStack.pop())
 }

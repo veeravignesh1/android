@@ -7,11 +7,11 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.effects
-import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.extensions.toHex
+import com.toggl.common.feature.navigation.popBackStackWithoutEffects
 import com.toggl.models.common.AutocompleteSuggestion.ProjectSuggestions
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.isValid
@@ -104,7 +104,7 @@ class ProjectReducer @Inject constructor(
                     )
                 )
             } returnEffect effectOf(ProjectAction.Close)
-            ProjectAction.Close -> noEffect()
+            ProjectAction.Close -> state.popBackStackWithoutEffects()
             is ProjectAction.CreateClientSuggestionTapped -> effect(
                 CreateClientEffect(
                     dispatcherProvider,

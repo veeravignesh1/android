@@ -2,6 +2,9 @@ package com.toggl.common.feature.navigation
 
 typealias BackStack = List<Route>
 
+fun backStackOf(vararg route: Route) =
+    route.toList()
+
 fun BackStack.push(route: Route) =
     this + route
 

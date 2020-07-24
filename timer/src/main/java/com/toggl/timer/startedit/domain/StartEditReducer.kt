@@ -15,6 +15,7 @@ import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.popBackStackWithoutEffects
 import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.timeentry.TimeEntryAction.CreateTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction.EditTimeEntry
@@ -284,7 +285,7 @@ class StartEditReducer @Inject constructor(
                 }
             }
             is StartEditAction.TimeEntryHandling,
-            StartEditAction.Close -> noEffect()
+            StartEditAction.Close -> state.popBackStackWithoutEffects()
         }
     }
 
