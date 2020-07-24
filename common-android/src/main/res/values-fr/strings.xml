@@ -67,6 +67,7 @@
     <string name="help">Aide</string>
     <string name="sign_out">Déconnexion</string>
     <string name="no_client">Aucun client</string>
+    <string name="feedback_note">Dites-nous ce que vous en pensez. Envoyez-nous vos commentaires et questions.  PS. Notre équipe de support client fonctionne actuellement en anglais uniquement. Désolé pour le dérangement!</string>
     <string name="log_in_with_sso">Se connecter avec SSO</string>
     <string name="sign_in_with_google">Continuer avec Google</string>
     <string name="sign_up">Inscription</string>
@@ -88,4 +89,5 @@
     <string name="duration_format_classic">Classique (47:06 min)</string>
     <string name="duration_format_improved">Améliorée (0:47:06)</string>
     <string name="duration_format_decimal">Décimale (0.79 h)</string>
+    <string name="feedback_thank_you">Merci pour votre retour. Si vous avez des questions, nous vous répondrons bientôt.</string>
 </resources>

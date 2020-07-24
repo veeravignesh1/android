@@ -15,6 +15,7 @@ sealed class Route {
     data class Project(override val parameter: EditableProject) : Route(), ParameterRoute<EditableProject>
     data class ContextualMenu(override val parameter: SelectedCalendarItem) : Route(), ParameterRoute<SelectedCalendarItem>
     object Settings : Route()
+    object Feedback : Route()
     data class SettingsEdit(override val parameter: SettingsType) : Route(), ParameterRoute<SettingsType>
 }
 
@@ -32,6 +33,7 @@ fun Route.isSameTypeAs(otherRoute: Route) =
         is Route.ContextualMenu -> otherRoute is Route.ContextualMenu
         Route.Settings -> otherRoute is Route.Settings
         is Route.SettingsEdit -> otherRoute is Route.SettingsEdit
+        Route.Feedback -> otherRoute is Route.Feedback
     }
 
 fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
@@ -43,6 +45,7 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         is Route.Project -> deepLinks.projectDialog
         is Route.ContextualMenu -> deepLinks.contextualMenu
         Route.Settings -> deepLinks.settings
+        Route.Feedback -> deepLinks.submitFeedback
         is Route.SettingsEdit -> when (this.parameter) {
             SettingsType.Workspace -> deepLinks.workspace
             SettingsType.DateFormat -> deepLinks.dateFormat

@@ -34,6 +34,7 @@ sealed class SettingsAction {
     data class SetSendFeedbackError(val throwable: Throwable) : SettingsAction()
     data class UpdateEmail(val email: Email.Valid) : SettingsAction()
     data class UpdateName(val name: String) : SettingsAction()
+    object BackToMainScreenTapped : SettingsAction()
     object DialogDismissed : SettingsAction()
     companion object
 }
@@ -63,5 +64,6 @@ fun SettingsAction.formatForDebug() =
         SettingsAction.SignOutCompleted -> "SignOutCompleted"
         is SettingsAction.UpdateEmail -> "UpdateEmail email $email"
         is SettingsAction.UpdateName -> "UpdateName name $name"
+        SettingsAction.BackToMainScreenTapped -> "BackToMainScreenTapped"
         is SettingsAction.DialogDismissed -> "Dialog dismissed"
     }

@@ -11,6 +11,9 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.Route
+import com.toggl.common.feature.navigation.pop
+import com.toggl.common.feature.navigation.push
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.SettingsType
@@ -45,13 +48,21 @@ class SettingsReducer @Inject constructor(
                 SettingsType.ManualMode -> effectOf(SettingsAction.ManualModeToggled)
                 SettingsType.CalendarSettings -> effectOf(SettingsAction.AllowCalendarAccessToggled)
                 SettingsType.SmartAlert -> TODO()
-                SettingsType.SubmitFeedback -> TODO()
+                SettingsType.SubmitFeedback -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.Feedback)) }
                 SettingsType.About -> TODO()
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()
                 SettingsType.Help -> TODO()
                 SettingsType.SignOut -> effectOf(SettingsAction.SignOutTapped)
+            }
+            SettingsAction.BackToMainScreenTapped -> {
+                if (state().backStack.last() !is Route.Settings) {
+                    state.mutate {
+                        copy(backStack = backStack.pop())
+                    }
+                }
+                state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Uninitialized)
             }
             is SettingsAction.UserPreferencesUpdated -> state.mutateWithoutEffects { copy(userPreferences = action.userPreferences) }
             is SettingsAction.ManualModeToggled -> state.updatePrefs { copy(manualModeEnabled = !manualModeEnabled) }
@@ -83,7 +94,13 @@ class SettingsReducer @Inject constructor(
                 )
             }
             is SettingsAction.FeedbackSent -> state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Loaded(Unit))
-            is SettingsAction.SendFeedbackResultSeen -> state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Uninitialized)
+            is SettingsAction.SendFeedbackResultSeen -> {
+                val feedbackRequestResultThatWasSeen = state().localState.sendFeedbackRequest
+                state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Uninitialized)
+                if (feedbackRequestResultThatWasSeen is Loadable.Loaded<Unit>) {
+                    effectOf(SettingsAction.BackToMainScreenTapped)
+                } else noEffect()
+            }
             is SettingsAction.SetSendFeedbackError -> state.updateSendFeedbackRequestStateWithoutEffects(
                 Loadable.Error(Failure(action.throwable, ""))
             )
