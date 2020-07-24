@@ -1,6 +1,5 @@
 package com.toggl.timer.startedit.domain
 
-import arrow.optics.optics
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
@@ -15,7 +14,6 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.domain.TimerState
 
-@optics
 data class StartEditState(
     val tags: Map<Long, Tag>,
     val tasks: Map<Long, Task>,

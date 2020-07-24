@@ -1,6 +1,5 @@
 package com.toggl.timer.project.domain
 
-import arrow.optics.optics
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.navigation.setRouteParam
@@ -13,7 +12,6 @@ import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.HSVColor
 import com.toggl.timer.common.domain.TimerState
 
-@optics
 data class ProjectState(
     val editableProject: EditableProject,
     val editableTimeEntry: EditableTimeEntry,

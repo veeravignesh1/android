@@ -85,9 +85,9 @@ class SettingsReducer @Inject constructor(
             SettingsAction.SignOutCompleted -> noEffect()
             is SettingsAction.SendFeedbackTapped -> {
                 state.mutate {
-                    SettingsState.localState.modify(this) {
-                        it.copy(sendFeedbackRequest = Loadable.Loading)
-                    }
+                    copy(
+                        localState = localState.copy(sendFeedbackRequest = Loadable.Loading)
+                    )
                 }
                 effect(
                     SendFeedbackEffect(action.feedbackMessage, state().user, platformInfo, feedbackDataBuilder, feedbackApiClient, dispatcherProvider)
@@ -127,9 +127,9 @@ class SettingsReducer @Inject constructor(
 
     private fun MutableValue<SettingsState>.updateSendFeedbackRequestStateWithoutEffects(loadable: Loadable<Unit>) =
         mutateWithoutEffects<SettingsState, SettingsAction> {
-            SettingsState.localState.modify(this) {
-                it.copy(sendFeedbackRequest = loadable)
-            }
+            copy(
+                localState = localState.copy(sendFeedbackRequest = loadable)
+            )
         }
 
     private fun MutableValue<SettingsState>.handleSingleChoiceSettingNavigation(settingsType: SettingsType): List<Effect<SettingsAction>> =

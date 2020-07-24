@@ -1,6 +1,5 @@
 package com.toggl.timer.common.domain
 
-import arrow.optics.optics
 import com.toggl.architecture.core.ActionWrapper
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.timer.log.domain.TimeEntriesLogAction
@@ -14,7 +13,6 @@ import com.toggl.timer.startedit.domain.formatForDebug
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import com.toggl.timer.suggestions.domain.formatForDebug
 
-@optics
 sealed class TimerAction {
     data class StartEditTimeEntry(override val action: StartEditAction) : TimerAction(), ActionWrapper<StartEditAction>
     data class TimeEntriesLog(override val action: TimeEntriesLogAction) : TimerAction(), ActionWrapper<TimeEntriesLogAction>

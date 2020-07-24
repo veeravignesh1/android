@@ -1,6 +1,5 @@
 package com.toggl.calendar.common.domain
 
-import arrow.optics.optics
 import com.toggl.architecture.core.ActionWrapper
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.formatForDebug
@@ -10,7 +9,6 @@ import com.toggl.calendar.datepicker.domain.CalendarDatePickerAction
 import com.toggl.calendar.datepicker.domain.formatForDebug
 import com.toggl.common.feature.timeentry.TimeEntryAction
 
-@optics
 sealed class CalendarAction {
     data class CalendarDay(override val action: CalendarDayAction) : CalendarAction(), ActionWrapper<CalendarDayAction>
     data class DatePicker(override val action: CalendarDatePickerAction) : CalendarAction(), ActionWrapper<CalendarDatePickerAction>

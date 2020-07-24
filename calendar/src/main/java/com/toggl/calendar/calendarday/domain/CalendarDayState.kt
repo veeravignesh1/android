@@ -1,6 +1,5 @@
 package com.toggl.calendar.calendarday.domain
 
-import arrow.optics.optics
 import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.services.calendar.CalendarEvent
@@ -11,7 +10,6 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import java.time.OffsetDateTime
 
-@optics
 data class CalendarDayState(
     val user: User,
     val timeEntries: Map<Long, TimeEntry>,
