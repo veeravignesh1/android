@@ -1,10 +1,8 @@
 package com.toggl.calendar.datepicker.domain
 
-import arrow.optics.optics
 import com.toggl.calendar.common.domain.CalendarState
 import java.time.OffsetDateTime
 
-@optics
 data class CalendarDatePickerState(
     val selectedDate: OffsetDateTime
 ) {

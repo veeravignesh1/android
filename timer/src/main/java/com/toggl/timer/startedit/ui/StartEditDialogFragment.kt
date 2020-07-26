@@ -36,7 +36,7 @@ import com.toggl.common.extensions.formatForDisplayingDate
 import com.toggl.common.extensions.formatForDisplayingTime
 import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.common.extensions.requestFocus
-import com.toggl.common.extensions.setOnBackKeyEventUpCallback
+import com.toggl.common.feature.navigation.handleBackPressesEmitting
 import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
 import com.toggl.common.services.time.TimeService
@@ -142,7 +142,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
                 }
                 .launchIn(lifecycleScope)
 
-            bottomSheetDialog.setOnBackKeyEventUpCallback { store.dispatch(StartEditAction.Close) }
+            bottomSheetDialog.handleBackPressesEmitting(lifecycle) { store.dispatch(StartEditAction.Close) }
         }
     }
 

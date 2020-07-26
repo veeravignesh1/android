@@ -1,6 +1,5 @@
 package com.toggl.calendar.common.domain
 
-import arrow.optics.optics
 import com.toggl.architecture.Loadable
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.BackStackAwareState
@@ -13,7 +12,6 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import java.time.OffsetDateTime
 
-@optics
 data class CalendarState(
     val user: Loadable<User>,
     val timeEntries: Map<Long, TimeEntry>,
