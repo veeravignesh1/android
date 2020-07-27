@@ -90,4 +90,13 @@
     <string name="duration_format_improved">Melhorado (0:47:06)</string>
     <string name="duration_format_decimal">Decimal (0.79 h)</string>
     <string name="feedback_thank_you">Agradecemos o feedback. Caso você tenha perguntado algo, entramos em contato em breve.</string>
+    <string name="set_smart_reminders">Habilitar lembretes inteligentes</string>
+    <string name="set_smart_reminders_message">Receba lembretes para marcar o tempo referente ao seus eventos</string>
+    <string name="disabled">Desabilitado</string>
+    <string name="five_minutes_before">5 minutos antes</string>
+    <string name="ten_minutes_before">10 minutos antes</string>
+    <string name="fifteen_minutes_before">15 minutos antes</string>
+    <string name="when_event_starts">Quando o evento estiver para começar</string>
+    <string name="thirty_minutes_before">30 minutos antes</string>
+    <string name="one_hour_before">1 hora antes</string>
 </resources>

@@ -100,4 +100,13 @@
     <string name="duration_format_classic">Classic (47:06 min)</string>
     <string name="duration_format_improved">Improved (0:47:06)</string>
     <string name="duration_format_decimal">Decimal (0.79 h)</string>
+    <string name="set_smart_reminders">Set smart reminders</string>
+    <string name="set_smart_reminders_message">Get an actionable reminder to start tracking time for your event</string>
+    <string name="disabled">Disabled</string>
+    <string name="when_event_starts">When event starts</string>
+    <string name="five_minutes_before">5 minutes before</string>
+    <string name="ten_minutes_before">10 minutes before</string>
+    <string name="fifteen_minutes_before">15 minutes before</string>
+    <string name="thirty_minutes_before">30 minutes before</string>
+    <string name="one_hour_before">1 hour before</string>
 </resources>

@@ -86,4 +86,13 @@
     <string name="duration_format_improved">時分秒 (0:47:06)</string>
     <string name="duration_format_decimal">小数 (0.79 h)</string>
     <string name="feedback_thank_you">フィードバックありがとうございます。もしフィードバックの内容が質問の場合は、すぐにお返事いたします。</string>
+    <string name="one_hour_before">1時間前</string>
+    <string name="thirty_minutes_before">30分前</string>
+    <string name="fifteen_minutes_before">15分前</string>
+    <string name="ten_minutes_before">10分前</string>
+    <string name="five_minutes_before">5分前</string>
+    <string name="when_event_starts">イベントが開始したとき</string>
+    <string name="disabled">ラベルをはずす</string>
+    <string name="set_smart_reminders">スマートリマインダを設定</string>
+    <string name="set_smart_reminders_message">イベントの時間を記録するためのリマインダ</string>
 </resources>
