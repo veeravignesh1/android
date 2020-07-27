@@ -2,12 +2,14 @@ package com.toggl.calendar.calendarday.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.toggl.calendar.R
+import com.toggl.calendar.contextualmenu.ui.ContextualMenuStoreViewModel
 import com.toggl.calendar.datepicker.domain.CalendarDatePickerAction
 import com.toggl.calendar.datepicker.ui.CalendarDatePickerStoreViewModel
 import com.toggl.common.feature.models.SelectedCalendarItem
@@ -31,6 +33,7 @@ import kotlin.contracts.ExperimentalContracts
 class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
     private val store: CalendarDayStoreViewModel by activityViewModels()
     private val datePickerStore: CalendarDatePickerStoreViewModel by activityViewModels()
+    private val contextualMenuStoreViewModel: ContextualMenuStoreViewModel by activityViewModels()
 
     @Inject lateinit var permissionService: PermissionRequesterService
 
@@ -74,6 +77,10 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
         store.state
             .map { it.backStack.getRouteParam<SelectedCalendarItem>() }
             .onEach { calendar_day_pager.isUserInputEnabled = it == null }
+            .launchIn(lifecycleScope)
+
+        contextualMenuStoreViewModel.slideOffsetInPixels
+            .onEach { calendar_day_pager.updatePadding(bottom = it) }
             .launchIn(lifecycleScope)
     }
 
