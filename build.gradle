@@ -10,9 +10,7 @@ buildscript {
             'versionCode' : 600000,
     ]
     repositories {
-        maven {
-            url "https://dl.bintray.com/kotlin/kotlin-eap/"
-        }
+        mavenCentral()
         google()
         jcenter()
     }
@@ -37,9 +35,7 @@ defaultTasks 'dependencyUpdates'
 
 allprojects {
     repositories {
-        maven {
-            url "https://dl.bintray.com/kotlin/kotlin-eap/"
-        }
+        mavenCentral()
         google()
         jcenter()
     }
