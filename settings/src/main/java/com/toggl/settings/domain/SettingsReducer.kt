@@ -39,7 +39,7 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.SettingTapped -> when (action.selectedSetting) {
                 SettingsType.Name -> TODO()
                 SettingsType.Email -> TODO()
-                SettingsType.Workspace, SettingsType.DateFormat, SettingsType.DurationFormat, SettingsType.FirstDayOfTheWeek -> state.handleSingleChoiceSettingNavigation(
+                SettingsType.Workspace, SettingsType.DateFormat, SettingsType.DurationFormat, SettingsType.FirstDayOfTheWeek, SettingsType.SmartAlert -> state.handleSingleChoiceSettingNavigation(
                     action.selectedSetting
                 )
                 SettingsType.TwentyFourHourClock -> effectOf(SettingsAction.Use24HourClockToggled)
@@ -47,7 +47,6 @@ class SettingsReducer @Inject constructor(
                 SettingsType.CellSwipe -> effectOf(SettingsAction.CellSwipeActionsToggled)
                 SettingsType.ManualMode -> effectOf(SettingsAction.ManualModeToggled)
                 SettingsType.CalendarSettings -> effectOf(SettingsAction.AllowCalendarAccessToggled)
-                SettingsType.SmartAlert -> TODO()
                 SettingsType.SubmitFeedback -> state.mutateWithoutEffects { copy(backStack = backStack.push(Route.Feedback)) }
                 SettingsType.About -> TODO()
                 SettingsType.PrivacyPolicy -> TODO()

@@ -76,9 +76,10 @@ class SettingsSelector @Inject constructor(
                 context.getString(R.string.calendar_settings),
                 this
             )
-            SettingsType.SmartAlert -> SettingsViewModel.SubPage(
+            SettingsType.SmartAlert -> SettingsViewModel.ListChoice(
                 context.getString(R.string.smart_alerts),
-                this
+                this,
+                userPreferences.smartAlertsOption.getTranslatedRepresentation(context)
             )
             SettingsType.SubmitFeedback -> SettingsViewModel.SubPage(
                 context.getString(R.string.submit_feedback),
