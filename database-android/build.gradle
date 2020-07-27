@@ -73,7 +73,6 @@ android.sourceSets {
 dependencies {
     api project(':database')
 
-    implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.Hilt.viewModel
     kapt Libs.AndroidX.Hilt.compiler
     api Libs.AndroidX.Room.runtime

@@ -51,7 +51,6 @@ dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':common-feature')
 
-    implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.Lifecycle.extensions
     implementation Libs.AndroidX.Lifecycle.viewModel
     implementation Libs.AndroidX.Hilt.viewModel

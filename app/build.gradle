@@ -76,7 +76,6 @@ dependencies {
     implementation Libs.AndroidX.Preference.ktx
     implementation Libs.AndroidX.Hilt.viewModel
     kapt Libs.AndroidX.Hilt.compiler
-    implementation Libs.Kotlin.stdlib
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.compiler
     implementation Libs.Google.firebaseCore

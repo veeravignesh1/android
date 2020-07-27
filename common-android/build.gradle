@@ -45,8 +45,6 @@ dependencies {
     api project(':common')
     api project(':api')
 
-    implementation Libs.Kotlin.stdlib
-
     api Libs.AndroidX.Navigation.fragment
     api Libs.AndroidX.Navigation.ui
     api Libs.AndroidX.appcompat

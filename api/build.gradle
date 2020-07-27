@@ -44,7 +44,6 @@ dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':models')
 
-    implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.core
     api Libs.Square.retrofit
     api Libs.Google.gson

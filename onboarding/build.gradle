@@ -41,7 +41,6 @@ android {
 dependencies {
     api project(':common-feature')
 
-    implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.Hilt.viewModel
     kapt Libs.AndroidX.Hilt.compiler
     implementation Libs.Hilt.hilt
