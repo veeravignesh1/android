@@ -19,7 +19,6 @@ object Libs {
         const val junit4 = "junit:junit:4.13"
         const val robolectric = "org.robolectric:robolectric:4.3.1"
         const val junit5Plugin = "de.mannodermaus.gradle.plugins:android-junit5:1.6.2.0"
-        const val kotlinTestRunner = "io.kotlintest:kotlintest-runner-junit5:3.4.2"
         const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.3.71"
         const val kotlinCoroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4"
         const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.71"

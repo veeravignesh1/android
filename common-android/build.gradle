@@ -70,7 +70,6 @@ dependencies {
     testImplementation Libs.slf4j
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
-    testImplementation Libs.Test.kotlinTestRunner
     testImplementation Libs.Test.kotlinTestJunit
     testImplementation Libs.Test.kotlinCoroutineTest
     androidTestImplementation Libs.AndroidX.Test.runner
