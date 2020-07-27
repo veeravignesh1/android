@@ -23,7 +23,7 @@ object Libs {
         const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.3.71"
         const val kotlinCoroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4"
         const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.71"
-        const val mockk = "io.mockk:mockk:1.9.3"
+        const val mockk = "io.mockk:mockk:1.10.0"
         const val assertJ = "org.assertj:assertj-core:3.15.0"
 
         object Jupiter {
