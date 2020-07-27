@@ -1,35 +1,27 @@
-package com.toggl.settings.ui.composables
+package com.toggl.settings.ui.composables.pages
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
-import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.clickable
 import androidx.ui.foundation.lazy.LazyColumnItems
-import androidx.ui.layout.Arrangement
-import androidx.ui.layout.Column
-import androidx.ui.layout.Row
-import androidx.ui.layout.RowScope
-import androidx.ui.layout.fillMaxWidth
-import androidx.ui.layout.height
 import androidx.ui.layout.padding
-import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
 import androidx.ui.material.TopAppBar
-import androidx.ui.material.ripple.RippleIndication
+import androidx.ui.res.stringResource
 import androidx.ui.tooling.preview.Preview
+import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import com.toggl.models.domain.SettingsType
+import com.toggl.settings.R
 import com.toggl.settings.compose.ThemedPreview
 import com.toggl.settings.compose.theme.TogglTheme
-import com.toggl.settings.compose.theme.grid_1
-import com.toggl.settings.compose.theme.grid_2
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel
+import com.toggl.settings.ui.composables.Section
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
@@ -37,12 +29,18 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun SettingsPage(
     sectionsState: Flow<List<SettingsSectionViewModel>>,
-    pageTitle: String,
+    statusBarHeight: Dp,
+    navigationBarHeight: Dp,
     dispatcher: (SettingsAction) -> Unit = {}
 ) {
     val observableSectionState by sectionsState.collectAsState(listOf())
     TogglTheme {
-        SettingsPageContent(observableSectionState, pageTitle, dispatcher)
+        SettingsPageContent(
+            observableSectionState,
+            statusBarHeight,
+            navigationBarHeight,
+            dispatcher
+        )
     }
 }
 
@@ -50,22 +48,24 @@ fun SettingsPage(
 @Composable
 fun SettingsPageContent(
     sectionsState: List<SettingsSectionViewModel>,
-    pageTitle: String,
+    statusBarHeight: Dp,
+    navigationBarHeight: Dp,
     dispatcher: (SettingsAction) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.padding(top = statusBarHeight),
                 backgroundColor = MaterialTheme.colors.surface,
                 contentColor = MaterialTheme.colors.onSurface,
-                title = { Text(text = pageTitle) }
+                title = { Text(text = stringResource(R.string.settings)) }
             )
         },
-        bodyContent = { innerPadding ->
+        bodyContent = {
             SectionList(
                 sectionsList = sectionsState,
                 dispatcher = dispatcher,
-                modifier = Modifier.padding(innerPadding)
+                navigationBarHeight = navigationBarHeight
             )
         }
     )
@@ -75,73 +75,18 @@ fun SettingsPageContent(
 private fun SectionList(
     sectionsList: List<SettingsSectionViewModel>,
     dispatcher: (SettingsAction) -> Unit,
-    modifier: Modifier
+    navigationBarHeight: Dp
 ) {
+    val lastSection = sectionsList.lastOrNull()
     LazyColumnItems(sectionsList) { section ->
+
+        val bottomPadding = if (section == lastSection) navigationBarHeight else 0.dp
+
         Section(
             section = section,
             dispatcher = dispatcher,
-            modifier = modifier
+            modifier = Modifier.padding(bottom = bottomPadding)
         )
-    }
-}
-
-@Composable
-private fun Section(
-    section: SettingsSectionViewModel,
-    modifier: Modifier = Modifier,
-    dispatcher: (SettingsAction) -> Unit
-) {
-    val columnModifier = Modifier
-        .padding(top = grid_1, bottom = grid_1)
-        .plus(modifier)
-
-    Column(modifier = columnModifier) {
-        Text(
-            text = section.title,
-            modifier = Modifier.fillMaxWidth().padding(grid_2),
-            style = MaterialTheme.typography.subtitle1
-        )
-
-        Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .3f))
-
-        for (settingsOption in section.settingsOptions) {
-            val onClickAction = { dispatcher(SettingsAction.SettingTapped(settingsOption.settingsType)) }
-            SettingsRow(
-                modifier = Modifier.clickable(
-                    indication = RippleIndication(),
-                    onClick = onClickAction
-                )
-            ) {
-                when (settingsOption) {
-                    is SettingsViewModel.Toggle -> ToggleSetting(settingsOption, onClickAction)
-                    is SettingsViewModel.ListChoice -> ListChoiceSetting(settingsOption)
-                    is SettingsViewModel.SubPage -> SubPageSetting(settingsOption)
-                    is SettingsViewModel.ActionRow -> ActionSetting(settingsOption)
-                }
-            }
-            Divider(color = MaterialTheme.colors.onSurface.copy(alpha = .2f))
-        }
-    }
-}
-
-@Composable
-internal fun SettingsRow(
-    modifier: Modifier = Modifier,
-    children: @Composable RowScope.() -> Unit
-) {
-    val rowModifier = Modifier
-        .plus(modifier)
-        .height(56.dp)
-        .padding(grid_1)
-        .fillMaxWidth()
-
-    Row(
-        modifier = rowModifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalGravity = Alignment.CenterVertically
-    ) {
-        children()
     }
 }
 
@@ -150,7 +95,11 @@ internal fun SettingsRow(
 @Composable
 fun PreviewSettingsPageLight() {
     ThemedPreview(false) {
-        SettingsPageContent(settingsListPreviewData, "Settings")
+        SettingsPageContent(
+            settingsListPreviewData,
+            10.dp,
+            10.dp
+        )
     }
 }
 
@@ -159,7 +108,11 @@ fun PreviewSettingsPageLight() {
 @Composable
 fun PreviewSettingsPageDark() {
     ThemedPreview(true) {
-        SettingsPageContent(settingsListPreviewData, "Settings")
+        SettingsPageContent(
+            settingsListPreviewData,
+            10.dp,
+            10.dp
+        )
     }
 }
 

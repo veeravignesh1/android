@@ -67,6 +67,7 @@
     <string name="help">Ajuda</string>
     <string name="sign_out">Sair</string>
     <string name="no_client">Sem Cliente</string>
+    <string name="allow_calendar_access">Vincular contas de calendário</string>
     <string name="feedback_note">Conte-nos o que você está achando do app. Use esse espaço para dar feedback e fazer perguntas.  PS. Nosso suporte atualmente só atende em inglês. Nos desculpamos por qualquer inconveniência!</string>
     <string name="log_in_with_sso">Entrar usando SSO</string>
     <string name="sign_in_with_google">Continuar com o Google</string>

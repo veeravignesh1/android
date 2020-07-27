@@ -66,6 +66,7 @@
     <string name="help">ヘルプ</string>
     <string name="sign_out">ログアウト</string>
     <string name="no_client">クライアントがありません</string>
+    <string name="allow_calendar_access">カレンダーとリンク</string>
     <string name="feedback_note">Togglはいかがですか？感想や質問をお聞かせください  追伸　カスタマーサポートは現在英語だけで運営しております。ご不便をかけて申し訳ございません。</string>
     <string name="sign_up_call_to_action">アカウントを持ってない？<u>登録(無料)</u></string>
     <string name="sign_in_with_google">Googleでログイン</string>
