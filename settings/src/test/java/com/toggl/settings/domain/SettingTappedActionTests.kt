@@ -60,7 +60,8 @@ class SettingTappedActionTests : CoroutineTest() {
             SettingsType.DurationFormat,
             SettingsType.FirstDayOfTheWeek,
             SettingsType.DateFormat,
-            SettingsType.Workspace
+            SettingsType.Workspace,
+            SettingsType.SmartAlert
         )
     }
 }
