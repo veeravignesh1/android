@@ -1,10 +1,11 @@
 package com.toggl.api.serializers
 
+import com.google.common.truth.Truth.assertThat
 import com.google.gson.JsonParser
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,13 +19,13 @@ class UserSerializerTest {
         val jsonSerializer = UserDeserializer()
         val user = jsonSerializer.deserialize(json, mockk(), mockk())
 
-        user shouldBe User(
+        assertThat(user).isEqualTo(User(
             id = 9000,
             apiToken = ApiToken.from("1971800d4d82861d8f2c1651fea4d212") as ApiToken.Valid,
             email = Email.from("johnt@swift.com") as Email.Valid,
             name = "John Swift",
             defaultWorkspaceId = 777
-        )
+        ))
     }
 
     companion object {
