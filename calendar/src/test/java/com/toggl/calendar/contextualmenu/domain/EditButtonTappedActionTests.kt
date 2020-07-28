@@ -1,5 +1,6 @@
 package com.toggl.calendar.contextualmenu.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.common.testReduceNoEffects
@@ -10,7 +11,7 @@ import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,11 +47,11 @@ internal class EditButtonTappedActionTests {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
 
         reducer.testReduceState(initialState, ContextualMenuAction.EditButtonTapped) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 backStack = state.backStack.setRouteParam {
                     Route.StartEdit(timeEntry)
                 }
-            )
+            ))
         }
     }
 

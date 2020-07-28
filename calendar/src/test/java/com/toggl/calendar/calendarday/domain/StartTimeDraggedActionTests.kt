@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
@@ -14,7 +15,7 @@ import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -100,7 +101,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StartTimeDragged(newStart)
         ) { state ->
-            state shouldBe initialState
+            assertThat(state).isEqualTo(initialState)
         }
     }
 
@@ -113,7 +114,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StartTimeDragged(newStart)
         ) { state ->
-            state shouldBe initialState
+            assertThat(state).isEqualTo(initialState)
         }
     }
 
@@ -134,7 +135,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StartTimeDragged(newStart)
         ) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 backStack = state.backStack.setRouteParam {
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(
@@ -145,7 +146,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
                         )
                     )
                 }
-            )
+            ))
         }
     }
 
@@ -160,7 +161,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
                 initialState,
                 CalendarDayAction.StartTimeDragged(newStart)
             ) { state ->
-                state shouldBe initialState.copy(
+                assertThat(state).isEqualTo(initialState.copy(
                     backStack = state.backStack.setRouteParam {
                         Route.ContextualMenu(
                             SelectedCalendarItem.SelectedTimeEntry(
@@ -171,7 +172,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
                             )
                         )
                     }
-                )
+                ))
             }
         }
 
@@ -184,7 +185,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StartTimeDragged(newStart)
         ) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 backStack = state.backStack.setRouteParam {
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(
@@ -195,7 +196,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
                         )
                     )
                 }
-            )
+            ))
         }
     }
 
@@ -209,7 +210,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
                 initialState,
                 CalendarDayAction.StartTimeDragged(newStart)
             ) { state ->
-                state shouldBe initialState.copy(
+                assertThat(state).isEqualTo(initialState.copy(
                     backStack = state.backStack.setRouteParam {
                         Route.ContextualMenu(
                             SelectedCalendarItem.SelectedTimeEntry(
@@ -220,7 +221,7 @@ class StartTimeDraggedActionTests : CoroutineTest() {
                             )
                         )
                     }
-                )
+                ))
             }
         }
 }

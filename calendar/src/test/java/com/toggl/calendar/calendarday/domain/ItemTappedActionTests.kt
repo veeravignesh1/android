@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
@@ -13,7 +14,7 @@ import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -43,9 +44,9 @@ internal class ItemTappedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.ItemTapped(timeEntryItemToBeSelected)
         ) { state ->
-            state shouldBe initialState.copy(backStack = initialState.backStack.setRouteParam {
+            assertThat(state).isEqualTo(initialState.copy(backStack = initialState.backStack.setRouteParam {
                 Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
-            })
+            }))
         }
     }
 
@@ -55,9 +56,9 @@ internal class ItemTappedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.ItemTapped(timeEntryItemToBeSelected)
         ) { state ->
-            state shouldBe initialState.copy(backStack = initialState.backStack.push(
+            assertThat(state).isEqualTo(initialState.copy(backStack = initialState.backStack.push(
                 Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
-            ))
+            )))
         }
     }
 
@@ -67,9 +68,9 @@ internal class ItemTappedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.ItemTapped(calendarEventItemToBeSelected)
         ) { state ->
-            state shouldBe initialState.copy(backStack = initialState.backStack.push(
+            assertThat(state).isEqualTo(initialState.copy(backStack = initialState.backStack.push(
                 Route.ContextualMenu(SelectedCalendarItem.SelectedCalendarEvent(calendarEvent))
-            ))
+            )))
         }
     }
 

@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
@@ -11,7 +12,7 @@ import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.push
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -34,7 +35,7 @@ class EmptyPositionLongPressedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.EmptyPositionLongPressed(expectedStartTime)
         ) { state ->
-            state shouldBe state.copy(
+            assertThat(state).isEqualTo(state.copy(
                 backStack = initialState.backStack.push(
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(
@@ -45,7 +46,7 @@ class EmptyPositionLongPressedActionTests : CoroutineTest() {
                         )
                     )
                 )
-            )
+            ))
         }
     }
 
@@ -59,7 +60,7 @@ class EmptyPositionLongPressedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.EmptyPositionLongPressed(expectedStartTime)
         ) { state ->
-            state shouldBe state.copy(
+            assertThat(state).isEqualTo(state.copy(
                 backStack = initialState.backStack.setRouteParam {
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(
@@ -70,7 +71,7 @@ class EmptyPositionLongPressedActionTests : CoroutineTest() {
                         )
                     )
                 }
-            )
+            ))
         }
     }
 

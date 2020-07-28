@@ -1,9 +1,10 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.CalendarService
-import io.kotlintest.matchers.types.shouldBeTypeOf
+
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -35,7 +36,7 @@ class FetchCalendarEventsEffectTest : CoroutineTest() {
 
             val result = effect.execute()
 
-            result.shouldBeTypeOf<CalendarDayAction.CalendarEventsFetched>()
+            assertThat(result).isInstanceOf(CalendarDayAction.CalendarEventsFetched::class.java)
             coVerify { calendarService.getCalendarEvents(expectedStartTime, expectedEndTime, any()) }
         }
 
@@ -56,7 +57,7 @@ class FetchCalendarEventsEffectTest : CoroutineTest() {
 
             val result = effect.execute()
 
-            result.shouldBeTypeOf<CalendarDayAction.CalendarEventsFetched>()
+            assertThat(result).isInstanceOf(CalendarDayAction.CalendarEventsFetched::class.java)
             coVerify { calendarService.getCalendarEvents(any(), any(), expectedCalendars) }
         }
 }

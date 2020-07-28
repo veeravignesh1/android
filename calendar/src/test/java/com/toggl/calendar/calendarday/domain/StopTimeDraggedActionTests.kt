@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
@@ -14,7 +15,7 @@ import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -94,7 +95,7 @@ class StopTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StopTimeDragged(newEnd)
         ) { state ->
-            state shouldBe initialState
+            assertThat(state).isEqualTo(initialState)
         }
     }
 
@@ -115,7 +116,7 @@ class StopTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StopTimeDragged(newEnd)
         ) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 backStack = state.backStack.setRouteParam {
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(
@@ -125,7 +126,7 @@ class StopTimeDraggedActionTests : CoroutineTest() {
                         )
                     )
                 }
-            )
+            ))
         }
     }
 
@@ -139,7 +140,7 @@ class StopTimeDraggedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.StopTimeDragged(newEnd)
         ) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 backStack = state.backStack.setRouteParam {
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(
@@ -149,7 +150,7 @@ class StopTimeDraggedActionTests : CoroutineTest() {
                         )
                     )
                 }
-            )
+            ))
         }
     }
 }

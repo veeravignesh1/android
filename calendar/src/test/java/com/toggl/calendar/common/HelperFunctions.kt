@@ -1,5 +1,6 @@
 package com.toggl.calendar.common
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.architecture.core.Effect
@@ -14,8 +15,7 @@ import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.types.shouldBeTypeOf
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -129,15 +129,15 @@ suspend fun <State, Action> Reducer<State, Action>.testReduceNoEffects(
 
 @Suppress("UNUSED_PARAMETER")
 suspend fun <State, Action> assertNoEffectsWereReturned(state: State, effect: List<Effect<Action>>) {
-    effect.shouldBeEmpty()
+    assertThat(effect).isEmpty()
 }
 
 suspend inline fun <reified Holder : TimeEntryActionHolder, reified TimeEntryActionType : TimeEntryAction> Effect<Any>.shouldEmitTimeEntryAction(
     additionalTestBlock: (TimeEntryActionType) -> Unit = {}
 ) {
-    this.execute().shouldBeTypeOf<Holder> {
-        it.timeEntryAction.shouldBeTypeOf<TimeEntryActionType> { timeEntryAction ->
-            additionalTestBlock(timeEntryAction)
-        }
-    }
+    val result = this.execute()
+    assertThat(result).isInstanceOf(Holder::class.java)
+    val action = (result as Holder).timeEntryAction
+    assertThat(action).isInstanceOf(TimeEntryActionType::class.java)
+    additionalTestBlock(action as TimeEntryActionType)
 }

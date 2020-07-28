@@ -1,5 +1,6 @@
 package com.toggl.calendar.datepicker.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.domain.CalendarConstants.numberOfDaysToShow
 import com.toggl.calendar.common.testReduceNoEffects
@@ -7,9 +8,6 @@ import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.common.toMutableValue
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,7 +47,7 @@ internal class WeekStripeSwipedActionTest : CoroutineTest() {
             initialState,
             CalendarDatePickerAction.WeekStripeSwiped(SwipeDirection.Right)
         ) { state ->
-            state.selectedDate.toLocalDate() shouldBe initialState.selectedDate.toLocalDate()
+            assertThat(state.selectedDate.toLocalDate()).isEqualTo(initialState.selectedDate.toLocalDate())
         }
     }
 
@@ -60,7 +58,7 @@ internal class WeekStripeSwipedActionTest : CoroutineTest() {
             testInitialState,
             CalendarDatePickerAction.WeekStripeSwiped(SwipeDirection.Left)
         ) { state ->
-            state.selectedDate.toLocalDate() shouldBe testInitialState.selectedDate.toLocalDate()
+            assertThat(state.selectedDate.toLocalDate()).isEqualTo(testInitialState.selectedDate.toLocalDate())
         }
     }
 
@@ -70,9 +68,9 @@ internal class WeekStripeSwipedActionTest : CoroutineTest() {
             initialState,
             CalendarDatePickerAction.WeekStripeSwiped(SwipeDirection.Left)
         ) { state ->
-            state.selectedDate shouldNotBe initialState.selectedDate
-            state.selectedDate.dayOfWeek shouldBe initialState.selectedDate.dayOfWeek
-            Duration.between(state.selectedDate, initialState.selectedDate).toDays() shouldBe 7L
+            assertThat(state.selectedDate).isNotEqualTo(initialState.selectedDate)
+            assertThat(state.selectedDate.dayOfWeek).isEqualTo(initialState.selectedDate.dayOfWeek)
+            assertThat(Duration.between(state.selectedDate, initialState.selectedDate).toDays()).isEqualTo(7L)
         }
     }
 
@@ -82,12 +80,12 @@ internal class WeekStripeSwipedActionTest : CoroutineTest() {
             initialState,
             CalendarDatePickerAction.WeekStripeSwiped(SwipeDirection.Left)
         ) { intermediateState ->
-            intermediateState shouldNotBe initialState
+            assertThat(intermediateState).isNotEqualTo(initialState)
             reducer.testReduceState(
                 intermediateState,
                 CalendarDatePickerAction.WeekStripeSwiped(SwipeDirection.Right)
             ) { state ->
-                state shouldBe initialState
+                assertThat(state).isEqualTo(initialState)
             }
         }
     }
@@ -102,7 +100,8 @@ internal class WeekStripeSwipedActionTest : CoroutineTest() {
             reducer.reduce(mutableState, action)
         }
 
-        Duration.between(initialState.selectedDate, state.selectedDate).toDays() shouldBeLessThanOrEqual 14
+        assertThat(Duration.between(initialState.selectedDate, state.selectedDate).toDays())
+            .isAtMost(14)
     }
 
     @Test

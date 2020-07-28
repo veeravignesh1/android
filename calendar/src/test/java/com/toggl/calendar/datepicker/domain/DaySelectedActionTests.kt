@@ -1,9 +1,10 @@
 package com.toggl.calendar.datepicker.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -23,7 +24,7 @@ class DaySelectedActionTests : CoroutineTest() {
         val dayToSelect = OffsetDateTime.MAX
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySelected(dayToSelect)) {
-            it.selectedDate shouldBe dayToSelect
+            assertThat(it.selectedDate).isEqualTo(dayToSelect)
         }
     }
 

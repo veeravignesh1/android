@@ -1,12 +1,11 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceState
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -27,7 +26,7 @@ internal class CalendarViewAppearedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.CalendarViewAppeared
         ) { state ->
-            state shouldBe initialState
+            assertThat(state).isEqualTo(initialState)
         }
     }
 
@@ -37,8 +36,8 @@ internal class CalendarViewAppearedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.CalendarViewAppeared
         ) { effects ->
-            effects shouldHaveSize 1
-            effects.first().shouldBeInstanceOf<FetchCalendarEventsEffect>()
+            assertThat(effects).hasSize(1)
+            assertThat(effects.first()).isInstanceOf(FetchCalendarEventsEffect::class.java)
         }
     }
 }

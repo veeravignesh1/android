@@ -1,5 +1,6 @@
 package com.toggl.calendar.contextualmenu.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceEffects
@@ -8,8 +9,7 @@ import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,12 +50,12 @@ internal class CopyAsTimeEntryButtonTappedActionTests {
             action = ContextualMenuAction.CopyAsTimeEntryButtonTapped
         ) { effects ->
             val action = effects.first().execute() as ContextualMenuAction.TimeEntryHandling
-            action.timeEntryAction.shouldBeInstanceOf<TimeEntryAction.CreateTimeEntry>()
+            assertThat(action.timeEntryAction).isInstanceOf(TimeEntryAction.CreateTimeEntry::class.java)
 
             val startAction = action.timeEntryAction as TimeEntryAction.CreateTimeEntry
-            startAction.createTimeEntryDTO.description shouldBe event.description
-            startAction.createTimeEntryDTO.startTime shouldBe event.startTime
-            startAction.createTimeEntryDTO.duration shouldBe event.duration
+            assertThat(startAction.createTimeEntryDTO.description).isEqualTo(event.description)
+            assertThat(startAction.createTimeEntryDTO.startTime).isEqualTo(event.startTime)
+            assertThat(startAction.createTimeEntryDTO.duration).isEqualTo(event.duration)
         }
     }
 
@@ -65,7 +65,7 @@ internal class CopyAsTimeEntryButtonTappedActionTests {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedCalendarEvent(event))
 
         reducer.testReduceEffects(initialState, ContextualMenuAction.DialogDismissed) {
-            it.last().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+            assertThat(it.last().execute()).isInstanceOf(ContextualMenuAction.Close::class.java)
         }
     }
 }

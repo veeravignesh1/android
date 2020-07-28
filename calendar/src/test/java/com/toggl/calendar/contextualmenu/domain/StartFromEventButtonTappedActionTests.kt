@@ -1,5 +1,6 @@
 package com.toggl.calendar.contextualmenu.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceEffects
@@ -8,8 +9,7 @@ import com.toggl.calendar.exception.SelectedItemShouldBeACalendarEventException
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -50,11 +50,11 @@ internal class StartFromEventButtonTappedActionTests {
             action = ContextualMenuAction.StartFromEventButtonTapped
         ) { effects ->
             val action = effects.first().execute() as ContextualMenuAction.TimeEntryHandling
-            action.timeEntryAction.shouldBeInstanceOf<TimeEntryAction.StartTimeEntry>()
+            assertThat(action.timeEntryAction).isInstanceOf(TimeEntryAction.StartTimeEntry::class.java)
 
             val startAction = action.timeEntryAction as TimeEntryAction.StartTimeEntry
-            startAction.startTimeEntryDTO.description shouldBe event.description
-            startAction.startTimeEntryDTO.startTime shouldBe event.startTime
+            assertThat(startAction.startTimeEntryDTO.description).isEqualTo(event.description)
+            assertThat(startAction.startTimeEntryDTO.startTime).isEqualTo(event.startTime)
         }
     }
 
@@ -64,7 +64,7 @@ internal class StartFromEventButtonTappedActionTests {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedCalendarEvent(event))
 
         reducer.testReduceEffects(initialState, ContextualMenuAction.DialogDismissed) {
-            it.last().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+            assertThat(it.last().execute()).isInstanceOf(ContextualMenuAction.Close::class.java)
         }
     }
 }

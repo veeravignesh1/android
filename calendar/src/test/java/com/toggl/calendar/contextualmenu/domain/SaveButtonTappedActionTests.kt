@@ -1,5 +1,6 @@
 package com.toggl.calendar.contextualmenu.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.createTimeEntry
 import com.toggl.common.feature.models.SelectedCalendarItem
@@ -11,7 +12,7 @@ import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.matchers.types.shouldBeInstanceOf
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,7 +63,7 @@ class SaveButtonTappedActionTests {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
 
         reducer.testReduceEffects(initialState, ContextualMenuAction.CloseButtonTapped) { effects ->
-            effects.last().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+            assertThat(effects.last().execute()).isInstanceOf(ContextualMenuAction.Close::class.java)
         }
     }
 

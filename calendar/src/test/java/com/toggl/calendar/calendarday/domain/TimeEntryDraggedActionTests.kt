@@ -1,5 +1,6 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
@@ -14,7 +15,7 @@ import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -96,13 +97,13 @@ class TimeEntryDraggedActionTests : CoroutineTest() {
         val initialState = createInitialState(selectedItem = selectedItem)
         val newStart = startTime.minusHours(1)
         reducer.testReduceState(initialState, CalendarDayAction.TimeEntryDragged(newStart)) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 backStack = state.backStack.setRouteParam {
                     Route.ContextualMenu(
                         SelectedCalendarItem.SelectedTimeEntry(validEditableTimeEntry.copy(startTime = newStart))
                     )
                 }
-            )
+            ))
         }
     }
 }

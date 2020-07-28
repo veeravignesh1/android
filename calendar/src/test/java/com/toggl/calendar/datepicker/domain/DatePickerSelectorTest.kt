@@ -1,5 +1,6 @@
 package com.toggl.calendar.datepicker.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.datepicker.ui.end
 import com.toggl.calendar.datepicker.ui.start
@@ -7,7 +8,7 @@ import com.toggl.common.extensions.toList
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
-import io.kotlintest.shouldBe
+
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -36,8 +37,8 @@ class DatePickerSelectorTest : CoroutineTest() {
 
         val result = selector.select(state)
 
-        result.weeks.last().dates.last { it.isSelectable }.date shouldBe testData.today
-        result.weeks.first().dates.first { it.isSelectable }.date shouldBe testData.firstAvailableDay
+        assertThat(result.weeks.last().dates.last { it.isSelectable }.date).isEqualTo(testData.today)
+        assertThat(result.weeks.first().dates.first { it.isSelectable }.date).isEqualTo(testData.firstAvailableDay)
     }
 
     @ParameterizedTest
@@ -52,8 +53,8 @@ class DatePickerSelectorTest : CoroutineTest() {
 
         val result = selector.select(state)
 
-        result.weeks.last().end.toLocalDate() shouldBe testData.lastVisibleDate.toLocalDate()
-        result.weeks.first().start.toLocalDate() shouldBe testData.firstVisibleDate.toLocalDate()
+        assertThat(result.weeks.last().end.toLocalDate()).isEqualTo(testData.lastVisibleDate.toLocalDate())
+        assertThat(result.weeks.first().start.toLocalDate()).isEqualTo(testData.firstVisibleDate.toLocalDate())
     }
 
     @ParameterizedTest
@@ -84,7 +85,7 @@ class DatePickerSelectorTest : CoroutineTest() {
 
         weeks.forEachIndexed { expectedIndex, week ->
             week.dates.forEach { date ->
-                selector.select(state.copy(date.date)).selectedWeek shouldBe expectedIndex
+                assertThat(selector.select(state.copy(date.date)).selectedWeek).isEqualTo(expectedIndex)
             }
         }
     }

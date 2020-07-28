@@ -1,11 +1,12 @@
 package com.toggl.calendar.datepicker.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -33,7 +34,7 @@ class DaySwipedActionTests : CoroutineTest() {
         val initialDate = state.selectedDate
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySwiped(SwipeDirection.Left)) {
-            it.selectedDate shouldBe initialDate.minusDays(1)
+            assertThat(it.selectedDate).isEqualTo(initialDate.minusDays(1))
         }
     }
 
@@ -44,7 +45,7 @@ class DaySwipedActionTests : CoroutineTest() {
         every { timeService.now() }.returns(initialDate.plusDays(1))
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySwiped(SwipeDirection.Right)) {
-            it.selectedDate shouldBe initialDate.plusDays(1)
+            assertThat(it.selectedDate).isEqualTo(initialDate.plusDays(1))
         }
     }
 
@@ -57,7 +58,7 @@ class DaySwipedActionTests : CoroutineTest() {
         )
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySwiped(SwipeDirection.Left)) {
-            it.selectedDate.dayOfMonth shouldBe 7
+            assertThat(it.selectedDate.dayOfMonth).isEqualTo(7)
         }
     }
 
@@ -70,7 +71,7 @@ class DaySwipedActionTests : CoroutineTest() {
         )
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySwiped(SwipeDirection.Right)) {
-            it.selectedDate.dayOfMonth shouldBe 20
+            assertThat(it.selectedDate.dayOfMonth).isEqualTo(20)
         }
     }
 
@@ -81,7 +82,7 @@ class DaySwipedActionTests : CoroutineTest() {
         every { timeService.now() }.returns(state.selectedDate.plusWeeks(2))
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySwiped(SwipeDirection.Left)) {
-            it.selectedDate shouldBe initialDate
+            assertThat(it.selectedDate).isEqualTo(initialDate)
         }
     }
 
@@ -92,7 +93,7 @@ class DaySwipedActionTests : CoroutineTest() {
         every { timeService.now() }.returns(state.selectedDate)
 
         reducer.testReduceState(state, CalendarDatePickerAction.DaySwiped(SwipeDirection.Right)) {
-            it.selectedDate shouldBe initialDate
+            assertThat(it.selectedDate).isEqualTo(initialDate)
         }
     }
 

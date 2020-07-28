@@ -1,10 +1,11 @@
 package com.toggl.calendar.contextualmenu.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotlintest.matchers.types.shouldBeInstanceOf
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +29,7 @@ internal class DiscardButtonTappedActionTests {
         val initialState = createInitialState(selectedItem = SelectedCalendarItem.SelectedTimeEntry(timeEntry))
 
         reducer.testReduceEffects(initialState, ContextualMenuAction.DiscardButtonTapped) {
-            it.single().execute().shouldBeInstanceOf<ContextualMenuAction.Close>()
+            assertThat(it.single().execute()).isInstanceOf(ContextualMenuAction.Close::class.java)
         }
     }
 }

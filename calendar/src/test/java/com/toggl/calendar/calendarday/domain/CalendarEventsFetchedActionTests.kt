@@ -1,11 +1,12 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -32,13 +33,13 @@ internal class CalendarEventsFetchedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.CalendarEventsFetched(calendarEvents)
         ) { state ->
-            state shouldBe initialState.copy(
+            assertThat(state).isEqualTo(initialState.copy(
                 events = mapOf(
                     "1" to calendarEvents[0],
                     "2" to calendarEvents[1],
                     "3" to calendarEvents[2]
                 )
-            )
+            ))
         }
     }
 

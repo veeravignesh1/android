@@ -1,16 +1,14 @@
 package com.toggl.calendar.calendarday.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.calendar.common.domain.CalendarItem
 import com.toggl.calendar.common.domain.duration
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
-import io.kotlintest.matchers.collections.shouldHaveSize
 import io.mockk.every
 import io.mockk.mockk
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.Duration
@@ -87,16 +85,16 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[2].startTime && it.totalColumns == 1
-        }
+        }).hasSize(1)
     }
 
     @Test
@@ -120,18 +118,18 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
 
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 2 && it.columnIndex == 0
-        }
+        }).hasSize(1)
 
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 2 && it.columnIndex == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[2].startTime && it.totalColumns == 1
-        }
+        }).hasSize(1)
     }
 
     @Test
@@ -151,14 +149,14 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
 
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 2 && it.columnIndex == 0
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 2 && it.columnIndex == 1
-        }
+        }).hasSize(1)
     }
 
     @Test
@@ -181,16 +179,16 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 2 && it.columnIndex == 0
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 2 && it.columnIndex == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[2].startTime && it.totalColumns == 2 && it.columnIndex == 0
-        }
+        }).hasSize(1)
     }
 
     @Test
@@ -221,22 +219,22 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 3 && it.columnIndex == 0
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 3 && it.columnIndex == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[2].startTime && it.totalColumns == 3 && it.columnIndex == 2
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[3].startTime && it.totalColumns == 2 && it.columnIndex == 0
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[4].startTime && it.totalColumns == 2 && it.columnIndex == 1
-        }
+        }).hasSize(1)
     }
 
     @Test
@@ -271,23 +269,23 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
 
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 3 && it.columnIndex == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 3 && it.columnIndex == 0
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[2].startTime && it.totalColumns == 3 && it.columnIndex == 2
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[3].startTime && it.totalColumns == 2 && calendarItems[3].duration == it.duration && it.columnIndex == 1
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[4].startTime && it.totalColumns == 2 && calendarItems[4].duration == it.duration && it.columnIndex == 0
-        }
+        }).hasSize(1)
     }
 
     @Test
@@ -315,20 +313,15 @@ class CalendarLayoutCalculatorTest {
 
         val layoutAttributes = calculator.calculateLayoutAttributes(calendarItems)
 
-        layoutAttributes shouldHaveSize calendarItems.size
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        assertThat(layoutAttributes).hasSize(calendarItems.size)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[0].startTime && it.totalColumns == 3 && it.columnIndex == 2
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[1].startTime && it.totalColumns == 3 && it.columnIndex == 0
-        }
-        assertThat(layoutAttributes).matchesOnlyOnce {
+        }).hasSize(1)
+        assertThat(layoutAttributes.filter {
             it.startTime == calendarItems[2].startTime && it.totalColumns == 3 && it.columnIndex == 1
-        }
-    }
-
-    private fun <ELEMENT> ListAssert<ELEMENT>.matchesOnlyOnce(predicate: (ELEMENT) -> Boolean) {
-        anyMatch(predicate)
-        filteredOn(predicate).size().isOne
+        }).hasSize(1)
     }
 }
