@@ -23,7 +23,7 @@ object Libs {
         const val kotlinCoroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4"
         const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.71"
         const val mockk = "io.mockk:mockk:1.10.0"
-        const val assertJ = "org.assertj:assertj-core:3.15.0"
+        const val truth = "com.google.truth:truth:1.0.1"
 
         object Jupiter {
             private const val version = "5.6.1"
