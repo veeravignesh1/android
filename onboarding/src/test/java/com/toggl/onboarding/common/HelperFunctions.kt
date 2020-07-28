@@ -1,5 +1,6 @@
 package com.toggl.onboarding.common
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
@@ -7,7 +8,7 @@ import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
-import io.kotlintest.matchers.collections.shouldBeEmpty
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
@@ -68,5 +69,5 @@ suspend fun <State, Action> Reducer<State, Action>.testReduceNoEffects(
 
 @Suppress("UNUSED_PARAMETER")
 suspend fun <State, Action> assertNoEffectsWereReturned(state: State, effect: List<Effect<Action>>) {
-    effect.shouldBeEmpty()
+    assertThat(effect).isEmpty()
 }

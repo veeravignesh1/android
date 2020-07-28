@@ -1,5 +1,6 @@
 package com.toggl.onboarding.login.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.api.login.LoginApiClient
 import com.toggl.architecture.Loadable
 import com.toggl.models.validation.Email
@@ -9,7 +10,7 @@ import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
 import com.toggl.onboarding.common.testReduceState
 import com.toggl.repository.interfaces.UserRepository
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -34,7 +35,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
         val initialState = emptyState().withCredentials(password = validPassword)
 
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
-            newState shouldBe initialState
+            assertThat(newState).isEqualTo(initialState)
         }
 }
     @Test
@@ -42,7 +43,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
         val initialState = emptyState().withCredentials(email = validEmail)
 
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
-            newState shouldBe initialState
+            assertThat(newState).isEqualTo(initialState)
         }
     }
 
@@ -52,9 +53,9 @@ class LoginButtonTappedActionTests : CoroutineTest() {
             emptyState().withCredentials(email = validEmail, password = validPassword)
 
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
-            newState shouldBe initialState.copy(
+            assertThat(newState).isEqualTo(initialState.copy(
                 user = Loadable.Loading
-            )
+            ))
         }
     }
 }

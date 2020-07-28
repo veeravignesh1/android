@@ -1,13 +1,13 @@
 package com.toggl.onboarding.login.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.api.login.LoginApiClient
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
 import com.toggl.onboarding.common.validUser
 import com.toggl.repository.interfaces.UserRepository
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -43,7 +43,8 @@ class LogUserInEffectTests : CoroutineTest() {
     fun `return a set user action`() = runBlockingTest {
         val action = executeEffect()
 
-        action.shouldBeInstanceOf<LoginAction.SetUser> { it.user shouldBe validUser }
+        assertThat(action).isInstanceOf(LoginAction.SetUser::class.java)
+        assertThat((action as LoginAction.SetUser).user).isEqualTo(validUser)
     }
 
     @Test
@@ -52,6 +53,6 @@ class LogUserInEffectTests : CoroutineTest() {
 
         val action = executeEffect()
 
-        action.shouldBeInstanceOf<LoginAction.SetUserError>()
+        assertThat(action).isInstanceOf(LoginAction.SetUserError::class.java)
     }
 }

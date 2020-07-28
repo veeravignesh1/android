@@ -1,11 +1,12 @@
 package com.toggl.onboarding.login.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.api.login.LoginApiClient
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validEmail
 import com.toggl.repository.interfaces.UserRepository
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
@@ -23,7 +24,7 @@ class EmailEnteredActionTests : CoroutineTest() {
     @Test
     fun `sets the email in the state`() = runBlocking {
         reducer.testReduceState(emptyState(), LoginAction.EmailEntered(validEmail.toString())) { newState ->
-            newState.email.email shouldBe validEmail.email
+            assertThat(newState.email.email).isEqualTo(validEmail.email)
         }
     }
 }
