@@ -11,6 +11,9 @@ buildscript {
     ]
     repositories {
         mavenCentral()
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-eap/"
+        }
         google()
         jcenter()
     }
@@ -36,6 +39,9 @@ defaultTasks 'dependencyUpdates'
 allprojects {
     repositories {
         mavenCentral()
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-eap/"
+        }
         google()
         jcenter()
     }
