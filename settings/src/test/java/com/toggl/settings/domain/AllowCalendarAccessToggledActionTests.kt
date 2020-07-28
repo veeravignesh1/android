@@ -1,5 +1,6 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
@@ -7,9 +8,7 @@ import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.createUserPreferences
 import com.toggl.settings.common.testReduce
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -48,9 +47,9 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
                 disabledCalendarInitialState,
                 SettingsAction.AllowCalendarAccessToggled
             ) { state, effects ->
-                effects.shouldBeSingleton()
-                state shouldBe disabledCalendarInitialState
-                effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
+                assertThat(effects).hasSize(1)
+                assertThat(state).isEqualTo(disabledCalendarInitialState)
+                assertThat(effects.first()).isInstanceOf(UpdateUserPreferencesEffect::class.java)
             }
         }
 
@@ -64,9 +63,9 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
                     enabledCalendarInitialState,
                     SettingsAction.AllowCalendarAccessToggled
                 ) { state, effects ->
-                    effects.shouldBeSingleton()
-                    state shouldBe enabledCalendarInitialState
-                    effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
+                    assertThat(effects).hasSize(1)
+                    assertThat(state).isEqualTo(enabledCalendarInitialState)
+                    assertThat(effects.first()).isInstanceOf(UpdateUserPreferencesEffect::class.java)
 
                     effects.first().execute()
                     coVerify(exactly = 1) {
@@ -97,9 +96,9 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
                 enabledCalendarInitialState,
                 SettingsAction.AllowCalendarAccessToggled
             ) { state, effects ->
-                effects.shouldBeSingleton()
-                state shouldBe enabledCalendarInitialState
-                effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
+                assertThat(effects).hasSize(1)
+                assertThat(state).isEqualTo(enabledCalendarInitialState)
+                assertThat(effects.first()).isInstanceOf(UpdateUserPreferencesEffect::class.java)
             }
         }
 
@@ -112,10 +111,10 @@ class AllowCalendarAccessToggledActionTests : CoroutineTest() {
                 disabledCalendarInitialState,
                 SettingsAction.AllowCalendarAccessToggled
             ) { state, effects ->
-                effects.size shouldBe 2
-                state shouldBe disabledCalendarInitialState
-                effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
-                effects.last().shouldBeInstanceOf<RequestCalendarPermissionEffect>()
+                assertThat(effects.size).isEqualTo(2)
+                assertThat(state).isEqualTo(disabledCalendarInitialState)
+                assertThat(effects.first()).isInstanceOf(UpdateUserPreferencesEffect::class.java)
+                assertThat(effects.last()).isInstanceOf(RequestCalendarPermissionEffect::class.java)
             }
         }
     }

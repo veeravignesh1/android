@@ -1,6 +1,7 @@
 package com.toggl.settings.domain
 
 import android.content.Context
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
@@ -8,8 +9,7 @@ import com.toggl.models.validation.Email
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.createUserPreferences
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +42,7 @@ class SettingsSelectorTests : CoroutineTest() {
         val initialState = createSettingsState(user = user, userPreferences = prefs)
         val sections: List<SettingsSectionViewModel> = selector.select(initialState)
 
-        sections.size shouldBe SettingsStructureBlueprint.sections.size
+        assertThat(sections.size).isEqualTo(SettingsStructureBlueprint.sections.size)
 
         with(sections[0]) {
             verify<SettingsViewModel.ListChoice>(0, SettingsType.Name) {
@@ -61,7 +61,7 @@ class SettingsSelectorTests : CoroutineTest() {
                 // TODO
             }
             verify<SettingsViewModel.Toggle>(1, SettingsType.TwentyFourHourClock) {
-                it.toggled shouldBe prefs.manualModeEnabled
+                assertThat(it.toggled).isEqualTo(prefs.manualModeEnabled)
             }
             verify<SettingsViewModel.ListChoice>(2, SettingsType.DurationFormat) {
                 // TODO
@@ -70,16 +70,16 @@ class SettingsSelectorTests : CoroutineTest() {
                 // TODO
             }
             verify<SettingsViewModel.Toggle>(4, SettingsType.GroupSimilar) {
-                it.toggled shouldBe prefs.groupSimilarTimeEntriesEnabled
+                assertThat(it.toggled).isEqualTo(prefs.groupSimilarTimeEntriesEnabled)
             }
         }
 
         with(sections[2]) {
             verify<SettingsViewModel.Toggle>(0, SettingsType.CellSwipe) {
-                it.toggled shouldBe prefs.cellSwipeActionsEnabled
+                assertThat(it.toggled).isEqualTo(prefs.cellSwipeActionsEnabled)
             }
             verify<SettingsViewModel.Toggle>(1, SettingsType.ManualMode) {
-                it.toggled shouldBe prefs.manualModeEnabled
+                assertThat(it.toggled).isEqualTo(prefs.manualModeEnabled)
             }
         }
 
@@ -100,9 +100,9 @@ class SettingsSelectorTests : CoroutineTest() {
     }
 
     private inline fun <reified VM : SettingsViewModel> SettingsSectionViewModel.verify(settingOption: Int, settingsType: SettingsType, block: (VM) -> Unit = { }) {
-        settingsOptions[settingOption].shouldBeInstanceOf<VM> {
-            it.settingsType shouldBe settingsType
-            block(it)
-        }
+        assertThat(settingsOptions[settingOption]).isInstanceOf(VM::class.java)
+        val option = settingsOptions[settingOption] as VM
+        assertThat(option.settingsType).isEqualTo(settingsType)
+        block(option)
     }
 }

@@ -1,13 +1,13 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createUserPreferences
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.shouldBe
+
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,17 +43,17 @@ class UpdateUserPreferencesEffectTests : CoroutineTest() {
         ).execute()
 
         with(resultAction.userPreferences) {
-            manualModeEnabled.shouldBeTrue()
-            twentyFourHourClockEnabled.shouldBeTrue()
-            groupSimilarTimeEntriesEnabled.shouldBeTrue()
-            cellSwipeActionsEnabled.shouldBeTrue()
-            calendarIntegrationEnabled.shouldBeTrue()
-            calendarIds shouldBe listOf("one", "two")
-            selectedWorkspaceId shouldBe 1
-            dateFormat shouldBe DateFormat.DDMMYYYY_dash
-            durationFormat shouldBe DurationFormat.Decimal
-            firstDayOfTheWeek shouldBe DayOfWeek.WEDNESDAY
-            smartAlertsOption shouldBe SmartAlertsOption.MinutesBefore15
+            assertThat(manualModeEnabled).isTrue()
+            assertThat(twentyFourHourClockEnabled).isTrue()
+            assertThat(groupSimilarTimeEntriesEnabled).isTrue()
+            assertThat(cellSwipeActionsEnabled).isTrue()
+            assertThat(calendarIntegrationEnabled).isTrue()
+            assertThat(calendarIds).isEqualTo(listOf("one", "two"))
+            assertThat(selectedWorkspaceId).isEqualTo(1)
+            assertThat(dateFormat).isEqualTo(DateFormat.DDMMYYYY_dash)
+            assertThat(durationFormat).isEqualTo(DurationFormat.Decimal)
+            assertThat(firstDayOfTheWeek).isEqualTo(DayOfWeek.WEDNESDAY)
+            assertThat(smartAlertsOption).isEqualTo(SmartAlertsOption.MinutesBefore15)
         }
 
         coVerify { settingsRepository.saveUserPreferences(newUserPreferences) }

@@ -1,11 +1,12 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.testReduceNoEffects
 import com.toggl.settings.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -28,7 +29,7 @@ class UpdateNameActionTests : CoroutineTest() {
             initialState,
             SettingsAction.UpdateName("new")
         ) { state ->
-            state.user.name shouldBe "new"
+            assertThat(state.user.name).isEqualTo("new")
         }
     }
 }

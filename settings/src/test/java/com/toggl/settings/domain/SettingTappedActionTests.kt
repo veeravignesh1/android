@@ -1,5 +1,6 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.SettingsType
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
@@ -7,8 +8,7 @@ import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.testReduceEffects
 import com.toggl.settings.common.testReduceNoEffects
 import com.toggl.settings.common.testReduceState
-import io.kotlintest.matchers.collections.shouldNotBeEmpty
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -28,7 +28,7 @@ class SettingTappedActionTests : CoroutineTest() {
         reducer.testReduceEffects(
             initialState,
             SettingsAction.SettingTapped(SettingsType.ManualMode)
-        ) { effect -> effect.shouldNotBeEmpty() }
+        ) { effect -> assertThat(effect).isNotEmpty() }
     }
 
     @ParameterizedTest
@@ -36,7 +36,7 @@ class SettingTappedActionTests : CoroutineTest() {
     fun `Should set the local state to the setting type for single-choice settings`(settingsType: SettingsType) =
         runBlockingTest {
             reducer.testReduceState(initialState, SettingsAction.SettingTapped(settingsType)) {
-                it.localState.singleChoiceSettingShowing shouldBe settingsType
+                assertThat(it.localState.singleChoiceSettingShowing).isEqualTo(settingsType)
             }
         }
 
@@ -50,7 +50,7 @@ class SettingTappedActionTests : CoroutineTest() {
     @Test
     fun `Should not update the local state with setting type for other settings`() = runBlockingTest {
         reducer.testReduceState(initialState, SettingsAction.SettingTapped(SettingsType.TwentyFourHourClock)) {
-            it.localState.singleChoiceSettingShowing shouldBe null
+            assertThat(it.localState.singleChoiceSettingShowing).isEqualTo(null)
         }
     }
 

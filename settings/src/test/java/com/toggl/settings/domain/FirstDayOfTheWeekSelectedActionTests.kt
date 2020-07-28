@@ -1,13 +1,12 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.testReduceEffects
 import com.toggl.settings.common.testReduceState
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -26,8 +25,8 @@ class FirstDayOfTheWeekSelectedActionTests : CoroutineTest() {
             initialState,
             SettingsAction.FirstDayOfTheWeekSelected(firstDayOfTheWeek = DayOfWeek.WEDNESDAY)
         ) { effects ->
-            effects.shouldBeSingleton()
-            effects.first().shouldBeInstanceOf<UpdateUserPreferencesEffect>()
+            assertThat(effects).hasSize(1)
+            assertThat(effects.first()).isInstanceOf(UpdateUserPreferencesEffect::class.java)
         }
     }
 
@@ -36,6 +35,6 @@ class FirstDayOfTheWeekSelectedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             SettingsAction.FirstDayOfTheWeekSelected(firstDayOfTheWeek = DayOfWeek.WEDNESDAY)
-        ) { state -> state shouldBe initialState }
+        ) { state -> assertThat(state).isEqualTo(initialState) }
     }
 }

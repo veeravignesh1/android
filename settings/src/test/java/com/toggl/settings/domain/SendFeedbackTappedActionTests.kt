@@ -1,13 +1,13 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.Loadable
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.testReduceEffects
 import com.toggl.settings.common.testReduceState
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeTypeOf
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -24,7 +24,7 @@ class SendFeedbackTappedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             SettingsAction.SendFeedbackTapped("message")
-        ) { state -> state.localState.sendFeedbackRequest.shouldBeTypeOf<Loadable.Loading>() }
+        ) { state -> assertThat(state.localState.sendFeedbackRequest).isInstanceOf(Loadable.Loading::class.java) }
     }
 
     @Test
@@ -33,8 +33,8 @@ class SendFeedbackTappedActionTests : CoroutineTest() {
             initialState,
             SettingsAction.SendFeedbackTapped("message")
         ) { effect ->
-            effect.shouldBeSingleton()
-            effect.first().shouldBeTypeOf<SendFeedbackEffect>()
+            assertThat(effect).hasSize(1)
+            assertThat(effect.first()).isInstanceOf(SendFeedbackEffect::class.java)
         }
     }
 }

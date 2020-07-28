@@ -1,5 +1,6 @@
 package com.toggl.settings.common
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.api.feedback.FeedbackApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Loadable
@@ -24,8 +25,7 @@ import com.toggl.settings.domain.FeedbackDataBuilder
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.settings.domain.SettingsState
 import com.toggl.settings.domain.SignOutEffect
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.types.shouldBeTypeOf
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -144,15 +144,14 @@ suspend fun <State, Action> Reducer<State, Action>.testReduceNoEffects(
 
 @Suppress("UNUSED_PARAMETER")
 suspend fun <State, Action> assertNoEffectsWereReturned(state: State, effect: List<Effect<Action>>) {
-    effect.shouldBeEmpty()
+    assertThat(effect).isEmpty()
 }
 
 suspend inline fun <reified Holder : TimeEntryActionHolder, reified TimeEntryActionType : TimeEntryAction> Effect<Any>.shouldEmitTimeEntryAction(
     additionalTestBlock: (TimeEntryActionType) -> Unit = {}
 ) {
-    this.execute().shouldBeTypeOf<Holder> {
-        it.timeEntryAction.shouldBeTypeOf<TimeEntryActionType> { timeEntryAction ->
-            additionalTestBlock(timeEntryAction)
-        }
-    }
+    val action = this.execute()
+    assertThat(action).isInstanceOf(Holder::class.java)
+    assertThat((action as Holder).timeEntryAction).isInstanceOf(TimeEntryActionType::class.java)
+    additionalTestBlock(action.timeEntryAction as TimeEntryActionType)
 }

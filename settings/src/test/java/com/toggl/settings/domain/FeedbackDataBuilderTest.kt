@@ -1,5 +1,6 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
@@ -8,9 +9,7 @@ import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
-import io.kotlintest.matchers.numerics.shouldBeExactly
-import io.kotlintest.matchers.types.shouldBeNull
-import io.kotlintest.shouldBe
+
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -60,7 +59,7 @@ class FeedbackDataBuilderTest : CoroutineTest() {
 
         val feedbackData = feedbackDataBuilder.assembleFeedbackData()
 
-        feedbackData.numberOfTimeEntries shouldBeExactly expectedCount
+        assertThat(feedbackData.numberOfTimeEntries).isEqualTo(expectedCount)
     }
 
     @Test
@@ -70,7 +69,7 @@ class FeedbackDataBuilderTest : CoroutineTest() {
 
         val feedbackData = feedbackDataBuilder.assembleFeedbackData()
 
-        feedbackData.numberOfWorkspaces shouldBeExactly expectedCount
+        assertThat(feedbackData.numberOfWorkspaces).isEqualTo(expectedCount)
     }
 
     @Test
@@ -79,7 +78,7 @@ class FeedbackDataBuilderTest : CoroutineTest() {
 
         val feedbackData = feedbackDataBuilder.assembleFeedbackData()
 
-        feedbackData.manualModeIsOn shouldBe expectedManualMode
+        assertThat(feedbackData.manualModeIsOn).isEqualTo(expectedManualMode)
     }
 
     @Test
@@ -89,18 +88,18 @@ class FeedbackDataBuilderTest : CoroutineTest() {
 
         val feedbackData = feedbackDataBuilder.assembleFeedbackData()
 
-        feedbackData.deviceTime shouldBe expectedTime
+        assertThat(feedbackData.deviceTime).isEqualTo(expectedTime)
     }
 
     @Test
     fun `everything else should be null or have an bogus value until actually implemented`() = runBlockingTest {
         val feedbackData = feedbackDataBuilder.assembleFeedbackData()
 
-        feedbackData.accountTimeZone.shouldBeNull()
-        feedbackData.numberOfUnsyncedTimeEntries.shouldBe(Int.MIN_VALUE)
-        feedbackData.numberOfUnsyncableTimeEntries.shouldBe(Int.MIN_VALUE)
-        feedbackData.lastSyncAttempt.shouldBeNull()
-        feedbackData.lastSuccessfulSync.shouldBeNull()
-        feedbackData.lastLogin.shouldBeNull()
+        assertThat(feedbackData.accountTimeZone).isNull()
+        assertThat(feedbackData.numberOfUnsyncedTimeEntries).isEqualTo(Int.MIN_VALUE)
+        assertThat(feedbackData.numberOfUnsyncableTimeEntries).isEqualTo(Int.MIN_VALUE)
+        assertThat(feedbackData.lastSyncAttempt).isNull()
+        assertThat(feedbackData.lastSuccessfulSync).isNull()
+        assertThat(feedbackData.lastLogin).isNull()
     }
 }

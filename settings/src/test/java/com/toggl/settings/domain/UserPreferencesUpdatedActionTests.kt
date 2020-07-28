@@ -1,12 +1,13 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.createUserPreferences
 import com.toggl.settings.common.testReduceNoEffects
 import com.toggl.settings.common.testReduceState
-import io.kotlintest.matchers.boolean.shouldBeTrue
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -28,7 +29,7 @@ class UserPreferencesUpdatedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             action
-        ) { state -> state.userPreferences.manualModeEnabled.shouldBeTrue() }
+        ) { state -> assertThat(state.userPreferences.manualModeEnabled).isTrue() }
     }
 
     @Test

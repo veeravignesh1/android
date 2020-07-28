@@ -1,12 +1,13 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.SettingsType
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsReducer
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.testReduceNoEffects
 import com.toggl.settings.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -23,7 +24,7 @@ class DialogDismissedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             SettingsAction.DialogDismissed
-        ) { state -> state.localState.singleChoiceSettingShowing shouldBe null }
+        ) { state -> assertThat(state.localState.singleChoiceSettingShowing).isEqualTo(null) }
     }
 
     @Test

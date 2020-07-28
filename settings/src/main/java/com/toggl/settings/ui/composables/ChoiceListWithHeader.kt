@@ -8,6 +8,7 @@ import androidx.ui.foundation.Box
 import androidx.ui.foundation.Dialog
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.clickable
+import androidx.ui.foundation.selection.selectable
 import androidx.ui.layout.Column
 import androidx.ui.layout.Row
 import androidx.ui.layout.Spacer
@@ -79,21 +80,27 @@ internal fun SingleChoiceListWithHeader(
         )
         RadioGroup {
             items.forEach { item ->
-                RadioGroupItem(selected = item.isSelected, onSelect = { dispatchOnSelected(item) }) {
-                    Row(
-                        modifier = Modifier.preferredHeight(grid_6) +
-                            Modifier.clickable(onClick = { dispatchOnSelected(item) }) +
-                            Modifier.fillMaxWidth()
-                    ) {
-                        RadioButton(selected = item.isSelected, onSelect = { dispatchOnSelected(item) })
-                        Spacer(modifier = Modifier.preferredWidth(grid_4))
-                        Text(
-                            text = item.label,
-                            style = MaterialTheme.typography.body1,
-                            color = MaterialTheme.colors.onBackground
-                        )
+                Box(
+                    modifier = Modifier.selectable(
+                        selected = item.isSelected,
+                        onClick = { if (!item.isSelected) ({ dispatchOnSelected(item) })() }
+                    ),
+                    children = {
+                        Row(
+                            modifier = Modifier.preferredHeight(grid_6) +
+                                Modifier.clickable(onClick = { dispatchOnSelected(item) }) +
+                                Modifier.fillMaxWidth()
+                        ) {
+                            RadioButton(selected = item.isSelected, onClick = { dispatchOnSelected(item) })
+                            Spacer(modifier = Modifier.preferredWidth(grid_4))
+                            Text(
+                                text = item.label,
+                                style = MaterialTheme.typography.body1,
+                                color = MaterialTheme.colors.onBackground
+                            )
+                        }
                     }
-                }
+                )
             }
         }
     }

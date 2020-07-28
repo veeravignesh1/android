@@ -1,5 +1,6 @@
 package com.toggl.settings.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.api.feedback.FeedbackApiClient
 import com.toggl.models.domain.FeedbackData
 import com.toggl.models.domain.PlatformInfo
@@ -7,8 +8,7 @@ import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 import com.toggl.settings.common.CoroutineTest
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.shouldBe
+
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -59,7 +59,8 @@ class SendFeedbackEffectTest : CoroutineTest() {
                 "whatever", mockk(relaxed = true), mockk(), feedbackDataBuilder, feedbackApi, dispatcherProvider
             ).execute()
 
-            resultAction.shouldBeTypeOf<SettingsAction.SetSendFeedbackError> { it.throwable shouldBe expectedError }
+            assertThat(resultAction).isInstanceOf(SettingsAction.SetSendFeedbackError::class.java)
+            assertThat((resultAction as SettingsAction.SetSendFeedbackError).throwable).isEqualTo(expectedError)
         }
 
     @Test
@@ -73,6 +74,6 @@ class SendFeedbackEffectTest : CoroutineTest() {
             "whatever", mockk(relaxed = true), mockk(), feedbackDataBuilder, feedbackApi, dispatcherProvider
         ).execute()
 
-        resultAction.shouldBeTypeOf<SettingsAction.FeedbackSent>()
+        assertThat(resultAction).isInstanceOf(SettingsAction.FeedbackSent::class.java)
     }
 }
