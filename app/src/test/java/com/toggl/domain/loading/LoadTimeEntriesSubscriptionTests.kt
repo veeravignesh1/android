@@ -1,5 +1,6 @@
 package com.toggl.domain.loading
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.Failure
 import com.toggl.architecture.Loadable
 import com.toggl.common.CoroutineTest
@@ -9,7 +10,7 @@ import com.toggl.domain.extensions.createUser
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.repository.interfaces.TimeEntryRepository
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -132,6 +133,6 @@ class LoadTimeEntriesSubscriptionTests : CoroutineTest() {
         val outTimeEntries = outputActions
             .map { it.action as LoadingAction.TimeEntriesLoaded }
             .map { it.timeEntries }
-        outTimeEntries shouldBe expectedOutput
+        assertThat(outTimeEntries).isEqualTo(expectedOutput)
     }
 }

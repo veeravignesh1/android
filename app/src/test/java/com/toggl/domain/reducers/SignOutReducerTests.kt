@@ -1,13 +1,13 @@
 package com.toggl.domain.reducers
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.core.Reducer
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.extensions.CoroutineTest
 import com.toggl.domain.extensions.testReduceState
 import com.toggl.settings.domain.SettingsAction
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -34,13 +34,13 @@ class SignOutReducerTests : CoroutineTest() {
             initialState,
             AppAction.Settings(SettingsAction.SignOutCompleted)
         ) { state ->
-            state.calendarPermissionWasGranted.shouldBeTrue()
-            state.timeEntries shouldBe mapOf()
-            state.workspaces shouldBe mapOf()
-            state.projects shouldBe mapOf()
-            state.tasks shouldBe mapOf()
-            state.clients shouldBe mapOf()
-            state.tags shouldBe mapOf()
+            assertThat(state.calendarPermissionWasGranted).isTrue()
+            assertThat(state.timeEntries).isEmpty()
+            assertThat(state.workspaces).isEmpty()
+            assertThat(state.projects).isEmpty()
+            assertThat(state.tasks).isEmpty()
+            assertThat(state.clients).isEmpty()
+            assertThat(state.tags).isEmpty()
         }
     }
 }

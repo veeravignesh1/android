@@ -1,5 +1,6 @@
 package com.toggl.domain.reducers
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.Loadable
 import com.toggl.common.CoroutineTest
 import com.toggl.common.feature.navigation.Route
@@ -34,10 +35,7 @@ import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.UserRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.DisplayName
@@ -88,8 +86,10 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.StartLoading)
 
-            initialState shouldBe emptyState.copy(
-                backStack = backStackOf(Route.Timer)
+            assertThat(initialState).isEqualTo(
+                emptyState.copy(
+                    backStack = backStackOf(Route.Timer)
+                )
             )
         }
 
@@ -98,7 +98,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             val effects = reducer.reduce(mutableValue, LoadingAction.StartLoading)
 
-            effects.single().shouldBeInstanceOf<TryLoadingUserEffect>()
+            assertThat(effects.single()).isInstanceOf(TryLoadingUserEffect::class.java)
         }
     }
 
@@ -113,36 +113,48 @@ class LoadingReducerTests : CoroutineTest() {
             fun `sets the current route to the timer page`() {
                 var initialState = emptyState
                 val mutableValue = initialState.toMutableValue { initialState = it }
-                reducer.reduce(mutableValue, LoadingAction.UserLoaded(User(
-                    id = 0,
-                    apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
-                    defaultWorkspaceId = 1,
-                    email = Email.from("validemail@toggl.com") as Email.Valid,
-                    name = "name"
-                )))
+                reducer.reduce(
+                    mutableValue, LoadingAction.UserLoaded(
+                        User(
+                            id = 0,
+                            apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
+                            defaultWorkspaceId = 1,
+                            email = Email.from("validemail@toggl.com") as Email.Valid,
+                            name = "name"
+                        )
+                    )
+                )
 
-                initialState shouldBe emptyState.copy(
-                    backStack = backStackOf(Route.Timer)
+                assertThat(initialState).isEqualTo(
+                    emptyState.copy(
+                        backStack = backStackOf(Route.Timer)
+                    )
                 )
             }
 
             fun `returns a list of effects that load entities`() {
                 var initialState = emptyState
                 val mutableValue = initialState.toMutableValue { initialState = it }
-                val effects = reducer.reduce(mutableValue, LoadingAction.UserLoaded(User(
-                    id = 0,
-                    apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
-                    defaultWorkspaceId = 1,
-                    email = Email.from("validemail@toggl.com") as Email.Valid,
-                    name = "name"
-                )))
+                val effects = reducer.reduce(
+                    mutableValue, LoadingAction.UserLoaded(
+                        User(
+                            id = 0,
+                            apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
+                            defaultWorkspaceId = 1,
+                            email = Email.from("validemail@toggl.com") as Email.Valid,
+                            name = "name"
+                        )
+                    )
+                )
 
-                effects.map { it.javaClass.kotlin } shouldContainExactlyInAnyOrder listOf(
-                    LoadWorkspacesEffect::class,
-                    LoadClientsEffect::class,
-                    LoadTagsEffect::class,
-                    LoadTasksEffect::class,
-                    LoadUserPreferencesEffect::class
+                assertThat(effects.map { it.javaClass.kotlin }).containsExactlyElementsIn(
+                    listOf(
+                        LoadWorkspacesEffect::class,
+                        LoadClientsEffect::class,
+                        LoadTagsEffect::class,
+                        LoadTasksEffect::class,
+                        LoadUserPreferencesEffect::class
+                    )
                 )
             }
         }
@@ -156,9 +168,11 @@ class LoadingReducerTests : CoroutineTest() {
                 val mutableValue = initialState.toMutableValue { initialState = it }
                 reducer.reduce(mutableValue, LoadingAction.UserLoaded(null))
 
-                initialState shouldBe emptyState.copy(
-                    backStack = backStackOf(Route.Login),
-                    user = Loadable.Uninitialized
+                assertThat(initialState).isEqualTo(
+                    emptyState.copy(
+                        backStack = backStackOf(Route.Login),
+                        user = Loadable.Uninitialized
+                    )
                 )
             }
 
@@ -166,7 +180,7 @@ class LoadingReducerTests : CoroutineTest() {
                 var initialState = emptyState
                 val mutableValue = initialState.toMutableValue { initialState = it }
                 val effects = reducer.reduce(mutableValue, LoadingAction.UserLoaded(null))
-                effects.shouldBeEmpty()
+                assertThat(effects).isEmpty()
             }
         }
     }
@@ -181,7 +195,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.TimeEntriesLoaded(entries))
 
-            initialState shouldBe emptyState.copy(timeEntries = entries)
+            assertThat(initialState).isEqualTo(emptyState.copy(timeEntries = entries))
         }
     }
 
@@ -199,7 +213,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.WorkspacesLoaded(workspaces))
 
-            initialState shouldBe emptyState.copy(workspaces = workspaces)
+            assertThat(initialState).isEqualTo(emptyState.copy(workspaces = workspaces))
         }
     }
 
@@ -213,7 +227,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.ProjectsLoaded(projects))
 
-            initialState shouldBe emptyState.copy(projects = projects)
+            assertThat(initialState).isEqualTo(emptyState.copy(projects = projects))
         }
     }
 
@@ -227,7 +241,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.ClientsLoaded(clients))
 
-            initialState shouldBe emptyState.copy(clients = clients)
+            assertThat(initialState).isEqualTo(emptyState.copy(clients = clients))
         }
     }
 
@@ -241,7 +255,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.TagsLoaded(tags))
 
-            initialState shouldBe emptyState.copy(tags = tags)
+            assertThat(initialState).isEqualTo(emptyState.copy(tags = tags))
         }
     }
 
@@ -255,7 +269,7 @@ class LoadingReducerTests : CoroutineTest() {
             val mutableValue = initialState.toMutableValue { initialState = it }
             reducer.reduce(mutableValue, LoadingAction.TasksLoaded(tasks))
 
-            initialState shouldBe emptyState.copy(tasks = tasks)
+            assertThat(initialState).isEqualTo(emptyState.copy(tasks = tasks))
         }
     }
 }

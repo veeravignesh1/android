@@ -1,5 +1,6 @@
 package com.toggl.domain.reducers
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
 import com.toggl.domain.AppAction
@@ -9,7 +10,7 @@ import com.toggl.domain.extensions.CoroutineTest
 import com.toggl.domain.extensions.testReduceNoEffects
 import com.toggl.domain.extensions.testReduceState
 import com.toggl.settings.domain.SettingsAction
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -38,9 +39,9 @@ class NavigationReducerTests : CoroutineTest() {
         @Test
         fun `pops back stack`() = runBlockingTest {
             reducer.testReduceState(initialState.copy(backStack = backStackOf(Route.Timer, Route.Reports)), AppAction.BackButtonPressed) {
-                state -> state shouldBe initialState.copy(
+                state -> assertThat(state).isEqualTo(initialState.copy(
                     backStack = backStackOf(Route.Timer)
-                )
+                ))
             }
         }
     }
@@ -52,27 +53,27 @@ class NavigationReducerTests : CoroutineTest() {
         @Test
         fun `sets the back stack to timer when selecting the timer tab`() = runBlockingTest {
             reducer.testReduceState(initialState, AppAction.TabSelected(Tab.Timer)) {
-                state -> state shouldBe initialState.copy(
+                state -> assertThat(state).isEqualTo(initialState.copy(
                     backStack = backStackOf(Route.Timer)
-                )
+                ))
             }
         }
 
         @Test
         fun `sets the back stack to timer and calendar when selecting the calendar tab`() = runBlockingTest {
             reducer.testReduceState(initialState, AppAction.TabSelected(Tab.Calendar)) {
-                state -> state shouldBe initialState.copy(
+                state -> assertThat(state).isEqualTo(initialState.copy(
                     backStack = backStackOf(Route.Timer, Route.Calendar)
-                )
+                ))
             }
         }
 
         @Test
         fun `sets the back stack to timer and reports when selecting the reports tab`() = runBlockingTest {
             reducer.testReduceState(initialState, AppAction.TabSelected(Tab.Calendar)) { state ->
-                state shouldBe initialState.copy(
+                assertThat(state).isEqualTo(initialState.copy(
                     backStack = backStackOf(Route.Timer, Route.Calendar)
-                )
+                ))
             }
         }
 

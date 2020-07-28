@@ -89,6 +89,7 @@ dependencies {
     testRuntimeOnly Libs.Test.Jupiter.params
     testImplementation Libs.slf4j
     testImplementation Libs.Test.mockk
+    testImplementation Libs.Test.truth
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.Test.kotlinTestJunit
     testImplementation Libs.Test.kotlinCoroutineTest
@@ -138,5 +139,12 @@ task prepareGooglePlayServices(type: Copy) {
 tasks.whenTaskAdded { task ->
     if (task.name.matches("\\.*process\\w+GoogleServices\$")) {
         task.dependsOn prepareGooglePlayServices
+    }
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
     }
 }
