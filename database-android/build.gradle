@@ -87,7 +87,7 @@ dependencies {
     testImplementation Libs.AndroidX.Room.testing
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.slf4j
+    testImplementation Libs.Test.truth
     testImplementation Libs.Test.kotlinTestJunit
-    testImplementation Libs.Test.assertJ
     kaptTest Libs.AndroidX.Room.compiler
 }

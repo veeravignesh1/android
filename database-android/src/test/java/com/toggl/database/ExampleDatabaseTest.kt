@@ -1,5 +1,6 @@
 package com.toggl.database
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.database.models.DatabaseWorkspace
 import com.toggl.database.util.prepareClient
 import com.toggl.database.util.prepareProject
@@ -7,7 +8,7 @@ import com.toggl.database.util.prepareTag
 import com.toggl.database.util.prepareTask
 import com.toggl.database.util.prepareTimeEntry
 import com.toggl.models.domain.WorkspaceFeature
-import org.assertj.core.api.Assertions.assertThat
+
 import org.junit.Test
 
 class ExampleDatabaseTest : BaseDatabaseTest() {
