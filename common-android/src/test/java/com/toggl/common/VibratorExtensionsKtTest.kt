@@ -5,11 +5,12 @@ import android.os.Build
 import android.os.Vibrator
 import androidx.core.content.getSystemService
 import androidx.test.core.app.ApplicationProvider
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.extensions.performClickEffect
 import com.toggl.common.extensions.performTickEffect
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatCode
+
 import org.junit.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
@@ -27,8 +28,10 @@ class VibratorExtensionsKtTest {
     fun performClickEffect() {
         val vibrator = ApplicationProvider.getApplicationContext<Context>().getSystemService<Vibrator>()
 
-        assertThat(vibrator).isNotNull
-        assertThatCode { vibrator!!.performClickEffect() }.doesNotThrowAnyException()
+        assertThat(vibrator).isNotNull()
+        assertDoesNotThrow {
+            vibrator!!.performClickEffect()
+        }
     }
 
     @Test
@@ -36,7 +39,7 @@ class VibratorExtensionsKtTest {
     fun performTickEffect() {
         val vibrator = ApplicationProvider.getApplicationContext<Context>().getSystemService<Vibrator>()
 
-        assertThat(vibrator).isNotNull
-        assertThatCode { vibrator!!.performTickEffect() }.doesNotThrowAnyException()
+        assertThat(vibrator).isNotNull()
+        assertDoesNotThrow { vibrator!!.performTickEffect() }
     }
 }

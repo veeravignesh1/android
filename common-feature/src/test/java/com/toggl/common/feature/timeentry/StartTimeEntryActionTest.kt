@@ -1,13 +1,12 @@
 package com.toggl.common.feature.timeentry
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.common.CoroutineTest
 import com.toggl.common.feature.common.testReduceEffects
 import com.toggl.common.feature.common.testReduceState
 import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.interfaces.TimeEntryRepository
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
@@ -30,8 +29,8 @@ class StartTimeEntryActionTest : CoroutineTest() {
             initialState,
             TimeEntryAction.StartTimeEntry(startTimeEntryDTO)
         ) { effects ->
-            effects.shouldBeSingleton()
-            effects.first().shouldBeTypeOf<StartTimeEntryEffect>()
+            assertThat(effects).hasSize(1)
+            assertThat(effects.first()).isInstanceOf(StartTimeEntryEffect::class.java)
         }
     }
 
@@ -40,6 +39,6 @@ class StartTimeEntryActionTest : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             TimeEntryAction.StartTimeEntry(startTimeEntryDTO)
-        ) { state -> state shouldBe initialState }
+        ) { state -> assertThat(state).isEqualTo(initialState) }
     }
 }

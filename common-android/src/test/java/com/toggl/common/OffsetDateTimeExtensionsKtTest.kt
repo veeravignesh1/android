@@ -1,15 +1,12 @@
 package com.toggl.common
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.extensions.beginningOfWeek
 import com.toggl.common.extensions.roundToClosestMinute
 import com.toggl.common.extensions.timeOfDay
 import com.toggl.common.extensions.toList
-import io.kotlintest.matchers.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
+
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -30,7 +27,7 @@ internal class OffsetDateTimeExtensionsKtTest {
     fun absoluteDurationBetween(durationTestEntry: DurationTestEntry) {
         val result = durationTestEntry.start.absoluteDurationBetween(durationTestEntry.end)
 
-        result shouldBe durationTestEntry.expectedDuration
+        assertThat(result).isEqualTo(durationTestEntry.expectedDuration)
     }
 
     @ParameterizedTest
@@ -38,9 +35,9 @@ internal class OffsetDateTimeExtensionsKtTest {
     fun timeOfDay(timeOfDayDurationPair: Pair<OffsetDateTime, Duration>) {
         val timeOfDay = timeOfDayDurationPair.first.timeOfDay()
 
-        timeOfDay shouldNotBe beGreaterThanOrEqualTo(Duration.ofHours(24))
-        timeOfDay shouldNotBe beLessThan(Duration.ofHours(0))
-        timeOfDay shouldBe timeOfDayDurationPair.second
+        assertThat(timeOfDay).isAtMost(Duration.ofHours(24))
+        assertThat(timeOfDay).isAtLeast((Duration.ofHours(0)))
+        assertThat(timeOfDay).isEqualTo(timeOfDayDurationPair.second)
     }
 
     @Test
@@ -48,27 +45,27 @@ internal class OffsetDateTimeExtensionsKtTest {
         val tenOClock = OffsetDateTime.of(2020, 1, 1, 10, 0, 0, 0, ZoneOffset.UTC)
         val onePastTen = tenOClock.plusMinutes(1)
 
-        tenOClock.roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(1)).roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(29)).roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(30)).roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(31)).roundToClosestMinute() shouldBe onePastTen
-        (tenOClock + Duration.ofSeconds(59)).roundToClosestMinute() shouldBe onePastTen
-        onePastTen.roundToClosestMinute() shouldBe onePastTen
+        assertThat(tenOClock.roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(1)).roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(29)).roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(30)).roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(31)).roundToClosestMinute()).isEqualTo(onePastTen)
+        assertThat((tenOClock + Duration.ofSeconds(59)).roundToClosestMinute()).isEqualTo(onePastTen)
+        assertThat(onePastTen.roundToClosestMinute()).isEqualTo(onePastTen)
     }
 
     @Test
     fun beginningOfTheWeek() {
         val date = OffsetDateTime.of(2020, Month.JULY.value, 9, 0, 0, 0, 0, ZoneOffset.UTC)
-        date.dayOfWeek shouldBe DayOfWeek.THURSDAY
+        assertThat(date.dayOfWeek).isEqualTo(DayOfWeek.THURSDAY)
 
-        date.beginningOfWeek(DayOfWeek.SUNDAY) shouldBe OffsetDateTime.of(2020, Month.JULY.value, 5, 0, 0, 0, 0, ZoneOffset.UTC)
-        date.beginningOfWeek(DayOfWeek.MONDAY) shouldBe OffsetDateTime.of(2020, Month.JULY.value, 6, 0, 0, 0, 0, ZoneOffset.UTC)
-        date.beginningOfWeek(DayOfWeek.TUESDAY) shouldBe OffsetDateTime.of(2020, Month.JULY.value, 7, 0, 0, 0, 0, ZoneOffset.UTC)
-        date.beginningOfWeek(DayOfWeek.WEDNESDAY) shouldBe OffsetDateTime.of(2020, Month.JULY.value, 8, 0, 0, 0, 0, ZoneOffset.UTC)
-        date.beginningOfWeek(DayOfWeek.THURSDAY) shouldBe date
-        date.beginningOfWeek(DayOfWeek.FRIDAY) shouldBe OffsetDateTime.of(2020, Month.JULY.value, 3, 0, 0, 0, 0, ZoneOffset.UTC)
-        date.beginningOfWeek(DayOfWeek.SATURDAY) shouldBe OffsetDateTime.of(2020, Month.JULY.value, 4, 0, 0, 0, 0, ZoneOffset.UTC)
+        assertThat(date.beginningOfWeek(DayOfWeek.SUNDAY)).isEqualTo(OffsetDateTime.of(2020, Month.JULY.value, 5, 0, 0, 0, 0, ZoneOffset.UTC))
+        assertThat(date.beginningOfWeek(DayOfWeek.MONDAY)).isEqualTo(OffsetDateTime.of(2020, Month.JULY.value, 6, 0, 0, 0, 0, ZoneOffset.UTC))
+        assertThat(date.beginningOfWeek(DayOfWeek.TUESDAY)).isEqualTo(OffsetDateTime.of(2020, Month.JULY.value, 7, 0, 0, 0, 0, ZoneOffset.UTC))
+        assertThat(date.beginningOfWeek(DayOfWeek.WEDNESDAY)).isEqualTo(OffsetDateTime.of(2020, Month.JULY.value, 8, 0, 0, 0, 0, ZoneOffset.UTC))
+        assertThat(date.beginningOfWeek(DayOfWeek.THURSDAY)).isEqualTo(date)
+        assertThat(date.beginningOfWeek(DayOfWeek.FRIDAY)).isEqualTo(OffsetDateTime.of(2020, Month.JULY.value, 3, 0, 0, 0, 0, ZoneOffset.UTC))
+        assertThat(date.beginningOfWeek(DayOfWeek.SATURDAY)).isEqualTo(OffsetDateTime.of(2020, Month.JULY.value, 4, 0, 0, 0, 0, ZoneOffset.UTC))
     }
 
     @Test
@@ -76,8 +73,8 @@ internal class OffsetDateTimeExtensionsKtTest {
         val start = OffsetDateTime.of(2020, Month.JULY.value, 1, 0, 0, 0, 0, ZoneOffset.UTC)
         val end = OffsetDateTime.of(2020, Month.JULY.value, 7, 0, 0, 0, 0, ZoneOffset.UTC)
 
-        (start..end).toList().size shouldBe 7
-        (end..start).toList().shouldBeEmpty()
+        assertThat((start..end).toList().size).isEqualTo(7)
+        assertThat((end..start).toList()).isEmpty()
     }
 
     companion object {

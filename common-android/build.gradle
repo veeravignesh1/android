@@ -66,8 +66,8 @@ dependencies {
     testImplementation Libs.Test.Jupiter.api
     testRuntimeOnly Libs.Test.Jupiter.engine
     testImplementation Libs.Test.Jupiter.params
-    testImplementation Libs.Test.assertJ
     testImplementation Libs.slf4j
+    testImplementation Libs.Test.truth
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.Test.kotlinTestJunit
