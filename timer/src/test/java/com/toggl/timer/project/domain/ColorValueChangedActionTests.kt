@@ -1,14 +1,13 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.extensions.toHex
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.validation.HSVColor
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockkStatic
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,7 +39,7 @@ internal class ColorValueChangedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ColorValueChanged(0.3f)
-        ) { state -> state.customColor shouldBe customColor.copy(value = 0.3f) }
+        ) { state -> assertThat(state.customColor).isEqualTo(customColor.copy(value = 0.3f)) }
     }
 
     @Test
@@ -56,11 +55,10 @@ internal class ColorValueChangedActionTests : CoroutineTest() {
             initialState,
             ProjectAction.ColorValueChanged(0.3f)
         ) { effects ->
-            effects.shouldBeSingleton()
+            assertThat(effects).hasSize(1)
             val effectAction = effects.first().execute()
-            effectAction.shouldBeTypeOf<ProjectAction.ColorPicked> { colorPickedAction ->
-                colorPickedAction.color shouldBe "#123123"
-            }
+            assertThat(effectAction).isInstanceOf(ProjectAction.ColorPicked::class.java)
+            assertThat((effectAction as ProjectAction.ColorPicked).color).isEqualTo("#123123")
         }
     }
 }

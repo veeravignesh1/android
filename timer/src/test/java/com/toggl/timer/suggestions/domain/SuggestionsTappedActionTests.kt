@@ -1,5 +1,6 @@
 package com.toggl.timer.suggestions.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.services.time.TimeService
 import com.toggl.repository.dto.StartTimeEntryDTO
@@ -7,7 +8,7 @@ import com.toggl.timer.common.createCalendarEvent
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest
@@ -30,9 +31,10 @@ internal class SuggestionTappedTests {
         val suggestion = Suggestion.MostUsed(timeEntry)
 
         reducer.testReduceEffects(initialState, SuggestionsAction.SuggestionTapped(suggestion)) { effects ->
-            effects.single().shouldEmitTimeEntryAction<SuggestionsAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
-                it.id shouldBe timeEntry.id
-            }
+            effects.single()
+                .shouldEmitTimeEntryAction<SuggestionsAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
+                    assertThat(it.id).isEqualTo(timeEntry.id)
+                }
         }
     }
 
@@ -43,14 +45,16 @@ internal class SuggestionTappedTests {
 
         reducer.testReduceEffects(initialState, SuggestionsAction.SuggestionTapped(suggestion)) { effects ->
             effects.single().shouldEmitTimeEntryAction<SuggestionsAction.TimeEntryHandling, TimeEntryAction.StartTimeEntry> {
-                it.startTimeEntryDTO shouldBe StartTimeEntryDTO(
-                    description = event.description,
-                    startTime = event.startTime,
-                    billable = false,
-                    workspaceId = suggestion.workspaceId,
-                    projectId = null,
-                    taskId = null,
-                    tagIds = emptyList()
+                assertThat(it.startTimeEntryDTO).isEqualTo(
+                    StartTimeEntryDTO(
+                        description = event.description,
+                        startTime = event.startTime,
+                        billable = false,
+                        workspaceId = suggestion.workspaceId,
+                        projectId = null,
+                        taskId = null,
+                        tagIds = emptyList()
+                    )
                 )
             }
         }

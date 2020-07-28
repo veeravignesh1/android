@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
@@ -10,10 +11,7 @@ import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.project.domain.createTask
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -39,8 +37,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size shouldBe 5
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size).isEqualTo(5)
         }
 
         @Test
@@ -57,8 +55,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size shouldBe 5
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size).isEqualTo(5)
         }
 
         @Test
@@ -77,8 +75,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size shouldBe 5
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size).isEqualTo(5)
         }
 
         @Test
@@ -95,8 +93,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size shouldBe 5
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>().size).isEqualTo(5)
         }
 
         @Test
@@ -120,11 +118,11 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
 
             val expectedEntries = timeEntries.take(4)
             val result = effect.execute()
-            result.shouldNotBeNull()
+            assertThat(result).isNotNull()
 
-            val timeEntrySuggestions = result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>()
-            timeEntrySuggestions.size shouldBe expectedEntries.size
-            timeEntrySuggestions.all { expectedEntries.contains(it.timeEntry) }.shouldBeTrue()
+            val timeEntrySuggestions = result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>()
+            assertThat(timeEntrySuggestions.size).isEqualTo(expectedEntries.size)
+            assertThat(timeEntrySuggestions.all { expectedEntries.contains(it.timeEntry) }).isTrue()
         }
 
         @Test
@@ -177,11 +175,11 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
 
             val expectedEntries = timeEntries.take(5)
             val result = effect.execute()
-            result.shouldNotBeNull()
+            assertThat(result).isNotNull()
 
-            val timeEntrySuggestions = result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>()
-            timeEntrySuggestions.size shouldBe expectedEntries.size
-            timeEntrySuggestions.all { expectedEntries.contains(it.timeEntry) }.shouldBeTrue()
+            val timeEntrySuggestions = result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.TimeEntry>()
+            assertThat(timeEntrySuggestions.size).isEqualTo(expectedEntries.size)
+            assertThat(timeEntrySuggestions.all { expectedEntries.contains(it.timeEntry) }).isTrue()
         }
     }
 
@@ -199,9 +197,9 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Project>().size shouldBe 5
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateProject>().size shouldBe 1
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Project>().size).isEqualTo(5)
+            assertThat(result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateProject>().size).isEqualTo(1)
         }
 
         @Test
@@ -215,9 +213,9 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Task>().size shouldBe 5
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateProject>().size shouldBe 1
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Task>().size).isEqualTo(5)
+            assertThat(result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateProject>().size).isEqualTo(1)
         }
 
         @Test
@@ -231,8 +229,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateProject>().first().name shouldBe "even"
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateProject>().first().name).isEqualTo("even")
         }
 
         @Test
@@ -255,11 +253,11 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
 
             val expectedEntries = projects.take(4)
             val result = effect.execute()
-            result.shouldNotBeNull()
+            assertThat(result).isNotNull()
 
-            val projectSuggestions = result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Project>()
-            projectSuggestions.size shouldBe expectedEntries.size
-            projectSuggestions.all { expectedEntries.contains(it.project) }.shouldBeTrue()
+            val projectSuggestions = result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Project>()
+            assertThat(projectSuggestions.size).isEqualTo(expectedEntries.size)
+            assertThat(projectSuggestions.all { expectedEntries.contains(it.project) }).isTrue()
         }
 
         @Test
@@ -278,8 +276,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Project>().size shouldBe 5
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Project>().size).isEqualTo(5)
         }
     }
 
@@ -297,8 +295,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Tag>().size shouldBe 5
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Tag>().size).isEqualTo(5)
         }
 
         @Test
@@ -312,8 +310,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateTag>().single().name shouldBe "eve"
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateTag>().single().name).isEqualTo("eve")
         }
 
         @Test
@@ -327,8 +325,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateTag>().shouldBeEmpty()
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateTag>()).isEmpty()
         }
 
         @Test
@@ -342,8 +340,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Tag>().shouldBeEmpty()
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.Tag>()).isEmpty()
         }
 
         @Test
@@ -357,8 +355,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateTag>().single().name shouldBe "even"
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions.filterIsInstance<StartEditSuggestions.CreateTag>().single().name).isEqualTo("even")
         }
 
         @Test
@@ -370,8 +368,8 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
             )
 
             val result = effect.execute()
-            result.shouldNotBeNull()
-            result.autocompleteSuggestions shouldBe emptyList()
+            assertThat(result).isNotNull()
+            assertThat(result!!.autocompleteSuggestions).isEmpty()
         }
     }
 

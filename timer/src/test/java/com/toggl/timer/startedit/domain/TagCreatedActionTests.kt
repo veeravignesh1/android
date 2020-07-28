@@ -1,9 +1,10 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -31,12 +32,12 @@ class TagCreatedActionTests {
                 initialState,
                 StartEditAction.TagCreated(newTag)
             ) {
-                it shouldBe initialState.copy(
+                assertThat(it).isEqualTo(initialState.copy(
                     tags = mapOf(1L to newTag),
                     editableTimeEntry = editableTimeEntry.copy(
                         tagIds = listOf(newTag.id)
                     )
-                )
+                ))
             }
         }
     }
@@ -60,12 +61,12 @@ class TagCreatedActionTests {
                 initialState,
                 StartEditAction.TagCreated(newTag)
             ) {
-                it shouldBe initialState.copy(
+                assertThat(it).isEqualTo(initialState.copy(
                     tags = (existingTags + newTag).associateBy { tag -> tag.id },
                     editableTimeEntry = editableTimeEntry.copy(
                         tagIds = listOf(1L, 2L, 20L)
                     )
-                )
+                ))
             }
         }
     }

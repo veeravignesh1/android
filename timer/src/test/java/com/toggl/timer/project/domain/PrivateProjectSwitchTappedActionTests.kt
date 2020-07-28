@@ -1,10 +1,11 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.testReduce
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -23,8 +24,8 @@ internal class PrivateProjectSwitchTappedActionTests : CoroutineTest() {
             initialState,
             ProjectAction.PrivateProjectSwitchTapped
         ) { state, effects ->
-            state.editableProject.isPrivate shouldBe false
-            effects shouldBe noEffect()
+            assertThat(state.editableProject.isPrivate).isEqualTo(false)
+            assertThat(effects).isEqualTo(noEffect())
         }
     }
 }

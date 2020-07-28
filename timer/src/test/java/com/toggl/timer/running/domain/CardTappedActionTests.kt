@@ -1,13 +1,13 @@
 package com.toggl.timer.running.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.testReduce
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
+
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -34,9 +34,9 @@ class CardTappedActionTests : CoroutineTest() {
             initialState = initialState,
             action = RunningTimeEntryAction.CardTapped
         ) { state, _ ->
-            state.editableTimeEntry.shouldNotBeNull()
-            state.editableTimeEntry!!.startTime shouldBe null
-            state.editableTimeEntry!!.ids shouldBe emptyList()
+            assertThat(state.editableTimeEntry).isNotNull()
+            assertThat(state.editableTimeEntry!!.startTime).isEqualTo(null)
+            assertThat(state.editableTimeEntry!!.ids).isEmpty()
         }
     }
 
@@ -54,8 +54,8 @@ class CardTappedActionTests : CoroutineTest() {
             initialState = initialState,
             action = RunningTimeEntryAction.CardTapped
         ) { state, _ ->
-            state.editableTimeEntry.shouldNotBeNull()
-            state.editableTimeEntry!!.description shouldBe "Running"
+            assertThat(state.editableTimeEntry).isNotNull()
+            assertThat(state.editableTimeEntry!!.description).isEqualTo("Running")
         }
     }
 

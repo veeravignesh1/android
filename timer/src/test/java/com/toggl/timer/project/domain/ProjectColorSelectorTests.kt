@@ -1,15 +1,13 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.common.CoroutineTest
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -27,9 +25,9 @@ internal class ProjectColorSelectorTests : CoroutineTest() {
 
         val defaultColors = colors.filterIsInstance<ColorViewModel.DefaultColor>()
 
-        defaultColors shouldHaveSize Project.defaultColors.size
+        assertThat(defaultColors).hasSize(Project.defaultColors.size)
         defaultColors.forEach { colorViewModel ->
-            Project.defaultColors.contains(colorViewModel.color).shouldBeTrue()
+            assertThat(Project.defaultColors.contains(colorViewModel.color)).isTrue()
         }
     }
 
@@ -44,7 +42,7 @@ internal class ProjectColorSelectorTests : CoroutineTest() {
 
         val colors = selector.select(state)
 
-        colors.filterIsInstance<ColorViewModel.CustomColor>().singleOrNull().shouldNotBeNull()
+        assertThat(colors.filterIsInstance<ColorViewModel.CustomColor>().singleOrNull()).isNotNull()
     }
 
     @Test
@@ -58,7 +56,7 @@ internal class ProjectColorSelectorTests : CoroutineTest() {
 
         val colors = selector.select(state)
 
-        colors.filterIsInstance<ColorViewModel.PremiumLocked>().singleOrNull().shouldNotBeNull()
+        assertThat(colors.filterIsInstance<ColorViewModel.PremiumLocked>().singleOrNull()).isNotNull()
     }
 
     @Test
@@ -73,7 +71,8 @@ internal class ProjectColorSelectorTests : CoroutineTest() {
 
         val colors = selector.select(state)
 
-        colors.filterIsInstance<ColorViewModel.DefaultColor>().single { it.selected }.color shouldBe editableProject.color
+        val selectedColor = colors.filterIsInstance<ColorViewModel.DefaultColor>().single { it.selected }
+        assertThat(selectedColor.color).isEqualTo(editableProject.color)
     }
 
     @Test
@@ -88,6 +87,6 @@ internal class ProjectColorSelectorTests : CoroutineTest() {
 
         val colors = selector.select(state)
 
-        colors.filterIsInstance<ColorViewModel.CustomColor>().single().selected.shouldBeTrue()
+        assertThat(colors.filterIsInstance<ColorViewModel.CustomColor>().single().selected).isTrue()
     }
 }

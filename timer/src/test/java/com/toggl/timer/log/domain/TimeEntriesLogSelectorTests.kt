@@ -1,5 +1,6 @@
 package com.toggl.timer.log.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.timeentry.extensions.totalDuration
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.Client
@@ -7,22 +8,13 @@ import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.generators.timeEntries
-import io.kotlintest.DisplayName
-import io.kotlintest.matchers.boolean.shouldBeFalse
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotlintest.matchers.numerics.shouldBeExactly
-import io.kotlintest.matchers.numerics.shouldBeLessThanOrEqual
-import io.kotlintest.matchers.types.shouldNotBeTypeOf
-import io.kotlintest.properties.Gen
-import io.kotlintest.shouldBe
+import com.toggl.timer.generators.randomTimeEntries
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.time.Duration
@@ -226,21 +218,35 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
         groupB.toTimeEntryGroupViewModel(groupB.first().similarityHashCode(), false, projectsMap, clientsMap),
         twoProjects.first().toFlatTimeEntryViewModel(projectsMap, clientsMap),
         twoProjects[1].toFlatTimeEntryViewModel(projectsMap, clientsMap),
-        differentDescriptions.dropLast(1).toTimeEntryGroupViewModel(differentDescriptions.first().similarityHashCode(), false, projectsMap, clientsMap),
+        differentDescriptions.dropLast(1)
+            .toTimeEntryGroupViewModel(differentDescriptions.first().similarityHashCode(), false, projectsMap, clientsMap),
         differentDescriptions.last().toFlatTimeEntryViewModel(projectsMap, clientsMap),
-        longDuration.dropLast(1).toTimeEntryGroupViewModel(longDuration.first().similarityHashCode(), false, projectsMap, clientsMap),
+        longDuration.dropLast(1)
+            .toTimeEntryGroupViewModel(longDuration.first().similarityHashCode(), false, projectsMap, clientsMap),
         longDuration.last().toFlatTimeEntryViewModel(projectsMap, clientsMap)
     )
 
     val expectedYesterdayGroupedTimeEntries: List<TimeEntryViewModel> = listOf(
         singleItem.mapToYesterday().first().toFlatTimeEntryViewModel(projectsMap, clientsMap),
-        groupA.mapToYesterday().toTimeEntryGroupViewModel(groupA.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
-        groupB.mapToYesterday().toTimeEntryGroupViewModel(groupB.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
+        groupA.mapToYesterday()
+            .toTimeEntryGroupViewModel(groupA.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
+        groupB.mapToYesterday()
+            .toTimeEntryGroupViewModel(groupB.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
         twoProjects.mapToYesterday().first().toFlatTimeEntryViewModel(projectsMap, clientsMap),
         twoProjects.mapToYesterday()[1].toFlatTimeEntryViewModel(projectsMap, clientsMap),
-        differentDescriptions.mapToYesterday().dropLast(1).toTimeEntryGroupViewModel(differentDescriptions.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
+        differentDescriptions.mapToYesterday().dropLast(1).toTimeEntryGroupViewModel(
+            differentDescriptions.mapToYesterday().first().similarityHashCode(),
+            false,
+            projectsMap,
+            clientsMap
+        ),
         differentDescriptions.mapToYesterday().last().toFlatTimeEntryViewModel(projectsMap, clientsMap),
-        longDuration.mapToYesterday().dropLast(1).toTimeEntryGroupViewModel(longDuration.mapToYesterday().first().similarityHashCode(), false, projectsMap, clientsMap),
+        longDuration.mapToYesterday().dropLast(1).toTimeEntryGroupViewModel(
+            longDuration.mapToYesterday().first().similarityHashCode(),
+            false,
+            projectsMap,
+            clientsMap
+        ),
         longDuration.mapToYesterday().last().toFlatTimeEntryViewModel(projectsMap, clientsMap)
     )
 
@@ -271,7 +277,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             )
 
             val groupedTimeEntries = selector.select(state)
-            groupedTimeEntries.size shouldBe 0
+            assertThat(groupedTimeEntries.size).isEqualTo(0)
         }
 
         @Test
@@ -290,8 +296,10 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
                 entriesPendingDeletion = setOf(0)
             )
             val groupedTimeEntries = selector.select(state)
-            groupedTimeEntries.count { te -> te is FlatTimeEntryViewModel && te.description == "will be deleted" } shouldBe 0
-            groupedTimeEntries.count { te -> te is TimeEntryGroupViewModel && te.description == "will be deleted" } shouldBe 0
+            assertThat(groupedTimeEntries.count { te -> te is FlatTimeEntryViewModel && te.description == "will be deleted" })
+                .isEqualTo(0)
+            assertThat(groupedTimeEntries.count { te -> te is TimeEntryGroupViewModel && te.description == "will be deleted" })
+                .isEqualTo(0)
         }
 
         @Test
@@ -325,7 +333,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
                         }
                     }.distinct().toList()
 
-            headers shouldContainExactlyInAnyOrder flatTimeEntryHeaders
+            assertThat(headers).containsExactlyElementsIn(flatTimeEntryHeaders)
         }
 
         @Test
@@ -339,7 +347,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             val notGroupedTimeEntries = selector.select(state)
 
             notGroupedTimeEntries.forEach {
-                it.shouldNotBeTypeOf<TimeEntryGroupViewModel>()
+                assertThat(it).isNotInstanceOf(TimeEntryGroupViewModel::class.java)
             }
         }
     }
@@ -362,7 +370,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
                 groupedTimeEntries.filterIsInstance<DayHeaderViewModel>()
                     .map { it.dayTitle }
 
-            headerTitles shouldContain todayString
+            assertThat(headerTitles).contains(todayString)
         }
 
         @Test
@@ -379,7 +387,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
                 timeEntryViewModels.filterIsInstance<DayHeaderViewModel>()
                     .map { it.dayTitle }
 
-            headerTitles shouldContain yesterdayString
+            assertThat(headerTitles).contains(yesterdayString)
         }
 
         @Test
@@ -411,30 +419,30 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
                     .map { it.format(formatter) }
                     .toList()
 
-            headerTitles shouldContainExactlyInAnyOrder formattedDates
+            assertThat(headerTitles).containsExactlyElementsIn(formattedDates)
         }
     }
 
     @Test
     fun `groups similar time entries`() = runBlockingTest {
-            val state = createInitialState(
-                similarTimeEntriesMap.values.toList(),
-                projectsMap.values.toList(),
-                clientsMap.values.toList()
-            )
-            val groupedTimeEntries = selector.select(state)
-            groupedTimeEntries shouldBe expectedGroupedTimeEntries
-        }
+        val state = createInitialState(
+            similarTimeEntriesMap.values.toList(),
+            projectsMap.values.toList(),
+            clientsMap.values.toList()
+        )
+        val groupedTimeEntries = selector.select(state)
+        assertThat(groupedTimeEntries).isEqualTo(expectedGroupedTimeEntries)
+    }
 
     @Nested
     @DisplayName("groups random similar time entries from the same year so that there is")
     inner class GroupsRandomSimilarEntries {
 
         private val y = Year.of(2020)
-        private val randomSimilarInOneYear = Gen.timeEntries(
+        private val randomSimilarInOneYear = randomTimeEntries(
             description = "constant",
             year = y
-        ).random().take(10000).toList()
+        ).take(10000).toList()
 
         @Test
         fun `no more day headers than days in a year`() = runBlockingTest {
@@ -446,7 +454,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
 
             val groupedTimeEntries = selector.select(state)
             val dayHeaderViewModels = groupedTimeEntries.count { it is DayHeaderViewModel }
-            dayHeaderViewModels shouldBeLessThanOrEqual y.length()
+            assertThat(dayHeaderViewModels).isAtMost(y.length())
         }
 
         @Test
@@ -458,16 +466,17 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             )
 
             val groupedTimeEntries = selector.select(state)
-            val timeEntryViewModels = groupedTimeEntries.count { it is TimeEntryGroupViewModel || it is FlatTimeEntryViewModel }
-            timeEntryViewModels shouldBeLessThanOrEqual y.length()
+            val timeEntryViewModels =
+                groupedTimeEntries.count { it is TimeEntryGroupViewModel || it is FlatTimeEntryViewModel }
+            assertThat(timeEntryViewModels).isAtMost(y.length())
         }
 
         @Test
         fun `the same number of time entries or groups as day headers`() = runBlockingTest {
-            val randomSimilarInOneYear = Gen.timeEntries(
+            val randomSimilarInOneYear = randomTimeEntries(
                 description = "constant",
                 year = Year.of(2020)
-            ).random().take(10000).toList()
+            ).take(10000).toList()
 
             val state = createInitialState(
                 randomSimilarInOneYear,
@@ -476,9 +485,10 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             )
 
             val groupedTimeEntries = selector.select(state)
-            val timeEntryViewModels = groupedTimeEntries.count { it is TimeEntryGroupViewModel || it is FlatTimeEntryViewModel }
+            val timeEntryViewModels =
+                groupedTimeEntries.count { it is TimeEntryGroupViewModel || it is FlatTimeEntryViewModel }
             val dayHeaderViewModels = groupedTimeEntries.count { it is DayHeaderViewModel }
-            timeEntryViewModels shouldBe dayHeaderViewModels
+            assertThat(timeEntryViewModels).isEqualTo(dayHeaderViewModels)
         }
     }
 
@@ -486,10 +496,10 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
     @DisplayName("handles group expanding so that")
     inner class HandlesGroupExpanding {
         private val y = Year.of(2020)
-        private val randomSimilarInOneYear = Gen.timeEntries(
+        private val randomSimilarInOneYear = randomTimeEntries(
             description = "constant",
             year = y
-        ).random().take(10000).toList()
+        ).take(10000).toList()
 
         private val randomExpandedGroups = randomSimilarInOneYear
             .shuffled()
@@ -510,7 +520,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             val allGroups = groupedTimeEntries.filterIsInstance<TimeEntryGroupViewModel>()
             val expandedGroups = allGroups.filter { randomExpandedGroups.contains(it.groupId) }
             expandedGroups.forEach {
-                it.isExpanded.shouldBeTrue()
+                assertThat(it.isExpanded).isTrue()
             }
         }
 
@@ -525,12 +535,12 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             val groupedTimeEntries = selector.select(state)
 
             val allGroups = groupedTimeEntries.filterIsInstance<TimeEntryGroupViewModel>()
-                val expandedGroups = allGroups.filter { randomExpandedGroups.contains(it.groupId) }
-                expandedGroups.forEach { group ->
+            val expandedGroups = allGroups.filter { randomExpandedGroups.contains(it.groupId) }
+            expandedGroups.forEach { group ->
                 val groupTimeEntries = groupedTimeEntries
                     .filterIsInstance<FlatTimeEntryViewModel>()
                     .filter { te -> group.timeEntryIds.contains(te.id) }
-                groupTimeEntries.size shouldBeExactly group.timeEntryIds.size
+                assertThat(groupTimeEntries).hasSize(group.timeEntryIds.size)
             }
         }
 
@@ -548,7 +558,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
             val allGroups = groupedTimeEntries.filterIsInstance<TimeEntryGroupViewModel>()
             val nonExpandedGroups = allGroups.filter { !randomExpandedGroups.contains(it.groupId) }
             nonExpandedGroups.forEach {
-                it.isExpanded.shouldBeFalse()
+                assertThat(it.isExpanded).isFalse()
             }
         }
 
@@ -568,7 +578,7 @@ class TimeEntriesLogSelectorTests : CoroutineTest() {
                 val groupTimeEntries = groupedTimeEntries
                     .filterIsInstance<FlatTimeEntryViewModel>()
                     .filter { te -> group.timeEntryIds.contains(te.id) }
-                groupTimeEntries.shouldBeEmpty()
+                assertThat(groupTimeEntries).isEmpty()
             }
         }
     }

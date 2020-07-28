@@ -1,8 +1,9 @@
 package com.toggl.timer.common.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.createTimeEntry
-import io.kotlintest.shouldBe
+
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.Duration
@@ -22,8 +23,8 @@ internal class EditableTimeEntryTests {
         val ids = listOf<Long>(1, 2)
         val editable = EditableTimeEntry.fromGroup(timeEntries.filter { it.id in ids })
 
-        editable.duration shouldBe Duration.ofMinutes(8)
-        editable.startTime shouldBe null
+        assertThat(editable.duration).isEqualTo(Duration.ofMinutes(8))
+        assertThat(editable.startTime).isEqualTo(null)
     }
 
     @Test
@@ -33,17 +34,17 @@ internal class EditableTimeEntryTests {
 
         val editable = EditableTimeEntry.fromSingle(timeEntry)
 
-        editable.duration shouldBe Duration.ofMinutes(3)
-        editable.startTime shouldBe now
+        assertThat(editable.duration).isEqualTo(Duration.ofMinutes(3))
+        assertThat(editable.startTime).isEqualTo(now)
     }
 
     @Test
     fun `for non-started TEs, initiates an empty editable`() {
         val editable = EditableTimeEntry.empty(1)
 
-        editable.duration shouldBe null
-        editable.startTime shouldBe null
-        editable.ids shouldBe emptyList()
-        editable.description shouldBe ""
+        assertThat(editable.duration).isEqualTo(null)
+        assertThat(editable.startTime).isEqualTo(null)
+        assertThat(editable.ids).isEmpty()
+        assertThat(editable.description).isEqualTo("")
     }
 }

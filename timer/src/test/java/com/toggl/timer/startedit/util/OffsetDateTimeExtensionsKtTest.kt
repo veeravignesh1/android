@@ -1,12 +1,10 @@
 package com.toggl.timer.startedit.util
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.extensions.roundToClosestMinute
 import com.toggl.common.extensions.timeOfDay
-import io.kotlintest.matchers.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.beLessThan
-import io.kotlintest.shouldBe
-import io.kotlintest.shouldNotBe
+
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
@@ -25,7 +23,7 @@ internal class OffsetDateTimeExtensionsKtTest {
     fun absoluteDurationBetween(durationTestEntry: DurationTestEntry) {
         val result = durationTestEntry.start.absoluteDurationBetween(durationTestEntry.end)
 
-        result shouldBe durationTestEntry.expectedDuration
+        assertThat(result).isEqualTo(durationTestEntry.expectedDuration)
     }
 
     @ParameterizedTest
@@ -33,9 +31,9 @@ internal class OffsetDateTimeExtensionsKtTest {
     fun timeOfDay(timeOfDayDurationPair: Pair<OffsetDateTime, Duration>) {
         val timeOfDay = timeOfDayDurationPair.first.timeOfDay()
 
-        timeOfDay shouldNotBe beGreaterThanOrEqualTo(Duration.ofHours(24))
-        timeOfDay shouldNotBe beLessThan(Duration.ofHours(0))
-        timeOfDay shouldBe timeOfDayDurationPair.second
+        assertThat(timeOfDay).isAtMost(Duration.ofHours(24))
+        assertThat(timeOfDay).isAtLeast(Duration.ofHours(0))
+        assertThat(timeOfDay).isEqualTo(timeOfDayDurationPair.second)
     }
 
     @Test
@@ -43,13 +41,13 @@ internal class OffsetDateTimeExtensionsKtTest {
         val tenOClock = OffsetDateTime.of(2020, 1, 1, 10, 0, 0, 0, ZoneOffset.UTC)
         val onePastTen = tenOClock.plusMinutes(1)
 
-        tenOClock.roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(1)).roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(29)).roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(30)).roundToClosestMinute() shouldBe tenOClock
-        (tenOClock + Duration.ofSeconds(31)).roundToClosestMinute() shouldBe onePastTen
-        (tenOClock + Duration.ofSeconds(59)).roundToClosestMinute() shouldBe onePastTen
-        onePastTen.roundToClosestMinute() shouldBe onePastTen
+        assertThat(tenOClock.roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(1)).roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(29)).roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(30)).roundToClosestMinute()).isEqualTo(tenOClock)
+        assertThat((tenOClock + Duration.ofSeconds(31)).roundToClosestMinute()).isEqualTo(onePastTen)
+        assertThat((tenOClock + Duration.ofSeconds(59)).roundToClosestMinute()).isEqualTo(onePastTen)
+        assertThat(onePastTen.roundToClosestMinute()).isEqualTo(onePastTen)
     }
 
     companion object {

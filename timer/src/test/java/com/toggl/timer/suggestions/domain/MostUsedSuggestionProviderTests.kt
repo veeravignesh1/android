@@ -1,12 +1,12 @@
 package com.toggl.timer.suggestions.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +36,7 @@ class MostUsedSuggestionProviderTests : CoroutineTest() {
 
         val suggestions = provider.getSuggestions(initialState)
 
-        suggestions shouldHaveSize maxSuggestionNumber
+        assertThat(suggestions).hasSize(maxSuggestionNumber)
     }
 
     @ParameterizedTest
@@ -45,7 +45,7 @@ class MostUsedSuggestionProviderTests : CoroutineTest() {
         val suggestions = provider.getSuggestions(createInitialState(timeEntries = testData.entries))
             .filterIsInstance<Suggestion.MostUsed>()
 
-        suggestions.map { it.timeEntry } shouldBe testData.pickedTimeEntries
+        assertThat(suggestions.map { it.timeEntry }).containsExactlyElementsIn(testData.pickedTimeEntries)
     }
 
     @ParameterizedTest
@@ -55,7 +55,7 @@ class MostUsedSuggestionProviderTests : CoroutineTest() {
         val suggestions = provider.getSuggestions(createInitialState(timeEntries = testData.entries))
             .filterIsInstance<Suggestion.MostUsed>()
 
-        suggestions.map { it.timeEntry } shouldBe testData.pickedTimeEntries
+        assertThat(suggestions.map { it.timeEntry }).containsExactlyElementsIn(testData.pickedTimeEntries)
     }
 
     data class TestData(val entries: List<TimeEntry>, val pickedTimeEntries: List<TimeEntry>)

@@ -1,11 +1,12 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -34,7 +35,7 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
         reducer.testReduce(
             initialState = initialState,
             action = ProjectAction.DoneButtonTapped
-        ) { _, effects -> effects.single()::class shouldBe CreateProjectEffect::class }
+        ) { _, effects -> assertThat(effects.single()::class).isEqualTo(CreateProjectEffect::class) }
     }
 
     @Test
@@ -48,7 +49,7 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             ProjectAction.DoneButtonTapped
-        ) { state -> state.editableProject.error shouldBe EditableProject.ProjectError.ProjectAlreadyExists }
+        ) { state -> assertThat(state.editableProject.error).isEqualTo(EditableProject.ProjectError.ProjectAlreadyExists) }
     }
 
     @Test

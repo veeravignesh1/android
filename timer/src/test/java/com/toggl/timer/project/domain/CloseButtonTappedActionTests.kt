@@ -1,9 +1,10 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
-import io.kotlintest.matchers.types.shouldNotBeNull
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -24,7 +25,7 @@ internal class CloseButtonTappedActionTests : CoroutineTest() {
             action = ProjectAction.CloseButtonTapped
         ) { effects ->
             val closeAction = effects.single().execute() as? ProjectAction.Close
-            closeAction.shouldNotBeNull()
+            assertThat(closeAction).isNotNull()
         }
     }
 }

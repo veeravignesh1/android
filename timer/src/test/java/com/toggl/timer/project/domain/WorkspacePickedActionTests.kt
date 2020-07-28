@@ -1,12 +1,13 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -26,7 +27,7 @@ internal class WorkspacePickedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.WorkspacePicked(workspace)
-        ) { state -> state.editableProject.workspaceId shouldBe workspace.id }
+        ) { state -> assertThat(state.editableProject.workspaceId).isEqualTo(workspace.id) }
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.toggl.timer.startedit.util
 
-import io.kotlintest.shouldBe
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
@@ -16,7 +16,7 @@ class TextUtilsKtTest {
 
         val result = query.findTokenAndQueryMatchesForAutocomplete(tokens, cursorPosition)
 
-        result shouldBe (queryTestData.expectedToken to queryTestData.expectedQuery)
+        assertThat(result).isEqualTo((queryTestData.expectedToken to queryTestData.expectedQuery))
     }
 
     companion object {

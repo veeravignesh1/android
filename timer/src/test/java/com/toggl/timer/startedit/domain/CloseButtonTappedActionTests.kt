@@ -1,11 +1,12 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.testReduceEffects
-import io.kotlintest.matchers.types.shouldNotBeNull
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +29,7 @@ class CloseButtonTappedActionTests : CoroutineTest() {
             action = StartEditAction.CloseButtonTapped
         ) { effects ->
             val closeAction = effects.single().execute() as? StartEditAction.Close
-            closeAction.shouldNotBeNull()
+            assertThat(closeAction).isNotNull()
         }
     }
 }

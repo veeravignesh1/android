@@ -1,10 +1,11 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
@@ -29,7 +30,7 @@ class DateTimePickingCancelledActionTests : CoroutineTest() {
             initialState.copy(dateTimePickMode = DateTimePickMode.StartTime),
             action = StartEditAction.DateTimePickingCancelled
         ) { state ->
-            state.dateTimePickMode shouldBe DateTimePickMode.None
+            assertThat(state.dateTimePickMode).isEqualTo(DateTimePickMode.None)
         }
     }
 }

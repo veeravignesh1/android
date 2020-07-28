@@ -1,9 +1,10 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -66,11 +67,11 @@ class WheelChangedStartTimeActionTests {
                 initialState,
                 action = StartEditAction.WheelChangedStartTime(testData.inputtedStartTime)
             ) {
-                it shouldBe initialState.copy(
+                assertThat(it).isEqualTo(initialState.copy(
                     editableTimeEntry = it.editableTimeEntry.copy(
                         startTime = testData.inputtedStartTime
                     )
-                )
+                ))
             }
         }
 
@@ -85,11 +86,11 @@ class WheelChangedStartTimeActionTests {
                 initialState,
                 action = StartEditAction.WheelChangedStartTime(testData.inputtedStartTime)
             ) {
-                it shouldBe initialState.copy(
+                assertThat(it).isEqualTo(initialState.copy(
                     editableTimeEntry = it.editableTimeEntry.copy(
                         startTime = testData.inputtedStartTime
                     )
-                )
+                ))
             }
         }
 
@@ -105,12 +106,12 @@ class WheelChangedStartTimeActionTests {
             initialState,
             action = StartEditAction.WheelChangedStartTime(testData.inputtedStartTime)
         ) {
-            it shouldBe initialState.copy(
+            assertThat(it).isEqualTo(initialState.copy(
                 editableTimeEntry = it.editableTimeEntry.copy(
                     startTime = testData.inputtedStartTime,
                     duration = testData.expectedDuration
                 )
-            )
+            ))
         }
     }
 
@@ -125,7 +126,7 @@ class WheelChangedStartTimeActionTests {
             initialState,
             action = StartEditAction.WheelChangedStartTime(startTimeInputted)
         ) {
-            it shouldBe initialState
+            assertThat(it).isEqualTo(initialState)
         }
     }
 
@@ -142,7 +143,7 @@ class WheelChangedStartTimeActionTests {
                 initialState,
                 action = StartEditAction.WheelChangedStartTime(startTimeInputted)
             ) {
-                it shouldBe initialState
+                assertThat(it).isEqualTo(initialState)
             }
         }
 
@@ -159,7 +160,7 @@ class WheelChangedStartTimeActionTests {
                 initialState,
                 action = StartEditAction.WheelChangedStartTime(startTimeInputted)
             ) {
-                it shouldBe initialState
+                assertThat(it).isEqualTo(initialState)
             }
         }
 

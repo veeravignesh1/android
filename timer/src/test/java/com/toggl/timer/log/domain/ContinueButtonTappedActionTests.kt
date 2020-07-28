@@ -1,10 +1,11 @@
 package com.toggl.timer.log.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
-import io.kotlintest.matchers.collections.shouldBeSingleton
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -22,7 +23,7 @@ class ContinueButtonTappedActionTests : CoroutineTest() {
             createInitialState(),
             TimeEntriesLogAction.ContinueButtonTapped(1)
         ) { effects ->
-            effects.shouldBeSingleton()
+            assertThat(effects).hasSize(1)
             effects.single()
                 .shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry>()
         }

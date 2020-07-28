@@ -1,10 +1,8 @@
 package com.toggl.timer.startedit.ui.editduration.model
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants.ClockMath.secondsInAMinute
-import io.kotlintest.matchers.beGreaterThanOrEqualTo
-import io.kotlintest.matchers.beLessThanOrEqualTo
-import io.kotlintest.should
-import io.kotlintest.shouldBe
+
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -177,8 +175,8 @@ class DurationFieldInfoTest {
         fun `clamps the value between zero and the max value`(input: Duration) {
             val output = DurationFieldInfo.fromDuration(input).toDuration()
 
-            output should beGreaterThanOrEqualTo(Duration.ZERO)
-            output should beLessThanOrEqualTo(Duration.ofHours(999))
+            assertThat(output).isAtLeast(Duration.ZERO)
+            assertThat(output).isAtMost(Duration.ofHours(999))
         }
 
         @ParameterizedTest
@@ -188,8 +186,8 @@ class DurationFieldInfoTest {
 
             val durationField = DurationFieldInfo.fromDuration(duration)
 
-            durationField.hours() shouldBe hours
-            durationField.minutes() shouldBe minutes
+            assertThat(durationField.hours()).isEqualTo(hours)
+            assertThat(durationField.minutes()).isEqualTo(minutes)
         }
     }
 
@@ -201,8 +199,8 @@ class DurationFieldInfoTest {
         fun `interprets the digits in correct order`(inputSequence: String, expectedHours: Int, expectedMinutes: Int) {
             inputData(inputSequence)
 
-            field.hours() shouldBe expectedHours
-            field.minutes() shouldBe expectedMinutes
+            assertThat(field.hours()).isEqualTo(expectedHours)
+            assertThat(field.minutes()).isEqualTo(expectedMinutes)
         }
 
         @ParameterizedTest
@@ -210,8 +208,8 @@ class DurationFieldInfoTest {
         fun `ignores more than five input digits`(inputSequence: String, expectedHours: Int, expectedMinutes: Int) {
             inputData(inputSequence)
 
-            field.hours() shouldBe expectedHours
-            field.minutes() shouldBe expectedMinutes
+            assertThat(field.hours()).isEqualTo(expectedHours)
+            assertThat(field.minutes()).isEqualTo(expectedMinutes)
         }
     }
 
@@ -230,8 +228,8 @@ class DurationFieldInfoTest {
 
             popNTimes(popCount)
 
-            field.hours() shouldBe expectedHours
-            field.minutes() shouldBe expectedMinutes
+            assertThat(field.hours()).isEqualTo(expectedHours)
+            assertThat(field.minutes()).isEqualTo(expectedMinutes)
         }
 
         @ParameterizedTest
@@ -241,8 +239,8 @@ class DurationFieldInfoTest {
 
             popNTimes(inputSequence.length + 3)
 
-            field.hours() shouldBe 0
-            field.minutes() shouldBe 0
+            assertThat(field.hours()).isEqualTo(0)
+            assertThat(field.minutes()).isEqualTo(0)
         }
     }
 
@@ -256,7 +254,7 @@ class DurationFieldInfoTest {
 
             val output = field.toString()
 
-            output shouldBe expectedOutput
+            assertThat(output).isEqualTo(expectedOutput)
         }
 
         @ParameterizedTest
@@ -269,7 +267,7 @@ class DurationFieldInfoTest {
 
             val output = field.toString()
 
-            output shouldBe expectedOutput
+            assertThat(output).isEqualTo(expectedOutput)
         }
 
         @ParameterizedTest
@@ -279,7 +277,7 @@ class DurationFieldInfoTest {
 
             val output = field.toString()
 
-            output shouldBe expectedOutput
+            assertThat(output).isEqualTo(expectedOutput)
         }
 
         @ParameterizedTest
@@ -289,7 +287,7 @@ class DurationFieldInfoTest {
 
             val output = field.toString()
 
-            output shouldBe expectedOutput
+            assertThat(output).isEqualTo(expectedOutput)
         }
 
         @ParameterizedTest
@@ -299,7 +297,7 @@ class DurationFieldInfoTest {
 
             val output = field.toString()
 
-            output shouldBe expectedOutput
+            assertThat(output).isEqualTo(expectedOutput)
         }
 
         @ParameterizedTest
@@ -309,7 +307,7 @@ class DurationFieldInfoTest {
 
             val output = field.toString()
 
-            output shouldBe expectedOutput
+            assertThat(output).isEqualTo(expectedOutput)
         }
     }
 
@@ -323,7 +321,7 @@ class DurationFieldInfoTest {
 
             val output = field.toDuration()
 
-            output shouldBe Duration.ofHours(999)
+            assertThat(output).isEqualTo(Duration.ofHours(999))
         }
 
         @ParameterizedTest
@@ -333,7 +331,7 @@ class DurationFieldInfoTest {
 
             val output = field.toDuration()
 
-            output.seconds / secondsInAMinute shouldBe totalMinutes
+            assertThat(output.seconds / secondsInAMinute).isEqualTo(totalMinutes)
         }
     }
 
@@ -344,18 +342,18 @@ class DurationFieldInfoTest {
         fun `minutes and hours are zero`() {
             val field = DurationFieldInfo()
 
-            field.hours() shouldBe 0
-            field.minutes() shouldBe 0
+            assertThat(field.hours()).isEqualTo(0)
+            assertThat(field.minutes()).isEqualTo(0)
         }
 
         @Test
         fun `serializes into zeros only`() {
-            DurationFieldInfo().toString() shouldBe "00:00"
+            assertThat(DurationFieldInfo().toString()).isEqualTo("00:00")
         }
 
         @Test
         fun `converts into zero duration`() {
-            DurationFieldInfo().toDuration() shouldBe Duration.ZERO
+            assertThat(DurationFieldInfo().toDuration()).isEqualTo(Duration.ZERO)
         }
     }
 }

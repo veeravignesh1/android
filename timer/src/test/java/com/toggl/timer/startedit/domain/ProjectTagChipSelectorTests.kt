@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
 import com.toggl.models.domain.Tag
@@ -8,9 +9,7 @@ import com.toggl.timer.common.createTimeEntry
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.types.shouldNotBeNull
+
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -32,7 +31,9 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.filterIsInstance<ChipViewModel.AddProject>().singleOrNull { it.text == "$projectToken $projectLabel" }.shouldNotBeNull()
+        assertThat(
+            chips.filterIsInstance<ChipViewModel.AddProject>().singleOrNull { it.text == "$projectToken $projectLabel" }
+        ).isNotNull()
     }
 
     @Test
@@ -46,7 +47,9 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(projects = projects, editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.filterIsInstance<ChipViewModel.Project>().singleOrNull { it.project == project }.shouldNotBeNull()
+        assertThat(
+            chips.filterIsInstance<ChipViewModel.Project>().singleOrNull { it.project == project }
+        ).isNotNull()
     }
 
     @Test
@@ -60,7 +63,7 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(projects = projects, editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.filterIsInstance<ChipViewModel.AddProject>().shouldBeEmpty()
+        assertThat(chips.filterIsInstance<ChipViewModel.AddProject>()).isEmpty()
     }
 
     @Test
@@ -73,7 +76,8 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(tags = tags, editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.filterIsInstance<ChipViewModel.Tag>().all { tags.contains(it.tag) }.shouldBeTrue()
+        assertThat(chips.filterIsInstance<ChipViewModel.Tag>().all { tags.contains(it.tag) })
+            .isTrue()
     }
 
     @Test
@@ -86,7 +90,8 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
         val state = createInitialState(tags = tags, editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
 
-        chips.any { it is ChipViewModel.AddTag && it.text == "$tagToken $tagLabel" }.shouldBeTrue()
+        assertThat(chips.any { it is ChipViewModel.AddTag && it.text == "$tagToken $tagLabel" })
+            .isTrue()
     }
 
     @Test
@@ -97,6 +102,6 @@ internal class ProjectTagChipSelectorTests : CoroutineTest() {
 
         val state = createInitialState(editableTimeEntry = editableTimeEntry)
         val chips = selector.select(state)
-        chips.any { it is ChipViewModel.AddTag && it.text == "$tagToken $tagLabel" }.shouldBeTrue()
+        assertThat(chips.any { it is ChipViewModel.AddTag && it.text == "$tagToken $tagLabel" }).isTrue()
     }
 }

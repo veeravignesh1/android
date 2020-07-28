@@ -1,15 +1,12 @@
 package com.toggl.timer.suggestions.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createCalendarEvent
-import io.kotlintest.matchers.boolean.shouldBeTrue
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.should
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -57,9 +54,12 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
         val initialState = createInitialState(calendarEvents = calendarEvents.associateBy { it.id })
 
         val suggestions = calendarSuggestionsProvider.getSuggestions(initialState)
-        suggestions.shouldHaveSize(121) // out of bounds (123 - 2 == 121)
+        assertThat(suggestions).hasSize(121) // out of bounds (123 - 2 == 121)
         suggestions.forEach { suggestion ->
-            suggestion.should { it is Suggestion.Calendar && it.calendarEvent.startTime > expectedStartOfRange && it.calendarEvent.startTime < expectedEndOfRange }
+            assertThat(suggestion).isInstanceOf(Suggestion.Calendar::class.java)
+            val calendarSuggestion = suggestion as Suggestion.Calendar
+            assertThat(calendarSuggestion.calendarEvent.startTime).isAtLeast(expectedStartOfRange)
+            assertThat(calendarSuggestion.calendarEvent.startTime).isAtMost(expectedEndOfRange)
         }
     }
 
@@ -71,7 +71,7 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
 
         val suggestions = provider.getSuggestions(initialState)
 
-        suggestions.shouldBeEmpty()
+        assertThat(suggestions).isEmpty()
     }
 
     @Test
@@ -83,7 +83,7 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
 
         val suggestions = provider.getSuggestions(initialState)
 
-        suggestions.all { it is Suggestion.Calendar && it.workspaceId == user.defaultWorkspaceId }.shouldBeTrue()
+        assertThat(suggestions.all { it is Suggestion.Calendar && it.workspaceId == user.defaultWorkspaceId }).isTrue()
     }
 
     @Test
@@ -96,7 +96,7 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
 
         val suggestions = provider.getSuggestions(initialState)
 
-        suggestions shouldHaveSize maxSuggestionNumber
+        assertThat(suggestions).hasSize(maxSuggestionNumber)
     }
 
     @ParameterizedTest
@@ -105,7 +105,7 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
         val suggestionsState = createInitialState(calendarEvents = testData.events.associateBy { it.id })
         val suggestion = provider.getSuggestions(suggestionsState).filterIsInstance<Suggestion.Calendar>().single()
 
-        suggestion.calendarEvent shouldBe testData.closestEvent
+        assertThat(suggestion.calendarEvent).isEqualTo(testData.closestEvent)
     }
 
     data class CalendarTestData(val events: List<CalendarEvent>, val closestEvent: CalendarEvent)

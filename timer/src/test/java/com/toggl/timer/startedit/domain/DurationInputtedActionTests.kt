@@ -1,12 +1,13 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants.TimeEntry.maxDurationInHours
 import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -47,12 +48,12 @@ internal class DurationInputtedActionTests {
             initialState,
             action = StartEditAction.DurationInputted(durationInputted)
         ) {
-            it shouldBe initialState.copy(
+            assertThat(it).isEqualTo(initialState.copy(
                 editableTimeEntry = initialTimeEntry.copy(
                     startTime = expectedStartTime,
                     duration = null
                 )
-            )
+            ))
         }
     }
 
@@ -67,12 +68,12 @@ internal class DurationInputtedActionTests {
             initialState,
             action = StartEditAction.DurationInputted(durationInputted)
         ) {
-            it shouldBe initialState.copy(
+            assertThat(it).isEqualTo(initialState.copy(
                 editableTimeEntry = initialTimeEntry.copy(
                     startTime = expectedStartTime,
                     duration = null
                 )
-            )
+            ))
         }
     }
 
@@ -88,12 +89,12 @@ internal class DurationInputtedActionTests {
             initialState,
             action = StartEditAction.DurationInputted(durationInputted)
         ) {
-            it shouldBe initialState.copy(
+            assertThat(it).isEqualTo(initialState.copy(
                 editableTimeEntry = initialTimeEntry.copy(
                     startTime = initialStartTime,
                     duration = durationInputted
                 )
-            )
+            ))
         }
     }
 
@@ -109,7 +110,7 @@ internal class DurationInputtedActionTests {
             initialState,
             action = StartEditAction.DurationInputted(durationInputted)
         ) {
-            it shouldBe initialState
+            assertThat(it).isEqualTo(initialState)
         }
     }
 
@@ -125,7 +126,7 @@ internal class DurationInputtedActionTests {
             initialState,
             action = StartEditAction.DurationInputted(durationInputted)
         ) {
-            it shouldBe initialState
+            assertThat(it).isEqualTo(initialState)
         }
     }
 

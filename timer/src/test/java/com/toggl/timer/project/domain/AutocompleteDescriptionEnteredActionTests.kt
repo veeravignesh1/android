@@ -1,5 +1,6 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Workspace
@@ -7,9 +8,7 @@ import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -33,8 +32,8 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 initialState.copy(autocompleteQuery = ProjectAutocompleteQuery.WorkspaceQuery("something")),
                 ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.None)
             ) { newState ->
-                newState.autocompleteQuery shouldBe ProjectAutocompleteQuery.None
-                newState.autocompleteSuggestions.shouldBeEmpty()
+                assertThat(newState.autocompleteQuery).isEqualTo(ProjectAutocompleteQuery.None)
+                assertThat(newState.autocompleteSuggestions).isEmpty()
             }
         }
 
@@ -64,8 +63,8 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 initialState.copy(workspaces = workspaces),
                 ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.WorkspaceQuery("Even"))
             ) { newState ->
-                newState.autocompleteQuery shouldBe ProjectAutocompleteQuery.WorkspaceQuery("Even")
-                newState.autocompleteSuggestions.size shouldBe 5
+                assertThat(newState.autocompleteQuery).isEqualTo(ProjectAutocompleteQuery.WorkspaceQuery("Even"))
+                assertThat(newState.autocompleteSuggestions.size).isEqualTo(5)
                 newState.autocompleteSuggestions.all { it is AutocompleteSuggestion.ProjectSuggestions.Workspace }
             }
         }
@@ -76,8 +75,8 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 initialState.copy(workspaces = workspaces),
                 ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.WorkspaceQuery("Cool"))
             ) { newState ->
-                newState.autocompleteQuery shouldBe ProjectAutocompleteQuery.WorkspaceQuery("Cool")
-                newState.autocompleteSuggestions.size shouldBe 10
+                assertThat(newState.autocompleteQuery).isEqualTo(ProjectAutocompleteQuery.WorkspaceQuery("Cool"))
+                assertThat(newState.autocompleteSuggestions.size).isEqualTo(10)
                 newState.autocompleteSuggestions.all { it is AutocompleteSuggestion.ProjectSuggestions.Workspace }
             }
         }
@@ -88,8 +87,8 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 initialState.copy(workspaces = workspaces),
                 ProjectAction.AutocompleteDescriptionEntered(ProjectAutocompleteQuery.WorkspaceQuery(""))
             ) { newState ->
-                newState.autocompleteQuery shouldBe ProjectAutocompleteQuery.WorkspaceQuery("")
-                newState.autocompleteSuggestions.size shouldBe 10
+                assertThat(newState.autocompleteQuery).isEqualTo(ProjectAutocompleteQuery.WorkspaceQuery(""))
+                assertThat(newState.autocompleteSuggestions.size).isEqualTo(10)
                 newState.autocompleteSuggestions.all { it is AutocompleteSuggestion.ProjectSuggestions.Workspace }
             }
         }
@@ -130,7 +129,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.Client>()
                         .filter { it.client != null }
 
-                clientsSuggestions.size shouldBe 5
+                assertThat(clientsSuggestions.size).isEqualTo(5)
                 clientsSuggestions.all { it.client?.workspaceId == 1L }
             }
         }
@@ -150,7 +149,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.Client>()
                         .filter { it.client != null }
 
-                clientsSuggestions.size shouldBe 10
+                assertThat(clientsSuggestions.size).isEqualTo(10)
                 clientsSuggestions.all { it.client?.workspaceId == 1L }
             }
         }
@@ -168,7 +167,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 val createClientSuggestions =
                     state.autocompleteSuggestions
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.CreateClient>()
-                createClientSuggestions.shouldBeEmpty()
+                assertThat(createClientSuggestions).isEmpty()
             }
         }
 
@@ -187,7 +186,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                     state.autocompleteSuggestions
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.Client>()
                         .filter { it.client == null }
-                noClientSuggestion.size shouldBe 1
+                assertThat(noClientSuggestion.size).isEqualTo(1)
             }
         }
 
@@ -205,7 +204,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 val createClientSuggestions =
                     state.autocompleteSuggestions
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.CreateClient>()
-                createClientSuggestions.shouldHaveSize(1)
+                assertThat(createClientSuggestions).hasSize(1)
             }
         }
 
@@ -223,7 +222,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                 val createClientSuggestions =
                     state.autocompleteSuggestions
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.CreateClient>()
-                createClientSuggestions.shouldBeEmpty()
+                assertThat(createClientSuggestions).isEmpty()
             }
         }
 
@@ -242,7 +241,7 @@ class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
                         .filterIsInstance<AutocompleteSuggestion.ProjectSuggestions.Client>()
                         .filter { it.client != null }
 
-                clientsSuggestions.size shouldBe 10
+                assertThat(clientsSuggestions.size).isEqualTo(10)
                 clientsSuggestions.all { it.client?.workspaceId == 1L }
             }
         }

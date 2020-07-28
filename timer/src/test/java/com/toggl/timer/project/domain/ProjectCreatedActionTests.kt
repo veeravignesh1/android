@@ -1,12 +1,12 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -35,7 +35,7 @@ internal class ProjectCreatedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ProjectCreated(newProject)
-        ) { state -> state.editableTimeEntry.description shouldBe "Test " }
+        ) { state -> assertThat(state.editableTimeEntry.description).isEqualTo("Test ") }
     }
 
     @Test
@@ -47,7 +47,7 @@ internal class ProjectCreatedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ProjectCreated(newProject)
-        ) { state -> state.editableTimeEntry.projectId shouldBe newProject.id }
+        ) { state -> assertThat(state.editableTimeEntry.projectId).isEqualTo(newProject.id) }
     }
 
     @Test
@@ -58,7 +58,7 @@ internal class ProjectCreatedActionTests : CoroutineTest() {
 
         reducer.testReduceEffects(initialState = initialState, action = ProjectAction.ProjectCreated(newProject)) { effects ->
             val closeAction = effects.single().execute() as? ProjectAction.Close
-            closeAction.shouldNotBeNull()
+            assertThat(closeAction).isNotNull()
         }
     }
 }

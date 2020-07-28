@@ -1,12 +1,11 @@
 package com.toggl.timer.suggestions.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.shouldBe
+
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest
@@ -27,7 +26,7 @@ internal class LoadSuggestionsActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             SuggestionsAction.LoadSuggestions
-        ) { state -> state shouldBe initialState }
+        ) { state -> assertThat(state).isEqualTo(initialState) }
     }
 
     @Test
@@ -37,8 +36,8 @@ internal class LoadSuggestionsActionTests : CoroutineTest() {
             initialState,
             SuggestionsAction.LoadSuggestions
         ) { effects ->
-            effects.shouldBeSingleton()
-            effects.first().shouldBeTypeOf<LoadSuggestionEffect>()
+            assertThat(effects).hasSize(1)
+            assertThat(effects.first()).isInstanceOf(LoadSuggestionEffect::class.java)
         }
     }
 }

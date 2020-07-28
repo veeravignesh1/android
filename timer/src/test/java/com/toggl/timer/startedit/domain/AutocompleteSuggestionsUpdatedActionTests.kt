@@ -1,11 +1,11 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.testReduce
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainInOrder
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -25,7 +25,7 @@ internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
             initialState,
             action = StartEditAction.AutocompleteSuggestionsUpdated(expectedSuggestions)
         ) { state, _ ->
-            state.autocompleteSuggestions.shouldContainInOrder(expectedSuggestions)
+            assertThat(state.autocompleteSuggestions).containsExactlyElementsIn(expectedSuggestions).inOrder()
         }
     }
 
@@ -37,7 +37,7 @@ internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
             initialState,
             action = StartEditAction.AutocompleteSuggestionsUpdated(expectedSuggestions)
         ) { _, effect ->
-            effect.shouldBeEmpty()
+            assertThat(effect).isEmpty()
         }
     }
 }

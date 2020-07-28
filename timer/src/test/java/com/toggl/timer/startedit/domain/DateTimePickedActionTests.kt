@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.repository.Repository
@@ -11,9 +12,7 @@ import com.toggl.timer.common.testReduceException
 import com.toggl.timer.common.testReduceState
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -279,8 +278,8 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) { state, effect ->
-                state shouldBe initialState
-                effect.shouldBeEmpty()
+                assertThat(state).isEqualTo(initialState)
+                assertThat(effect).isEmpty()
             }
         }
     }
@@ -318,7 +317,7 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it.temporalInconsistency shouldBe expectedInconsistency
+                assertThat(it.temporalInconsistency).isEqualTo(expectedInconsistency)
             }
         }
 
@@ -331,7 +330,7 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it.dateTimePickMode shouldBe DateTimePickMode.None
+                assertThat(it.dateTimePickMode).isEqualTo(DateTimePickMode.None)
             }
         }
 
@@ -344,8 +343,8 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it.shouldBeSingleton()
-                (it.first() as ReopenPickerEffect).dateTimePickMode shouldBe initialState.dateTimePickMode
+                assertThat(it).hasSize(1)
+                assertThat((it.first() as ReopenPickerEffect).dateTimePickMode).isEqualTo(initialState.dateTimePickMode)
             }
         }
     }
@@ -384,8 +383,8 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it.editableTimeEntry.startTime shouldBe expectedStartTime
-                it.editableTimeEntry.duration shouldBe expectedDuration
+                assertThat(it.editableTimeEntry.startTime).isEqualTo(expectedStartTime)
+                assertThat(it.editableTimeEntry.duration).isEqualTo(expectedDuration)
             }
         }
 
@@ -398,7 +397,7 @@ internal class DateTimePickedActionTests : CoroutineTest() {
                 initialState,
                 pickAction
             ) {
-                it.dateTimePickMode shouldBe DateTimePickMode.None
+                assertThat(it.dateTimePickMode).isEqualTo(DateTimePickMode.None)
             }
         }
 

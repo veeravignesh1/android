@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants
 import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.assertNoEffectsWereReturned
@@ -9,7 +10,7 @@ import com.toggl.timer.common.testReduceException
 import com.toggl.timer.common.testReduceState
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveADurationSetException
 import com.toggl.timer.exceptions.EditableTimeEntryDoesNotHaveAStartTimeSetException
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,12 +76,12 @@ class WheelChangedEndTimeActionTests {
             initialState,
             action = StartEditAction.WheelChangedEndTime(durationInputted)
         ) {
-            it shouldBe initialState.copy(
+            assertThat(it).isEqualTo(initialState.copy(
                 editableTimeEntry = initialTimeEntry.copy(
                     startTime = initialStartTime,
                     duration = durationInputted
                 )
-            )
+            ))
         }
     }
 
@@ -96,7 +97,7 @@ class WheelChangedEndTimeActionTests {
             initialState,
             action = StartEditAction.WheelChangedEndTime(durationInputted)
         ) {
-            it shouldBe initialState
+            assertThat(it).isEqualTo(initialState)
         }
     }
 
@@ -112,7 +113,7 @@ class WheelChangedEndTimeActionTests {
             initialState,
             action = StartEditAction.WheelChangedEndTime(durationInputted)
         ) {
-            it shouldBe initialState
+            assertThat(it).isEqualTo(initialState)
         }
     }
 

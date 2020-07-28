@@ -1,4 +1,5 @@
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
@@ -7,8 +8,7 @@ import com.toggl.timer.startedit.domain.StartEditAction
 import com.toggl.timer.startedit.domain.TemporalInconsistency
 import com.toggl.timer.startedit.domain.createInitialState
 import com.toggl.timer.startedit.domain.createReducer
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -29,8 +29,8 @@ internal class PickerTappedActionTests {
             initialState = initialState,
             action = StartEditAction.PickerTapped(dateTimePickMode)
         ) { state, effects ->
-            state.dateTimePickMode shouldBe dateTimePickMode
-            effects.shouldBeEmpty()
+            assertThat(state.dateTimePickMode).isEqualTo(dateTimePickMode)
+            assertThat(effects).isEmpty()
         }
     }
 
@@ -41,7 +41,7 @@ internal class PickerTappedActionTests {
             initialState = initialState.copy(temporalInconsistency = TemporalInconsistency.DurationTooLong),
             action = StartEditAction.PickerTapped(dateTimePickMode)
         ) {
-            it.temporalInconsistency shouldBe TemporalInconsistency.None
+            assertThat(it.temporalInconsistency).isEqualTo(TemporalInconsistency.None)
         }
     }
 }

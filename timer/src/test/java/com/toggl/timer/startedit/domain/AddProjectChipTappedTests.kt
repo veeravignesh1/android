@@ -1,9 +1,10 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduceEffects
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,8 +19,8 @@ internal class AddProjectChipTappedTests {
     fun `should return an effect to set description to the project token when the description is empty`() = runBlockingTest {
         reducer.testReduceEffects(initialState, StartEditAction.AddProjectChipTapped) { effects ->
             val action = effects.single().execute() as StartEditAction.DescriptionEntered
-            action.description shouldBe projectToken.toString()
-            action.cursorPosition shouldBe 1
+            assertThat(action.description).isEqualTo(projectToken.toString())
+            assertThat(action.cursorPosition).isEqualTo(1)
         }
     }
 
@@ -30,8 +31,8 @@ internal class AddProjectChipTappedTests {
         val state = initialState.copy(editableTimeEntry = editableWithDescription)
         reducer.testReduceEffects(state, StartEditAction.AddProjectChipTapped) { effects ->
             val action = effects.single().execute() as StartEditAction.DescriptionEntered
-            action.description shouldBe editableWithDescription.description + " $projectToken"
-            action.cursorPosition shouldBe editableWithDescription.description.length + 2
+            assertThat(action.description).isEqualTo(editableWithDescription.description + " $projectToken")
+            assertThat(action.cursorPosition).isEqualTo(editableWithDescription.description.length + 2)
         }
     }
 }

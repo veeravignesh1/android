@@ -1,13 +1,13 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
 import com.toggl.timer.startedit.domain.StopButtonTappedActionTests.TheoryHolder.Companion.now
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -55,12 +55,12 @@ class StopButtonTappedActionTests {
                     initialState,
                     action = StartEditAction.StopButtonTapped
                 ) {
-                    it shouldBe initialState.copy(
+                    assertThat(it).isEqualTo(initialState.copy(
                         editableTimeEntry = initialTimeEntry.copy(
                             startTime = testData.startTime,
                             duration = testData.expectedDuration
                         )
-                    )
+                    ))
                 }
             }
 
@@ -91,12 +91,12 @@ class StopButtonTappedActionTests {
                     initialState,
                     action = StartEditAction.StopButtonTapped
                 ) {
-                    it shouldBe initialState.copy(
+                    assertThat(it).isEqualTo(initialState.copy(
                         editableTimeEntry = initialTimeEntry.copy(
                             startTime = now,
                             duration = Duration.ZERO
                         )
-                    )
+                    ))
                 }
             }
 
@@ -122,8 +122,8 @@ class StopButtonTappedActionTests {
             initialState,
             action = StartEditAction.StopButtonTapped
         ) { state, effects ->
-            state shouldBe initialState
-            effects.shouldBeEmpty()
+            assertThat(state).isEqualTo(initialState)
+            assertThat(effects).isEmpty()
         }
     }
 
@@ -137,8 +137,8 @@ class StopButtonTappedActionTests {
             initialState,
             action = StartEditAction.StopButtonTapped
         ) { state, effects ->
-            state shouldBe initialState
-            effects.shouldBeEmpty()
+            assertThat(state).isEqualTo(initialState)
+            assertThat(effects).isEmpty()
         }
     }
 
@@ -152,8 +152,8 @@ class StopButtonTappedActionTests {
             initialState,
             action = StartEditAction.StopButtonTapped
         ) { state, effects ->
-            state shouldBe initialState
-            effects.shouldBeEmpty()
+            assertThat(state).isEqualTo(initialState)
+            assertThat(effects).isEmpty()
         }
     }
 

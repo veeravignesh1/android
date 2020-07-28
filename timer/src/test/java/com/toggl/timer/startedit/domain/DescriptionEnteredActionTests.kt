@@ -1,12 +1,13 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -27,7 +28,7 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { state -> state.editableTimeEntry.description shouldBe "new description" }
+        ) { state -> assertThat(state.editableTimeEntry.description).isEqualTo("new description") }
     }
 
     @Test
@@ -35,7 +36,7 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
         reducer.testReduce(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { state, _ -> state.cursorPosition shouldBe 5 }
+        ) { state, _ -> assertThat(state.cursorPosition).isEqualTo(5) }
     }
 
     @Test
@@ -43,6 +44,6 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
         reducer.testReduce(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { _, effects -> effects.single()::class shouldBe UpdateAutocompleteSuggestionsEffect::class }
+        ) { _, effects -> assertThat(effects.single()::class).isEqualTo(UpdateAutocompleteSuggestionsEffect::class) }
     }
 }

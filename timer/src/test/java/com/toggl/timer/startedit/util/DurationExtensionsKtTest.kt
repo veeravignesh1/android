@@ -1,6 +1,6 @@
 package com.toggl.timer.startedit.util
 
-import io.kotlintest.shouldBe
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -29,6 +29,6 @@ internal class DurationExtensionsKtTest {
     @ParameterizedTest
     @MethodSource
     fun `converts durations to strings in a friendly way`(duration: Duration, expectedDurationString: String) {
-        duration.asDurationString() shouldBe expectedDurationString
+        assertThat(duration.asDurationString()).isEqualTo(expectedDurationString)
     }
 }

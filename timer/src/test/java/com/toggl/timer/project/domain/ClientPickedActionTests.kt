@@ -1,12 +1,13 @@
 package com.toggl.timer.project.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.Client
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -26,7 +27,7 @@ internal class ClientPickedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ClientPicked(client)
-        ) { state -> state.editableProject.clientId shouldBe client.id }
+        ) { state -> assertThat(state.editableProject.clientId).isEqualTo(client.id) }
     }
 
     @Test
@@ -37,7 +38,7 @@ internal class ClientPickedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState = initialState,
             action = ProjectAction.ClientPicked(null)
-        ) { state -> state.editableProject.clientId shouldBe null }
+        ) { state -> assertThat(state.editableProject.clientId).isEqualTo(null) }
     }
 
     @Test

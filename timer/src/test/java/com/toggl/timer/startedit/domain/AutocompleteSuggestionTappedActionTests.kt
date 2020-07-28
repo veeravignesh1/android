@@ -1,5 +1,6 @@
 package com.toggl.timer.startedit.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.models.domain.EditableProject
@@ -18,11 +19,7 @@ import com.toggl.timer.common.testReduceState
 import com.toggl.timer.exceptions.ProjectDoesNotExistException
 import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.timer.project.domain.createProject
-import io.kotlintest.matchers.collections.shouldBeSingleton
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.types.shouldBeTypeOf
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
+
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -52,15 +49,17 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it shouldBe initialState.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        description = timeEntrySuggestion.description,
-                        billable = timeEntrySuggestion.billable,
-                        projectId = timeEntrySuggestion.projectId,
-                        tagIds = timeEntrySuggestion.tagIds,
-                        workspaceId = timeEntrySuggestion.workspaceId,
-                        taskId = timeEntrySuggestion.taskId
+                assertThat(it).isEqualTo(
+                    initialState.copy(
+                        autocompleteSuggestions = emptyList(),
+                        editableTimeEntry = initialEditableTimeEntry.copy(
+                            description = timeEntrySuggestion.description,
+                            billable = timeEntrySuggestion.billable,
+                            projectId = timeEntrySuggestion.projectId,
+                            tagIds = timeEntrySuggestion.tagIds,
+                            workspaceId = timeEntrySuggestion.workspaceId,
+                            taskId = timeEntrySuggestion.taskId
+                        )
                     )
                 )
             }
@@ -92,11 +91,13 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it shouldBe initialState.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        projectId = project.id,
-                        workspaceId = project.workspaceId
+                assertThat(it).isEqualTo(
+                    initialState.copy(
+                        autocompleteSuggestions = emptyList(),
+                        editableTimeEntry = initialEditableTimeEntry.copy(
+                            projectId = project.id,
+                            workspaceId = project.workspaceId
+                        )
                     )
                 )
             }
@@ -118,12 +119,14 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it shouldBe initialState.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        description = "Such ",
-                        projectId = project.id,
-                        workspaceId = project.workspaceId
+                assertThat(it).isEqualTo(
+                    initialState.copy(
+                        autocompleteSuggestions = emptyList(),
+                        editableTimeEntry = initialEditableTimeEntry.copy(
+                            description = "Such ",
+                            projectId = project.id,
+                            workspaceId = project.workspaceId
+                        )
                     )
                 )
             }
@@ -147,12 +150,14 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it shouldBe initialState.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        description = "Such # @ @ @ ",
-                        projectId = project.id,
-                        workspaceId = project.workspaceId
+                assertThat(it).isEqualTo(
+                    initialState.copy(
+                        autocompleteSuggestions = emptyList(),
+                        editableTimeEntry = initialEditableTimeEntry.copy(
+                            description = "Such # @ @ @ ",
+                            projectId = project.id,
+                            workspaceId = project.workspaceId
+                        )
                     )
                 )
             }
@@ -176,12 +181,14 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it shouldBe initialState.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        description = "Such # @ # @ ",
-                        projectId = project.id,
-                        workspaceId = project.workspaceId
+                assertThat(it).isEqualTo(
+                    initialState.copy(
+                        autocompleteSuggestions = emptyList(),
+                        editableTimeEntry = initialEditableTimeEntry.copy(
+                            description = "Such # @ # @ ",
+                            projectId = project.id,
+                            workspaceId = project.workspaceId
+                        )
                     )
                 )
             }
@@ -213,8 +220,8 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState.copy(tags = tagTestData.tags),
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry.shouldNotBeNull()
-                it.editableTimeEntry.tagIds shouldContain tag.id
+                assertThat(it.editableTimeEntry).isNotNull()
+                assertThat(it.editableTimeEntry.tagIds).contains(tag.id)
             }
         }
 
@@ -258,7 +265,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry.description shouldBe "Such "
+                assertThat(it.editableTimeEntry.description).isEqualTo("Such ")
             }
         }
 
@@ -280,7 +287,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     initialState,
                     StartEditAction.AutocompleteSuggestionTapped(suggestion)
                 ) {
-                    it.editableTimeEntry.description shouldBe "Such #tag #tag "
+                    assertThat(it.editableTimeEntry.description).isEqualTo("Such #tag #tag ")
                 }
             }
     }
@@ -300,11 +307,11 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
                 val editableProject = it.backStack.getRouteParam<EditableProject>()
-                editableProject.shouldNotBeNull()
+                assertThat(editableProject).isNotNull()
 
-                editableProject.name shouldBe projectName
-                editableProject.workspaceId shouldBe 1
-                Project.defaultColors.shouldContain(editableProject.color)
+                assertThat(editableProject!!.name).isEqualTo(projectName)
+                assertThat(editableProject.workspaceId).isEqualTo(1)
+                assertThat(Project.defaultColors).contains(editableProject.color)
             }
         }
 
@@ -339,13 +346,15 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
             ) {
                 // let's leave out the description for now, it will be testes separately
                 val descriptionLessState = it.copy(editableTimeEntry = it.editableTimeEntry.copy(description = ""))
-                descriptionLessState shouldBe initialStateWithProjects.copy(
-                    autocompleteSuggestions = emptyList(),
-                    editableTimeEntry = initialEditableTimeEntry.copy(
-                        projectId = testTask.projectId,
-                        description = "",
-                        taskId = testTask.id,
-                        workspaceId = testTask.workspaceId
+                assertThat(descriptionLessState).isEqualTo(
+                    initialStateWithProjects.copy(
+                        autocompleteSuggestions = emptyList(),
+                        editableTimeEntry = initialEditableTimeEntry.copy(
+                            projectId = testTask.projectId,
+                            description = "",
+                            taskId = testTask.id,
+                            workspaceId = testTask.workspaceId
+                        )
                     )
                 )
             }
@@ -365,38 +374,40 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
 
         @ParameterizedTest
         @MethodSource("tasksWithNonExistingProjects")
-        fun `should throw exception when task points to a non existent project`(taskTestData: TheoryHolder.TaskWithNonExistingProjectTestData) = runBlockingTest {
-            val suggestion = StartEditSuggestions.Task(taskTestData.task)
-            val initialStateWithProjects = initialState.copy(projects = taskTestData.projects)
+        fun `should throw exception when task points to a non existent project`(taskTestData: TheoryHolder.TaskWithNonExistingProjectTestData) =
+            runBlockingTest {
+                val suggestion = StartEditSuggestions.Task(taskTestData.task)
+                val initialStateWithProjects = initialState.copy(projects = taskTestData.projects)
 
-            reducer.testReduceException(
-                initialStateWithProjects,
-                action = StartEditAction.AutocompleteSuggestionTapped(suggestion),
-                exception = ProjectDoesNotExistException::class.java
-            )
-        }
+                reducer.testReduceException(
+                    initialStateWithProjects,
+                    action = StartEditAction.AutocompleteSuggestionTapped(suggestion),
+                    exception = ProjectDoesNotExistException::class.java
+                )
+            }
 
         @ParameterizedTest
         @MethodSource("tasks")
-        fun `should remove the substring that starts with an '@' from the description`(taskTestData: TheoryHolder.TaskTestData) = runBlockingTest {
-            val task = taskTestData.task
-            val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
-                description = "Such @${task.name}"
-            )
-            val suggestion = StartEditSuggestions.Task(task)
-            val initialState = initialState.copy(
-                editableTimeEntry = initialEditableTimeEntry,
-                cursorPosition = initialEditableTimeEntry.description.length,
-                projects = taskTestData.projects
-            )
+        fun `should remove the substring that starts with an '@' from the description`(taskTestData: TheoryHolder.TaskTestData) =
+            runBlockingTest {
+                val task = taskTestData.task
+                val initialEditableTimeEntry = EditableTimeEntry.empty(10).copy(
+                    description = "Such @${task.name}"
+                )
+                val suggestion = StartEditSuggestions.Task(task)
+                val initialState = initialState.copy(
+                    editableTimeEntry = initialEditableTimeEntry,
+                    cursorPosition = initialEditableTimeEntry.description.length,
+                    projects = taskTestData.projects
+                )
 
-            reducer.testReduceState(
-                initialState,
-                StartEditAction.AutocompleteSuggestionTapped(suggestion)
-            ) {
-                it.editableTimeEntry.description shouldBe "Such "
+                reducer.testReduceState(
+                    initialState,
+                    StartEditAction.AutocompleteSuggestionTapped(suggestion)
+                ) {
+                    assertThat(it.editableTimeEntry.description).isEqualTo("Such ")
+                }
             }
-        }
 
         @ParameterizedTest
         @MethodSource("tasks")
@@ -418,7 +429,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry.description shouldBe "Such # @ @ @ "
+                assertThat(it.editableTimeEntry.description).isEqualTo("Such # @ @ @ ")
             }
         }
 
@@ -442,7 +453,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry.description shouldBe "Such # @ # @ "
+                assertThat(it.editableTimeEntry.description).isEqualTo("Such # @ # @ ")
             }
         }
     }
@@ -459,9 +470,8 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(createTagSuggestion)
             ) {
-                it.shouldBeSingleton()
-                it.single()
-                    .shouldBeTypeOf<CreateTagEffect>()
+                assertThat(it).hasSize(1)
+                assertThat(it.single()).isInstanceOf(CreateTagEffect::class.java)
             }
         }
 
@@ -480,7 +490,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                 initialState,
                 StartEditAction.AutocompleteSuggestionTapped(suggestion)
             ) {
-                it.editableTimeEntry.description shouldBe "Such "
+                assertThat(it.editableTimeEntry.description).isEqualTo("Such ")
             }
         }
 
@@ -500,7 +510,7 @@ internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
                     initialState,
                     StartEditAction.AutocompleteSuggestionTapped(suggestion)
                 ) {
-                    it.editableTimeEntry.description shouldBe "Such #tag #tag "
+                    assertThat(it.editableTimeEntry.description).isEqualTo("Such #tag #tag ")
                 }
             }
     }

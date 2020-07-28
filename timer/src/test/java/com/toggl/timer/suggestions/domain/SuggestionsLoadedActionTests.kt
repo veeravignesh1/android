@@ -1,11 +1,12 @@
 package com.toggl.timer.suggestions.domain
 
+import com.google.common.truth.Truth.assertThat
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.common.services.time.TimeService
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+
 import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -33,7 +34,7 @@ internal class SuggestionsLoadedActionTests : CoroutineTest() {
         reducer.testReduceState(
             initialState,
             SuggestionsAction.SuggestionsLoaded(loadedSuggestions)
-        ) { state -> state shouldBe initialState.copy(suggestions = loadedSuggestions) }
+        ) { state -> assertThat(state).isEqualTo(initialState.copy(suggestions = loadedSuggestions)) }
     }
 
     @Test
