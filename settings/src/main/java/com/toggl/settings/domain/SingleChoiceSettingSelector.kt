@@ -17,7 +17,7 @@ class SingleChoiceSettingSelector @Inject constructor(
     private val context: Context
 ) : Selector<SettingsState, SingleChoiceSettingViewModel> {
     override suspend fun select(state: SettingsState) =
-        state.backStack.getRouteParam<SettingsType>()?.toViewModel(state.userPreferences, state.workspaces)
+        state.backStack.getRouteParam<SettingsType.SingleChoiceSetting>()?.toViewModel(state.userPreferences, state.workspaces)
             ?: SingleChoiceSettingViewModel.Empty
 
     private fun SettingsType.toViewModel(

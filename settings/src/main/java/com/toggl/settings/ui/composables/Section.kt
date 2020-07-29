@@ -61,19 +61,15 @@ internal fun SettingsRow(
                 SettingsType.CellSwipe -> SettingsAction.CellSwipeActionsToggled
                 SettingsType.ManualMode -> SettingsAction.ManualModeToggled
                 SettingsType.CalendarSettings -> SettingsAction.OpenCalendarSettingsTapped
-                SettingsType.SmartAlert -> TODO()
                 SettingsType.SubmitFeedback -> SettingsAction.OpenSubmitFeedbackTapped
                 SettingsType.About -> TODO()
                 SettingsType.PrivacyPolicy -> TODO()
                 SettingsType.TermsOfService -> TODO()
                 SettingsType.Licenses -> TODO()
                 SettingsType.Help -> TODO()
-                SettingsType.Workspace,
-                SettingsType.DateFormat,
-                SettingsType.DurationFormat,
-                SettingsType.FirstDayOfTheWeek -> SettingsAction.OpenSelectionDialog(settingsType)
                 SettingsType.SignOut -> SettingsAction.SignOutTapped
                 SettingsType.AllowCalendarAccess -> SettingsAction.AllowCalendarAccessToggled
+                is SettingsType.SingleChoiceSetting -> SettingsAction.OpenSelectionDialog(settingsType)
                 is SettingsType.Calendar -> SettingsAction.UserCalendarIntegrationToggled(settingsType.id)
             }
         )

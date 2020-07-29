@@ -112,5 +112,6 @@ class SettingsSelector @Inject constructor(
             )
             SettingsType.AllowCalendarAccess,
             is SettingsType.Calendar -> throw IllegalStateException("This settings should not be used in the main settings page")
+            is SettingsType.SingleChoiceSetting -> throw IllegalStateException("All single choice settings have to be handled separately")
         }
 }
