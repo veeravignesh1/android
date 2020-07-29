@@ -1,6 +1,7 @@
 package com.toggl.settings.domain
 
 import android.content.Context
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
@@ -10,6 +11,7 @@ import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.createUserPreferences
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
+import io.kotlintest.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,25 +23,27 @@ import org.junit.jupiter.api.Test
 @DisplayName("The SettingsSelector")
 class SettingsSelectorTests : CoroutineTest() {
     private val context = mockk<Context> { every { getString(any()) } returns "" }
-    private val selector = SettingsSelector(context, SettingsStructureBlueprint.sections)
+    private val permissionChecker = mockk<PermissionCheckerService> { every { hasCalendarPermission() } returns true }
+    private val selector = SettingsSelector(context, SettingsStructureBlueprint.sections, permissionChecker)
+
+    private val prefs = createUserPreferences(
+        manualModeEnabled = true,
+        twentyFourHourClockEnabled = true,
+        cellSwipeActionsEnabled = false,
+        groupSimilarTimeEntriesEnabled = false,
+        calendarIntegrationEnabled = true
+    )
+    private val user = User(
+        1,
+        ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
+        Email.from("test@toggl.com") as Email.Valid,
+        "Test Name",
+        1
+    )
+    private val initialState = createSettingsState(user = user, userPreferences = prefs)
 
     @Test
     fun `Should translate blueprint into view models correctly`() = runBlockingTest {
-        val prefs = createUserPreferences(
-            manualModeEnabled = true,
-            twentyFourHourClockEnabled = true,
-            cellSwipeActionsEnabled = false,
-            groupSimilarTimeEntriesEnabled = false,
-            calendarIntegrationEnabled = true
-        )
-        val user = User(
-            1,
-            ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
-            Email.from("test@toggl.com") as Email.Valid,
-            "Test Name",
-            1
-        )
-        val initialState = createSettingsState(user = user, userPreferences = prefs)
         val sections: List<SettingsSectionViewModel> = selector.select(initialState)
 
         sections.size shouldBe SettingsStructureBlueprint.sections.size
@@ -85,7 +89,7 @@ class SettingsSelectorTests : CoroutineTest() {
 
         with(sections[3]) {
             verify<SettingsViewModel.SubPage>(0, SettingsType.CalendarSettings)
-            verify<SettingsViewModel.SubPage>(1, SettingsType.SmartAlert)
+            verify<SettingsViewModel.ListChoice>(1, SettingsType.SmartAlert)
         }
 
         with(sections[4]) {
@@ -99,7 +103,34 @@ class SettingsSelectorTests : CoroutineTest() {
         }
     }
 
-    private inline fun <reified VM : SettingsViewModel> SettingsSectionViewModel.verify(settingOption: Int, settingsType: SettingsType, block: (VM) -> Unit = { }) {
+    @Test
+    fun `Should not produce the smart alerts section if calendar integration disabled`() = runBlockingTest {
+        val noIntegrationPrefs = prefs.copy(calendarIntegrationEnabled = false)
+        val noIntegrationState = initialState.copy(userPreferences = noIntegrationPrefs)
+
+        val sections: List<SettingsSectionViewModel> = selector.select(noIntegrationState)
+        val calendarSection = sections[3]
+
+        calendarSection.settingsOptions.size shouldBe 1
+        calendarSection.settingsOptions[0].settingsType shouldNotBe SettingsType.SmartAlert
+    }
+
+    @Test
+    fun `Should not produce the smart alerts section if calendar permission is not granted`() = runBlockingTest {
+        every { permissionChecker.hasCalendarPermission() } returns false
+
+        val sections: List<SettingsSectionViewModel> = selector.select(initialState)
+        val calendarSection = sections[3]
+
+        calendarSection.settingsOptions.size shouldBe 1
+        calendarSection.settingsOptions[0].settingsType shouldNotBe SettingsType.SmartAlert
+    }
+
+    private inline fun <reified VM : SettingsViewModel> SettingsSectionViewModel.verify(
+        settingOption: Int,
+        settingsType: SettingsType,
+        block: (VM) -> Unit = { }
+    ) {
         settingsOptions[settingOption].shouldBeInstanceOf<VM> {
             it.settingsType shouldBe settingsType
             block(it)
