@@ -17,14 +17,18 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.mappings.mapAppStateToCalendarState
 import com.toggl.domain.mappings.mapAppStateToOnboardingState
+import com.toggl.domain.mappings.mapAppStateToReportsState
 import com.toggl.domain.mappings.mapAppStateToSettingsState
 import com.toggl.domain.mappings.mapAppStateToTimerState
 import com.toggl.domain.mappings.mapCalendarActionToAppAction
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
+import com.toggl.domain.mappings.mapReportsActionToAppAction
 import com.toggl.domain.mappings.mapSettingsActionToAppAction
 import com.toggl.domain.mappings.mapTimerActionToAppAction
 import com.toggl.onboarding.common.domain.OnboardingAction
 import com.toggl.onboarding.common.domain.OnboardingState
+import com.toggl.reports.domain.ReportsAction
+import com.toggl.reports.domain.ReportsState
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerAction
@@ -105,6 +109,14 @@ object AppViewModelModule {
         store.view(
             mapToLocalState = ::mapAppStateToTimerState,
             mapToGlobalAction = ::mapTimerActionToAppAction
+        )
+
+    @Provides
+    @ExperimentalCoroutinesApi
+    fun reportsStore(store: Store<AppState, AppAction>): Store<ReportsState, ReportsAction> =
+        store.view(
+            mapToLocalState = ::mapAppStateToReportsState,
+            mapToGlobalAction = ::mapReportsActionToAppAction
         )
 
     @Provides

@@ -12,6 +12,7 @@ import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
 import com.toggl.domain.reducers.createAppReducer
 import com.toggl.onboarding.common.domain.OnboardingReducer
+import com.toggl.reports.domain.ReportsReducer
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
 import dagger.Module
@@ -33,6 +34,7 @@ object ReducerModule {
         loadingReducer: LoadingReducer,
         onboardingReducer: OnboardingReducer,
         timerReducer: TimerReducer,
+        reportsReducer: ReportsReducer,
         calendarReducer: CalendarReducer,
         settingsReducer: SettingsReducer,
         navigationReducer: NavigationReducer,
@@ -42,6 +44,7 @@ object ReducerModule {
             loadingReducer,
             onboardingReducer,
             timerReducer,
+            reportsReducer,
             calendarReducer,
             settingsReducer,
             navigationReducer,
