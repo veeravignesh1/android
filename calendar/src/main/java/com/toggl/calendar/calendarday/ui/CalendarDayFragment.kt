@@ -31,6 +31,7 @@ import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
     private val store: CalendarDayStoreViewModel by activityViewModels()
     private val datePickerStore: CalendarDatePickerStoreViewModel by activityViewModels()

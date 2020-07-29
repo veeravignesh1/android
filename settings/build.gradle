@@ -70,7 +70,6 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.Lifecycle.extensions
     implementation Libs.AndroidX.Lifecycle.viewModel
-    implementation Libs.AndroidX.Lifecycle.livedata
     implementation Libs.AndroidX.Hilt.viewModel
     implementation Libs.AndroidX.Compose.runtime
     implementation Libs.AndroidX.Compose.UI.core
