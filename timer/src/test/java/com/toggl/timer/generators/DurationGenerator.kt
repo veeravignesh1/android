@@ -1,7 +1,8 @@
 package com.toggl.timer.generators
 
-import io.kotlintest.properties.Gen
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.map
 import java.time.Duration
 
-fun Gen.Companion.threeTenDuration(): Gen<Duration> =
+fun Arb.Companion.threeTenDuration(): Arb<Duration> =
     positiveLong().map(Duration::ofMillis)

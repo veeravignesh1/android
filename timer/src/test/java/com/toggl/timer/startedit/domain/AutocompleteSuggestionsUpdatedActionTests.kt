@@ -3,9 +3,9 @@ package com.toggl.timer.startedit.domain
 import com.toggl.models.common.AutocompleteSuggestion.StartEditSuggestions
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.testReduce
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainInOrder
+import com.toggl.timer.common.testReduceNoEffects
+import com.toggl.timer.common.testReduceState
+import io.kotest.matchers.collections.shouldContainInOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -21,10 +21,10 @@ internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
     fun `should update the list of Autocomplete suggestions`() = runBlockingTest {
         val expectedSuggestions = listOf(StartEditSuggestions.TimeEntry(createTimeEntry(1)))
 
-        reducer.testReduce(
+        reducer.testReduceState(
             initialState,
             action = StartEditAction.AutocompleteSuggestionsUpdated(expectedSuggestions)
-        ) { state, _ ->
+        ) { state ->
             state.autocompleteSuggestions.shouldContainInOrder(expectedSuggestions)
         }
     }
@@ -33,11 +33,9 @@ internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
     fun `shouldn't return any effect`() = runBlockingTest {
         val expectedSuggestions = listOf(StartEditSuggestions.TimeEntry(createTimeEntry(1)))
 
-        reducer.testReduce(
+        reducer.testReduceNoEffects(
             initialState,
             action = StartEditAction.AutocompleteSuggestionsUpdated(expectedSuggestions)
-        ) { _, effect ->
-            effect.shouldBeEmpty()
-        }
+        )
     }
 }

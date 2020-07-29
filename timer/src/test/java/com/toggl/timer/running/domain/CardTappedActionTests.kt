@@ -3,11 +3,11 @@ package com.toggl.timer.running.domain
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
-import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.createTimeEntry
-import com.toggl.timer.common.testReduce
-import io.kotlintest.matchers.types.shouldNotBeNull
-import io.kotlintest.shouldBe
+import com.toggl.timer.common.testReduceNoEffects
+import com.toggl.timer.common.testReduceState
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -30,10 +30,10 @@ class CardTappedActionTests : CoroutineTest() {
         val initialState = createInitialState()
         coEvery { workspace.id } returns 1
 
-        reducer.testReduce(
+        reducer.testReduceState(
             initialState = initialState,
             action = RunningTimeEntryAction.CardTapped
-        ) { state, _ ->
+        ) { state ->
             state.editableTimeEntry.shouldNotBeNull()
             state.editableTimeEntry!!.startTime shouldBe null
             state.editableTimeEntry!!.ids shouldBe emptyList()
@@ -50,10 +50,10 @@ class CardTappedActionTests : CoroutineTest() {
         )
         coEvery { workspace.id } returns 1
 
-        reducer.testReduce(
+        reducer.testReduceState(
             initialState = initialState,
             action = RunningTimeEntryAction.CardTapped
-        ) { state, _ ->
+        ) { state ->
             state.editableTimeEntry.shouldNotBeNull()
             state.editableTimeEntry!!.description shouldBe "Running"
         }
@@ -65,10 +65,9 @@ class CardTappedActionTests : CoroutineTest() {
         coEvery { workspace.id } returns 1
         every { timeService.now() } returns OffsetDateTime.MAX
 
-        reducer.testReduce(
+        reducer.testReduceNoEffects(
             initialState = initialState,
-            action = RunningTimeEntryAction.CardTapped,
-            testCase = ::assertNoEffectsWereReturned
+            action = RunningTimeEntryAction.CardTapped
         )
     }
 }

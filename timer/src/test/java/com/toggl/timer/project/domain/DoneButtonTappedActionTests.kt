@@ -4,8 +4,9 @@ import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.testReduce
+import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -31,10 +32,10 @@ internal class DoneButtonTappedActionTests : CoroutineTest() {
             projects = listOfProjects
         )
 
-        reducer.testReduce(
+        reducer.testReduceEffects(
             initialState = initialState,
             action = ProjectAction.DoneButtonTapped
-        ) { _, effects -> effects.single()::class shouldBe CreateProjectEffect::class }
+        ) { effects -> effects.single()::class shouldBe CreateProjectEffect::class }
     }
 
     @Test

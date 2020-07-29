@@ -63,4 +63,6 @@ class Event private constructor(val name: String, val parameters: Map<String, St
         fun signOutTapped(source: SignOutReason) =
             Event("Logout", mapOf("Source" to source.name))
     }
+
+    override fun equals(other: Any?): Boolean = other is Event && other.name == name && other.parameters == parameters
 }

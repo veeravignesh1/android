@@ -1,6 +1,8 @@
 package com.toggl.timer.generators
 
-import io.kotlintest.properties.Gen
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.filter
+import io.kotest.property.arbitrary.long
 
-fun Gen.Companion.positiveLong(): Gen<Long> =
-    long().filter { it > 0 }
+fun Arb.Companion.positiveLong(): Arb<Long> =
+    Arb.long().filter { it > 0 }

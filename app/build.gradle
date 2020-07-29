@@ -35,6 +35,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         adhoc {
+            manifestPlaceholders = [crashlytics: "true"]
             applicationIdSuffix ".adhoc"
             versionNameSuffix "-adhoc"
         }
@@ -88,7 +89,7 @@ dependencies {
     testImplementation Libs.Test.Jupiter.api
     testRuntimeOnly Libs.Test.Jupiter.engine
     testRuntimeOnly Libs.Test.Jupiter.params
-    testImplementation Libs.Test.kotlinTestRunner
+    testImplementation Libs.Test.kotestMatchers
     testImplementation Libs.slf4j
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
