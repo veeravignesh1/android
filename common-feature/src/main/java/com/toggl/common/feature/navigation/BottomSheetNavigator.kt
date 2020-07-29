@@ -1,6 +1,8 @@
 package com.toggl.common.feature.navigation
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -18,6 +20,8 @@ import javax.inject.Singleton
 class BottomSheetNavigator @Inject constructor() : Navigator<BottomSheetNavigator.Destination>(), LifecycleObserver {
     private var bottomSheetBehavior: BottomSheetBehavior<*>? = null
     private var bottomSheetManualDismissCallback: (() -> Unit)? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private val bottomSheetExpansionDelayInMillis = 150L
 
     override fun navigate(
         destination: Destination,
@@ -26,8 +30,10 @@ class BottomSheetNavigator @Inject constructor() : Navigator<BottomSheetNavigato
         navigatorExtras: Extras?
     ): NavDestination? {
         bottomSheetBehavior?.let {
-            it.state = BottomSheetBehavior.STATE_EXPANDED
-            it.addBottomSheetCallback(dismissCallback)
+            handler.postDelayed({
+                it.state = BottomSheetBehavior.STATE_EXPANDED
+                it.addBottomSheetCallback(dismissCallback)
+            }, bottomSheetExpansionDelayInMillis)
         }
         return destination
     }

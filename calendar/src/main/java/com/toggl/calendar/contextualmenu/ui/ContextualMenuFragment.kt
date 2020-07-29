@@ -5,7 +5,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,6 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 @AndroidEntryPoint
 class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
@@ -29,10 +30,12 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
     @Inject lateinit var contextualMenuDisplaySelector: ContextualMenuDisplaySelector
     @Inject lateinit var bottomSheetNavigator: BottomSheetNavigator
 
-    private val store: ContextualMenuStoreViewModel by viewModels()
+    private val store: ContextualMenuStoreViewModel by activityViewModels()
 
     private lateinit var behavior: BottomSheetBehavior<*>
     private val contextualMenuAdapter = ContextualMenuActionsAdapter { store.dispatch(it) }
+
+    private var bottomSheetSlideOffsetUpdateCallback: BottomSheetBehavior.BottomSheetCallback? = null
 
     @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,6 +57,26 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
         bottomSheetNavigator.setupWithBehaviour(behavior, viewLifecycleOwner) {
             store.dispatch(ContextualMenuAction.DialogDismissed)
         }
+        val slideOffsetUpdateCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // The slideOffset sometimes is +-Infinity and NaN
+                val corrected = slideOffset.coerceIn(-1f, 1f)
+                val nanFixed = if (corrected.isNaN()) 0f else corrected
+                val visibleHeight = (1 - nanFixed.absoluteValue) * bottomSheet.height
+                store.slideOffsetInPixels.value = visibleHeight.toInt()
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+            }
+        }
+        behavior.addBottomSheetCallback(slideOffsetUpdateCallback)
+        bottomSheetSlideOffsetUpdateCallback = slideOffsetUpdateCallback
+    }
+
+    override fun onDestroyView() {
+        bottomSheetSlideOffsetUpdateCallback?.let { behavior.removeBottomSheetCallback(it) }
+        bottomSheetSlideOffsetUpdateCallback = null
+        super.onDestroyView()
     }
 
     private fun updateContextualMenu(contextualMenuViewModel: ContextualMenuViewModel) {

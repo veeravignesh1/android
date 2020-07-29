@@ -575,6 +575,20 @@ class CalendarWidgetView @JvmOverloads constructor(
         backgroundDrawingDelegate.onLayout()
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        isScrolling = false
+        cancelDraggingAndAutoScroll()
+
+        if (oldh != 0 && h != oldh) {
+            val diff = h - oldh
+            val currentScrollOffset = scrollOffset.value
+            scrollOffset.value = (currentScrollOffset - diff).coerceIn(0, calculateMaxScrollOffset())
+            backgroundDrawingDelegate.onLayout()
+            invalidate()
+        }
+    }
+
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val scaleResult = scaleGestureDetector.onTouchEvent(event)
         if (scaleGestureDetector.isInProgress)

@@ -67,6 +67,7 @@
     <string name="help">Aide</string>
     <string name="sign_out">Déconnexion</string>
     <string name="no_client">Aucun client</string>
+    <string name="allow_calendar_access">Connecter des calendriers</string>
     <string name="feedback_note">Dites-nous ce que vous en pensez. Envoyez-nous vos commentaires et questions.  PS. Notre équipe de support client fonctionne actuellement en anglais uniquement. Désolé pour le dérangement!</string>
     <string name="log_in_with_sso">Se connecter avec SSO</string>
     <string name="sign_in_with_google">Continuer avec Google</string>

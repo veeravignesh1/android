@@ -21,9 +21,9 @@ fun View.adjustPaddingToStatusBarInsets() {
     }
 }
 
-fun View.adjustPaddingToStatusBarAndNavigationBarInsets() {
+fun View.doOnInsetsChanged(callback: (Int, Int) -> Unit) {
     setOnApplyWindowInsetsListener { _, insets ->
-        updatePadding(top = paddingTop + insets.systemWindowInsetTop, bottom = insets.systemWindowInsetBottom)
+        callback(insets.systemWindowInsetTop, insets.systemWindowInsetBottom)
         setOnApplyWindowInsetsListener(null)
         insets
     }
