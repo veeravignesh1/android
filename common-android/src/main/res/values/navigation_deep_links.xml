@@ -13,4 +13,5 @@
     <string name="deep_link_settings_submit_feedback" translatable="false">toggl://settings/submitfeedback</string>
     <string name="deep_link_settings_about" translatable="false">toggl://settings/about</string>
     <string name="deep_link_login" translatable="false">toggl://login</string>
+    <string name="deep_link_password_reset" translatable="false">"toggl://passwordreset"</string>
 </resources>

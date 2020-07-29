@@ -1,4 +1,4 @@
-package com.toggl.api.feedback
+package com.toggl.api.clients.feedback
 
 import com.toggl.models.domain.FeedbackData
 import com.toggl.models.domain.PlatformInfo

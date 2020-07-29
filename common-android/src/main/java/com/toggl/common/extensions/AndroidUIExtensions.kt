@@ -1,4 +1,4 @@
-package com.toggl.timer.extensions
+package com.toggl.common.extensions
 
 import android.app.Activity
 import android.view.View

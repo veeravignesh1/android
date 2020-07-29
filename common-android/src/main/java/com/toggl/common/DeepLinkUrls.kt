@@ -6,14 +6,14 @@ import androidx.core.net.toUri
 import com.toggl.common.android.R
 
 class DeepLinkUrls(
-    val main: Uri,
+    val welcome: Uri,
+    val login: Uri,
+    val passwordReset: Uri,
     val timeEntriesLog: Uri,
     val startEditDialog: Uri,
     val projectDialog: Uri,
-    val calendar: Uri,
     val reports: Uri,
-    val welcome: Uri,
-    val login: Uri,
+    val calendar: Uri,
     val contextualMenu: Uri,
     val settings: Uri,
     val calendarSettings: Uri,
@@ -25,7 +25,6 @@ class DeepLinkUrls(
         fun fromResources(resources: Resources) =
             with(resources) {
                 DeepLinkUrls(
-                    main = getString(R.string.deep_link_main).toUri(),
                     timeEntriesLog = getString(R.string.deep_link_time_entries_log).toUri(),
                     startEditDialog = getString(R.string.deep_link_start_edit_dialog).toUri(),
                     projectDialog = getString(R.string.deep_link_project_dialog).toUri(),
@@ -33,6 +32,7 @@ class DeepLinkUrls(
                     reports = getString(R.string.deep_link_reports).toUri(),
                     welcome = getString(R.string.deep_link_welcome).toUri(),
                     login = getString(R.string.deep_link_login).toUri(),
+                    passwordReset = getString(R.string.deep_link_password_reset).toUri(),
                     settings = getString(R.string.deep_link_settings).toUri(),
                     contextualMenu = getString(R.string.deep_link_contextual_menu).toUri(),
                     calendarSettings = getString(R.string.deep_link_settings_calendar_settings).toUri(),

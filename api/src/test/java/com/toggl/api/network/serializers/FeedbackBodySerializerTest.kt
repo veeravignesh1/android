@@ -1,4 +1,4 @@
-package com.toggl.api.serializers
+package com.toggl.api.network.serializers
 
 import com.toggl.api.network.FeedbackBody
 import io.kotest.matchers.shouldBe

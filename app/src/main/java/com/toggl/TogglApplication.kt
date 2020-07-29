@@ -3,6 +3,10 @@ package com.toggl
 import android.app.Application
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.StoreScopeProvider
+import com.toggl.architecture.core.Store
+import com.toggl.domain.AppAction
+import com.toggl.domain.AppState
+import com.toggl.domain.loading.LoadingAction
 import com.toggl.initializers.AppInitializers
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +18,7 @@ class TogglApplication : Application(), CoroutineScope, StoreScopeProvider {
 
     @Inject lateinit var appInitializers: AppInitializers
     @Inject lateinit var dispatchersProviders: DispatcherProvider
+    @Inject lateinit var store: Store<AppState, AppAction>
 
     override val coroutineContext: CoroutineContext by lazy {
         dispatchersProviders.main
@@ -22,6 +27,7 @@ class TogglApplication : Application(), CoroutineScope, StoreScopeProvider {
     override fun onCreate() {
         super.onCreate()
         appInitializers.initialize(this)
+        store.dispatch(AppAction.Loading(LoadingAction.StartLoading))
     }
 
     override fun getStoreScope(): CoroutineScope =

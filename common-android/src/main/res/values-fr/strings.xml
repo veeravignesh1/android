@@ -91,4 +91,8 @@
     <string name="duration_format_improved">Améliorée (0:47:06)</string>
     <string name="duration_format_decimal">Décimale (0.79 h)</string>
     <string name="feedback_thank_you">Merci pour votre retour. Si vous avez des questions, nous vous répondrons bientôt.</string>
+    <string name="password_reset_success">Lien envoyé. Veuillez vérifiez votre email pour réinitialiser le mot de passe.</string>
+    <string name="password_reset_email_does_not_exist_error">Oops! Email inconnu. Veuillez vérifier qu\'il n\'y ai pas d\'erreur.</string>
+    <string name="password_reset_general_error">Désolé, nous ne parvenons pas à réinitialiser votre mot de passe. Veuillez réessayer.</string>
+    <string name="password_reset_offline_error">Vous n\'êtes pas connecté. Veuillez vous connecter à Internet et réessayer.</string>
 </resources>

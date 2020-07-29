@@ -24,6 +24,7 @@ sealed class Route {
     data class SettingsDialog(override val parameter: SettingsType) : Route(), ParameterRoute<SettingsType>
     object CalendarSettings : Route()
     object Feedback : Route()
+    object PasswordReset : Route()
 }
 
 interface ParameterRoute<P> {
@@ -44,6 +45,7 @@ fun Route.isSameTypeAs(otherRoute: Route) =
         is Route.SettingsDialog -> otherRoute is Route.SettingsDialog
         Route.CalendarSettings -> otherRoute is Route.CalendarSettings
         Route.Feedback -> otherRoute is Route.Feedback
+        Route.PasswordReset -> otherRoute is Route.PasswordReset
     }
 
 fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
@@ -60,5 +62,6 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         Route.Settings -> deepLinks.settings
         Route.CalendarSettings -> deepLinks.calendarSettings
         Route.Feedback -> deepLinks.submitFeedback
+        Route.PasswordReset -> deepLinks.passwordReset
     }
 }

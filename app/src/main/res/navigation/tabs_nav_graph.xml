@@ -15,6 +15,15 @@
     </fragment>
 
     <fragment
+        android:id="@+id/password_reset"
+        android:name="com.toggl.onboarding.passwordreset.ui.PasswordResetFragment"
+        android:label="PasswordResetFragment"
+        tools:layout="@layout/fragment_passwordreset"
+        app:launchSingleTop="true"  >
+        <deepLink app:uri="@string/deep_link_password_reset" />
+    </fragment>
+
+    <fragment
         android:id="@+id/welcome"
         android:name="com.toggl.onboarding.welcome.ui.WelcomeFragment"
         android:label="WelcomeFragment"

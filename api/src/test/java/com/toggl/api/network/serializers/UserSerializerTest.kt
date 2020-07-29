@@ -1,4 +1,4 @@
-package com.toggl.api.serializers
+package com.toggl.api.network.serializers
 
 import com.google.gson.JsonParser
 import com.toggl.models.domain.User
