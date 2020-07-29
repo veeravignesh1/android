@@ -5,7 +5,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha06"
     const val gradleVersionsPlugin = "com.github.ben-manes:gradle-versions-plugin:0.28.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.2"
     // fixes warning thrown by SLF4J
