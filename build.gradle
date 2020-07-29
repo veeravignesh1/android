@@ -10,6 +10,9 @@ buildscript {
             'versionCode' : 600000,
     ]
     repositories {
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-eap/"
+        }
         google()
         jcenter()
     }
@@ -34,6 +37,9 @@ defaultTasks 'dependencyUpdates'
 
 allprojects {
     repositories {
+        maven {
+            url "https://dl.bintray.com/kotlin/kotlin-eap/"
+        }
         google()
         jcenter()
     }
@@ -54,6 +60,9 @@ subprojects {
             allWarningsAsErrors = true
             // Set JVM target to 1.8
             jvmTarget = "1.8"
+            apiVersion = "1.4"
+            languageVersion = "1.4"
+            freeCompilerArgs += ["-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check"]
         }
     }
 }

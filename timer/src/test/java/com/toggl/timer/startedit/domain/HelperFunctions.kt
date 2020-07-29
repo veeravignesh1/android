@@ -1,15 +1,14 @@
 package com.toggl.timer.startedit.domain
 
-import arrow.core.mapOf
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.repository.Repository
-import com.toggl.models.domain.EditableTimeEntry
 import io.mockk.mockk
 
 fun createInitialState(

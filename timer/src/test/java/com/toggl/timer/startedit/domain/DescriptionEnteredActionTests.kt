@@ -4,9 +4,9 @@ import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
 import com.toggl.models.domain.EditableTimeEntry
-import com.toggl.timer.common.testReduce
+import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
-import io.kotlintest.shouldBe
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,17 +32,17 @@ internal class DescriptionEnteredActionTests : CoroutineTest() {
 
     @Test
     fun `should change the state's cursorPosition`() = runBlockingTest {
-        reducer.testReduce(
+        reducer.testReduceState(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { state, _ -> state.cursorPosition shouldBe 5 }
+        ) { state -> state.cursorPosition shouldBe 5 }
     }
 
     @Test
     fun `returns the effect that updates the autocomplete suggestions`() = runBlockingTest {
-        reducer.testReduce(
+        reducer.testReduceEffects(
             initialState = state,
             action = StartEditAction.DescriptionEntered("new description", 5)
-        ) { _, effects -> effects.single()::class shouldBe UpdateAutocompleteSuggestionsEffect::class }
+        ) { effects -> effects.single()::class shouldBe UpdateAutocompleteSuggestionsEffect::class }
     }
 }

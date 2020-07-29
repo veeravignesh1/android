@@ -16,15 +16,18 @@ object Libs {
     }
 
     object Test {
+        const val kotestVersion = "4.1.3"
+
         const val junit4 = "junit:junit:4.13"
-        const val robolectric = "org.robolectric:robolectric:4.3.1"
+        const val robolectric = "org.robolectric:robolectric:4.4-alpha-2"
         const val junit5Plugin = "de.mannodermaus.gradle.plugins:android-junit5:1.6.2.0"
-        const val kotlinTestRunner = "io.kotlintest:kotlintest-runner-junit5:3.4.2"
-        const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.3.71"
-        const val kotlinCoroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.4"
-        const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.3.71"
-        const val mockk = "io.mockk:mockk:1.9.3"
-        const val assertJ = "org.assertj:assertj-core:3.15.0"
+        const val kotestMatchers = "io.kotest:kotest-assertions-core-jvm:${kotestVersion}"
+        const val kotestProperties = "io.kotest:kotest-property-jvm:${kotestVersion}"
+        const val kotlinTest = "org.jetbrains.kotlin:kotlin-test:1.4.0-rc"
+        const val kotlinCoroutineTest = "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.8-1.4.0-rc"
+        const val kotlinTestJunit = "org.jetbrains.kotlin:kotlin-test-junit5:1.4.0-rc"
+        const val mockk = "io.mockk:mockk:1.10.0"
+        const val assertJ = "org.assertj:assertj-core:3.16.1"
 
         object Jupiter {
             private const val version = "5.6.1"
@@ -49,7 +52,7 @@ object Libs {
     }
 
     object Kotlin {
-        private const val version = "1.3.72"
+        private const val version = "1.4.0-rc"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"
         const val reflect = "org.jetbrains.kotlin:kotlin-reflect:$version"
         const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version"
@@ -57,7 +60,7 @@ object Libs {
     }
 
     object Coroutines {
-        private const val version = "1.3.7"
+        private const val version = "1.3.8-1.4.0-rc"
         const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version"
         const val android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version"
     }
@@ -70,24 +73,22 @@ object Libs {
         const val activityKtx = "androidx.activity:activity-ktx:1.2.0-alpha06"
 
         object Compose {
-            const val version = "0.1.0-dev14"
-            const val runtime = "androidx.compose:compose-runtime:$version"
-            const val compiler = "1.3.70-dev-withExperimentalGoogleExtensions-20200424"
+            const val version = "0.1.0-dev15"
+            const val runtime = "androidx.compose.runtime:runtime:$version"
+            const val compiler = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
             object UI {
-                const val core = "androidx.ui:ui-core:$version"
-                const val layout = "androidx.ui:ui-layout:$version"
-                const val material = "androidx.ui:ui-material:$version"
-                const val icons = "androidx.ui:ui-material-icons-extended:$version"
-                const val foundation = "androidx.ui:ui-foundation:$version"
-                const val animation = "androidx.ui:ui-animation:$version"
+                const val core = "androidx.compose.ui:ui:$version"
+                const val layout = "androidx.compose.foundation:foundation-layout:$version"
+                const val material = "androidx.compose.material:material:$version"
+                const val icons = "androidx.compose.material:material-icons-extended:$version"
+                const val foundation = "androidx.compose.foundation:foundation:$version"
+                const val animation = "androidx.compose.animation:animation:$version"
                 const val tooling = "androidx.ui:ui-tooling:$version"
-                const val livedata = "androidx.ui:ui-livedata:$version"
-
             }
         }
 
         object Hilt {
-            private const val version = "1.0.0-alpha01"
+            private const val version = "1.0.0-alpha02"
             const val viewModel = "androidx.hilt:hilt-lifecycle-viewmodel:$version"
             const val compiler = "androidx.hilt:hilt-compiler:$version"
         }
@@ -99,10 +100,10 @@ object Libs {
         }
 
         object Test {
-            const val core = "androidx.test:core:1.2.0"
-            const val runner = "androidx.test:runner:1.2.0"
-            const val rules = "androidx.test:rules:1.2.0"
-            const val espressoCore = "androidx.test.espresso:espresso-core:3.1.1"
+            const val core = "androidx.test:core:1.3.0-rc01"
+            const val runner = "androidx.test:runner:1.3.0-rc01"
+            const val rules = "androidx.test:rules:1.3.0-rc01"
+            const val espressoCore = "androidx.test.espresso:espresso-core:3.3.0-rc01"
         }
 
         const val constraintlayout = "androidx.constraintlayout:constraintlayout:1.1.3"
