@@ -1,6 +1,7 @@
 package com.toggl.settings.di
 
 import android.content.Context
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.settings.domain.SettingsSectionBlueprint
 import com.toggl.settings.domain.SettingsSelector
 import com.toggl.settings.domain.SettingsStructureBlueprint
@@ -27,7 +28,7 @@ object SettingsModule {
 object FragmentSettingsModule {
     @Provides
     @FragmentScoped
-    internal fun settingsSelector(@ActivityContext context: Context, sectionsBlueprint: List<SettingsSectionBlueprint>) = SettingsSelector(context, sectionsBlueprint)
+    internal fun settingsSelector(@ActivityContext context: Context, sectionsBlueprint: List<SettingsSectionBlueprint>, permissionCheckerService: PermissionCheckerService) = SettingsSelector(context, sectionsBlueprint, permissionCheckerService)
 
     @Provides
     @FragmentScoped

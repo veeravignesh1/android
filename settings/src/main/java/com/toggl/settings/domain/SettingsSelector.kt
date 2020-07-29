@@ -2,26 +2,37 @@ package com.toggl.settings.domain
 
 import android.content.Context
 import com.toggl.architecture.core.Selector
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.settings.R
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class SettingsSelector @Inject constructor(
     private val context: Context,
-    private val sectionsBlueprint: List<SettingsSectionBlueprint>
+    private val sectionsBlueprint: List<SettingsSectionBlueprint>,
+    private val permissionCheckerService: PermissionCheckerService
 ) : Selector<SettingsState, List<SettingsSectionViewModel>> {
     override suspend fun select(state: SettingsState): List<SettingsSectionViewModel> {
         return sectionsBlueprint.map { it.toViewModel(state.user, state.userPreferences, state.workspaces) }
     }
 
-    private fun SettingsSectionBlueprint.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsSectionViewModel =
-        SettingsSectionViewModel(context.getString(title), settingsList.map { it.toViewModel(user, userPreferences, workspaces) })
+    private fun SettingsSectionBlueprint.toViewModel(
+        user: User,
+        userPreferences: UserPreferences,
+        workspaces: Map<Long, Workspace>
+    ): SettingsSectionViewModel =
+        SettingsSectionViewModel(
+            context.getString(title),
+            settingsList.mapNotNull { it.toViewModel(user, userPreferences, workspaces) })
 
-    private fun SettingsType.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsViewModel =
+    private fun SettingsType.toViewModel(
+        user: User,
+        userPreferences: UserPreferences,
+        workspaces: Map<Long, Workspace>
+    ): SettingsViewModel? =
         when (this) {
             SettingsType.Name -> SettingsViewModel.ListChoice(
                 context.getString(R.string.name),
@@ -77,11 +88,14 @@ class SettingsSelector @Inject constructor(
                 context.getString(R.string.calendar_settings),
                 this
             )
-            SettingsType.SmartAlert -> SettingsViewModel.ListChoice(
-                context.getString(R.string.smart_alerts),
-                this,
-                userPreferences.smartAlertsOption.getTranslatedRepresentation(context)
-            )
+            SettingsType.SmartAlert ->
+                if (!userPreferences.calendarIntegrationEnabled || !permissionCheckerService.hasCalendarPermission()) null
+                else
+                    SettingsViewModel.ListChoice(
+                        context.getString(R.string.smart_alerts),
+                        this,
+                        userPreferences.smartAlertsOption.getTranslatedRepresentation(context)
+                    )
             SettingsType.SubmitFeedback -> SettingsViewModel.SubPage(
                 context.getString(R.string.submit_feedback),
                 this
