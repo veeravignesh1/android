@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.ui.core.setContent
 import com.toggl.architecture.Loadable
 import com.toggl.settings.R
 import com.toggl.settings.compose.extensions.createComposeView
@@ -32,29 +31,27 @@ class FeedbackFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = createComposeView { statusBarHeight, _ ->
-        setContent(androidx.compose.Recomposer.current()) {
-            val sendFeedbackRequest = store.state.map { it.localState.sendFeedbackRequest }.distinctUntilChanged()
+        val sendFeedbackRequest = store.state.map { it.localState.sendFeedbackRequest }.distinctUntilChanged()
 
-            FeedbackPage(
-                statusBarHeight = statusBarHeight,
-                sendFeedbackRequest = sendFeedbackRequest,
-                onBack = { store.dispatch(SettingsAction.FinishedEditingSetting) },
-                onFeedbackSent = { feedbackText ->
-                    store.dispatch(SettingsAction.SendFeedbackTapped(feedbackText))
-                }
-            )
+        FeedbackPage(
+            statusBarHeight = statusBarHeight,
+            sendFeedbackRequest = sendFeedbackRequest,
+            onBack = { store.dispatch(SettingsAction.FinishedEditingSetting) },
+            onFeedbackSent = { feedbackText ->
+                store.dispatch(SettingsAction.SendFeedbackTapped(feedbackText))
+            }
+        )
 
-            sendFeedbackRequest
-                .onEach { request ->
-                    val msg = when (request) {
-                        is Loadable.Loaded -> getString(R.string.feedback_thank_you)
-                        is Loadable.Error -> request.failure.errorMessage
-                        else -> return@onEach
-                    }
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                    store.dispatch(SettingsAction.SendFeedbackResultSeen)
+        sendFeedbackRequest
+            .onEach { request ->
+                val msg = when (request) {
+                    is Loadable.Loaded -> getString(R.string.feedback_thank_you)
+                    is Loadable.Error -> request.failure.errorMessage
+                    else -> return@onEach
                 }
-                .launchIn(lifecycleScope)
-        }
+                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                store.dispatch(SettingsAction.SendFeedbackResultSeen)
+            }
+            .launchIn(lifecycleScope)
     }
 }

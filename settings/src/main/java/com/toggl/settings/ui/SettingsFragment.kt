@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.Recomposer
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.ui.core.setContent
 import com.toggl.architecture.extensions.select
 import com.toggl.settings.compose.extensions.createComposeView
 import com.toggl.settings.domain.SettingsSelector
@@ -29,15 +27,13 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? = createComposeView { statusBarHeight, navigationBarHeight ->
-        setContent(Recomposer.current()) {
-            val selectedState = store.state.select(settingsSelector!!)
+        val selectedState = store.state.select(settingsSelector!!)
 
-            SettingsPage(
-                selectedState,
-                statusBarHeight,
-                navigationBarHeight,
-                store::dispatch
-            )
-        }
+        SettingsPage(
+            selectedState,
+            statusBarHeight,
+            navigationBarHeight,
+            store::dispatch
+        )
     }
 }

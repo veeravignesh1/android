@@ -12,10 +12,12 @@ import androidx.ui.unit.dp
 import com.toggl.common.extensions.doOnInsetsChanged
 
 fun Fragment.createComposeView(
-    callback: ViewGroup.(statusBarHeight: Dp, navigationBarHeight: Dp) -> Unit
+    callback: @Composable (statusBarHeight: Dp, navigationBarHeight: Dp) -> Unit
 ): ViewGroup = blankFrameLayout().apply {
     doOnInsetsChanged { statusBarHeight, navigationBarHeight ->
-        callback(statusBarHeight.pixelsToDp(context).dp, navigationBarHeight.pixelsToDp(context).dp)
+        setContent(Recomposer.current()) {
+            callback.invoke(statusBarHeight.pixelsToDp(context).dp, navigationBarHeight.pixelsToDp(context).dp)
+        }
     }
 }
 
