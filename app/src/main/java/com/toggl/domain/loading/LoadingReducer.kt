@@ -15,8 +15,8 @@ import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
-import com.toggl.repository.interfaces.WorkspaceRepository
 import com.toggl.repository.interfaces.UserRepository
+import com.toggl.repository.interfaces.WorkspaceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 

@@ -6,8 +6,8 @@ import com.toggl.common.feature.common.testReduceState
 import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.interfaces.TimeEntryRepository
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest

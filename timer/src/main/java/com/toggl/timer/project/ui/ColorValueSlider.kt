@@ -60,10 +60,13 @@ class ColorValueSlider @JvmOverloads constructor(
     }
 
     private fun updateView() {
-        val gradientBackground = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, intArrayOf(
-            Color.HSVToColor(floatArrayOf(hue * 360, saturation, ColorValue.max)),
-            Color.HSVToColor(floatArrayOf(hue * 360, saturation, ColorValue.min))
-        )).apply {
+        val gradientBackground = GradientDrawable(
+            GradientDrawable.Orientation.LEFT_RIGHT,
+            intArrayOf(
+                Color.HSVToColor(floatArrayOf(hue * 360, saturation, ColorValue.max)),
+                Color.HSVToColor(floatArrayOf(hue * 360, saturation, ColorValue.min))
+            )
+        ).apply {
             cornerRadius = 100f
         }
         progressDrawable = InsetDrawable(gradientBackground, resources.getDimension(R.dimen.color_value_picker_progress_background_margin).toInt())

@@ -131,14 +131,24 @@ fun PreviewCalendarSettingsPageDark() {
 
 val calendarSettingsPreviewData: List<CalendarSettingsViewModel> = listOf(
     CalendarSettingsViewModel.IntegrationEnabled(false),
-    CalendarSettingsViewModel.CalendarSection(SettingsSectionViewModel("someone@toggl.com", listOf(
-        SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123"), true),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), false),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), false)
-    ))),
-    CalendarSettingsViewModel.CalendarSection(SettingsSectionViewModel("team@toggl.com", listOf(
-        SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123"), false),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), true),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), false)
-    )))
+    CalendarSettingsViewModel.CalendarSection(
+        SettingsSectionViewModel(
+            "someone@toggl.com",
+            listOf(
+                SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123"), true),
+                SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), false),
+                SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), false)
+            )
+        )
+    ),
+    CalendarSettingsViewModel.CalendarSection(
+        SettingsSectionViewModel(
+            "team@toggl.com",
+            listOf(
+                SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123"), false),
+                SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), true),
+                SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123"), false)
+            )
+        )
+    )
 )

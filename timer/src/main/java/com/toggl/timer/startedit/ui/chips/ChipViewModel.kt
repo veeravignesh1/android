@@ -1,7 +1,7 @@
 package com.toggl.timer.startedit.ui.chips
 
-import com.toggl.models.domain.Tag as DomainTag
 import com.toggl.models.domain.Project as DomainProject
+import com.toggl.models.domain.Tag as DomainTag
 
 sealed class ChipViewModel(val text: String) {
     class AddTag(label: String) : ChipViewModel(label)

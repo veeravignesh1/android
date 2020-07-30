@@ -42,9 +42,11 @@ internal fun SingleChoiceDialogWithHeader(
 
     if (observableItems == SingleChoiceSettingViewModel.Empty) return
 
-    Dialog(onCloseRequest = {
-        observableItems.closeAction?.run(dispatcher)
-    }) {
+    Dialog(
+        onCloseRequest = {
+            observableItems.closeAction?.run(dispatcher)
+        }
+    ) {
         TogglTheme {
             Box(shape = Shapes.medium, backgroundColor = MaterialTheme.colors.background) {
                 SingleChoiceListWithHeader(

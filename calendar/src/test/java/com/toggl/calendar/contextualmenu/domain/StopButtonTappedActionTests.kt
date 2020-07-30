@@ -2,11 +2,11 @@ package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.createTimeEntry
-import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.shouldEmitTimeEntryAction
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeStoppedException

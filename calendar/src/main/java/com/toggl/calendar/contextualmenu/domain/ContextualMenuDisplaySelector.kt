@@ -4,10 +4,10 @@ import com.toggl.architecture.core.Selector
 import com.toggl.calendar.common.domain.endTime
 import com.toggl.calendar.common.domain.startTime
 import com.toggl.common.feature.domain.ProjectViewModel
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.timeentry.extensions.isStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
-import com.toggl.common.feature.models.SelectedCalendarItem
 import dagger.hilt.android.scopes.FragmentScoped
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter

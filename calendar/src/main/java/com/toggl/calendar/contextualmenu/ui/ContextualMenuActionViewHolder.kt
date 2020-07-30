@@ -75,7 +75,8 @@ class ContextualMenuActionViewHolder(
     }
 
     private fun ContextualMenuActionViewModel.getColorRes(context: Context): Int = ContextCompat.getColor(
-        context, when (this) {
+        context,
+        when (this) {
             is StartMenuActionViewModel -> R.color.calendar_contextual_menu_action_start
             is StopMenuActionViewModel -> R.color.calendar_contextual_menu_action_stop
             is ContinueMenuActionViewModel -> R.color.calendar_contextual_menu_action_continue

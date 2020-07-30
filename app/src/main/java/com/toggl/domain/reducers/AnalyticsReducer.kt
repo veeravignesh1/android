@@ -5,9 +5,6 @@ import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.navigation.getRouteParam
-import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
-import com.toggl.domain.AppAction
-import com.toggl.domain.AppState
 import com.toggl.common.feature.services.analytics.AnalyticsService
 import com.toggl.common.feature.services.analytics.Event
 import com.toggl.common.feature.services.analytics.parameters.CalendarSuggestionProviderState
@@ -20,6 +17,9 @@ import com.toggl.common.feature.services.analytics.parameters.SuggestionProvider
 import com.toggl.common.feature.services.analytics.parameters.TimeEntryDeleteOrigin.GroupedLogSwipe
 import com.toggl.common.feature.services.analytics.parameters.TimeEntryDeleteOrigin.LogSwipe
 import com.toggl.common.feature.services.analytics.parameters.TimeEntryStopOrigin.Manual
+import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
+import com.toggl.domain.AppAction
+import com.toggl.domain.AppState
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.settings.domain.SettingsAction
@@ -58,18 +58,20 @@ class AnalyticsReducer @Inject constructor(
         }
 
     private fun StartEditAction.toEvents(state: MutableValue<AppState>): List<Event> =
-        listOfNotNull(when (this) {
-            StartEditAction.CloseButtonTapped,
-            StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
-            StartEditAction.DoneButtonTapped ->
-                state().backStack.getRouteParam<EditableTimeEntry>()?.let {
-                    Event.editViewClosed(
-                        if (it.isRepresentingGroup()) EditViewCloseReason.GroupSave
-                        else EditViewCloseReason.Save
-                    )
-                }
-            else -> null
-        })
+        listOfNotNull(
+            when (this) {
+                StartEditAction.CloseButtonTapped,
+                StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
+                StartEditAction.DoneButtonTapped ->
+                    state().backStack.getRouteParam<EditableTimeEntry>()?.let {
+                        Event.editViewClosed(
+                            if (it.isRepresentingGroup()) EditViewCloseReason.GroupSave
+                            else EditViewCloseReason.Save
+                        )
+                    }
+                else -> null
+            }
+        )
 
     private fun RunningTimeEntryAction.toEvents(): List<Event> =
         listOfNotNull(

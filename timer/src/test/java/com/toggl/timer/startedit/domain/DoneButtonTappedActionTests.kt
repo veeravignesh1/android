@@ -14,8 +14,8 @@ import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.toMutableValue
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -113,9 +113,10 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             initialState,
             StartEditAction.DoneButtonTapped
         ) { effects ->
-                val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
-                actions shouldHaveSize 2
-                actions.forEach { action -> action.timeEntryAction.shouldBeTypeOf<TimeEntryAction.EditTimeEntry> {
+            val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+            actions shouldHaveSize 2
+            actions.forEach { action ->
+                action.timeEntryAction.shouldBeTypeOf<TimeEntryAction.EditTimeEntry> {
                     it.timeEntry.shouldBe(
                         TimeEntry(
                             id = it.timeEntry.id,
