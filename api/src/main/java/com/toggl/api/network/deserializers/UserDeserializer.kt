@@ -1,4 +1,4 @@
-package com.toggl.api.network.serializers
+package com.toggl.api.network.deserializers
 
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer

@@ -43,6 +43,7 @@ android {
 dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':models')
+    implementation project(':common')
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.core

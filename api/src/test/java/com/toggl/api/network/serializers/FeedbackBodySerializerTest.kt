@@ -1,6 +1,6 @@
 package com.toggl.api.network.serializers
 
-import com.toggl.api.network.FeedbackBody
+import com.toggl.api.network.models.feedback.FeedbackBody
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import org.junit.jupiter.api.DisplayName

@@ -5,10 +5,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonSerializationContext
 import com.google.gson.JsonSerializer
-import com.toggl.api.network.FeedbackBody
+import com.toggl.api.network.models.feedback.FeedbackBody
 import java.lang.reflect.Type
 
-class FeedbackBodySerializer : JsonSerializer<FeedbackBody> {
+internal class FeedbackBodySerializer : JsonSerializer<FeedbackBody> {
 
     override fun serialize(src: FeedbackBody, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         val feedbackBodyJson = JsonObject()

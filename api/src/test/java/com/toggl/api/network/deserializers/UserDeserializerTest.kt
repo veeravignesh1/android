@@ -1,4 +1,4 @@
-package com.toggl.api.network.serializers
+package com.toggl.api.network.deserializers
 
 import com.google.gson.JsonParser
 import com.toggl.models.domain.User
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("The User deserializer")
-class UserSerializerTest {
+class UserDeserializerTest {
 
     @Test
     fun `properly deserializes the user`() {
