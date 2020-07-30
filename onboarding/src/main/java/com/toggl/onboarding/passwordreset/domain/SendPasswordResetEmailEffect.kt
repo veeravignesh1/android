@@ -25,12 +25,15 @@ class SendPasswordResetEmailEffect(
             PasswordResetAction.PasswordResetEmailSent(message)
         } catch (ex: Exception) {
 
-            val failure = Failure(ex, when (ex) {
-                is BadRequestException -> emailDoesNotExistMessage
-                is OfflineException -> offlineMessage
-                is ApiException -> ex.errorMessage
-                else -> genericErrorMessage
-            })
+            val failure = Failure(
+                ex,
+                when (ex) {
+                    is BadRequestException -> emailDoesNotExistMessage
+                    is OfflineException -> offlineMessage
+                    is ApiException -> ex.errorMessage
+                    else -> genericErrorMessage
+                }
+            )
 
             PasswordResetAction.PasswordResetEmailFailed(failure)
         }

@@ -36,6 +36,9 @@ import com.toggl.common.extensions.formatForDisplayingDate
 import com.toggl.common.extensions.formatForDisplayingTime
 import com.toggl.common.extensions.performClickHapticFeedback
 import com.toggl.common.extensions.requestFocusAndShowKeyboard
+import com.toggl.common.extensions.tryHidingKeyboard
+import com.toggl.common.extensions.tryShowingKeyboardFor
+import com.toggl.common.feature.extensions.formatForDisplaying
 import com.toggl.common.feature.navigation.handleBackPressesEmitting
 import com.toggl.common.feature.timeentry.extensions.isRepresentingGroup
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
@@ -50,9 +53,6 @@ import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.timer.R
-import com.toggl.common.feature.extensions.formatForDisplaying
-import com.toggl.common.extensions.tryHidingKeyboard
-import com.toggl.common.extensions.tryShowingKeyboardFor
 import com.toggl.timer.startedit.domain.AutocompleteSuggestionsSelector
 import com.toggl.timer.startedit.domain.DateTimePickMode
 import com.toggl.timer.startedit.domain.ProjectTagChipSelector

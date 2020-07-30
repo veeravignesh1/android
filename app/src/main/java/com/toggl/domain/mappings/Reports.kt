@@ -1,9 +1,9 @@
 package com.toggl.domain.mappings
 
-import com.toggl.reports.domain.ReportsAction
-import com.toggl.reports.domain.ReportsState
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
+import com.toggl.reports.domain.ReportsAction
+import com.toggl.reports.domain.ReportsState
 
 fun mapAppStateToReportsState(appState: AppState): ReportsState =
     ReportsState(appState.workspaces)
