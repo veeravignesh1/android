@@ -2,6 +2,8 @@ package com.toggl.onboarding.login.domain
 
 import com.toggl.architecture.Loadable
 import com.toggl.common.feature.navigation.BackStack
+import com.toggl.common.feature.navigation.BackStackAwareState
+import com.toggl.common.feature.navigation.pop
 import com.toggl.models.domain.User
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
@@ -12,7 +14,11 @@ data class LoginState(
     val backStack: BackStack,
     val email: Email,
     val password: Password
-) {
+) : BackStackAwareState<LoginState> {
+
+    override fun popBackStack(): LoginState =
+        copy(backStack = backStack.pop())
+
     companion object {
         fun fromOnboardingState(onboardingState: OnboardingState) =
             LoginState(

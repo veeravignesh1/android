@@ -1,4 +1,4 @@
-package com.toggl.api.feedback
+package com.toggl.api.clients.feedback
 
 import com.toggl.api.network.FeedbackApi
 import com.toggl.api.network.FeedbackBody
@@ -7,8 +7,11 @@ import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.User
 import java.time.OffsetDateTime
 import java.util.TimeZone
+import javax.inject.Inject
+import javax.inject.Singleton
 
-internal class RetrofitFeedbackApiClient(
+@Singleton
+internal class RetrofitFeedbackApiClient @Inject constructor(
     private val feedbackApi: FeedbackApi
 ) : FeedbackApiClient {
     private val unspecified = "unspecified"

@@ -23,7 +23,6 @@ import com.toggl.common.feature.navigation.handleBackPressesEmitting
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.Tab
-import com.toggl.domain.loading.LoadingAction
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import dagger.hilt.android.AndroidEntryPoint
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
 
     override fun onResume() {
         super.onResume()
-        store.dispatch(AppAction.Loading(LoadingAction.StartLoading))
         store.dispatch(AppAction.Timer(TimerAction.Suggestions(SuggestionsAction.LoadSuggestions)))
     }
 

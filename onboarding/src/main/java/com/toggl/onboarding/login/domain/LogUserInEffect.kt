@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.models.validation.Email
@@ -9,7 +9,7 @@ import com.toggl.repository.interfaces.UserRepository
 import kotlinx.coroutines.withContext
 
 class LogUserInEffect(
-    private val apiClient: LoginApiClient,
+    private val apiClient: AuthenticationApiClient,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider,
     private val email: Email.Valid,

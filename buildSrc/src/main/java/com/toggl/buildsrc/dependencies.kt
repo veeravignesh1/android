@@ -5,7 +5,7 @@ object Versions {
 }
 
 object Libs {
-    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha05"
+    const val androidGradlePlugin = "com.android.tools.build:gradle:4.2.0-alpha06"
     const val gradleVersionsPlugin = "com.github.ben-manes:gradle-versions-plugin:0.28.0"
     const val leakCanary = "com.squareup.leakcanary:leakcanary-android:2.2"
     // fixes warning thrown by SLF4J
@@ -114,7 +114,6 @@ object Libs {
             private const val version = "2.2.0"
             const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
             const val extensions = "androidx.lifecycle:lifecycle-extensions:$version"
-            const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
             const val commonJava8 = "androidx.lifecycle:lifecycle-common-java8:$version"
             const val compiler = "androidx.lifecycle:lifecycle-compiler:$version"
         }

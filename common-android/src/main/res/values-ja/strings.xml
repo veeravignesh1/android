@@ -96,4 +96,8 @@
     <string name="disabled">ラベルをはずす</string>
     <string name="set_smart_reminders">スマートリマインダを設定</string>
     <string name="set_smart_reminders_message">イベントの時間を記録するためのリマインダ</string>
+    <string name="password_reset_success">メールが送信されました。メールを確認してパスワードをリセットしてください</string>
+    <string name="password_reset_email_does_not_exist_error">おっと。知らないメールのようです。正しいメールアドレスを入力しているか確認してください</string>
+    <string name="password_reset_general_error">パスワードのリセットに失敗しました。もう一度お試しください</string>
+    <string name="password_reset_offline_error">現在オフラインです。インターネットに接続して、もう一度お試しください</string>
 </resources>

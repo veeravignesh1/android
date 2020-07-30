@@ -5,7 +5,13 @@ import androidx.lifecycle.ViewModel
 import com.toggl.architecture.core.Store
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarDayState
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 
+@ExperimentalCoroutinesApi
 class CalendarDayStoreViewModel @ViewModelInject constructor(
     store: Store<CalendarDayState, CalendarDayAction>
-) : ViewModel(), Store<CalendarDayState, CalendarDayAction> by store
+) : ViewModel(), Store<CalendarDayState, CalendarDayAction> by store {
+    val scrollOffset = MutableStateFlow(0)
+    val hourHeight = MutableStateFlow(0f)
+}

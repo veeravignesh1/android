@@ -4,6 +4,7 @@ import com.toggl.models.domain.User
 
 sealed class LoginAction {
     object LoginButtonTapped : LoginAction()
+    object ForgotPasswordTapped : LoginAction()
     data class EmailEntered(val email: String) : LoginAction()
     data class PasswordEntered(val password: String) : LoginAction()
     data class SetUser(val user: User) : LoginAction()
@@ -17,4 +18,5 @@ fun LoginAction.formatForDebug(): String =
         is LoginAction.PasswordEntered -> "Password entered $password"
         is LoginAction.SetUser -> "Setting user $user"
         is LoginAction.SetUserError -> "Setting user error $throwable"
+        LoginAction.ForgotPasswordTapped -> "Forgot password tapped"
     }

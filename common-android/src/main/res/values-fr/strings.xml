@@ -100,4 +100,8 @@
     <string name="fifteen_minutes_before">15 minutes avant</string>
     <string name="thirty_minutes_before">30 minutes avant</string>
     <string name="one_hour_before">1 heure avant</string>
+    <string name="password_reset_success">Lien envoyé. Veuillez vérifiez votre email pour réinitialiser le mot de passe.</string>
+    <string name="password_reset_email_does_not_exist_error">Oops! Email inconnu. Veuillez vérifier qu\'il n\'y ai pas d\'erreur.</string>
+    <string name="password_reset_general_error">Désolé, nous ne parvenons pas à réinitialiser votre mot de passe. Veuillez réessayer.</string>
+    <string name="password_reset_offline_error">Vous n\'êtes pas connecté. Veuillez vous connecter à Internet et réessayer.</string>
 </resources>

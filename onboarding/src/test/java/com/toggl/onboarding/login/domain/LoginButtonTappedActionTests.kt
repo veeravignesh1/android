@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.Loadable
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The login tapped action")
 class LoginButtonTappedActionTests : CoroutineTest() {
-    private val loginApi: LoginApiClient = mockk()
+    private val authenticationApi: AuthenticationApiClient = mockk()
     private val userRepository: UserRepository = mockk()
     private val reducer =
-        LoginReducer(loginApi, userRepository, dispatcherProvider)
+        LoginReducer(authenticationApi, userRepository, dispatcherProvider)
 
     private fun LoginState.withCredentials(
         email: Email = Email.from(""),

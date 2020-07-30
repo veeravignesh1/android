@@ -1,6 +1,6 @@
 package com.toggl.settings.domain
 
-import com.toggl.api.feedback.FeedbackApiClient
+import com.toggl.api.clients.feedback.FeedbackApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Effect
 import com.toggl.models.domain.PlatformInfo

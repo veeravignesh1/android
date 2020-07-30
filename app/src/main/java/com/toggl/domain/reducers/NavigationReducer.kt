@@ -22,7 +22,8 @@ class NavigationReducer @Inject constructor() : Reducer<AppState, AppAction> {
             is AppAction.Onboarding,
             is AppAction.Timer,
             is AppAction.Calendar,
-            is AppAction.Settings -> noEffect()
+            is AppAction.Settings,
+            is AppAction.Reports -> noEffect()
             AppAction.BackButtonPressed -> state.popBackStackWithoutEffects()
             is AppAction.TabSelected -> state.mutateWithoutEffects {
                 copy(

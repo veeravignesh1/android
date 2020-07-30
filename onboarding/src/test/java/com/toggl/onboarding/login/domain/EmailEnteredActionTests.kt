@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validEmail
@@ -15,10 +15,10 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The email entered action")
 class EmailEnteredActionTests : CoroutineTest() {
-    private val loginApi: LoginApiClient = mockk()
+    private val authenticationApi: AuthenticationApiClient = mockk()
     private val userRepository: UserRepository = mockk()
     private val reducer =
-        LoginReducer(loginApi, userRepository, dispatcherProvider)
+        LoginReducer(authenticationApi, userRepository, dispatcherProvider)
 
     @Test
     fun `sets the email in the state`() = runBlocking {

@@ -8,16 +8,15 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import com.toggl.calendar.R
 import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarItemsSelector
-import com.toggl.calendar.calendarday.ui.views.CalendarWidgetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_calendarday_page.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -27,9 +26,9 @@ import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class CalendarDayPageFragment : Fragment(R.layout.fragment_calendarday_page) {
     private val store: CalendarDayStoreViewModel by activityViewModels()
-    private val calendarWidgetViewModel: CalendarWidgetViewModel by activityViewModels()
 
     @Inject
     lateinit var calendarItemsSelector: CalendarItemsSelector
@@ -48,11 +47,11 @@ class CalendarDayPageFragment : Fragment(R.layout.fragment_calendarday_page) {
         super.onViewCreated(view, savedInstanceState)
 
         val date = OffsetDateTime.now().minusDays(dateOffset)
-        calendarWidgetViewModel.scrollOffset.value?.let {
+        store.scrollOffset.value.let {
             calendar_widget.setScrollOffset(it)
         }
 
-        calendarWidgetViewModel.hourHeight.value?.let {
+        store.hourHeight.value.let {
             if (it != 0f) {
                 calendar_widget.setHourHeight(it)
             }
@@ -85,22 +84,21 @@ class CalendarDayPageFragment : Fragment(R.layout.fragment_calendarday_page) {
             .launchIn(lifecycleScope)
 
         calendar_widget.scrollOffsetFlow
-            .onEach { calendarWidgetViewModel.updateScrollOffset(it) }
+            .onEach { store.scrollOffset.value = it }
             .launchIn(lifecycleScope)
 
         calendar_widget.hourHeightFlow
-            .onEach { calendarWidgetViewModel.updateHourHeight(it) }
+            .onEach { store.hourHeight.value = it }
             .launchIn(lifecycleScope)
 
-        calendarWidgetViewModel.scrollOffset.observe(viewLifecycleOwner) {
-            calendar_widget.setScrollOffset(it)
-        }
+        store.scrollOffset
+            .onEach { calendar_widget.setScrollOffset(it) }
+            .launchIn(lifecycleScope)
 
-        calendarWidgetViewModel.hourHeight.observe(viewLifecycleOwner) {
-            if (it != 0f) {
-                calendar_widget.setHourHeight(it)
-            }
-        }
+        store.hourHeight
+            .filter { it != 0F }
+            .onEach { calendar_widget.setHourHeight(it) }
+            .launchIn(lifecycleScope)
     }
 
     companion object {

@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
@@ -20,7 +20,7 @@ import java.lang.IllegalStateException
 @ExperimentalCoroutinesApi
 @DisplayName("The log user in effect")
 class LogUserInEffectTests : CoroutineTest() {
-    private val apiClient: LoginApiClient = mockk { coEvery { login(validEmail, validPassword) } returns validUser }
+    private val apiClient: AuthenticationApiClient = mockk { coEvery { login(validEmail, validPassword) } returns validUser }
     private val userRepository: UserRepository = mockk { coEvery { set(validUser) } returns Unit }
 
     private suspend fun executeEffect() =

@@ -100,4 +100,8 @@
     <string name="when_event_starts">Quando o evento estiver para começar</string>
     <string name="thirty_minutes_before">30 minutos antes</string>
     <string name="one_hour_before">1 hora antes</string>
+    <string name="password_reset_success">Link enviado. Por favor, verifique seu email para mudar sua senha.</string>
+    <string name="password_reset_email_does_not_exist_error">Email desconhecido. Certifique-se de que o email está correto e tente novamente.</string>
+    <string name="password_reset_offline_error">Você está offline. Por favor, conecte-se à internet e tente novamente.</string>
+    <string name="password_reset_general_error">Pedimos desculpas, ocorreu um problema ao tentar mudar sua senha. Tente novamente.</string>
 </resources>

@@ -60,4 +60,5 @@ dependencies {
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.Test.kotlinTestJunit
+    testImplementation Libs.Test.kotlinCoroutineTest
 }

@@ -1,5 +1,6 @@
 package com.toggl.common.extensions
 
+import android.app.Activity
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
@@ -23,9 +24,9 @@ fun EditText.doSafeAfterTextChanged(action: (text: Editable?) -> Unit): TextWatc
     }
 }
 
-fun EditText.requestFocus(onFocusChanged: () -> Unit) {
+fun EditText.requestFocusAndShowKeyboard(activity: Activity?) {
     setOnFocusChangeListener { _, _ ->
-        post { onFocusChanged() }
+        post { activity?.tryShowingKeyboardFor(this) }
         onFocusChangeListener = null
     }
     requestFocus()

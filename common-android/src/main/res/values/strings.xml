@@ -111,4 +111,9 @@
     <string name="fifteen_minutes_before">15 minutes before</string>
     <string name="thirty_minutes_before">30 minutes before</string>
     <string name="one_hour_before">1 hour before</string>
+    <string name="forgot_password_reset">Forgot password? <u>Reset</u></string>
+    <string name="password_reset_success">Link sent. Please, check your email to reset the password.</string>
+    <string name="password_reset_email_does_not_exist_error">Oops! Unknown email. Please check that it\'s entered correctly.</string>
+    <string name="password_reset_offline_error">You\'re offline. Please connect to the internet and try again.</string>
+    <string name="password_reset_general_error">Sorry, we’re having trouble resetting your password. Please try again.</string>
 </resources>
