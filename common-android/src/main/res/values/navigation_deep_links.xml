@@ -12,5 +12,6 @@
     <string name="deep_link_settings_calendar_settings" translatable="false">toggl://settings/calendarsettings</string>
     <string name="deep_link_settings_submit_feedback" translatable="false">toggl://settings/submitfeedback</string>
     <string name="deep_link_settings_about" translatable="false">toggl://settings/about</string>
+    <string name="deep_link_settings_single_choice" translatable="false">toggl://settings/singlechoice</string>
     <string name="deep_link_login" translatable="false">toggl://login</string>
 </resources>

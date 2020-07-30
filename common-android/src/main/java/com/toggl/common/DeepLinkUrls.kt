@@ -18,6 +18,7 @@ class DeepLinkUrls(
     val settings: Uri,
     val calendarSettings: Uri,
     val about: Uri,
+    val singleChoiceDialog: Uri,
     val submitFeedback: Uri
 ) {
 
@@ -37,7 +38,8 @@ class DeepLinkUrls(
                     contextualMenu = getString(R.string.deep_link_contextual_menu).toUri(),
                     calendarSettings = getString(R.string.deep_link_settings_calendar_settings).toUri(),
                     submitFeedback = getString(R.string.deep_link_settings_submit_feedback).toUri(),
-                    about = getString(R.string.deep_link_settings_about).toUri()
+                    about = getString(R.string.deep_link_settings_about).toUri(),
+                    singleChoiceDialog = getString(R.string.deep_link_settings_single_choice).toUri()
                 )
             }
     }

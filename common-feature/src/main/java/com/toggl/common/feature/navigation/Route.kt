@@ -56,7 +56,7 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         is Route.StartEdit -> deepLinks.startEditDialog
         is Route.Project -> deepLinks.projectDialog
         is Route.ContextualMenu -> deepLinks.contextualMenu
-        is Route.SettingsDialog -> deepLinks.settings
+        is Route.SettingsDialog -> deepLinks.singleChoiceDialog
         Route.Settings -> deepLinks.settings
         Route.CalendarSettings -> deepLinks.calendarSettings
         Route.Feedback -> deepLinks.submitFeedback
