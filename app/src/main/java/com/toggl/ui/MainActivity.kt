@@ -14,6 +14,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.DialogFragmentNavigator
 import androidx.navigation.fragment.FragmentNavigator
 import com.toggl.R
+import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Store
 import com.toggl.common.extensions.withLatestFrom
 import com.toggl.common.feature.navigation.BottomSheetNavigator
@@ -24,6 +25,7 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.Tab
 import com.toggl.domain.loading.LoadingAction
+import com.toggl.mockdata.MockDatabaseInitializer
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,6 +37,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -45,6 +48,7 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
     @Inject lateinit var router: Router
     @Inject lateinit var store: Store<AppState, AppAction>
     @Inject lateinit var bottomSheetNavigator: BottomSheetNavigator
+    @Inject lateinit var mockDatabaseInitializer: MockDatabaseInitializer
 
     private val backButtonPressedChannel = BroadcastChannel<Unit>(1)
     private val updateBottomBarVisibilityListener = NavController.OnDestinationChangedListener { _, destination, _ ->

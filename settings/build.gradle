@@ -66,6 +66,8 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
 dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':common-feature')
+    api project(':mock-data')
+
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.AndroidX.Lifecycle.extensions

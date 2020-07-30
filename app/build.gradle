@@ -72,6 +72,7 @@ dependencies {
     implementation project(':reports')
     implementation project(':repository')
     implementation project(':timer')
+    implementation project(':mock-data')
 
     implementation Libs.AndroidX.Preference.core
     implementation Libs.AndroidX.Preference.ktx

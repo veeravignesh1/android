@@ -1,0 +1,98 @@
+[
+  {
+    "id": 40646501,
+    "name": " Visionary full-range focusgroup",
+    "workspace_id": 4507009,
+    "project_id": 162411630,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 24755,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646528,
+    "name": " Fully-configurable didactic parallelism",
+    "workspace_id": 4507009,
+    "project_id": 162411700,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 24969,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646468,
+    "name": " Polarised homogeneous archive",
+    "workspace_id": 4507009,
+    "project_id": 162411556,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 38148,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646327,
+    "name": " Re-contextualized stable openarchitecture",
+    "workspace_id": 4507009,
+    "project_id": 162411268,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 27825,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646603,
+    "name": " Grass-roots responsive extranet",
+    "workspace_id": 4507009,
+    "project_id": 162411841,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 2192,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646529,
+    "name": " Advanced real-time knowledgeuser",
+    "workspace_id": 4507009,
+    "project_id": 162411703,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 31198,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646505,
+    "name": " Fundamental content-based GraphicalUserInterface",
+    "workspace_id": 4507009,
+    "project_id": 162411638,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 15491,
+    "tracked_seconds": 0
+  },
+  {
+    "id": 40646564,
+    "name": " Digitized multi-tasking core",
+    "workspace_id": 4507009,
+    "project_id": 162411772,
+    "user_id": null,
+    "active": true,
+    "at": "2020-07-28T16:03:17+00:00",
+    "server_deleted_at": null,
+    "estimated_seconds": 17766,
+    "tracked_seconds": 0
+  }
+]

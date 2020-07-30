@@ -43,12 +43,15 @@ android {
 dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':models')
+    api project(":database")
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.core
     api Libs.Square.retrofit
     api Libs.Google.gson
     api Libs.Square.gsonConverter
+    api Libs.Moshi.core
+    kapt Libs.Moshi.codegen
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.compiler
 

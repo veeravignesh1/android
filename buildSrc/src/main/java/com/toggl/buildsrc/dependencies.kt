@@ -51,6 +51,13 @@ object Libs {
         const val gson = "com.google.code.gson:gson:2.8.6"
     }
 
+    object Moshi {
+        private const val version = "1.9.3"
+        const val core = "com.squareup.moshi:moshi:$version"
+        const val reflection = "com.squareup.moshi:moshi-kotlin:$version"
+        const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
+    }
+
     object Kotlin {
         private const val version = "1.4.0-rc"
         const val stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$version"

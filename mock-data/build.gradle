@@ -1,0 +1,55 @@
+import com.toggl.buildsrc.Libs
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
+android {
+    compileSdkVersion buildConfig.compileSdk
+
+    defaultConfig {
+        minSdkVersion buildConfig.minSdk
+        targetSdkVersion buildConfig.targetSdk
+        versionCode buildConfig.versionCode
+        versionName buildConfig.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
+
+    buildTypes {
+        adhoc {}
+    }
+
+}
+
+dependencies {
+    coreLibraryDesugaring Libs.Android.desugarJdkLibs
+    api project(':api')
+    api project(":database")
+    api project(":common-android")
+
+    implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.core
+    api Libs.Moshi.core
+    kapt Libs.Moshi.codegen
+    implementation Libs.Hilt.hilt
+    kapt Libs.Hilt.compiler
+}

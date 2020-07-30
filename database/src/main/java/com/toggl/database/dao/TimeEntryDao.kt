@@ -68,6 +68,9 @@ interface TimeEntryDao {
     fun insertAllTimeEntries(vararg databaseTimeEntries: DatabaseTimeEntry): List<Long>
 
     @Insert
+    fun insertAllTimeEntries(databaseTimeEntries: List<DatabaseTimeEntry>): List<Long>
+
+    @Insert
     fun insertTimeEntry(databaseTimeEntries: DatabaseTimeEntry): Long
 
     @Update
