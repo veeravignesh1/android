@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.toggl.architecture.Loadable
+import com.toggl.architecture.errorMessageOrEmptyString
+import com.toggl.architecture.valueOrNull
 import com.toggl.common.extensions.doSafeAfterTextChanged
 import com.toggl.common.extensions.requestFocusAndShowKeyboard
 import com.toggl.common.extensions.setSafeText
@@ -39,7 +41,7 @@ class PasswordResetFragment : Fragment(R.layout.fragment_passwordreset) {
             .launchIn(lifecycleScope)
 
         store.state
-            .map { if (it.resetPasswordResult is Loadable.Error) it.resetPasswordResult.failure.errorMessage else "" }
+            .map { it.resetPasswordResult.errorMessageOrEmptyString() }
             .distinctUntilChanged()
             .onEach { email_label.error = it }
             .launchIn(lifecycleScope)
@@ -57,7 +59,7 @@ class PasswordResetFragment : Fragment(R.layout.fragment_passwordreset) {
             .launchIn(lifecycleScope)
 
         store.state
-            .map { if (it.resetPasswordResult is Loadable.Loaded) it.resetPasswordResult.value else "" }
+            .map { it.resetPasswordResult.valueOrNull() ?: "" }
             .filter { it.isNotBlank() }
             .distinctUntilChanged()
             .onEach { Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show() }

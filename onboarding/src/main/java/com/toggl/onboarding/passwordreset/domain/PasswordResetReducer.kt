@@ -14,13 +14,14 @@ import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.navigation.popBackStack
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.toEmail
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class PasswordResetReducer(
+@Singleton
+class PasswordResetReducer @Inject constructor(
     private val authenticationApiClient: AuthenticationApiClient,
     private val dispatcherProvider: DispatcherProvider,
-    private val offlineMessage: String,
-    private val genericErrorMessage: String,
-    private val emailDoesNotExistMessage: String
+    private val errorMessages: SendPasswordResetEmailEffect.ErrorMessages
 ) : Reducer<PasswordResetState, PasswordResetAction> {
 
     override fun reduce(
@@ -49,9 +50,7 @@ class PasswordResetReducer(
         SendPasswordResetEmailEffect(
             authenticationApiClient,
             dispatcherProvider,
-            offlineMessage,
-            genericErrorMessage,
-            emailDoesNotExistMessage,
+            errorMessages,
             email
         )
     )

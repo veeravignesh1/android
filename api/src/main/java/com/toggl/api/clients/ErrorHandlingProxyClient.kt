@@ -7,6 +7,7 @@ import com.toggl.api.clients.feedback.RetrofitFeedbackApiClient
 import com.toggl.api.clients.reports.ReportsApiClient
 import com.toggl.api.clients.reports.RetrofitReportsApiClient
 import com.toggl.api.exceptions.ApiException
+import com.toggl.api.exceptions.ForbiddenException.Companion.remainingLoginAttemptsHeaderName
 import com.toggl.api.exceptions.OfflineException
 import com.toggl.api.models.ReportsTotals
 import com.toggl.models.domain.FeedbackData
@@ -67,7 +68,18 @@ internal class ErrorHandlingProxyClient @Inject constructor(
     private fun handledException(exception: Exception) =
         when (exception) {
             is UnknownHostException -> OfflineException()
-            is HttpException -> ApiException.from(exception.code(), null)
+            is HttpException -> ApiException.from(
+                exception.code(),
+                null,
+                exception.tryParsingNumberOfAttemptsBeforeAccountBlock()
+            )
             else -> exception
         }
+
+    private fun HttpException.tryParsingNumberOfAttemptsBeforeAccountBlock(): Int? {
+        val headers = response()?.headers() ?: return null
+        if (headers.size() == 0) return null
+        val remainingAttemptsHeader = headers.get(remainingLoginAttemptsHeaderName) ?: return null
+        return remainingAttemptsHeader.toIntOrNull()
+    }
 }

@@ -94,5 +94,8 @@
     <string name="password_reset_success">Lien envoyé. Veuillez vérifiez votre email pour réinitialiser le mot de passe.</string>
     <string name="password_reset_email_does_not_exist_error">Oops! Email inconnu. Veuillez vérifier qu\'il n\'y ai pas d\'erreur.</string>
     <string name="password_reset_general_error">Désolé, nous ne parvenons pas à réinitialiser votre mot de passe. Veuillez réessayer.</string>
-    <string name="password_reset_offline_error">Vous n\'êtes pas connecté. Veuillez vous connecter à Internet et réessayer.</string>
+    <string name="offline_error">Vous n\'êtes pas connecté. Veuillez vous connecter à Internet et réessayer.</string>    <string name="generic_login_error">Désolé, nous ne parvenons pas à vous connecter.\nVeuillez réessayer.</string>
+    <string name="incorrect_email_or_password">Email ou mot de passe incorrect.</string>
+    <string name="one_more_try_before_account_locked">Email ou mot de passe incorrect. Vous avez encore un essai, ensuite votre compte sera bloqué pendant 5 minutes.</string>
+    <string name="account_is_locked">Email ou mot de passe incorrect. Compte bloqué pendant 5 minutes. Le propriétaire du compte a été notifié.</string>
 </resources>

@@ -14,15 +14,17 @@ fun emptyLoginState() = LoginState(
     Loadable.Uninitialized,
     backStackOf(Route.Welcome, Route.Login),
     Email.Invalid(""),
-    Password.Invalid("")
+    Password.from("")
 )
 
 fun createLoginReducer(
     loginApi: AuthenticationApiClient = mockk(),
     userRepository: UserRepository = mockk(),
-    dispatcherProvider: DispatcherProvider = mockk()
+    dispatcherProvider: DispatcherProvider = mockk(),
+    errorMessages: LogUserInEffect.ErrorMessages = mockk()
 ) = LoginReducer(
     apiClient = loginApi,
     userRepository = userRepository,
+    errorMessages = errorMessages,
     dispatcherProvider = dispatcherProvider
 )

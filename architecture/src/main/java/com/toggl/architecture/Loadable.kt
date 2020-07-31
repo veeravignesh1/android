@@ -10,3 +10,9 @@ sealed class Loadable<out Value> {
         override operator fun invoke(): Value = value
     }
 }
+
+fun <T> Loadable<T>.errorMessageOrEmptyString() =
+    if (this is Loadable.Error) failure.errorMessage else ""
+
+fun <T> Loadable<T>.valueOrNull() =
+    if (this is Loadable.Loaded) value else null

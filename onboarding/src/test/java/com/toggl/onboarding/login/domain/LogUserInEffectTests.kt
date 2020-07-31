@@ -19,12 +19,14 @@ import org.junit.jupiter.api.Test
 class LogUserInEffectTests : CoroutineTest() {
     private val apiClient: AuthenticationApiClient = mockk { coEvery { login(validEmail, validPassword) } returns validUser }
     private val userRepository: UserRepository = mockk { coEvery { set(validUser) } returns Unit }
+    private val errorMessages = LogUserInEffect.ErrorMessages("", "", "", "", "")
 
     private suspend fun executeEffect() =
         LogUserInEffect(
             apiClient,
             userRepository,
             dispatcherProvider,
+            errorMessages,
             validEmail,
             validPassword
         ).execute()

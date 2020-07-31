@@ -3,10 +3,12 @@ package com.toggl.onboarding.login.ui
 import android.os.Bundle
 import android.text.TextWatcher
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.toggl.architecture.Loadable
+import com.toggl.architecture.errorMessageOrEmptyString
 import com.toggl.common.extensions.doSafeAfterTextChanged
 import com.toggl.common.extensions.requestFocusAndShowKeyboard
 import com.toggl.common.extensions.setSafeText
@@ -63,6 +65,15 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             .map { it.email is Email.Valid && it.password is Password.Valid && it.user !is Loadable.Loading }
             .distinctUntilChanged()
             .onEach { login_button.isEnabled = it }
+            .launchIn(lifecycleScope)
+
+        store.state
+            .map { it.user.errorMessageOrEmptyString() }
+            .distinctUntilChanged()
+            .onEach {
+                error_label.text = it
+                error_label.isVisible = it.isNotBlank()
+            }
             .launchIn(lifecycleScope)
     }
 

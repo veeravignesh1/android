@@ -17,7 +17,7 @@ data class OnboardingState(
         internal val resetPasswordResult: Loadable<String>
     ) {
 
-        constructor() : this(Email.Invalid(""), Password.Invalid(""), Loadable.Uninitialized)
+        constructor() : this(Email.Invalid(""), Password.from(""), Loadable.Uninitialized)
 
         companion object
     }

@@ -12,16 +12,15 @@ import org.junit.jupiter.api.Test
 @DisplayName("The set user error action")
 class SetUserErrorActionTests : CoroutineTest() {
     private val reducer = createLoginReducer(dispatcherProvider = dispatcherProvider)
-
-    private val throwable = IllegalAccessException()
+    private val failure = Failure(IllegalAccessException(), "")
 
     @Test
     fun `sets the user error`() = runBlockingTest {
         val initialState = emptyLoginState()
 
-        reducer.testReduceState(initialState, LoginAction.SetUserError(throwable)) { newState ->
+        reducer.testReduceState(initialState, LoginAction.SetUserError(failure)) { newState ->
             newState shouldBe initialState.copy(
-                user = Loadable.Error(Failure(throwable, ""))
+                user = Loadable.Error(failure)
             )
         }
     }

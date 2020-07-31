@@ -4,13 +4,13 @@ abstract class ApiException(val errorMessage: String) : Exception() {
     private val badJsonLocalisedError = "Encountered unexpected error."
 
     companion object {
-        fun from(statusCode: Int, localizedErrorMessage: String?) =
+        fun from(statusCode: Int, localizedErrorMessage: String?, numberOfAttemptsLeft: Int?) =
             when (statusCode) {
                 // Client errors
                 ApiDeprecatedException.httpCode -> ApiDeprecatedException(localizedErrorMessage)
                 BadRequestException.httpCode -> BadRequestException(localizedErrorMessage)
                 ClientDeprecatedException.httpCode -> ClientDeprecatedException(localizedErrorMessage)
-                ForbiddenException.httpCode -> ForbiddenException(localizedErrorMessage)
+                ForbiddenException.httpCode -> ForbiddenException(localizedErrorMessage, numberOfAttemptsLeft)
                 NotFoundException.httpCode -> NotFoundException(localizedErrorMessage)
                 PaymentRequiredException.httpCode -> PaymentRequiredException(localizedErrorMessage)
                 RequestEntityTooLargeException.httpCode -> RequestEntityTooLargeException(localizedErrorMessage)

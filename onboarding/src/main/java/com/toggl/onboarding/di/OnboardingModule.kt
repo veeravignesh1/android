@@ -1,8 +1,6 @@
 package com.toggl.onboarding.di
 
 import android.content.Context
-import com.toggl.api.clients.authentication.AuthenticationApiClient
-import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.core.Store
 import com.toggl.architecture.core.combine
 import com.toggl.architecture.core.pullback
@@ -11,12 +9,14 @@ import com.toggl.onboarding.R
 import com.toggl.onboarding.common.domain.OnboardingAction
 import com.toggl.onboarding.common.domain.OnboardingReducer
 import com.toggl.onboarding.common.domain.OnboardingState
+import com.toggl.onboarding.login.domain.LogUserInEffect
 import com.toggl.onboarding.login.domain.LoginAction
 import com.toggl.onboarding.login.domain.LoginReducer
 import com.toggl.onboarding.login.domain.LoginState
 import com.toggl.onboarding.passwordreset.domain.PasswordResetAction
 import com.toggl.onboarding.passwordreset.domain.PasswordResetReducer
 import com.toggl.onboarding.passwordreset.domain.PasswordResetState
+import com.toggl.onboarding.passwordreset.domain.SendPasswordResetEmailEffect
 import com.toggl.onboarding.signup.domain.SignUpAction
 import com.toggl.onboarding.signup.domain.SignUpReducer
 import com.toggl.onboarding.signup.domain.SignUpState
@@ -85,16 +85,23 @@ object OnboardingApplicationModule {
 
     @Provides
     @Singleton
-    internal fun passwordResetReducer(
-        @ApplicationContext context: Context,
-        authenticationApiClient: AuthenticationApiClient,
-        dispatcherProvider: DispatcherProvider
-    ) = PasswordResetReducer(
-        authenticationApiClient,
-        dispatcherProvider,
-        context.getString(R.string.password_reset_offline_error),
-        context.getString(R.string.password_reset_general_error),
-        context.getString(R.string.password_reset_email_does_not_exist_error)
+    internal fun loginErrorMessages(@ApplicationContext context: Context) =
+        LogUserInEffect.ErrorMessages(
+            incorrectEmailOrPassword = context.getString(R.string.incorrect_email_or_password),
+            oneMoreTryBeforeAccountLocked = context.getString(R.string.one_more_try_before_account_locked),
+            accountIsLocked = context.getString(R.string.account_is_locked),
+            genericLoginError = context.getString(R.string.generic_login_error),
+            offline = context.getString(R.string.offline_error)
+        )
+
+    @Provides
+    @Singleton
+    internal fun sendPasswordResetEmailErrorMessages(
+        @ApplicationContext context: Context
+    ) = SendPasswordResetEmailEffect.ErrorMessages(
+        offline = context.getString(R.string.offline_error),
+        genericError = context.getString(R.string.password_reset_general_error),
+        emailDoesNotExist = context.getString(R.string.password_reset_email_does_not_exist_error)
     )
 
     @InternalCoroutinesApi

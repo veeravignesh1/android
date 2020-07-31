@@ -1,5 +1,6 @@
 package com.toggl.domain.reducers
 
+import com.toggl.api.exceptions.UnauthorizedException
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
@@ -22,6 +23,8 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.models.common.SwipeDirection
 import com.toggl.models.domain.EditableTimeEntry
+import com.toggl.onboarding.common.domain.OnboardingAction
+import com.toggl.onboarding.login.domain.LoginAction
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.log.domain.TimeEntriesLogAction
@@ -46,6 +49,10 @@ class AnalyticsReducer @Inject constructor(
 
     private fun AppAction.toEvents(state: MutableValue<AppState>): List<Event> =
         when (this) {
+            is AppAction.Onboarding -> when (val onboardingAction = action) {
+                is OnboardingAction.Login -> onboardingAction.action.toEvents()
+                else -> emptyList()
+            }
             is AppAction.Timer -> when (val timerAction = action) {
                 is TimerAction.StartEditTimeEntry -> timerAction.action.toEvents(state)
                 is TimerAction.TimeEntriesLog -> timerAction.action.toEvents()
@@ -56,6 +63,18 @@ class AnalyticsReducer @Inject constructor(
             is AppAction.Settings -> action.toEvents(state)
             else -> emptyList()
         }
+
+    private fun LoginAction.toEvents(): List<Event> =
+        listOfNotNull(
+            when (this) {
+                is LoginAction.SetUserError ->
+                    when (failure.throwable) {
+                        is UnauthorizedException -> Event.incorrectEmailOrPasswordLoginFailure()
+                        else -> Event.unknownLoginFailure(failure.throwable)
+                    }
+                else -> null
+            }
+        )
 
     private fun StartEditAction.toEvents(state: MutableValue<AppState>): List<Event> =
         listOfNotNull(

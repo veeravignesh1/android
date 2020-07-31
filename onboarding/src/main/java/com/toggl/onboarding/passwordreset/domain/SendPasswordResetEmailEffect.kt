@@ -14,11 +14,10 @@ import java.lang.Exception
 class SendPasswordResetEmailEffect(
     private val authenticationApiClient: AuthenticationApiClient,
     private val dispatcherProvider: DispatcherProvider,
-    private val offlineMessage: String,
-    private val genericErrorMessage: String,
-    private val emailDoesNotExistMessage: String,
+    private val errorMessages: ErrorMessages,
     private val email: Email.Valid
 ) : Effect<PasswordResetAction> {
+
     override suspend fun execute(): PasswordResetAction? = withContext(dispatcherProvider.io) {
         try {
             val message = authenticationApiClient.resetPassword(email)
@@ -28,14 +27,16 @@ class SendPasswordResetEmailEffect(
             val failure = Failure(
                 ex,
                 when (ex) {
-                    is BadRequestException -> emailDoesNotExistMessage
-                    is OfflineException -> offlineMessage
+                    is BadRequestException -> errorMessages.emailDoesNotExist
+                    is OfflineException -> errorMessages.offline
                     is ApiException -> ex.errorMessage
-                    else -> genericErrorMessage
+                    else -> errorMessages.genericError
                 }
             )
 
             PasswordResetAction.PasswordResetEmailFailed(failure)
         }
     }
+
+    data class ErrorMessages(val offline: String, val genericError: String, val emailDoesNotExist: String)
 }

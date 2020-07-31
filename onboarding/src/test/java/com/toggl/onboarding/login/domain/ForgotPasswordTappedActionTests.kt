@@ -14,10 +14,11 @@ import org.junit.jupiter.api.Test
 
 @DisplayName("The ForgotPasswordTapped action")
 class ForgotPasswordTappedActionTests : CoroutineTest() {
+    private val errorMessages = LogUserInEffect.ErrorMessages("", "", "", "", "")
     private val authenticationApi: AuthenticationApiClient = mockk()
     private val userRepository: UserRepository = mockk()
     private val reducer =
-        LoginReducer(authenticationApi, userRepository, dispatcherProvider)
+        LoginReducer(authenticationApi, userRepository, errorMessages, dispatcherProvider)
 
     @Test
     fun `navigates to the password reset view`() = runBlocking {

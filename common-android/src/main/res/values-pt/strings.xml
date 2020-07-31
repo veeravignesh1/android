@@ -93,6 +93,10 @@
     <string name="feedback_thank_you">Agradecemos o feedback. Caso você tenha perguntado algo, entramos em contato em breve.</string>
     <string name="password_reset_success">Link enviado. Por favor, verifique seu email para mudar sua senha.</string>
     <string name="password_reset_email_does_not_exist_error">Email desconhecido. Certifique-se de que o email está correto e tente novamente.</string>
-    <string name="password_reset_offline_error">Você está offline. Por favor, conecte-se à internet e tente novamente.</string>
+    <string name="offline_error">Você está offline. Por favor, conecte-se à internet e tente novamente.</string>
     <string name="password_reset_general_error">Pedimos desculpas, ocorreu um problema ao tentar mudar sua senha. Tente novamente.</string>
+    <string name="generic_login_error">Sinto muito, parece que estamos tendo algum problema com sua autenticação. Por favor, tente novamente.</string>
+    <string name="incorrect_email_or_password">Email ou senha incorreta.</string>
+    <string name="one_more_try_before_account_locked">Email ou senha incorreta. Você tem apenas mais uma tentativa de login antes da sua conta ser bloqueada por 5 minutos.</string>
+    <string name="account_is_locked">Email ou senha incorreta. Conta bloqueada por 5 minutos. O dono da conta foi notificado.</string>
 </resources>

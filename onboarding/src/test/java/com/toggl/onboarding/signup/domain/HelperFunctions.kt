@@ -7,7 +7,7 @@ import com.toggl.models.validation.Password
 
 fun emptySignUpState() = SignUpState(
     Email.Invalid(""),
-    Password.Invalid(""),
+    Password.from(""),
     backStackOf(Route.Welcome, Route.Login)
 )
 

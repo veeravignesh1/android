@@ -2,7 +2,6 @@ package com.toggl.onboarding.login.domain
 
 import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.DispatcherProvider
-import com.toggl.architecture.Failure
 import com.toggl.architecture.Loadable
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
@@ -10,6 +9,7 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
 import com.toggl.common.feature.navigation.push
@@ -25,6 +25,7 @@ import javax.inject.Singleton
 class LoginReducer @Inject constructor(
     private val apiClient: AuthenticationApiClient,
     private val userRepository: UserRepository,
+    private val errorMessages: LogUserInEffect.ErrorMessages,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<LoginState, LoginAction> {
 
@@ -36,10 +37,9 @@ class LoginReducer @Inject constructor(
                     is Email.Invalid -> noEffect()
                     is Email.Valid -> when (val password = currentState.password) {
                         is Password.Invalid -> noEffect()
-                        is Password.Valid -> {
-                            state.mutate { copy(user = Loadable.Loading) }
-                            effect(LogUserInEffect(apiClient, userRepository, dispatcherProvider, email, password))
-                        }
+                        is Password.Valid -> state.mutate {
+                            copy(user = Loadable.Loading)
+                        } returnEffect logUserInEffect(email, password)
                     }
                 }
             }
@@ -50,7 +50,7 @@ class LoginReducer @Inject constructor(
                 )
             }
             is LoginAction.SetUserError -> state.mutateWithoutEffects {
-                copy(user = Loadable.Error(Failure(action.throwable, "")))
+                copy(user = Loadable.Error(action.failure))
             }
             LoginAction.GoToSignUpTapped -> state.mutateWithoutEffects {
                 copy(backStack = backStackOf(Route.Welcome, Route.SignUp))
@@ -62,4 +62,15 @@ class LoginReducer @Inject constructor(
 
     private fun MutableValue<LoginState>.navigateTo(route: Route): List<Effect<LoginAction>> =
         mutateWithoutEffects { copy(backStack = backStack.push(route)) }
+
+    private fun logUserInEffect(email: Email.Valid, password: Password.Valid) = effect(
+        LogUserInEffect(
+            apiClient,
+            userRepository,
+            dispatcherProvider,
+            errorMessages,
+            email,
+            password
+        )
+    )
 }

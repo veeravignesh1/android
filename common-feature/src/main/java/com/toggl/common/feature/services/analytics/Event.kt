@@ -63,6 +63,18 @@ class Event private constructor(val name: String, val parameters: Map<String, St
 
         fun signOutTapped(source: SignOutReason) =
             Event("Logout", mapOf("Source" to source.name))
+
+        fun incorrectEmailOrPasswordLoginFailure() =
+            Event("IncorrectEmailOrPasswordLoginFailure", mapOf())
+
+        fun unknownLoginFailure(throwable: Throwable) =
+            Event(
+                "UnknownLoginFailure",
+                mapOf(
+                    "Type" to throwable.javaClass.name,
+                    "Message" to (throwable.message ?: "")
+                )
+            )
     }
 
     override fun equals(other: Any?): Boolean = other is Event && other.name == name && other.parameters == parameters

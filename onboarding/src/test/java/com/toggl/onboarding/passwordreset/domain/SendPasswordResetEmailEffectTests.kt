@@ -24,6 +24,7 @@ class SendPasswordResetEmailEffectTests : CoroutineTest() {
         private const val offlineMessage = "offlineMessage"
         private const val genericErrorMessage = "genericErrorMessage"
         private const val emailDoesNotExistMessage = "emailDoesNotExistMessage"
+        private val errorMessages = SendPasswordResetEmailEffect.ErrorMessages(offlineMessage, genericErrorMessage, emailDoesNotExistMessage)
 
         @JvmStatic
         fun `returns the adequate error as a failure`() = Stream.of(
@@ -36,13 +37,10 @@ class SendPasswordResetEmailEffectTests : CoroutineTest() {
 
     private val authenticationApiClient = mockk<AuthenticationApiClient>()
     private val email = mockk<Email.Valid>()
-
-    val effect = SendPasswordResetEmailEffect(
+    private val effect = SendPasswordResetEmailEffect(
         authenticationApiClient,
         dispatcherProvider,
-        offlineMessage,
-        genericErrorMessage,
-        emailDoesNotExistMessage,
+        errorMessages,
         email
     )
 

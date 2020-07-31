@@ -105,6 +105,10 @@
     <string name="forgot_password_reset">Forgot password? <u>Reset</u></string>
     <string name="password_reset_success">Link sent. Please, check your email to reset the password.</string>
     <string name="password_reset_email_does_not_exist_error">Oops! Unknown email. Please check that it\'s entered correctly.</string>
-    <string name="password_reset_offline_error">You\'re offline. Please connect to the internet and try again.</string>
+    <string name="offline_error">You\'re offline. Please connect to the internet and try again.</string>
     <string name="password_reset_general_error">Sorry, we’re having trouble resetting your password. Please try again.</string>
+    <string name="generic_login_error">Sorry, we’re having trouble logging you in.\nPlease try again.</string>
+    <string name="incorrect_email_or_password">Incorrect email or password.</string>
+    <string name="one_more_try_before_account_locked">Incorrect email or password. One more try before account gets locked for 5 minutes.</string>
+    <string name="account_is_locked">Incorrect email or password. Account is locked for 5 minutes. Account owner has been notified.</string>
 </resources>

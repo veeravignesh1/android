@@ -90,5 +90,9 @@
     <string name="password_reset_success">メールが送信されました。メールを確認してパスワードをリセットしてください</string>
     <string name="password_reset_email_does_not_exist_error">おっと。知らないメールのようです。正しいメールアドレスを入力しているか確認してください</string>
     <string name="password_reset_general_error">パスワードのリセットに失敗しました。もう一度お試しください</string>
-    <string name="password_reset_offline_error">現在オフラインです。インターネットに接続して、もう一度お試しください</string>
+    <string name="offline_error">現在オフラインです。インターネットに接続して、もう一度お試しください</string>
+    <string name="generic_login_error">ログインに失敗しました。\nもう一度お試しください</string>
+    <string name="incorrect_email_or_password">メールまたはパスワードが間違っています。</string>
+    <string name="one_more_try_before_account_locked">メールまたはパスワードが間違っています。もう一度間違えると5分間アカウントにロックがかかります。</string>
+    <string name="account_is_locked">メールまたはパスワードが間違っています。アカウントがロックされました。アカウントの持ち主に通知されました。</string>
 </resources>

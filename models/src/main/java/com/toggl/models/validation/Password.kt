@@ -1,25 +1,28 @@
 package com.toggl.models.validation
 
-sealed class Password(val password: String) {
-    class Invalid(password: String) : Password(password)
-    class Valid private constructor(password: String) : Password(password) {
-        override fun equals(other: Any?): Boolean =
-            other is Valid && other.password == password
+sealed class Password {
+    abstract val password: String
 
-        override fun hashCode(): Int = password.hashCode()
+    data class Invalid internal constructor(override val password: String) : Password()
+    open class Valid internal constructor(override val password: String) : Password() {
+        override fun equals(other: Any?) = other is Valid && other.password == password
 
-        companion object {
-            fun from(password: String) =
-                if (password.isBlank() || password.length < 6) Invalid(password)
-                else Valid(password)
-        }
+        override fun hashCode() = password.hashCode()
     }
+    data class Strong internal constructor(override val password: String) : Valid(password)
 
     override fun toString(): String = password
 
     companion object {
         fun from(password: String) =
-            Valid.from(password)
+            when {
+                password.isStrong() -> Strong(password)
+                password.isNotBlank() -> Valid(password)
+                else -> Invalid(password)
+            }
+
+        private fun String.isStrong() =
+            length > 8 && any { it.isDigit() } && any { it.isUpperCase() } && any { it.isLowerCase() }
     }
 }
 
