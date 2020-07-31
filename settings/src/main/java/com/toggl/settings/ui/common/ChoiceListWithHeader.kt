@@ -1,4 +1,4 @@
-package com.toggl.settings.ui.composables
+package com.toggl.settings.ui.common
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
@@ -111,7 +111,11 @@ internal val previewHeader = "First day of week"
 @Composable
 fun PreviewSingleChoiceListWithHeaderLight() {
     ThemedPreview {
-        SingleChoiceListWithHeader(previewItems, previewHeader, null)
+        SingleChoiceListWithHeader(
+            previewItems,
+            previewHeader,
+            null
+        )
     }
 }
 
@@ -119,6 +123,10 @@ fun PreviewSingleChoiceListWithHeaderLight() {
 @Composable
 fun PreviewSingleChoiceListWithHeaderDark() {
     ThemedPreview(darkTheme = true) {
-        SingleChoiceListWithHeader(previewItems, previewHeader, null)
+        SingleChoiceListWithHeader(
+            previewItems,
+            previewHeader,
+            null
+        )
     }
 }

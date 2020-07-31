@@ -1,4 +1,4 @@
-package com.toggl.settings.ui
+package com.toggl.settings.ui.feedback
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import com.toggl.architecture.Loadable
 import com.toggl.settings.R
 import com.toggl.settings.compose.extensions.createComposeView
 import com.toggl.settings.domain.SettingsAction
-import com.toggl.settings.ui.composables.pages.FeedbackPage
+import com.toggl.settings.ui.SettingsStoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -31,17 +31,15 @@ class FeedbackFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = createComposeView { statusBarHeight, _ ->
+    ): View? = createComposeView { statusBarHeight, navigationBarHeight ->
         setContent(androidx.compose.Recomposer.current()) {
             val sendFeedbackRequest = store.state.map { it.localState.sendFeedbackRequest }.distinctUntilChanged()
 
             FeedbackPage(
-                statusBarHeight = statusBarHeight,
                 sendFeedbackRequest = sendFeedbackRequest,
-                onBack = { store.dispatch(SettingsAction.FinishedEditingSetting) },
-                onFeedbackSent = { feedbackText ->
-                    store.dispatch(SettingsAction.SendFeedbackTapped(feedbackText))
-                }
+                statusBarHeight = statusBarHeight,
+                navigationBarHeight = navigationBarHeight,
+                dispatcher = store::dispatch
             )
 
             sendFeedbackRequest

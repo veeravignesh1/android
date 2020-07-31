@@ -48,6 +48,7 @@ fun createSettingsState(
     userPreferences = userPreferences,
     workspaces = mapOf(),
     shouldRequestCalendarPermission = shouldRequestCalendarPermission,
+    externalLocationToShow = null,
     backStack = backStack,
     localState = SettingsState.LocalState(sendFeedbackRequest)
 )

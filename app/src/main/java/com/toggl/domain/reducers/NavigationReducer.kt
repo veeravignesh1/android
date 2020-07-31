@@ -32,5 +32,6 @@ class NavigationReducer @Inject constructor() : Reducer<AppState, AppAction> {
                     Tab.Calendar -> backStackOf(Route.Timer, Route.Calendar)
                 })
             }
+            AppAction.ExternalLocationShown -> state.mutateWithoutEffects { copy(externalLocationToShow = null) }
         }
 }

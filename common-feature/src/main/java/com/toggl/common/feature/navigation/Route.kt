@@ -25,6 +25,8 @@ sealed class Route {
     object CalendarSettings : Route()
     object Feedback : Route()
     object PasswordReset : Route()
+    object About : Route()
+    object Licences : Route()
 }
 
 interface ParameterRoute<P> {
@@ -46,6 +48,8 @@ fun Route.isSameTypeAs(otherRoute: Route) =
         Route.CalendarSettings -> otherRoute is Route.CalendarSettings
         Route.Feedback -> otherRoute is Route.Feedback
         Route.PasswordReset -> otherRoute is Route.PasswordReset
+        Route.About -> otherRoute is Route.About
+        Route.Licences -> otherRoute is Route.Licences
     }
 
 fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
@@ -63,5 +67,7 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         Route.CalendarSettings -> deepLinks.calendarSettings
         Route.Feedback -> deepLinks.submitFeedback
         Route.PasswordReset -> deepLinks.passwordReset
+        Route.About -> deepLinks.about
+        Route.Licences -> deepLinks.licences
     }
 }

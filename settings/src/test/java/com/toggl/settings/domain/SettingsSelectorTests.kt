@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 @DisplayName("The SettingsSelector")
 class SettingsSelectorTests : CoroutineTest() {
     private val context = mockk<Context> { every { getString(any()) } returns "" }
-    private val selector = SettingsSelector(context, SettingsStructureBlueprint.sections)
+    private val selector = SettingsSelector(context) { SettingsStructureBlueprint.mainSections }
 
     @Test
     fun `Should translate blueprint into view models correctly`() = runBlockingTest {
@@ -42,7 +42,7 @@ class SettingsSelectorTests : CoroutineTest() {
         val initialState = createSettingsState(user = user, userPreferences = prefs)
         val sections: List<SettingsSectionViewModel> = selector.select(initialState)
 
-        sections.size shouldBe SettingsStructureBlueprint.sections.size
+        sections.size shouldBe SettingsStructureBlueprint.mainSections.size
 
         with(sections[0]) {
             verify<SettingsViewModel.ListChoice>(0, SettingsType.Name) {

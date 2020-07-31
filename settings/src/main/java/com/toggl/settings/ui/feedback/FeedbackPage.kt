@@ -1,4 +1,4 @@
-package com.toggl.settings.ui.composables.pages
+package com.toggl.settings.ui.feedback
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
@@ -38,6 +38,7 @@ import com.toggl.settings.compose.ThemedPreview
 import com.toggl.settings.compose.theme.TogglTheme
 import com.toggl.settings.compose.theme.grid_1
 import com.toggl.settings.compose.theme.grid_2
+import com.toggl.settings.domain.SettingsAction
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
@@ -45,9 +46,9 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun FeedbackPage(
     sendFeedbackRequest: Flow<Loadable<Unit>>,
-    onBack: () -> Unit,
-    onFeedbackSent: (String) -> Unit,
-    statusBarHeight: Dp
+    statusBarHeight: Dp,
+    navigationBarHeight: Dp,
+    dispatcher: (SettingsAction) -> Unit = {}
 ) {
     val sendFeedbackRequestState by sendFeedbackRequest.collectAsState(Loadable.Uninitialized)
     TogglTheme {
@@ -59,7 +60,7 @@ fun FeedbackPage(
                     contentColor = MaterialTheme.colors.onSurface,
                     title = { Text(text = stringResource(R.string.submit_feedback)) },
                     navigationIcon = {
-                        IconButton(onClick = onBack) {
+                        IconButton(onClick = { dispatcher(SettingsAction.FinishedEditingSetting) }) {
                             Icon(Icons.Filled.ArrowBack)
                         }
                     }
@@ -68,7 +69,8 @@ fun FeedbackPage(
             bodyContent = {
                 FeedbackForm(
                     sendFeedbackRequestState,
-                    onFeedbackSent
+                    navigationBarHeight,
+                    dispatcher
                 )
             }
         )
@@ -78,7 +80,8 @@ fun FeedbackPage(
 @Composable
 fun FeedbackForm(
     sendFeedbackRequestState: Loadable<Unit>,
-    onFeedbackSent: (String) -> Unit
+    bottomPadding: Dp,
+    dispatcher: (SettingsAction) -> Unit = {}
 ) {
     Column(Modifier.padding(grid_1).fillMaxSize()) {
         Text(text = stringResource(R.string.feedback_note))
@@ -99,8 +102,8 @@ fun FeedbackForm(
 
         Spacer(modifier = Modifier.height(grid_2))
         OutlinedButton(
-            onClick = { onFeedbackSent(textState.text) },
-            modifier = Modifier.fillMaxWidth(),
+            onClick = { dispatcher(SettingsAction.SendFeedbackTapped(textState.text)) },
+            modifier = Modifier.fillMaxWidth().padding(bottom = bottomPadding),
             enabled = sendFeedbackRequestState is Loadable.Uninitialized && textState.text.isNotBlank()
         ) {
             Text(text = stringResource(R.string.submit_feedback))
@@ -112,7 +115,7 @@ fun FeedbackForm(
 @Composable
 fun PreviewFeedbackFormLight() {
     ThemedPreview(darkTheme = false) {
-        FeedbackForm(Loadable.Uninitialized) {}
+        FeedbackForm(Loadable.Uninitialized, 10.dp) {}
     }
 }
 
@@ -120,6 +123,6 @@ fun PreviewFeedbackFormLight() {
 @Composable
 fun PreviewFeedbackFormDark() {
     ThemedPreview(darkTheme = true) {
-        FeedbackForm(Loadable.Uninitialized) {}
+        FeedbackForm(Loadable.Uninitialized, 10.dp) {}
     }
 }

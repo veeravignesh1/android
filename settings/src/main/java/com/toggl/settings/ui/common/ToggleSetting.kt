@@ -1,4 +1,4 @@
-package com.toggl.settings.ui.composables
+package com.toggl.settings.ui.common
 
 import androidx.compose.Composable
 import androidx.ui.core.Modifier

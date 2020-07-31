@@ -65,11 +65,11 @@ class TimeEntryGroupSwipedActionTests : CoroutineTest() {
 
             deleteTimeEntryEffects shouldHaveSize 2
             deleteTimeEntryEffects.first()
-                .shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry>() {
+                .shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry> {
                     it.id shouldBeExactly 8
                 }
 
-            deleteTimeEntryEffects[1].shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry>() {
+            deleteTimeEntryEffects[1].shouldEmitTimeEntryAction<TimeEntriesLogAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry> {
                 it.id shouldBeExactly 9
             }
             val expectedTimeEntries = timeEntries.take(7) +

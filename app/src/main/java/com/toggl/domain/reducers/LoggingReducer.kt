@@ -30,6 +30,7 @@ class LoggingReducer(override val innerReducer: Reducer<AppState, AppAction>)
                 is AppAction.Reports -> action.action.formatForDebug()
                 is AppAction.TabSelected -> "Selected tab $action.tabItem"
                 AppAction.BackButtonPressed -> "Physical back button pressed"
+                AppAction.ExternalLocationShown -> "External location shown"
             }
         )
 

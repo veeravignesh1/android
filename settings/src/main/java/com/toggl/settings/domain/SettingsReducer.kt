@@ -11,6 +11,7 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.navigation.ExternalLocation
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.pop
 import com.toggl.common.feature.navigation.push
@@ -91,6 +92,13 @@ class SettingsReducer @Inject constructor(
                 if (calendarIds.contains(action.calendarId)) copy(calendarIds = calendarIds - action.calendarId)
                 else copy(calendarIds = calendarIds + action.calendarId)
             }
+
+            // About & Help
+            SettingsAction.OpenAboutTapped -> state.navigateTo(Route.About)
+            SettingsAction.OpenLicencesTapped -> state.navigateTo(Route.Licences)
+            SettingsAction.OpenPrivacyPolicyTapped -> state.mutateWithoutEffects { copy(externalLocationToShow = ExternalLocation.PrivacyPolicy) }
+            SettingsAction.OpenTermsOfServiceTapped -> state.mutateWithoutEffects { copy(externalLocationToShow = ExternalLocation.TermsOfService) }
+            SettingsAction.OpenHelpTapped -> state.mutateWithoutEffects { copy(externalLocationToShow = ExternalLocation.Help) }
 
             // Sign out
             SettingsAction.SignOutTapped -> effect(signOutEffect)

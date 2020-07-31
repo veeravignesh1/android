@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -19,6 +20,7 @@ import com.toggl.common.extensions.withLatestFrom
 import com.toggl.common.feature.navigation.BottomSheetNavigator
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.Router
+import com.toggl.common.feature.navigation.getExternalUri
 import com.toggl.common.feature.navigation.handleBackPressesEmitting
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
@@ -31,10 +33,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 @FlowPreview
@@ -82,6 +85,19 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
                     finish()
                 }
             }.launchIn(lifecycleScope)
+
+        store.state
+            .map { it.externalLocationToShow }
+            .filterNotNull()
+            .distinctUntilChanged()
+            .map { it.getExternalUri(this) }
+            .onEach { externalLocationUri ->
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.launchUrl(this, externalLocationUri)
+                store.dispatch(AppAction.ExternalLocationShown)
+            }
+            .launchIn(lifecycleScope)
     }
 
     private fun updateSelectedTabIfNeeded(backStack: List<Route>) {

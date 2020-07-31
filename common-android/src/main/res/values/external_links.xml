@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="help_link" translatable="false">"https://support.toggl.com/en/articles/2417167-toggl-timer-for-android"</string>
+    <string name="privacy_policy_link" translatable="false">"https://toggl.com/legal/privacy/"</string>
+    <string name="terms_of_service_link" translatable="false">"https://toggl.com/legal/terms/"</string>
+</resources>

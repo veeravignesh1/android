@@ -1,11 +1,10 @@
-package com.toggl.settings.ui.composables.pages
+package com.toggl.settings.ui
 
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.layout.padding
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Scaffold
@@ -21,7 +20,8 @@ import com.toggl.settings.compose.theme.TogglTheme
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel
-import com.toggl.settings.ui.composables.Section
+import com.toggl.settings.ui.common.SectionList
+import com.toggl.settings.ui.common.SectionTitleMode
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
@@ -35,12 +35,7 @@ fun SettingsPage(
 ) {
     val observableSectionState by sectionsState.collectAsState(listOf())
     TogglTheme {
-        SettingsPageContent(
-            observableSectionState,
-            statusBarHeight,
-            navigationBarHeight,
-            dispatcher
-        )
+        SettingsPageContent(observableSectionState, statusBarHeight, navigationBarHeight, dispatcher)
     }
 }
 
@@ -64,30 +59,12 @@ fun SettingsPageContent(
         bodyContent = {
             SectionList(
                 sectionsList = sectionsState,
+                titleMode = SectionTitleMode.All,
                 dispatcher = dispatcher,
                 navigationBarHeight = navigationBarHeight
             )
         }
     )
-}
-
-@Composable
-private fun SectionList(
-    sectionsList: List<SettingsSectionViewModel>,
-    dispatcher: (SettingsAction) -> Unit,
-    navigationBarHeight: Dp
-) {
-    val lastSection = sectionsList.lastOrNull()
-    LazyColumnItems(sectionsList) { section ->
-
-        val bottomPadding = if (section == lastSection) navigationBarHeight else 0.dp
-
-        Section(
-            section = section,
-            dispatcher = dispatcher,
-            modifier = Modifier.padding(bottom = bottomPadding)
-        )
-    }
 }
 
 @ExperimentalCoroutinesApi

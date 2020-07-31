@@ -13,6 +13,8 @@ object Libs {
 
     object Android {
         const val desugarJdkLibs = "com.android.tools:desugar_jdk_libs:1.0.9"
+        const val customTabs = "com.android.support:customtabs:23.3.0"
+
     }
 
     object Test {
@@ -42,6 +44,8 @@ object Libs {
     object Google {
         const val material = "com.google.android.material:material:1.1.0"
         const val googleServicesPluginClassPath = "com.google.gms:google-services:4.3.3"
+        const val ossLicencesPluginClassPath = "com.google.android.gms:oss-licenses-plugin:0.10.2"
+        const val ossLicences = "com.google.android.gms:play-services-oss-licenses:17.0.0"
         const val firebaseCrashlyticsPluginClassPath = "com.google.firebase:firebase-crashlytics-gradle:2.0.0"
         const val firebaseCore = "com.google.firebase:firebase-core:17.2.3"
         const val firebaseCrashlytics = "com.google.firebase:firebase-crashlytics:17.0.0"

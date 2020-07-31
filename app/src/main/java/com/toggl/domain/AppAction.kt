@@ -17,6 +17,7 @@ sealed class AppAction {
     class Settings(override val action: SettingsAction) : AppAction(), ActionWrapper<SettingsAction>
     class TabSelected(val tab: Tab) : AppAction()
     object BackButtonPressed : AppAction()
+    object ExternalLocationShown : AppAction()
 }
 
 enum class Tab {
