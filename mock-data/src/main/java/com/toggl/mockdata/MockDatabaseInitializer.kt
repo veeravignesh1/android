@@ -48,7 +48,8 @@ class MockDatabaseInitializer (
         // 90.0 = 274
         // 80.0 = 162
         // median = 67
-        val timeEntries: List<DatabaseTimeEntry> = (0 until 162)
+        val numberOfTe = 1060
+        val timeEntries: List<DatabaseTimeEntry> = (0 until numberOfTe)
             .map { timeEntriesArray.getJSONObject(it) }
             .map { ApiTimeEntryJsonAdapter(moshi).fromJson(it.toString()) }
             .map { it!!.toDatabaseModel() }
