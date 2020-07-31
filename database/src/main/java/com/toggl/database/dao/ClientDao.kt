@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.toggl.database.models.DatabaseClient
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ClientDao {
     @Query("SELECT * FROM clients")
-    fun getAll(): List<DatabaseClient>
+    fun getAll(): Flow<List<DatabaseClient>>
 
     @Query("SELECT * FROM clients WHERE id = :id")
     fun getOne(id: Long): DatabaseClient

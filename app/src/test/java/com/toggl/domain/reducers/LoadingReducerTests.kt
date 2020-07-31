@@ -10,10 +10,6 @@ import com.toggl.domain.extensions.createTag
 import com.toggl.domain.extensions.createTask
 import com.toggl.domain.extensions.createTimeEntry
 import com.toggl.domain.extensions.toMutableValue
-import com.toggl.domain.loading.LoadClientsEffect
-import com.toggl.domain.loading.LoadTagsEffect
-import com.toggl.domain.loading.LoadTasksEffect
-import com.toggl.domain.loading.LoadWorkspacesEffect
 import com.toggl.domain.loading.LoadingAction
 import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.loading.LoadingState
@@ -33,7 +29,6 @@ import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.UserRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import io.kotest.matchers.collections.shouldBeEmpty
-import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.mockk
@@ -49,10 +44,6 @@ class LoadingReducerTests : CoroutineTest() {
     private val userRepository = mockk<UserRepository>()
     private val taskRepository = mockk<TaskRepository>()
     private val reducer = LoadingReducer(
-        clientRepository,
-        workspaceRepository,
-        tagRepository,
-        taskRepository,
         userRepository,
         dispatcherProvider
     )
@@ -123,30 +114,6 @@ class LoadingReducerTests : CoroutineTest() {
 
                 initialState shouldBe emptyState.copy(
                     backStack = backStackOf(Route.Timer)
-                )
-            }
-
-            fun `returns a list of effects that load entities`() {
-                var initialState = emptyState
-                val mutableValue = initialState.toMutableValue { initialState = it }
-                val effects = reducer.reduce(
-                    mutableValue,
-                    LoadingAction.UserLoaded(
-                        User(
-                            id = 0,
-                            apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
-                            defaultWorkspaceId = 1,
-                            email = Email.from("validemail@toggl.com") as Email.Valid,
-                            name = "name"
-                        )
-                    )
-                )
-
-                effects.map { it.javaClass.kotlin } shouldContainExactlyInAnyOrder listOf(
-                    LoadWorkspacesEffect::class,
-                    LoadClientsEffect::class,
-                    LoadTagsEffect::class,
-                    LoadTasksEffect::class
                 )
             }
         }

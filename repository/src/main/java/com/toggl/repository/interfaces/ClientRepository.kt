@@ -1,8 +1,9 @@
 package com.toggl.repository.interfaces
 
 import com.toggl.models.domain.Client
+import kotlinx.coroutines.flow.Flow
 
 interface ClientRepository {
-    suspend fun loadClients(): List<Client>
+    fun loadClients(): Flow<List<Client>>
     suspend fun createClient(client: Client): Client
 }

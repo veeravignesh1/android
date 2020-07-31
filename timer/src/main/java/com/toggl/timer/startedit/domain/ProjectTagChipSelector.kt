@@ -3,7 +3,6 @@ package com.toggl.timer.startedit.domain
 import com.toggl.architecture.core.Selector
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
-import com.toggl.timer.exceptions.TagDoesNotExistException
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
 import javax.inject.Singleton
 
@@ -27,7 +26,7 @@ class ProjectTagChipSelector(
             }
 
             for (tagId in editableTimeEntry.tagIds) {
-                val tag = state.tags[tagId] ?: throw TagDoesNotExistException()
+                val tag = state.tags[tagId] ?: continue
                 yield(ChipViewModel.Tag(tag))
             }
 

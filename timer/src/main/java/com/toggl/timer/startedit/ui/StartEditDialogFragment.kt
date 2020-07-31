@@ -348,7 +348,8 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
 
         return oldEditableTimeEntry.projectId == newEditableTimeEntry.projectId &&
             oldEditableTimeEntry.tagIds == newEditableTimeEntry.tagIds &&
-            old.projects == new.projects
+            old.projects == new.projects &&
+            old.tags == new.tags
     }
 
     override fun onDestroyView() {

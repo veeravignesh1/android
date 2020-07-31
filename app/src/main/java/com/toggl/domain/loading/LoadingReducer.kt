@@ -6,25 +6,16 @@ import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
 import com.toggl.architecture.extensions.effect
-import com.toggl.architecture.extensions.effects
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
-import com.toggl.repository.interfaces.ClientRepository
-import com.toggl.repository.interfaces.TagRepository
-import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.UserRepository
-import com.toggl.repository.interfaces.WorkspaceRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LoadingReducer @Inject constructor(
-    private val clientRepository: ClientRepository,
-    private val workspaceRepository: WorkspaceRepository,
-    private val tagsRepository: TagRepository,
-    private val taskRepository: TaskRepository,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<LoadingState, LoadingAction> {
@@ -37,22 +28,13 @@ class LoadingReducer @Inject constructor(
             LoadingAction.StartLoading -> state.mutate {
                 copy(user = Loadable.Loading)
             } returnEffect effect(TryLoadingUserEffect(userRepository, dispatcherProvider))
-            is LoadingAction.UserLoaded ->
+            is LoadingAction.UserLoaded -> state.mutateWithoutEffects {
                 if (action.user == null) {
-                    state.mutateWithoutEffects { copy(user = Loadable.Uninitialized, backStack = backStackOf(Route.Welcome)) }
+                    copy(user = Loadable.Uninitialized, backStack = backStackOf(Route.Welcome))
                 } else {
-                    state.mutate {
-                        copy(
-                            user = Loadable.Loaded(action.user),
-                            backStack = backStackOf(Route.Timer)
-                        )
-                    } returnEffect effects(
-                        LoadWorkspacesEffect(workspaceRepository, dispatcherProvider),
-                        LoadClientsEffect(clientRepository, dispatcherProvider),
-                        LoadTagsEffect(tagsRepository, dispatcherProvider),
-                        LoadTasksEffect(taskRepository, dispatcherProvider)
-                    )
+                    copy(user = Loadable.Loaded(action.user), backStack = backStackOf(Route.Timer))
                 }
+            }
             is LoadingAction.TimeEntriesLoaded -> state.mutateWithoutEffects { copy(timeEntries = action.timeEntries) }
             is LoadingAction.WorkspacesLoaded -> state.mutateWithoutEffects { copy(workspaces = action.workspaces) }
             is LoadingAction.ProjectsLoaded -> state.mutateWithoutEffects { copy(projects = action.projects) }

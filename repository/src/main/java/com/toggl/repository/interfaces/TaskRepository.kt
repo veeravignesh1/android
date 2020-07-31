@@ -1,7 +1,8 @@
 package com.toggl.repository.interfaces
 
 import com.toggl.models.domain.Task
+import kotlinx.coroutines.flow.Flow
 
 interface TaskRepository {
-    suspend fun loadTasks(): List<Task>
+    fun loadTasks(): Flow<List<Task>>
 }

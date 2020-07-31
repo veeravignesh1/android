@@ -202,8 +202,8 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             .launchIn(lifecycleScope)
 
         store.state
-            .distinctUntilChangedBy { it.editableProject.clientId }
             .map { it.selectedClient() }
+            .distinctUntilChanged()
             .onEach { client_chip.text = it?.name ?: getString(R.string.add_client) }
             .launchIn(lifecycleScope)
 

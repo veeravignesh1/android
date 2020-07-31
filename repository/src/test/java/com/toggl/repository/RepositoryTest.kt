@@ -64,7 +64,7 @@ class RepositoryTest : CoroutineTest() {
 
     @Test
     fun `loadClients calls getAll on the DAO`() = runBlockingTest {
-        every { clientDao.getAll() } returns listOf()
+        every { clientDao.getAll() } returns flowOf(emptyList())
 
         val loaded = repository.loadClients()
 
@@ -75,12 +75,12 @@ class RepositoryTest : CoroutineTest() {
             timeEntryDao wasNot called
             projectDao wasNot called
         }
-        loaded.shouldBeEmpty()
+        loaded.collect { it.shouldBeEmpty() }
     }
 
     @Test
     fun `loadTags calls getAll on the DAO`() = runBlockingTest {
-        every { tagDao.getAll() } returns listOf()
+        every { tagDao.getAll() } returns flowOf(emptyList())
 
         val loaded = repository.loadTags()
 
@@ -91,12 +91,12 @@ class RepositoryTest : CoroutineTest() {
             timeEntryDao wasNot called
             projectDao wasNot called
         }
-        loaded.shouldBeEmpty()
+        loaded.collect { it.shouldBeEmpty() }
     }
 
     @Test
     fun `loadTasks calls getAll on the DAO`() = runBlockingTest {
-        every { taskDao.getAll() } returns listOf()
+        every { taskDao.getAll() } returns flowOf(emptyList())
 
         val loaded = repository.loadTasks()
 
@@ -107,12 +107,12 @@ class RepositoryTest : CoroutineTest() {
             timeEntryDao wasNot called
             projectDao wasNot called
         }
-        loaded.shouldBeEmpty()
+        loaded.collect { it.shouldBeEmpty() }
     }
 
     @Test
     fun `loadWorkspaces calls getAll on the DAO`() = runBlockingTest {
-        every { workspaceDao.getAll() } returns listOf()
+        every { workspaceDao.getAll() } returns flowOf(emptyList())
 
         repository.loadWorkspaces()
 

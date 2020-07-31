@@ -24,11 +24,9 @@ import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.Tag
-import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
-import com.toggl.models.domain.Workspace
 import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.models.validation.ApiToken
 import com.toggl.repository.dto.CreateProjectDTO
@@ -72,7 +70,6 @@ class Repository(
     AppRepository,
     ApiTokenProvider,
     TagRepository {
-
     private val sharedPreferencesListener: SharedPreferences.OnSharedPreferenceChangeListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             sharedPreferencesFlow.value = readUserPreferences(sharedPreferences)
@@ -83,8 +80,12 @@ class Repository(
         MutableStateFlow(readUserPreferences(sharedPreferences))
     }
 
-    override fun loadProjects(): Flow<List<Project>> =
-        projectDao.getAll().map { it.map(DatabaseProject::toModel) }
+    override fun loadTags() = tagDao.getAll().map { it.map(DatabaseTag::toModel) }
+    override fun loadTasks() = taskDao.getAll().map { it.map(DatabaseTask::toModel) }
+    override fun loadClients() = clientDao.getAll().map { it.map(DatabaseClient::toModel) }
+    override fun loadProjects() = projectDao.getAll().map { it.map(DatabaseProject::toModel) }
+    override fun loadWorkspaces() = workspaceDao.getAll().map { it.map(DatabaseWorkspace::toModel) }
+    override fun loadTimeEntries() = timeEntryDao.getAllTimeEntriesWithTags().map { it.map(DatabaseTimeEntryWithTags::toModel) }
 
     override suspend fun createProject(project: CreateProjectDTO): Project {
         val databaseProject = DatabaseProject(
@@ -103,11 +104,6 @@ class Repository(
             .run(DatabaseProject::toModel)
     }
 
-    override fun loadTimeEntries(): Flow<List<TimeEntry>> =
-        timeEntryDao.getAllTimeEntriesWithTags().map { it.map(DatabaseTimeEntryWithTags::toModel) }
-
-    override suspend fun timeEntriesCount(): Int = timeEntryDao.count()
-
     override suspend fun createTag(tag: Tag): Tag {
         val databaseTag = DatabaseTag(
             name = tag.name,
@@ -120,15 +116,9 @@ class Repository(
             .run(DatabaseTag::toModel)
     }
 
-    override suspend fun loadTags(): List<Tag> =
-        tagDao.getAll().map(DatabaseTag::toModel)
-
-    override suspend fun loadWorkspaces(): List<Workspace> =
-        workspaceDao.getAll().map(DatabaseWorkspace::toModel)
+    override suspend fun timeEntriesCount(): Int = timeEntryDao.count()
 
     override suspend fun workspacesCount(): Int = workspaceDao.count()
-
-    override suspend fun loadClients() = clientDao.getAll().map(DatabaseClient::toModel)
 
     override suspend fun createClient(client: Client): Client {
         val databaseClient = DatabaseClient(
@@ -141,8 +131,6 @@ class Repository(
             .run(clientDao::getOne)
             .run(DatabaseClient::toModel)
     }
-
-    override suspend fun loadTasks(): List<Task> = taskDao.getAll().map(DatabaseTask::toModel)
 
     override suspend fun startTimeEntry(startTimeEntryDTO: StartTimeEntryDTO): StartTimeEntryResult {
         return timeEntryDao.startTimeEntry(startTimeEntryDTO.toDatabaseModel()).let { (started, stopped) ->

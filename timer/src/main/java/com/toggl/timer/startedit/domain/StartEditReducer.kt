@@ -277,7 +277,6 @@ class StartEditReducer @Inject constructor(
             is StartEditAction.TagCreated -> {
                 state.mutateWithoutEffects {
                     copy(
-                        tags = tags + (action.tag.id to action.tag),
                         editableTimeEntry = editableTimeEntry.copy(
                             tagIds = editableTimeEntry.tagIds + action.tag.id
                         )

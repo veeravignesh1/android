@@ -18,7 +18,7 @@ class TagCreatedActionTests {
     @DisplayName("When no tags have already been added to the state")
     inner class NoTagsInPlace {
         @Test
-        fun `Adds the created tag to the editableTimeEntry's tagIds and the state's tags`() = runBlockingTest {
+        fun `Adds the created tag to the editableTimeEntry's tagIds`() = runBlockingTest {
             val editableTimeEntry = EditableTimeEntry.empty(1)
             val initialState = initialState.copy(
                 editableTimeEntry = editableTimeEntry
@@ -30,7 +30,6 @@ class TagCreatedActionTests {
                 StartEditAction.TagCreated(newTag)
             ) {
                 it shouldBe initialState.copy(
-                    tags = mapOf(1L to newTag),
                     editableTimeEntry = editableTimeEntry.copy(
                         tagIds = listOf(newTag.id)
                     )
@@ -43,7 +42,7 @@ class TagCreatedActionTests {
     @DisplayName("When tags have already been added to the state")
     inner class WhenSomeTagsAreAlreadyInPlace {
         @Test
-        fun `Adds the created tag to the editableTimeEntry's tagIds and the state's tags`() = runBlockingTest {
+        fun `Adds the created tag to the editableTimeEntry's tagIds`() = runBlockingTest {
             val existingTags = (0..10L).map { Tag(it, "#$it", 1) }
             val editableTimeEntry = EditableTimeEntry.empty(1).copy(
                 tagIds = listOf(1L, 2L)
@@ -59,7 +58,6 @@ class TagCreatedActionTests {
                 StartEditAction.TagCreated(newTag)
             ) {
                 it shouldBe initialState.copy(
-                    tags = (existingTags + newTag).associateBy { tag -> tag.id },
                     editableTimeEntry = editableTimeEntry.copy(
                         tagIds = listOf(1L, 2L, 20L)
                     )

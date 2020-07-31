@@ -115,10 +115,7 @@ class ProjectReducer @Inject constructor(
             )
             is ProjectAction.ClientCreated -> state.mutateWithoutEffects {
                 copy(
-                    clients = clients + (action.client.id to action.client),
-                    editableProject = editableProject.copy(
-                        clientId = action.client.id
-                    )
+                    editableProject = editableProject.copy(clientId = action.client.id)
                 )
             }
             is ProjectAction.AutocompleteDescriptionEntered -> state.mutateWithoutEffects {

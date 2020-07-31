@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.toggl.database.models.DatabaseWorkspace
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkspaceDao {
     @Query("SELECT * FROM workspaces")
-    fun getAll(): List<DatabaseWorkspace>
+    fun getAll(): Flow<List<DatabaseWorkspace>>
 
     @Query("SELECT count(*) FROM workspaces")
     fun count(): Int

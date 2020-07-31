@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.toggl.database.models.DatabaseTag
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TagDao {
     @Query("SELECT * FROM tags")
-    fun getAll(): List<DatabaseTag>
+    fun getAll(): Flow<List<DatabaseTag>>
 
     @Query("SELECT * FROM tags WHERE id = :id")
     fun getOne(id: Long): DatabaseTag
