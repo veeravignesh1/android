@@ -1,8 +1,8 @@
 package com.toggl.onboarding.signup.domain
 
+import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validEmail
-import com.toggl.onboarding.common.CoroutineTest
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking

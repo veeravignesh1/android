@@ -15,13 +15,13 @@ import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.common.feature.navigation.popBackStackWithoutEffects
 import com.toggl.common.feature.navigation.push
+import com.toggl.common.feature.services.calendar.toEditableTimeEntry
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryDoesNotExistException
 import com.toggl.common.feature.timeentry.extensions.throwIfNotPersisted
 import com.toggl.common.feature.timeentry.extensions.throwIfRunning
 import com.toggl.common.feature.timeentry.extensions.throwIfStopped
 import com.toggl.common.feature.timeentry.extensions.wasNotYetPersisted
-import com.toggl.common.feature.services.calendar.toEditableTimeEntry
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry

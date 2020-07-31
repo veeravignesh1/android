@@ -5,8 +5,8 @@ import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.types.shouldBeTypeOf
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest

@@ -10,7 +10,6 @@ import com.toggl.database.dao.TaskDao
 import com.toggl.database.dao.TimeEntryDao
 import com.toggl.database.dao.UserDao
 import com.toggl.database.dao.WorkspaceDao
-import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.Repository
 import com.toggl.repository.interfaces.AppRepository
 import com.toggl.repository.interfaces.ClientRepository
@@ -18,6 +17,7 @@ import com.toggl.repository.interfaces.ProjectRepository
 import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
+import com.toggl.repository.interfaces.TimeEntryRepository
 import com.toggl.repository.interfaces.UserRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import dagger.Module

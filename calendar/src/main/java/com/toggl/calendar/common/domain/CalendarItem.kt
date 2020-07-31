@@ -5,8 +5,8 @@ import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
 import com.toggl.common.extensions.maybePlus
 import com.toggl.common.feature.models.SelectedCalendarItem
-import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.common.feature.services.calendar.CalendarEvent
+import com.toggl.common.feature.timeentry.extensions.isRunning
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.TimeEntry
 import java.time.Duration
@@ -85,8 +85,10 @@ val CalendarItem.duration: Duration?
 
 val CalendarItem.isRunning: Boolean
     get() = this is CalendarItem.TimeEntry && this.timeEntry.duration == null ||
-        (this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
-            this.selectedCalendarItem.editableTimeEntry.isRunning())
+        (
+            this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
+                this.selectedCalendarItem.editableTimeEntry.isRunning()
+            )
 
 val SelectedCalendarItem.startTime: OffsetDateTime
     get() =

@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.ui.core.setContent
 import com.toggl.architecture.extensions.select
-import com.toggl.settings.di.ProvideMainSettingsSelector
 import com.toggl.settings.compose.extensions.createComposeView
+import com.toggl.settings.di.ProvideMainSettingsSelector
 import com.toggl.settings.domain.SettingsSelector
 import com.toggl.settings.domain.SingleChoiceSettingSelector
 import com.toggl.settings.ui.common.SingleChoiceDialogWithHeader

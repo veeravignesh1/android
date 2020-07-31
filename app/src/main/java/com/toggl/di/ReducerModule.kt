@@ -4,12 +4,12 @@ import com.toggl.architecture.core.Reducer
 import com.toggl.calendar.di.CalendarReducer
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
-import com.toggl.domain.reducers.AnalyticsReducer
 import com.toggl.domain.loading.LoadingReducer
-import com.toggl.domain.reducers.NavigationReducer
-import com.toggl.domain.reducers.SignOutReducer
+import com.toggl.domain.reducers.AnalyticsReducer
 import com.toggl.domain.reducers.FeatureAvailabilityReducer
 import com.toggl.domain.reducers.LoggingReducer
+import com.toggl.domain.reducers.NavigationReducer
+import com.toggl.domain.reducers.SignOutReducer
 import com.toggl.domain.reducers.createAppReducer
 import com.toggl.onboarding.common.domain.OnboardingReducer
 import com.toggl.reports.domain.ReportsReducer

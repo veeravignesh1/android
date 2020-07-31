@@ -38,7 +38,7 @@ class MostUsedSuggestionProvider @Inject constructor(
 
     private fun isTimeEntryActive(timeEntry: TimeEntry, projects: Map<Long, Project>): Boolean =
         !timeEntry.isDeleted &&
-        timeEntry.projectId?.let { projects[it]?.active } ?: true
+            timeEntry.projectId?.let { projects[it]?.active } ?: true
 
     private fun toMostUsedSuggestion(timeEntries: Collection<TimeEntry>) =
         timeEntries

@@ -3,9 +3,9 @@ package com.toggl.timer.common
 import com.toggl.architecture.core.Effect
 import com.toggl.architecture.core.MutableValue
 import com.toggl.architecture.core.Reducer
+import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.TimeEntryActionHolder
-import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Task
 import com.toggl.models.domain.TimeEntry
 import io.kotest.matchers.collections.shouldBeEmpty

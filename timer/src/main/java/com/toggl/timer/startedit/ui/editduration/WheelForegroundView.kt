@@ -15,12 +15,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.drawable.toBitmap
 import com.toggl.common.Constants.ClockMath.fullCircle
-import com.toggl.common.extensions.performTickEffect
-import com.toggl.timer.R
 import com.toggl.common.extensions.absoluteDurationBetween
 import com.toggl.common.extensions.applyAndRecycle
+import com.toggl.common.extensions.performTickEffect
 import com.toggl.common.extensions.roundToClosestMinute
 import com.toggl.common.extensions.timeOfDay
+import com.toggl.timer.R
 import com.toggl.timer.startedit.ui.editduration.shapes.Arc
 import com.toggl.timer.startedit.ui.editduration.shapes.Dot
 import com.toggl.timer.startedit.ui.editduration.shapes.HandleCap

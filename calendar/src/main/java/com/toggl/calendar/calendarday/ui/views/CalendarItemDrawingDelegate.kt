@@ -383,8 +383,9 @@ class CalendarItemDrawingDelegate(
                     ?: calendarItem.timeEntry.startTime.absoluteDurationBetween(OffsetDateTime.now())
             is CalendarItem.CalendarEvent -> calendarItem.calendarEvent.duration
             is CalendarItem.SelectedItem -> when (val selectedItem = calendarItem.selectedCalendarItem) {
-                is SelectedCalendarItem.SelectedTimeEntry -> selectedItem.editableTimeEntry.duration
-                    ?: selectedItem.editableTimeEntry.startTime!!.absoluteDurationBetween(OffsetDateTime.now())
+                is SelectedCalendarItem.SelectedTimeEntry ->
+                    selectedItem.editableTimeEntry.duration
+                        ?: selectedItem.editableTimeEntry.startTime!!.absoluteDurationBetween(OffsetDateTime.now())
                 is SelectedCalendarItem.SelectedCalendarEvent -> selectedItem.calendarEvent.duration
             }
         }

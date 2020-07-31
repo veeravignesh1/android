@@ -17,6 +17,6 @@ data class SettingsState(
     val backStack: BackStack
 ) {
     data class LocalState internal constructor(internal val sendFeedbackRequest: Loadable<Unit>) {
-        constructor(): this(sendFeedbackRequest = Loadable.Uninitialized)
+        constructor() : this(sendFeedbackRequest = Loadable.Uninitialized)
     }
 }

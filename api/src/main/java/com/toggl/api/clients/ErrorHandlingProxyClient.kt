@@ -4,11 +4,11 @@ import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.api.clients.authentication.RetrofitAuthenticationApiClient
 import com.toggl.api.clients.feedback.FeedbackApiClient
 import com.toggl.api.clients.feedback.RetrofitFeedbackApiClient
+import com.toggl.api.clients.reports.ReportsApiClient
+import com.toggl.api.clients.reports.RetrofitReportsApiClient
 import com.toggl.api.exceptions.ApiException
 import com.toggl.api.exceptions.OfflineException
 import com.toggl.api.models.ReportsTotals
-import com.toggl.api.clients.reports.ReportsApiClient
-import com.toggl.api.clients.reports.RetrofitReportsApiClient
 import com.toggl.models.domain.FeedbackData
 import com.toggl.models.domain.PlatformInfo
 import com.toggl.models.domain.User

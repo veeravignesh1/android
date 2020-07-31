@@ -132,14 +132,16 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
     }
 
     private fun tabSelected(menuItem: MenuItem): Boolean {
-        store.dispatch(AppAction.TabSelected(
-            when (menuItem.itemId) {
-                R.id.time_entries_log -> Tab.Timer
-                R.id.reports -> Tab.Reports
-                R.id.calendar -> Tab.Calendar
-                else -> throw IllegalStateException()
-            }
-        ))
+        store.dispatch(
+            AppAction.TabSelected(
+                when (menuItem.itemId) {
+                    R.id.time_entries_log -> Tab.Timer
+                    R.id.reports -> Tab.Reports
+                    R.id.calendar -> Tab.Calendar
+                    else -> throw IllegalStateException()
+                }
+            )
+        )
 
         return true
     }

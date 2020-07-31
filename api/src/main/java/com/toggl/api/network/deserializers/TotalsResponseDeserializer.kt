@@ -3,8 +3,8 @@ package com.toggl.api.network.deserializers
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.toggl.api.network.models.reports.GraphItem
 import com.toggl.api.models.Resolution
+import com.toggl.api.network.models.reports.GraphItem
 import com.toggl.api.network.models.reports.TotalsResponse
 import java.lang.reflect.Type
 

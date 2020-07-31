@@ -23,19 +23,25 @@ class SettingsStructureBlueprint @Inject constructor(
         val calendarIntegrationEnabled = permissionCheckerService.hasCalendarPermission() &&
             state.userPreferences.calendarIntegrationEnabled
 
-        val headerSection = SettingsSectionBlueprint(Empty, listOf(
-            SettingsType.AllowCalendarAccess,
-            SettingsType.CalendarPermissionInfo
-        ))
+        val headerSection = SettingsSectionBlueprint(
+            Empty,
+            listOf(
+                SettingsType.AllowCalendarAccess,
+                SettingsType.CalendarPermissionInfo
+            )
+        )
 
         if (!calendarIntegrationEnabled) return listOf(headerSection)
 
         val calendarSections = availableCalendars
             .groupBy { it.sourceName }
             .map { (groupName, calendars) ->
-                SettingsSectionBlueprint(Str(groupName), calendars.map {
-                    SettingsType.Calendar(it.name, it.id, userCalendars.contains(it))
-                })
+                SettingsSectionBlueprint(
+                    Str(groupName),
+                    calendars.map {
+                        SettingsType.Calendar(it.name, it.id, userCalendars.contains(it))
+                    }
+                )
             }
 
         return listOf(headerSection) + calendarSections
@@ -43,42 +49,63 @@ class SettingsStructureBlueprint @Inject constructor(
 
     companion object {
         val mainSections = listOf(
-            SettingsSectionBlueprint(Res(R.string.your_profile), listOf(
+            SettingsSectionBlueprint(
+                Res(R.string.your_profile),
+                listOf(
                     SettingsType.Name,
                     SettingsType.Email,
                     SettingsType.Workspace
-            )),
-            SettingsSectionBlueprint(Res(R.string.date_and_time), listOf(
-                SettingsType.DateFormat,
-                SettingsType.TwentyFourHourClock,
-                SettingsType.DurationFormat,
-                SettingsType.FirstDayOfTheWeek,
-                SettingsType.GroupSimilar
-            )),
-            SettingsSectionBlueprint(Res(R.string.timer_defaults), listOf(
-                SettingsType.CellSwipe,
-                SettingsType.ManualMode
-            )),
-            SettingsSectionBlueprint(Res(R.string.calendar_label), listOf(
-                SettingsType.CalendarSettings,
-                SettingsType.SmartAlert
-            )),
-            SettingsSectionBlueprint(Res(R.string.general), listOf(
-                SettingsType.SubmitFeedback,
-                SettingsType.About,
-                SettingsType.Help
-            )),
-            SettingsSectionBlueprint(Res(R.string.sync), listOf(
-                SettingsType.SignOut
-            ))
+                )
+            ),
+            SettingsSectionBlueprint(
+                Res(R.string.date_and_time),
+                listOf(
+                    SettingsType.DateFormat,
+                    SettingsType.TwentyFourHourClock,
+                    SettingsType.DurationFormat,
+                    SettingsType.FirstDayOfTheWeek,
+                    SettingsType.GroupSimilar
+                )
+            ),
+            SettingsSectionBlueprint(
+                Res(R.string.timer_defaults),
+                listOf(
+                    SettingsType.CellSwipe,
+                    SettingsType.ManualMode
+                )
+            ),
+            SettingsSectionBlueprint(
+                Res(R.string.calendar_label),
+                listOf(
+                    SettingsType.CalendarSettings,
+                    SettingsType.SmartAlert
+                )
+            ),
+            SettingsSectionBlueprint(
+                Res(R.string.general),
+                listOf(
+                    SettingsType.SubmitFeedback,
+                    SettingsType.About,
+                    SettingsType.Help
+                )
+            ),
+            SettingsSectionBlueprint(
+                Res(R.string.sync),
+                listOf(
+                    SettingsType.SignOut
+                )
+            )
         )
 
         val aboutSection =
-            SettingsSectionBlueprint(Empty, listOf(
-                SettingsType.PrivacyPolicy,
-                SettingsType.TermsOfService,
-                SettingsType.Licenses
-            ))
+            SettingsSectionBlueprint(
+                Empty,
+                listOf(
+                    SettingsType.PrivacyPolicy,
+                    SettingsType.TermsOfService,
+                    SettingsType.Licenses
+                )
+            )
     }
 }
 

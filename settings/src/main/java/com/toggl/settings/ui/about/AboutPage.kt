@@ -94,9 +94,12 @@ fun PreviewCalendarSettingsPageDark() {
 }
 
 val aboutPreviewData: List<SettingsSectionViewModel> = listOf(
-    SettingsSectionViewModel("Shouldn't be displayed", listOf(
-        SettingsViewModel.SubPage("Terms of Service", SettingsType.TermsOfService),
-        SettingsViewModel.SubPage("Privacy Policy", SettingsType.PrivacyPolicy),
-        SettingsViewModel.SubPage("Licences", SettingsType.Licenses)
-    ))
+    SettingsSectionViewModel(
+        "Shouldn't be displayed",
+        listOf(
+            SettingsViewModel.SubPage("Terms of Service", SettingsType.TermsOfService),
+            SettingsViewModel.SubPage("Privacy Policy", SettingsType.PrivacyPolicy),
+            SettingsViewModel.SubPage("Licences", SettingsType.Licenses)
+        )
+    )
 )

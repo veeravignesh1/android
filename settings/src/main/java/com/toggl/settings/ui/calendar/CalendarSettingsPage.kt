@@ -97,18 +97,27 @@ fun PreviewCalendarSettingsPageDark() {
 }
 
 val calendarSettingsPreviewData: List<SettingsSectionViewModel> = listOf(
-    SettingsSectionViewModel("", listOf(
-        SettingsViewModel.Toggle("Link calendars", SettingsType.AllowCalendarAccess, true),
-        SettingsViewModel.InfoText("Toggl needs access to your calendar in order to display events. Events are visible to you only and won’t appear in Reports.", SettingsType.CalendarPermissionInfo)
-    )),
-    SettingsSectionViewModel("someone@toggl.com", listOf(
-        SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123", "123", true), true),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), false),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), false)
-    )),
-    SettingsSectionViewModel("team@toggl.com", listOf(
-        SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123", "123", true), false),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), true),
-        SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), false)
-    ))
+    SettingsSectionViewModel(
+        "",
+        listOf(
+            SettingsViewModel.Toggle("Link calendars", SettingsType.AllowCalendarAccess, true),
+            SettingsViewModel.InfoText("Toggl needs access to your calendar in order to display events. Events are visible to you only and won’t appear in Reports.", SettingsType.CalendarPermissionInfo)
+        )
+    ),
+    SettingsSectionViewModel(
+        "someone@toggl.com",
+        listOf(
+            SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123", "123", true), true),
+            SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), false),
+            SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), false)
+        )
+    ),
+    SettingsSectionViewModel(
+        "team@toggl.com",
+        listOf(
+            SettingsViewModel.Toggle("Meetings", SettingsType.Calendar("123", "123", true), false),
+            SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), true),
+            SettingsViewModel.Toggle("Peer Reviews", SettingsType.Calendar("123", "123", true), false)
+        )
+    )
 )
