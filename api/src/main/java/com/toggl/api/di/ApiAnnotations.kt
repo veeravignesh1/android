@@ -16,3 +16,13 @@ annotation class BaseApiUrl
 @Qualifier
 @MustBeDocumented
 annotation class BaseReportsUrl
+
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+@MustBeDocumented
+annotation class ApiRetrofit
+
+@Retention(AnnotationRetention.RUNTIME)
+@Qualifier
+@MustBeDocumented
+annotation class ReportsRetrofit

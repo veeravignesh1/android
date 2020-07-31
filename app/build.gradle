@@ -7,6 +7,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.firebase.firebase-perf'
 apply plugin: 'dagger.hilt.android.plugin'
@@ -74,6 +75,7 @@ dependencies {
     implementation project(':timer')
     implementation project(':mock-data')
 
+    implementation Libs.Android.customTabs
     implementation Libs.AndroidX.Preference.core
     implementation Libs.AndroidX.Preference.ktx
     implementation Libs.AndroidX.Hilt.viewModel
@@ -84,7 +86,7 @@ dependencies {
     implementation Libs.Google.firebaseCore
     implementation Libs.Google.firebaseCrashlytics
     implementation Libs.Google.firebasePerformance
-
+    implementation Libs.Google.ossLicences
     debugImplementation Libs.leakCanary
 
     testImplementation Libs.Test.Jupiter.api
@@ -144,3 +146,4 @@ tasks.whenTaskAdded { task ->
         task.dependsOn prepareGooglePlayServices
     }
 }
+

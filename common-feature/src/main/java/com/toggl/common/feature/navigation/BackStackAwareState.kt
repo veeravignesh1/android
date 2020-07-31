@@ -10,3 +10,8 @@ interface BackStackAwareState<T> {
 
 fun <State : BackStackAwareState<State>, Action> MutableValue<State>.popBackStackWithoutEffects(): List<Effect<Action>> =
     mutateWithoutEffects { popBackStack() }
+
+fun <State : BackStackAwareState<State>> MutableValue<State>.popBackStack(): MutableValue<State> {
+    mutate { popBackStack() }
+    return this
+}

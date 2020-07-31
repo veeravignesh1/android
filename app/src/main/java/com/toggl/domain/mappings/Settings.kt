@@ -13,6 +13,7 @@ fun mapAppStateToSettingsState(appState: AppState): SettingsState? {
         userPreferences = appState.userPreferences,
         workspaces = appState.workspaces,
         shouldRequestCalendarPermission = appState.shouldRequestCalendarPermission,
+        externalLocationToShow = appState.externalLocationToShow,
         localState = appState.settingsLocalState,
         backStack = appState.backStack
     )
@@ -25,6 +26,7 @@ fun mapSettingsStateToAppState(appState: AppState, settingsState: SettingsState?
             userPreferences = userPreferences,
             workspaces = workspaces,
             shouldRequestCalendarPermission = shouldRequestCalendarPermission,
+            externalLocationToShow = externalLocationToShow,
             settingsLocalState = localState,
             backStack = backStack
         )

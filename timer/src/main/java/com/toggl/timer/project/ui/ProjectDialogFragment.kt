@@ -17,7 +17,7 @@ import com.toggl.architecture.extensions.select
 import com.toggl.common.extensions.addInterceptingOnClickListener
 import com.toggl.common.extensions.adjustForUserTheme
 import com.toggl.common.extensions.performClickHapticFeedback
-import com.toggl.common.extensions.requestFocus
+import com.toggl.common.extensions.requestFocusAndShowKeyboard
 import com.toggl.common.extensions.setOvalBackground
 import com.toggl.common.extensions.setSafeText
 import com.toggl.common.feature.extensions.toColor
@@ -29,8 +29,8 @@ import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.R
-import com.toggl.timer.extensions.tryHidingKeyboard
-import com.toggl.timer.extensions.tryShowingKeyboardFor
+import com.toggl.common.extensions.tryHidingKeyboard
+import com.toggl.common.extensions.tryShowingKeyboardFor
 import com.toggl.timer.project.domain.ColorViewModel
 import com.toggl.timer.project.domain.ProjectAction
 import com.toggl.timer.project.domain.ProjectAutocompleteQuery
@@ -136,9 +136,7 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
             viewLifecycleOwner
         )
 
-        project_name_edit_text.requestFocus {
-            activity?.tryShowingKeyboardFor(project_name_edit_text)
-        }
+        project_name_edit_text.requestFocusAndShowKeyboard(activity)
 
         color_done_button.setOnClickListener {
             coloPickerVisibilityRequestFlow.value = false

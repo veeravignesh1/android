@@ -21,7 +21,7 @@ fun AppCompatActivity.handleBackPressesEmitting(callback: () -> Unit) {
             onBackPressedDispatcher.addCallback(backPressedCallback)
         }
 
-        override fun onDestroy(owner: LifecycleOwner) {
+        override fun onPause(owner: LifecycleOwner) {
             backPressedCallback.remove()
         }
     })

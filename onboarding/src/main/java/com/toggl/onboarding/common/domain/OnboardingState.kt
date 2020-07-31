@@ -13,9 +13,11 @@ data class OnboardingState(
 ) {
     data class LocalState internal constructor(
         internal val email: Email,
-        internal val password: Password
+        internal val password: Password,
+        internal val resetPasswordResult: Loadable<String>
     ) {
-        constructor() : this(Email.Invalid(""), Password.Invalid(""))
+
+        constructor() : this(Email.Invalid(""), Password.Invalid(""), Loadable.Uninitialized)
 
         companion object
     }

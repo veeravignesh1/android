@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.Loadable
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
@@ -18,9 +18,9 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The set user action")
 class SetUserActionTests : CoroutineTest() {
-    private val loginApi: LoginApiClient = mockk()
+    private val authenticationApi: AuthenticationApiClient = mockk()
     private val userRepository: UserRepository = mockk()
-    private val reducer = LoginReducer(loginApi, userRepository, dispatcherProvider)
+    private val reducer = LoginReducer(authenticationApi, userRepository, dispatcherProvider)
 
     @Test
     fun `sets the user from the state and the route to the timer page`() = runBlockingTest {

@@ -12,6 +12,7 @@ import com.toggl.domain.loading.LoadingReducer
 import com.toggl.domain.mappings.mapAppStateToCalendarState
 import com.toggl.domain.mappings.mapAppStateToLoadingState
 import com.toggl.domain.mappings.mapAppStateToOnboardingState
+import com.toggl.domain.mappings.mapAppStateToReportsState
 import com.toggl.domain.mappings.mapAppStateToSettingsState
 import com.toggl.domain.mappings.mapAppStateToTimerState
 import com.toggl.domain.mappings.mapCalendarActionToAppAction
@@ -20,11 +21,14 @@ import com.toggl.domain.mappings.mapLoadingActionToAppAction
 import com.toggl.domain.mappings.mapLoadingStateToAppState
 import com.toggl.domain.mappings.mapOnboardingActionToAppAction
 import com.toggl.domain.mappings.mapOnboardingStateToAppState
+import com.toggl.domain.mappings.mapReportsActionToAppAction
+import com.toggl.domain.mappings.mapReportsStateToAppState
 import com.toggl.domain.mappings.mapSettingsActionToAppAction
 import com.toggl.domain.mappings.mapSettingsStateToAppState
 import com.toggl.domain.mappings.mapTimerActionToAppAction
 import com.toggl.domain.mappings.mapTimerStateToAppState
 import com.toggl.onboarding.common.domain.OnboardingReducer
+import com.toggl.reports.domain.ReportsReducer
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,6 +42,7 @@ fun createAppReducer(
     loadingReducer: LoadingReducer,
     onboardingReducer: OnboardingReducer,
     timerReducer: TimerReducer,
+    reportsReducer: ReportsReducer,
     calendarReducer: CalendarReducer,
     settingsReducer: SettingsReducer,
     navigationReducer: NavigationReducer,
@@ -57,6 +62,12 @@ fun createAppReducer(
             mapToLocalAction = AppAction::unwrap,
             mapToGlobalState = ::mapTimerStateToAppState,
             mapToGlobalAction = ::mapTimerActionToAppAction
+        ),
+        reportsReducer.pullback(
+            mapToLocalState = ::mapAppStateToReportsState,
+            mapToLocalAction = AppAction::unwrap,
+            mapToGlobalState = ::mapReportsStateToAppState,
+            mapToGlobalAction = ::mapReportsActionToAppAction
         ),
         onboardingReducer.pullback(
             mapToLocalState = ::mapAppStateToOnboardingState,

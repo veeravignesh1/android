@@ -44,6 +44,7 @@ dependencies {
     coreLibraryDesugaring Libs.Android.desugarJdkLibs
     api project(':models')
     api project(":database")
+    implementation project(':common')
 
     implementation Libs.Kotlin.stdlib
     implementation Libs.Coroutines.core
@@ -63,4 +64,5 @@ dependencies {
     testImplementation Libs.Test.mockk
     testImplementation Libs.Test.kotlinTest
     testImplementation Libs.Test.kotlinTestJunit
+    testImplementation Libs.Test.kotlinCoroutineTest
 }

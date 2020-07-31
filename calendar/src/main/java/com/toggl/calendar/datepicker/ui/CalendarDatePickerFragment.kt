@@ -37,6 +37,7 @@ import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
 
 @AndroidEntryPoint
+@ExperimentalCoroutinesApi
 class CalendarDatePickerFragment : Fragment(R.layout.fragment_calendardatepicker) {
 
     private val store: CalendarDatePickerStoreViewModel by activityViewModels()

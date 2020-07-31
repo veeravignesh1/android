@@ -55,4 +55,8 @@ object Constants {
     object Calendar {
         const val datePickerRowItemsCount = 7L
     }
+
+    object Reports {
+        const val maximumRangeInDays = 365L
+    }
 }

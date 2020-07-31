@@ -1,6 +1,6 @@
 package com.toggl.settings.common
 
-import com.toggl.api.feedback.FeedbackApiClient
+import com.toggl.api.clients.feedback.FeedbackApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Loadable
 import com.toggl.architecture.core.Effect
@@ -48,6 +48,7 @@ fun createSettingsState(
     userPreferences = userPreferences,
     workspaces = mapOf(),
     shouldRequestCalendarPermission = shouldRequestCalendarPermission,
+    externalLocationToShow = null,
     backStack = backStack,
     localState = SettingsState.LocalState(sendFeedbackRequest)
 )

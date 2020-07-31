@@ -10,12 +10,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.ui.core.setContent
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.extensions.select
+import com.toggl.settings.di.ProvideMainSettingsSelector
 import com.toggl.mockdata.MockDatabaseInitializer
 import com.toggl.settings.compose.extensions.createComposeView
 import com.toggl.settings.domain.SettingsSelector
 import com.toggl.settings.domain.SingleChoiceSettingSelector
-import com.toggl.settings.ui.composables.SingleChoiceDialogWithHeader
-import com.toggl.settings.ui.composables.pages.SettingsPage
+import com.toggl.settings.ui.common.SingleChoiceDialogWithHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -23,8 +23,9 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
-    @Inject @JvmField var settingsSelector: SettingsSelector? = null // https://github.com/google/dagger/issues/1883#issuecomment-642565920 🤷‍
+    @Inject @ProvideMainSettingsSelector @JvmField var settingsSelector: SettingsSelector? = null // https://github.com/google/dagger/issues/1883#issuecomment-642565920 🤷‍
     @Inject @JvmField var singleChoiceSettingSelector: SingleChoiceSettingSelector? = null // https://github.com/google/dagger/issues/1883#issuecomment-642565920 🤷‍
+
     @Inject @JvmField var dispatcherProvider: DispatcherProvider? = null
     @Inject @JvmField var mockDatabaseInitializer: MockDatabaseInitializer? = null
 
@@ -47,7 +48,10 @@ class SettingsFragment : Fragment() {
                 store::dispatch
             )
 
-            SingleChoiceDialogWithHeader(selectedSingleChoiceState, store::dispatch)
+            SingleChoiceDialogWithHeader(
+                selectedSingleChoiceState,
+                store::dispatch
+            )
         }
     }
 

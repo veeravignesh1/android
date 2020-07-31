@@ -35,7 +35,11 @@ sealed class SettingsAction {
     data class UpdateName(val name: String) : SettingsAction()
     object FinishedEditingSetting : SettingsAction()
     data class OpenSelectionDialog(val settingType: SettingsType) : SettingsAction()
-    companion object
+    object OpenAboutTapped : SettingsAction()
+    object OpenPrivacyPolicyTapped : SettingsAction()
+    object OpenTermsOfServiceTapped : SettingsAction()
+    object OpenLicencesTapped : SettingsAction()
+    object OpenHelpTapped : SettingsAction()
 }
 
 fun SettingsAction.formatForDebug() =
@@ -66,4 +70,9 @@ fun SettingsAction.formatForDebug() =
         is SettingsAction.FinishedEditingSetting -> "Dialog dismissed"
         is SettingsAction.OpenSelectionDialog -> "Selection dialog opened for setting $settingType"
         SettingsAction.OpenSubmitFeedbackTapped -> "Open submit feedback tapped"
+        SettingsAction.OpenAboutTapped -> "Open about tapped"
+        SettingsAction.OpenPrivacyPolicyTapped -> "Open privacy policy tapped"
+        SettingsAction.OpenTermsOfServiceTapped -> "Open terms of service tapped"
+        SettingsAction.OpenLicencesTapped -> "Open licences tapped"
+        SettingsAction.OpenHelpTapped -> "Open help tapped"
     }

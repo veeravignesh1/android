@@ -7,19 +7,21 @@ import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.settings.R
-import java.lang.IllegalStateException
+import com.toggl.settings.compose.toStr
 import javax.inject.Inject
+
+typealias SectionBlueprintProvider = suspend (SettingsState) -> List<SettingsSectionBlueprint>
 
 class SettingsSelector @Inject constructor(
     private val context: Context,
-    private val sectionsBlueprint: List<SettingsSectionBlueprint>
+    private val sectionsBlueprintProvider: SectionBlueprintProvider
 ) : Selector<SettingsState, List<SettingsSectionViewModel>> {
-    override suspend fun select(state: SettingsState): List<SettingsSectionViewModel> {
-        return sectionsBlueprint.map { it.toViewModel(state.user, state.userPreferences, state.workspaces) }
-    }
+
+    override suspend fun select(state: SettingsState): List<SettingsSectionViewModel> =
+        sectionsBlueprintProvider(state).map { it.toViewModel(state.user, state.userPreferences, state.workspaces) }
 
     private fun SettingsSectionBlueprint.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsSectionViewModel =
-        SettingsSectionViewModel(context.getString(title), settingsList.map { it.toViewModel(user, userPreferences, workspaces) })
+        SettingsSectionViewModel(title.toStr(context), settingsList.map { it.toViewModel(user, userPreferences, workspaces) })
 
     private fun SettingsType.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsViewModel =
         when (this) {
@@ -109,7 +111,19 @@ class SettingsSelector @Inject constructor(
                 context.getString(R.string.sign_out),
                 this
             )
-            SettingsType.AllowCalendarAccess,
-            is SettingsType.Calendar -> throw IllegalStateException("This settings should not be used in the main settings page")
+            SettingsType.AllowCalendarAccess -> SettingsViewModel.Toggle(
+                context.getString(R.string.allow_calendar_access),
+                this,
+                userPreferences.calendarIntegrationEnabled
+            )
+            is SettingsType.Calendar -> SettingsViewModel.Toggle(
+                name,
+                this,
+                enabled
+            )
+            SettingsType.CalendarPermissionInfo -> SettingsViewModel.InfoText(
+                context.getString(R.string.allow_calendar_message),
+                this
+            )
         }
 }

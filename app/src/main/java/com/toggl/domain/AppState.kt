@@ -4,6 +4,7 @@ import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.BackStackAwareState
+import com.toggl.common.feature.navigation.ExternalLocation
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
 import com.toggl.common.feature.navigation.pop
@@ -29,6 +30,7 @@ data class AppState(
     val clients: Map<Long, Client> = mapOf(),
     val tags: Map<Long, Tag> = mapOf(),
     val timeEntries: Map<Long, TimeEntry> = mapOf(),
+    val externalLocationToShow: ExternalLocation? = null,
     val backStack: BackStack = backStackOf(Route.Timer),
     val calendarPermissionWasGranted: Boolean = false,
     val shouldRequestCalendarPermission: Boolean = false,

@@ -1,19 +1,27 @@
 package com.toggl.api.di
 
 import com.google.gson.GsonBuilder
+import com.toggl.api.clients.ErrorHandlingProxyClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
+import com.toggl.api.clients.feedback.FeedbackApiClient
+import com.toggl.api.clients.reports.ReportsApiClient
 import com.toggl.api.extensions.AppBuildConfig
-import com.toggl.api.feedback.FeedbackApiClient
-import com.toggl.api.feedback.RetrofitFeedbackApiClient
-import com.toggl.api.login.LoginApiClient
-import com.toggl.api.login.RetrofitLoginApiClient
+import com.toggl.api.network.AuthenticationApi
 import com.toggl.api.network.FeedbackApi
-import com.toggl.api.network.FeedbackBody
-import com.toggl.api.network.LoginApi
+import com.toggl.api.network.ReportsApi
+import com.toggl.api.network.ResetPasswordBody
+import com.toggl.api.network.deserializers.TotalsResponseDeserializer
+import com.toggl.api.network.deserializers.UserDeserializer
 import com.toggl.api.network.interceptors.AuthInterceptor
 import com.toggl.api.network.interceptors.UserAgentInterceptor
-import com.toggl.api.serializers.FeedbackBodySerializer
-import com.toggl.api.serializers.UserDeserializer
+import com.toggl.api.network.models.feedback.FeedbackBody
+import com.toggl.api.network.models.reports.TotalsBody
+import com.toggl.api.network.models.reports.TotalsResponse
+import com.toggl.api.network.serializers.FeedbackBodySerializer
+import com.toggl.api.network.serializers.ResetPasswordBodySerializer
+import com.toggl.api.network.serializers.TotalsBodySerializer
 import com.toggl.models.domain.User
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -56,11 +64,13 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun retrofit(
+    @ApiRetrofit
+    fun apiRetrofit(
         @BaseApiUrl baseUrl: String,
         okHttpClient: OkHttpClient
     ): Retrofit {
         val converterFactory = GsonBuilder()
+            .registerTypeAdapter(ResetPasswordBody::class.java, ResetPasswordBodySerializer())
             .registerTypeAdapter(FeedbackBody::class.java, FeedbackBodySerializer())
             .registerTypeAdapter(User::class.java, UserDeserializer())
             .create()
@@ -75,21 +85,49 @@ object ApiModule {
 
     @Provides
     @Singleton
-    internal fun feedbackApi(retrofit: Retrofit) =
+    @ReportsRetrofit
+    fun reportsRetrofit(
+        @BaseReportsUrl baseUrl: String,
+        okHttpClient: OkHttpClient
+    ): Retrofit {
+        val converterFactory = GsonBuilder()
+            .registerTypeAdapter(TotalsBody::class.java, TotalsBodySerializer())
+            .registerTypeAdapter(TotalsResponse::class.java, TotalsResponseDeserializer())
+            .create()
+            .let(GsonConverterFactory::create)
+
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(okHttpClient)
+            .addConverterFactory(converterFactory)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    internal fun feedbackApi(@ApiRetrofit retrofit: Retrofit) =
         retrofit.create(FeedbackApi::class.java)
 
     @Provides
     @Singleton
-    internal fun loginApi(retrofit: Retrofit) =
-        retrofit.create(LoginApi::class.java)
+    internal fun authenticationApi(@ApiRetrofit retrofit: Retrofit) =
+        retrofit.create(AuthenticationApi::class.java)
 
     @Provides
     @Singleton
-    internal fun feedbackApiClient(feedbackApi: FeedbackApi): FeedbackApiClient =
-        RetrofitFeedbackApiClient(feedbackApi)
+    internal fun reportsApi(@ReportsRetrofit retrofit: Retrofit) =
+        retrofit.create(ReportsApi::class.java)
+}
 
-    @Provides
-    @Singleton
-    internal fun loginApiClient(loginApi: LoginApi): LoginApiClient =
-        RetrofitLoginApiClient(loginApi)
+@Module
+@InstallIn(ApplicationComponent::class)
+internal abstract class ApiClientModule {
+    @Binds
+    abstract fun feedbackApiClient(bind: ErrorHandlingProxyClient): FeedbackApiClient
+
+    @Binds
+    abstract fun authenticationApiClient(bind: ErrorHandlingProxyClient): AuthenticationApiClient
+
+    @Binds
+    abstract fun reportsApiClient(bind: ErrorHandlingProxyClient): ReportsApiClient
 }

@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.Failure
 import com.toggl.architecture.Loadable
 import com.toggl.onboarding.common.CoroutineTest
@@ -16,9 +16,9 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The set user error action")
 class SetUserErrorActionTests : CoroutineTest() {
-    private val loginApi: LoginApiClient = mockk()
+    private val authenticationApi: AuthenticationApiClient = mockk()
     private val userRepository: UserRepository = mockk()
-    private val reducer = LoginReducer(loginApi, userRepository, dispatcherProvider)
+    private val reducer = LoginReducer(authenticationApi, userRepository, dispatcherProvider)
 
     private val throwable = IllegalAccessException()
 

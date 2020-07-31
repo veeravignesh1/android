@@ -1,6 +1,6 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.login.LoginApiClient
+import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Failure
 import com.toggl.architecture.Loadable
@@ -12,6 +12,7 @@ import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
+import com.toggl.common.feature.navigation.push
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.models.validation.toEmail
@@ -22,7 +23,7 @@ import javax.inject.Singleton
 
 @Singleton
 class LoginReducer @Inject constructor(
-    private val apiClient: LoginApiClient,
+    private val apiClient: AuthenticationApiClient,
     private val userRepository: UserRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<LoginState, LoginAction> {
@@ -51,11 +52,11 @@ class LoginReducer @Inject constructor(
             is LoginAction.SetUserError -> state.mutateWithoutEffects {
                 copy(user = Loadable.Error(Failure(action.throwable, "")))
             }
-            is LoginAction.EmailEntered -> state.mutateWithoutEffects {
-                copy(email = action.email.toEmail())
-            }
-            is LoginAction.PasswordEntered -> state.mutateWithoutEffects {
-                copy(password = action.password.toPassword())
-            }
+            is LoginAction.EmailEntered -> state.mutateWithoutEffects { copy(email = action.email.toEmail()) }
+            is LoginAction.PasswordEntered -> state.mutateWithoutEffects { copy(password = action.password.toPassword()) }
+            LoginAction.ForgotPasswordTapped -> state.navigateTo(Route.PasswordReset)
         }
+
+    private fun MutableValue<LoginState>.navigateTo(route: Route): List<Effect<LoginAction>> =
+        mutateWithoutEffects { copy(backStack = backStack.push(route)) }
 }

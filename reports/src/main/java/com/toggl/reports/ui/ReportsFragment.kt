@@ -7,14 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 
 class ReportsFragment : Fragment() {
+    private val store: ReportsStoreViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        View(context).apply {
-            background = ColorDrawable(Color.parseColor("#FF00FF"))
-        }
+    ) = View(context).apply { background = ColorDrawable(Color.parseColor("#FF00FF")) }
 }
