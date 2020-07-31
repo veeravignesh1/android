@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.toggl.architecture.extensions.select
-import com.toggl.settings.compose.extensions.createComposeDialog
+import com.toggl.settings.compose.extensions.createComposeFullscreenView
 import com.toggl.settings.domain.SingleChoiceSettingSelector
 import com.toggl.settings.ui.composables.SingleChoiceDialogWithHeader
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,7 +26,7 @@ class SingleChoiceSettingsDialogFragment : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = createComposeDialog {
+    ): View? = createComposeFullscreenView {
         val selectedSingleChoiceState = store.state.select(singleChoiceSettingSelector!!)
 
         SingleChoiceDialogWithHeader(selectedSingleChoiceState, store::dispatch)

@@ -21,7 +21,7 @@ fun Fragment.createComposeView(
     }
 }
 
-fun Fragment.createComposeDialog(
+fun Fragment.createComposeFullscreenView(
     content: @Composable () -> Unit
 ): ViewGroup = blankFrameLayout().apply {
     setContent(Recomposer.current()) {
