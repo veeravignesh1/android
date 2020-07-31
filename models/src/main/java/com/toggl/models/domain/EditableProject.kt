@@ -23,6 +23,6 @@ data class EditableProject(
 fun EditableProject.isValid(projects: Collection<Project>): Boolean =
     projects.none {
         it.name == name &&
-        it.workspaceId == workspaceId &&
-        it.clientId == clientId
+            it.workspaceId == workspaceId &&
+            it.clientId == clientId
     }

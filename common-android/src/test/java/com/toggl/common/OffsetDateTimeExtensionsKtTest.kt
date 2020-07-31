@@ -94,13 +94,15 @@ internal class OffsetDateTimeExtensionsKtTest {
                 DurationTestEntry(
                     now.plusMinutes(
                         30
-                    ), now, Duration.ofMinutes(30)
+                    ),
+                    now, Duration.ofMinutes(30)
                 ),
 
                 DurationTestEntry(
                     now.plusSeconds(
                         59
-                    ), now, Duration.ofSeconds(59)
+                    ),
+                    now, Duration.ofSeconds(59)
                 ),
                 DurationTestEntry(
                     now,

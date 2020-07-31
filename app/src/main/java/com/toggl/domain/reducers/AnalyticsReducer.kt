@@ -58,18 +58,20 @@ class AnalyticsReducer @Inject constructor(
         }
 
     private fun StartEditAction.toEvents(state: MutableValue<AppState>): List<Event> =
-        listOfNotNull(when (this) {
-            StartEditAction.CloseButtonTapped,
-            StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
-            StartEditAction.DoneButtonTapped ->
-                state().backStack.getRouteParam<EditableTimeEntry>()?.let {
-                    Event.editViewClosed(
-                        if (it.isRepresentingGroup()) EditViewCloseReason.GroupSave
-                        else EditViewCloseReason.Save
-                    )
-                }
-            else -> null
-        })
+        listOfNotNull(
+            when (this) {
+                StartEditAction.CloseButtonTapped,
+                StartEditAction.DialogDismissed -> Event.editViewClosed(EditViewCloseReason.Close)
+                StartEditAction.DoneButtonTapped ->
+                    state().backStack.getRouteParam<EditableTimeEntry>()?.let {
+                        Event.editViewClosed(
+                            if (it.isRepresentingGroup()) EditViewCloseReason.GroupSave
+                            else EditViewCloseReason.Save
+                        )
+                    }
+                else -> null
+            }
+        )
 
     private fun RunningTimeEntryAction.toEvents(): List<Event> =
         listOfNotNull(

@@ -36,7 +36,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
             newState shouldBe initialState
         }
-}
+    }
     @Test
     fun `does nothing if the password is invalid`() = runBlockingTest {
         val initialState = emptyState().withCredentials(email = validEmail)

@@ -36,12 +36,14 @@ class StopTimeDraggedActionTests : CoroutineTest() {
     private val duration = Duration.ofHours(5)
     private val endTime = startTime.plus(duration)
 
-    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(
-        1,
-        "test",
-        startTime,
-        duration
-    ))
+    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(
+        createTimeEntry(
+            1,
+            "test",
+            startTime,
+            duration
+        )
+    )
 
     @Test
     fun `throws if executed on a calendar item`() = runBlockingTest {

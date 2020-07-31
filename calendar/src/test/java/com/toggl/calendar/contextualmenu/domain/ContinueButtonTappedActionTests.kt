@@ -78,9 +78,11 @@ internal class ContinueButtonTappedActionTests {
         reducer.testReduceEffects(
             initialState = initialState,
             action = ContextualMenuAction.ContinueButtonTapped
-        ) { effects -> effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
-            it.id shouldBe timeEntry.id
-        } }
+        ) { effects ->
+            effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
+                it.id shouldBe timeEntry.id
+            }
+        }
     }
 
     @Test

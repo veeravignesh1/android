@@ -26,7 +26,8 @@ class SettingsSelector @Inject constructor(
     ): SettingsSectionViewModel =
         SettingsSectionViewModel(
             context.getString(title),
-            settingsList.mapNotNull { it.toViewModel(user, userPreferences, workspaces) })
+            settingsList.mapNotNull { it.toViewModel(user, userPreferences, workspaces) }
+        )
 
     private fun SettingsType.toViewModel(
         user: User,

@@ -85,8 +85,10 @@ val CalendarItem.duration: Duration?
 
 val CalendarItem.isRunning: Boolean
     get() = this is CalendarItem.TimeEntry && this.timeEntry.duration == null ||
-        (this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
-            this.selectedCalendarItem.editableTimeEntry.isRunning())
+        (
+            this is CalendarItem.SelectedItem && this.selectedCalendarItem is SelectedCalendarItem.SelectedTimeEntry &&
+                this.selectedCalendarItem.editableTimeEntry.isRunning()
+            )
 
 val SelectedCalendarItem.startTime: OffsetDateTime
     get() =

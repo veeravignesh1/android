@@ -15,10 +15,11 @@ class AuthInterceptor @Inject constructor(
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = when (val token = tokenProvider.getApiToken()) {
             ApiToken.Invalid -> chain.request()
-            is ApiToken.Valid -> chain.request()
-                .newBuilder()
-                .addHeader("Authorization", token.basicAuthenticationHeader())
-                .build()
+            is ApiToken.Valid ->
+                chain.request()
+                    .newBuilder()
+                    .addHeader("Authorization", token.basicAuthenticationHeader())
+                    .build()
         }
 
         return chain.proceed(request)

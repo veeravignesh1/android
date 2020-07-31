@@ -100,7 +100,8 @@ object CalendarApplicationModule {
 
     @ExperimentalContracts
     private fun ContextualMenuReducer.decorateWith(timeEntryReducer: TimeEntryReducer) =
-        decorateWith(timeEntryReducer,
+        decorateWith(
+            timeEntryReducer,
             mapToLocalState = { TimeEntryState(it.timeEntries) },
             mapToLocalAction = { TimeEntryAction.fromTimeEntryActionHolder(it) },
             mapToGlobalState = { globalState, localState -> globalState.copy(timeEntries = localState.timeEntries) },

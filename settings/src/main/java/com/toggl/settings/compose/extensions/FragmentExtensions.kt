@@ -19,7 +19,6 @@ fun Fragment.createComposeView(
             callback.invoke(statusBarHeight.pixelsToDp(context).dp, navigationBarHeight.pixelsToDp(context).dp)
         }
     }
-
 }
 
 fun Fragment.createComposeDialog(

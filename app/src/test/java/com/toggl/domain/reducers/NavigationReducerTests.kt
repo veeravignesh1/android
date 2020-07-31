@@ -38,7 +38,8 @@ class NavigationReducerTests : CoroutineTest() {
         @Test
         fun `pops back stack`() = runBlockingTest {
             reducer.testReduceState(initialState.copy(backStack = backStackOf(Route.Timer, Route.Reports)), AppAction.BackButtonPressed) {
-                state -> state shouldBe initialState.copy(
+                state ->
+                state shouldBe initialState.copy(
                     backStack = backStackOf(Route.Timer)
                 )
             }
@@ -52,7 +53,8 @@ class NavigationReducerTests : CoroutineTest() {
         @Test
         fun `sets the back stack to timer when selecting the timer tab`() = runBlockingTest {
             reducer.testReduceState(initialState, AppAction.TabSelected(Tab.Timer)) {
-                state -> state shouldBe initialState.copy(
+                state ->
+                state shouldBe initialState.copy(
                     backStack = backStackOf(Route.Timer)
                 )
             }
@@ -61,7 +63,8 @@ class NavigationReducerTests : CoroutineTest() {
         @Test
         fun `sets the back stack to timer and calendar when selecting the calendar tab`() = runBlockingTest {
             reducer.testReduceState(initialState, AppAction.TabSelected(Tab.Calendar)) {
-                state -> state shouldBe initialState.copy(
+                state ->
+                state shouldBe initialState.copy(
                     backStack = backStackOf(Route.Timer, Route.Calendar)
                 )
             }

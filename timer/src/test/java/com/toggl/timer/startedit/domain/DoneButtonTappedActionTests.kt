@@ -113,9 +113,10 @@ class DoneButtonTappedActionTests : CoroutineTest() {
             initialState,
             StartEditAction.DoneButtonTapped
         ) { effects ->
-                val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
-                actions shouldHaveSize 2
-                actions.forEach { action -> action.timeEntryAction.shouldBeTypeOf<TimeEntryAction.EditTimeEntry> {
+            val actions = effects.map { it.execute() }.filterIsInstance(StartEditAction.TimeEntryHandling::class.java)
+            actions shouldHaveSize 2
+            actions.forEach { action ->
+                action.timeEntryAction.shouldBeTypeOf<TimeEntryAction.EditTimeEntry> {
                     it.timeEntry.shouldBe(
                         TimeEntry(
                             id = it.timeEntry.id,

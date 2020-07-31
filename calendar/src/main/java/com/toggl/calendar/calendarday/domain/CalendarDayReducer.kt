@@ -50,9 +50,11 @@ class CalendarDayReducer @Inject constructor(
 
                 copy(backStack = backStack.pushOrUpdate(route))
             }
-            CalendarDayAction.CalendarViewAppeared -> effect(state().run {
-                FetchCalendarEventsEffect(calendarService, selectedDate.toBeginningOfTheDay(), selectedDate.toEndOfTheDay(), dispatcherProvider)
-            })
+            CalendarDayAction.CalendarViewAppeared -> effect(
+                state().run {
+                    FetchCalendarEventsEffect(calendarService, selectedDate.toBeginningOfTheDay(), selectedDate.toEndOfTheDay(), dispatcherProvider)
+                }
+            )
             is CalendarDayAction.CalendarEventsFetched -> state.mutateWithoutEffects {
                 copy(events = action.calendarEvents.associateBy { it.id })
             }
@@ -106,9 +108,11 @@ class CalendarDayReducer @Inject constructor(
             val editableTimeEntry = selectableItem.toEditableTimeEntry()
             editableTimeEntry.throwIfNew()
 
-            copy(backStack = backStack.setRouteParam {
-                Route.ContextualMenu(selectableItem.copy(editableTimeEntry = modifyEditableTimeEntry(editableTimeEntry)))
-            })
+            copy(
+                backStack = backStack.setRouteParam {
+                    Route.ContextualMenu(selectableItem.copy(editableTimeEntry = modifyEditableTimeEntry(editableTimeEntry)))
+                }
+            )
         }
     }
 

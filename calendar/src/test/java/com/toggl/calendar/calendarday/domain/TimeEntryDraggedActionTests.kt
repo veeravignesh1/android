@@ -34,12 +34,14 @@ class TimeEntryDraggedActionTests : CoroutineTest() {
 
     private val startTime = OffsetDateTime.of(2005, 5, 5, 5, 5, 0, 0, ZoneOffset.UTC)
 
-    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(
-        1,
-        "test",
-        startTime,
-        Duration.ofMinutes(90)
-    ))
+    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(
+        createTimeEntry(
+            1,
+            "test",
+            startTime,
+            Duration.ofMinutes(90)
+        )
+    )
 
     @Test
     fun `throws if executed on a calendar item`() = runBlockingTest {

@@ -77,9 +77,11 @@ internal class DeleteButtonTappedActionTests {
         reducer.testReduceEffects(
             initialState = initialState,
             action = ContextualMenuAction.DeleteButtonTapped
-        ) { effects -> effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry> {
-            it.id shouldBe timeEntry.id
-        } }
+        ) { effects ->
+            effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.DeleteTimeEntry> {
+                it.id shouldBe timeEntry.id
+            }
+        }
     }
 
     @Test
