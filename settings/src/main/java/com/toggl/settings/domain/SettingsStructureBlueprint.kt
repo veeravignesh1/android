@@ -17,7 +17,7 @@ class SettingsStructureBlueprint @Inject constructor(
 
     suspend fun calendarSections(state: SettingsState): List<SettingsSectionBlueprint> {
 
-        val userCalendars = calendarService.getUserSelectedCalendars()
+        val userCalendars = calendarService.getUserSelectedCalendars(state.userPreferences)
         val availableCalendars = calendarService.getAvailableCalendars()
 
         val calendarIntegrationEnabled = permissionCheckerService.hasCalendarPermission() &&

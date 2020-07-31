@@ -10,6 +10,7 @@ import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
+import com.toggl.models.domain.UserPreferences
 import java.time.OffsetDateTime
 
 data class CalendarState(
@@ -19,6 +20,7 @@ data class CalendarState(
     val clients: Map<Long, Client>,
     val backStack: BackStack,
     val calendarEvents: Map<String, CalendarEvent>,
+    val userPreferences: UserPreferences,
     val localState: LocalState
 ) : BackStackAwareState<CalendarState> {
     data class LocalState internal constructor(

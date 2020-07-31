@@ -13,6 +13,7 @@ fun mapAppStateToCalendarState(appState: AppState): CalendarState =
         appState.clients,
         appState.backStack,
         appState.calendarEvents,
+        appState.userPreferences,
         appState.calendarLocalState
     )
 

@@ -7,6 +7,7 @@ import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadProjectsSubscriptions
 import com.toggl.domain.loading.LoadTimeEntriesSubscription
+import com.toggl.domain.loading.LoadUserPreferencesSubscription
 import com.toggl.repository.Repository
 import dagger.Module
 import dagger.Provides
@@ -39,4 +40,12 @@ object SubscriptionModule {
         dispatcherProvider: DispatcherProvider
     ): Subscription<AppState, AppAction> =
         LoadProjectsSubscriptions(repository, dispatcherProvider)
+
+    @Provides
+    @IntoSet
+    fun loadUserPreferencesSubscription(
+        repository: Repository,
+        dispatcherProvider: DispatcherProvider
+    ): Subscription<AppState, AppAction> =
+        LoadUserPreferencesSubscription(repository, dispatcherProvider)
 }

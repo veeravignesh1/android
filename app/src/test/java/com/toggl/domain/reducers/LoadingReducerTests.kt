@@ -13,7 +13,6 @@ import com.toggl.domain.extensions.toMutableValue
 import com.toggl.domain.loading.LoadClientsEffect
 import com.toggl.domain.loading.LoadTagsEffect
 import com.toggl.domain.loading.LoadTasksEffect
-import com.toggl.domain.loading.LoadUserPreferencesEffect
 import com.toggl.domain.loading.LoadWorkspacesEffect
 import com.toggl.domain.loading.LoadingAction
 import com.toggl.domain.loading.LoadingReducer
@@ -29,7 +28,6 @@ import com.toggl.models.domain.WorkspaceFeature
 import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 import com.toggl.repository.interfaces.ClientRepository
-import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.UserRepository
@@ -50,14 +48,12 @@ class LoadingReducerTests : CoroutineTest() {
     private val tagRepository = mockk<TagRepository>()
     private val userRepository = mockk<UserRepository>()
     private val taskRepository = mockk<TaskRepository>()
-    private val settingsRepository = mockk<SettingsRepository>()
     private val reducer = LoadingReducer(
         clientRepository,
         workspaceRepository,
         tagRepository,
         taskRepository,
         userRepository,
-        settingsRepository,
         dispatcherProvider
     )
 
@@ -150,8 +146,7 @@ class LoadingReducerTests : CoroutineTest() {
                     LoadWorkspacesEffect::class,
                     LoadClientsEffect::class,
                     LoadTagsEffect::class,
-                    LoadTasksEffect::class,
-                    LoadUserPreferencesEffect::class
+                    LoadTasksEffect::class
                 )
             }
         }

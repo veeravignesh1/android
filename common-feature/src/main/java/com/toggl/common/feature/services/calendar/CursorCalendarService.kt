@@ -3,6 +3,7 @@ package com.toggl.common.feature.services.calendar
 import android.content.Context
 import android.database.Cursor
 import android.provider.CalendarContract
+import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import java.time.Duration
 import java.time.Instant
@@ -67,8 +68,8 @@ class CursorCalendarService @Inject constructor(
         }.toList()
     }
 
-    override suspend fun getUserSelectedCalendars(): List<Calendar> {
-        val selectedCalendarIds = settingsRepository.loadUserPreferences().calendarIds
+    override suspend fun getUserSelectedCalendars(userPreferences: UserPreferences): List<Calendar> {
+        val selectedCalendarIds = userPreferences.calendarIds
         return getAvailableCalendars().filter { selectedCalendarIds.contains(it.id) }
     }
 

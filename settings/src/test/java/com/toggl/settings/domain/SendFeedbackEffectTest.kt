@@ -26,7 +26,7 @@ class SendFeedbackEffectTest : CoroutineTest() {
         val feedbackDataBuilder = mockk<FeedbackDataBuilder>()
         val expectedFeedbackData = mockk<FeedbackData>()
         coEvery { feedbackApi.sendFeedback(any(), any(), any(), any()) }.returns(Unit)
-        coEvery { feedbackDataBuilder.assembleFeedbackData() }.returns(expectedFeedbackData)
+        coEvery { feedbackDataBuilder.assembleFeedbackData(any()) }.returns(expectedFeedbackData)
         val expectedMessage = "expected feedback message"
         val expectedPlatformInfo: PlatformInfo = mockk()
         val expectedEmail = Email.from("expected@email.com") as Email.Valid
@@ -39,7 +39,7 @@ class SendFeedbackEffectTest : CoroutineTest() {
         )
 
         SendFeedbackEffect(
-            expectedMessage, expectedUser, expectedPlatformInfo, feedbackDataBuilder, feedbackApi, dispatcherProvider
+            expectedMessage, expectedUser, expectedPlatformInfo, feedbackDataBuilder, feedbackApi, mockk(), dispatcherProvider
         ).execute()
 
         coVerify { feedbackApi.sendFeedback(expectedUser, expectedMessage, expectedPlatformInfo, expectedFeedbackData) }
@@ -50,13 +50,13 @@ class SendFeedbackEffectTest : CoroutineTest() {
         runBlockingTest {
             val feedbackApi = mockk<FeedbackApiClient>()
             val feedbackDataBuilder = mockk<FeedbackDataBuilder>()
-            coEvery { feedbackDataBuilder.assembleFeedbackData() }.returns(mockk())
+            coEvery { feedbackDataBuilder.assembleFeedbackData(any()) }.returns(mockk())
             val expectedError = mockk<Exception>()
             every { expectedError.message } returns ""
             coEvery { feedbackApi.sendFeedback(any(), any(), any(), any()) }.throws(expectedError)
 
             val resultAction = SendFeedbackEffect(
-                "whatever", mockk(relaxed = true), mockk(), feedbackDataBuilder, feedbackApi, dispatcherProvider
+                "whatever", mockk(relaxed = true), mockk(), feedbackDataBuilder, feedbackApi, mockk(), dispatcherProvider
             ).execute()
 
             resultAction.shouldBeTypeOf<SettingsAction.SetSendFeedbackError> { it.throwable shouldBe expectedError }
@@ -66,11 +66,11 @@ class SendFeedbackEffectTest : CoroutineTest() {
     fun `should return the FeedbackSent action with the right throwable when something goes wrong`() = runBlockingTest {
         val feedbackApi = mockk<FeedbackApiClient>()
         val feedbackDataBuilder = mockk<FeedbackDataBuilder>()
-        coEvery { feedbackDataBuilder.assembleFeedbackData() }.returns(mockk())
+        coEvery { feedbackDataBuilder.assembleFeedbackData(any()) }.returns(mockk())
         coEvery { feedbackApi.sendFeedback(any(), any(), any(), any()) }.returns(Unit)
 
         val resultAction = SendFeedbackEffect(
-            "whatever", mockk(relaxed = true), mockk(), feedbackDataBuilder, feedbackApi, dispatcherProvider
+            "whatever", mockk(relaxed = true), mockk(), feedbackDataBuilder, feedbackApi, mockk(), dispatcherProvider
         ).execute()
 
         resultAction.shouldBeTypeOf<SettingsAction.FeedbackSent>()

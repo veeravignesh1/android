@@ -6,7 +6,6 @@ import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.Repository
-import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.settings.common.CoroutineTest
 import io.kotest.matchers.ints.shouldBeExactly
 import io.kotest.matchers.nulls.shouldBeNull
@@ -24,7 +23,6 @@ import java.time.OffsetDateTime
 class FeedbackDataBuilderTest : CoroutineTest() {
     val repository = mockk<Repository>()
     val timeService = mockk<TimeService>()
-    val settingsRepository = mockk<SettingsRepository>()
     val completelyModifiedUserPrefs = UserPreferences(
         manualModeEnabled = true,
         twentyFourHourClockEnabled = true,
@@ -40,12 +38,10 @@ class FeedbackDataBuilderTest : CoroutineTest() {
     )
     val feedbackDataBuilder: FeedbackDataBuilder = FeedbackDataBuilder(
         repository,
-        timeService,
-        settingsRepository
+        timeService
     )
 
     init {
-        coEvery { settingsRepository.loadUserPreferences() }.returns(completelyModifiedUserPrefs)
         coEvery { repository.timeEntriesCount() }.returns(Int.MIN_VALUE)
         coEvery { repository.workspacesCount() }.returns(Int.MIN_VALUE)
         coEvery { timeService.now() }.returns(OffsetDateTime.MIN)
@@ -56,7 +52,7 @@ class FeedbackDataBuilderTest : CoroutineTest() {
         val expectedCount = 1
         coEvery { repository.timeEntriesCount() }.returns(expectedCount)
 
-        val feedbackData = feedbackDataBuilder.assembleFeedbackData()
+        val feedbackData = feedbackDataBuilder.assembleFeedbackData(completelyModifiedUserPrefs)
 
         feedbackData.numberOfTimeEntries shouldBeExactly expectedCount
     }
@@ -66,7 +62,7 @@ class FeedbackDataBuilderTest : CoroutineTest() {
         val expectedCount = 1
         coEvery { repository.workspacesCount() }.returns(expectedCount)
 
-        val feedbackData = feedbackDataBuilder.assembleFeedbackData()
+        val feedbackData = feedbackDataBuilder.assembleFeedbackData(completelyModifiedUserPrefs)
 
         feedbackData.numberOfWorkspaces shouldBeExactly expectedCount
     }
@@ -75,7 +71,7 @@ class FeedbackDataBuilderTest : CoroutineTest() {
     fun `should tell if the user has manual mode enabled`() = runBlockingTest {
         val expectedManualMode = completelyModifiedUserPrefs.manualModeEnabled
 
-        val feedbackData = feedbackDataBuilder.assembleFeedbackData()
+        val feedbackData = feedbackDataBuilder.assembleFeedbackData(completelyModifiedUserPrefs)
 
         feedbackData.manualModeIsOn shouldBe expectedManualMode
     }
@@ -85,14 +81,14 @@ class FeedbackDataBuilderTest : CoroutineTest() {
         val expectedTime = mockk<OffsetDateTime>()
         every { timeService.now() }.returns(expectedTime)
 
-        val feedbackData = feedbackDataBuilder.assembleFeedbackData()
+        val feedbackData = feedbackDataBuilder.assembleFeedbackData(completelyModifiedUserPrefs)
 
         feedbackData.deviceTime shouldBe expectedTime
     }
 
     @Test
     fun `everything else should be null or have an bogus value until actually implemented`() = runBlockingTest {
-        val feedbackData = feedbackDataBuilder.assembleFeedbackData()
+        val feedbackData = feedbackDataBuilder.assembleFeedbackData(completelyModifiedUserPrefs)
 
         feedbackData.accountTimeZone.shouldBeNull()
         feedbackData.numberOfUnsyncedTimeEntries.shouldBe(Int.MIN_VALUE)

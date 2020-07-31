@@ -2,19 +2,17 @@ package com.toggl.settings.domain
 
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.FeedbackData
+import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.Repository
-import com.toggl.repository.interfaces.SettingsRepository
 import javax.inject.Inject
 
 class FeedbackDataBuilder @Inject constructor(
     private val repository: Repository,
-    private val timeService: TimeService,
-    private val settingsRepository: SettingsRepository
+    private val timeService: TimeService
 ) {
-    suspend fun assembleFeedbackData(): FeedbackData {
+    suspend fun assembleFeedbackData(userPreferences: UserPreferences): FeedbackData {
         val workspacesCount = repository.workspacesCount()
         val timeEntriesCount = repository.timeEntriesCount()
-        val userPreferences = settingsRepository.loadUserPreferences()
         return FeedbackData(
             accountTimeZone = null, // TODO: actually get the user account timezone
             numberOfWorkspaces = workspacesCount,

@@ -6,9 +6,7 @@ import com.toggl.calendar.datepicker.ui.start
 import com.toggl.common.extensions.toList
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.UserPreferences
-import com.toggl.repository.interfaces.SettingsRepository
 import io.kotest.matchers.shouldBe
-import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.test.runBlockingTest
@@ -25,12 +23,12 @@ class DatePickerSelectorTest : CoroutineTest() {
     @ParameterizedTest
     @MethodSource("availableDatesTestDataForAnYear")
     fun `Selects correctly the first and last selectable dates`(testData: AvailableDatesTestData) = runBlockingTest {
-        val state = createInitialState()
-        val settingsRepository = mockk<SettingsRepository>()
+        val state = createInitialState(
+            userPreferences = UserPreferences.default.copy(firstDayOfTheWeek = DayOfWeek.SUNDAY)
+        )
         val timeService = mockk<TimeService>()
         every { timeService.now() }.returns(testData.today)
-        coEvery { settingsRepository.loadUserPreferences() }.returns(UserPreferences.default.copy(firstDayOfTheWeek = DayOfWeek.SUNDAY))
-        val selector = DatePickerSelector(settingsRepository, timeService, dispatcherProvider)
+        val selector = DatePickerSelector(timeService, dispatcherProvider)
 
         val result = selector.select(state)
 
@@ -41,12 +39,12 @@ class DatePickerSelectorTest : CoroutineTest() {
     @ParameterizedTest
     @MethodSource("visibleDatesTestDataForTodayAsJuly_9_2020")
     fun `Loads correctly the visible dates for july, 9th 2020`(testData: VisibleDatesTestData) = runBlockingTest {
-        val state = createInitialState()
+        val state = createInitialState(
+            userPreferences = UserPreferences.default.copy(firstDayOfTheWeek = testData.beginningOfTheWeek)
+        )
         val timeService = mockk<TimeService>()
-        val settingsRepository = mockk<SettingsRepository>()
         every { timeService.now() }.returns(testData.today)
-        coEvery { settingsRepository.loadUserPreferences() }.returns(UserPreferences.default.copy(firstDayOfTheWeek = testData.beginningOfTheWeek))
-        val selector = DatePickerSelector(settingsRepository, timeService, dispatcherProvider)
+        val selector = DatePickerSelector(timeService, dispatcherProvider)
 
         val result = selector.select(state)
 
@@ -57,12 +55,12 @@ class DatePickerSelectorTest : CoroutineTest() {
     @ParameterizedTest
     @MethodSource("weekLabelsTestData")
     fun `Loads correctly the weekday labels`(weekLabelsTestData: WeekLabelsTestData) = runBlockingTest {
-        val state = createInitialState()
+        val state = createInitialState(
+            userPreferences = UserPreferences.default.copy(firstDayOfTheWeek = weekLabelsTestData.firstDayOfTheWeek)
+        )
         val timeService = mockk<TimeService>()
-        val settingsRepository = mockk<SettingsRepository>()
         every { timeService.now() }.returns(OffsetDateTime.now())
-        coEvery { settingsRepository.loadUserPreferences() }.returns(UserPreferences.default.copy(firstDayOfTheWeek = weekLabelsTestData.firstDayOfTheWeek))
-        val selector = DatePickerSelector(settingsRepository, timeService, dispatcherProvider)
+        val selector = DatePickerSelector(timeService, dispatcherProvider)
 
         val result = selector.select(state)
 
@@ -72,12 +70,12 @@ class DatePickerSelectorTest : CoroutineTest() {
     @ParameterizedTest
     @MethodSource("visibleDatesTestDataForTodayAsJuly_9_2020")
     fun `Loads correctly the currently selected week index`(testData: VisibleDatesTestData) = runBlockingTest {
-        val state = createInitialState()
+        val state = createInitialState(
+            userPreferences = UserPreferences.default.copy(firstDayOfTheWeek = testData.beginningOfTheWeek)
+        )
         val timeService = mockk<TimeService>()
-        val settingsRepository = mockk<SettingsRepository>()
         every { timeService.now() }.returns(testData.today)
-        coEvery { settingsRepository.loadUserPreferences() }.returns(UserPreferences.default.copy(firstDayOfTheWeek = testData.beginningOfTheWeek))
-        val selector = DatePickerSelector(settingsRepository, timeService, dispatcherProvider)
+        val selector = DatePickerSelector(timeService, dispatcherProvider)
         val weeks = selector.select(state).weeks
 
         weeks.forEachIndexed { expectedIndex, week ->

@@ -8,6 +8,7 @@ import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.UserPreferences
 import java.time.OffsetDateTime
 
 fun createInitialState(
@@ -16,13 +17,15 @@ fun createInitialState(
     projects: List<Project> = listOf(),
     selectedItem: SelectedCalendarItem? = null,
     date: OffsetDateTime = OffsetDateTime.now(),
-    calendars: List<Calendar> = listOf()
+    calendars: List<Calendar> = listOf(),
+    userPreferences: UserPreferences = UserPreferences.default
 ) = CalendarDayState(
-    validUser,
-    timeEntries.associateBy { it.id },
-    projects.associateBy { it.id },
-    if (selectedItem == null) emptyList() else backStackOf(Route.ContextualMenu(selectedItem)),
-    calendarEvents.associateBy { it.id },
-    date,
-    calendars
+    user = validUser,
+    timeEntries = timeEntries.associateBy { it.id },
+    projects = projects.associateBy { it.id },
+    backStack = if (selectedItem == null) emptyList() else backStackOf(Route.ContextualMenu(selectedItem)),
+    events = calendarEvents.associateBy { it.id },
+    selectedDate = date,
+    calendars = calendars,
+    userPreferences = userPreferences
 )

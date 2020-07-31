@@ -12,7 +12,6 @@ import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
 import com.toggl.repository.interfaces.ClientRepository
-import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.TagRepository
 import com.toggl.repository.interfaces.TaskRepository
 import com.toggl.repository.interfaces.UserRepository
@@ -27,7 +26,6 @@ class LoadingReducer @Inject constructor(
     private val tagsRepository: TagRepository,
     private val taskRepository: TaskRepository,
     private val userRepository: UserRepository,
-    private val settingsRepository: SettingsRepository,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<LoadingState, LoadingAction> {
 
@@ -52,8 +50,7 @@ class LoadingReducer @Inject constructor(
                         LoadWorkspacesEffect(workspaceRepository, dispatcherProvider),
                         LoadClientsEffect(clientRepository, dispatcherProvider),
                         LoadTagsEffect(tagsRepository, dispatcherProvider),
-                        LoadTasksEffect(taskRepository, dispatcherProvider),
-                        LoadUserPreferencesEffect(settingsRepository, dispatcherProvider)
+                        LoadTasksEffect(taskRepository, dispatcherProvider)
                     )
                 }
             is LoadingAction.TimeEntriesLoaded -> state.mutateWithoutEffects { copy(timeEntries = action.timeEntries) }

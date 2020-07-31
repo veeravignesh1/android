@@ -52,7 +52,13 @@ class CalendarDayReducer @Inject constructor(
             }
             CalendarDayAction.CalendarViewAppeared -> effect(
                 state().run {
-                    FetchCalendarEventsEffect(calendarService, selectedDate.toBeginningOfTheDay(), selectedDate.toEndOfTheDay(), dispatcherProvider)
+                    FetchCalendarEventsEffect(
+                        calendarService,
+                        selectedDate.toBeginningOfTheDay(),
+                        selectedDate.toEndOfTheDay(),
+                        userPreferences,
+                        dispatcherProvider
+                    )
                 }
             )
             is CalendarDayAction.CalendarEventsFetched -> state.mutateWithoutEffects {

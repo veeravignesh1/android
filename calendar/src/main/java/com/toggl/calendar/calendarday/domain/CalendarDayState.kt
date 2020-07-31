@@ -8,6 +8,7 @@ import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
+import com.toggl.models.domain.UserPreferences
 import java.time.OffsetDateTime
 
 data class CalendarDayState(
@@ -17,7 +18,8 @@ data class CalendarDayState(
     val backStack: BackStack,
     val events: Map<String, CalendarEvent>,
     val selectedDate: OffsetDateTime,
-    val calendars: List<Calendar>
+    val calendars: List<Calendar>,
+    val userPreferences: UserPreferences
 ) {
     companion object {
         fun fromCalendarState(calendarState: CalendarState): CalendarDayState? {
@@ -30,7 +32,8 @@ data class CalendarDayState(
                 calendarState.backStack,
                 calendarState.calendarEvents,
                 calendarState.localState.selectedDate,
-                calendarState.localState.calendars
+                calendarState.localState.calendars,
+                calendarState.userPreferences
             )
         }
 

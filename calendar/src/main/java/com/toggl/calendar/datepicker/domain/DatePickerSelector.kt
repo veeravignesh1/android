@@ -11,14 +11,12 @@ import com.toggl.calendar.datepicker.ui.start
 import com.toggl.common.extensions.beginningOfWeek
 import com.toggl.common.extensions.toList
 import com.toggl.common.services.time.TimeService
-import com.toggl.repository.interfaces.SettingsRepository
 import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class DatePickerSelector @Inject constructor(
-    private val settingsRepository: SettingsRepository,
     private val timeService: TimeService,
     private val dispatcherProvider: DispatcherProvider
 ) : Selector<CalendarDatePickerState, DatePickerViewModel> {
@@ -27,7 +25,7 @@ class DatePickerSelector @Inject constructor(
 
     override suspend fun select(state: CalendarDatePickerState): DatePickerViewModel = withContext(dispatcherProvider.io) {
         val today = timeService.now()
-        val userPreferences = settingsRepository.loadUserPreferences()
+        val userPreferences = state.userPreferences
         val userFirstDayOfTheWeek = userPreferences.firstDayOfTheWeek
         val userFirstDayOfTheWeekValue = userFirstDayOfTheWeek.value - 1
         val weekLabels = (0 until daysInAWeek)

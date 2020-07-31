@@ -7,6 +7,7 @@ import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.common.toMutableValue
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.common.SwipeDirection
+import com.toggl.models.domain.UserPreferences
 import io.kotest.matchers.longs.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -29,7 +30,8 @@ internal class WeekStripeSwipedActionTest : CoroutineTest() {
     private val fixedDate = OffsetDateTime.of(2020, Month.JULY.value, 14, 0, 0, 0, 0, ZoneOffset.UTC) // Tuesday
 
     private val initialState = CalendarDatePickerState(
-        selectedDate = fixedDate
+        selectedDate = fixedDate,
+        userPreferences = UserPreferences.default
     )
 
     private val timeService: TimeService = mockk()

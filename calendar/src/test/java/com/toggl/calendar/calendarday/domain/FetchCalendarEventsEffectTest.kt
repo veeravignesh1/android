@@ -20,7 +20,7 @@ class FetchCalendarEventsEffectTest : CoroutineTest() {
     fun `The effect should call the calendar service's getCalendarEvents with the right from and start parameters`() =
         runBlockingTest {
             val calendarService = mockk<CalendarService>()
-            coEvery { calendarService.getUserSelectedCalendars() }.returns(emptyList())
+            coEvery { calendarService.getUserSelectedCalendars(any()) }.returns(emptyList())
             coEvery { calendarService.getCalendarEvents(any(), any(), any()) }.returns(emptyList())
             val expectedStartTime = mockk<OffsetDateTime>()
             val expectedEndTime = mockk<OffsetDateTime>()
@@ -29,6 +29,7 @@ class FetchCalendarEventsEffectTest : CoroutineTest() {
                 calendarService = calendarService,
                 fromStartDate = expectedStartTime,
                 toEndDate = expectedEndTime,
+                userPreferences = mockk(),
                 dispatcherProvider = dispatcherProvider
             )
 
@@ -43,13 +44,14 @@ class FetchCalendarEventsEffectTest : CoroutineTest() {
         runBlockingTest {
             val calendarService = mockk<CalendarService>()
             val expectedCalendars = (1..3).map { Calendar(it.toString(), it.toString(), it.toString()) }
-            coEvery { calendarService.getUserSelectedCalendars() }.returns(expectedCalendars)
+            coEvery { calendarService.getUserSelectedCalendars(any()) }.returns(expectedCalendars)
             coEvery { calendarService.getCalendarEvents(any(), any(), any()) }.returns(emptyList())
 
             val effect = FetchCalendarEventsEffect(
                 calendarService = calendarService,
                 fromStartDate = mockk(),
                 toEndDate = mockk(),
+                userPreferences = mockk(),
                 dispatcherProvider = dispatcherProvider
             )
 

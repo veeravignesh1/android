@@ -79,7 +79,15 @@ class SettingsReducer @Inject constructor(
                     )
                 }
                 effect(
-                    SendFeedbackEffect(action.feedbackMessage, state().user, platformInfo, feedbackDataBuilder, feedbackApiClient, dispatcherProvider)
+                    SendFeedbackEffect(
+                        action.feedbackMessage,
+                        state().user,
+                        platformInfo,
+                        feedbackDataBuilder,
+                        feedbackApiClient,
+                        state().userPreferences,
+                        dispatcherProvider
+                    )
                 )
             }
 
