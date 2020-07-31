@@ -107,6 +107,15 @@
     <string name="password_reset_email_does_not_exist_error">Oops! Unknown email. Please check that it\'s entered correctly.</string>
     <string name="offline_error">You\'re offline. Please connect to the internet and try again.</string>
     <string name="password_reset_general_error">Sorry, we’re having trouble resetting your password. Please try again.</string>
+    <string name="set_smart_reminders">Set smart reminders</string>
+    <string name="set_smart_reminders_message">Get an actionable reminder to start tracking time for your event</string>
+    <string name="disabled">Disabled</string>
+    <string name="when_event_starts">When event starts</string>
+    <string name="five_minutes_before">5 minutes before</string>
+    <string name="ten_minutes_before">10 minutes before</string>
+    <string name="fifteen_minutes_before">15 minutes before</string>
+    <string name="thirty_minutes_before">30 minutes before</string>
+    <string name="one_hour_before">1 hour before</string>
     <string name="generic_login_error">Sorry, we’re having trouble logging you in.\nPlease try again.</string>
     <string name="incorrect_email_or_password">Incorrect email or password.</string>
     <string name="one_more_try_before_account_locked">Incorrect email or password. One more try before account gets locked for 5 minutes.</string>

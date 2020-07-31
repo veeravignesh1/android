@@ -2,6 +2,7 @@ package com.toggl.settings.domain
 
 import android.content.Context
 import com.toggl.architecture.core.Selector
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
@@ -14,6 +15,7 @@ typealias SectionBlueprintProvider = suspend (SettingsState) -> List<SettingsSec
 
 class SettingsSelector @Inject constructor(
     private val context: Context,
+    private val permissionCheckerService: PermissionCheckerService,
     private val sectionsBlueprintProvider: SectionBlueprintProvider
 ) : Selector<SettingsState, List<SettingsSectionViewModel>> {
 
@@ -21,9 +23,9 @@ class SettingsSelector @Inject constructor(
         sectionsBlueprintProvider(state).map { it.toViewModel(state.user, state.userPreferences, state.workspaces) }
 
     private fun SettingsSectionBlueprint.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsSectionViewModel =
-        SettingsSectionViewModel(title.toStr(context), settingsList.map { it.toViewModel(user, userPreferences, workspaces) })
+        SettingsSectionViewModel(title.toStr(context), settingsList.mapNotNull { it.toViewModel(user, userPreferences, workspaces) })
 
-    private fun SettingsType.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsViewModel =
+    private fun SettingsType.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsViewModel? =
         when (this) {
             SettingsType.Name -> SettingsViewModel.ListChoice(
                 context.getString(R.string.name),
@@ -79,10 +81,14 @@ class SettingsSelector @Inject constructor(
                 context.getString(R.string.calendar_settings),
                 this
             )
-            SettingsType.SmartAlert -> SettingsViewModel.SubPage(
-                context.getString(R.string.smart_alerts),
-                this
-            )
+            SettingsType.SmartAlert ->
+                if (!userPreferences.calendarIntegrationEnabled || !permissionCheckerService.hasCalendarPermission()) null
+                else
+                    SettingsViewModel.ListChoice(
+                        context.getString(R.string.smart_alerts),
+                        this,
+                        userPreferences.smartAlertsOption.getTranslatedRepresentation(context)
+                    )
             SettingsType.SubmitFeedback -> SettingsViewModel.SubPage(
                 context.getString(R.string.submit_feedback),
                 this
@@ -125,5 +131,6 @@ class SettingsSelector @Inject constructor(
                 context.getString(R.string.allow_calendar_message),
                 this
             )
+            is SettingsType.SingleChoiceSetting -> throw IllegalStateException("All single choice settings have to be handled separately")
         }
 }

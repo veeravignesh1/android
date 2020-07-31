@@ -6,6 +6,7 @@ import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
 import com.toggl.models.domain.SettingsType
+import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.settings.R
@@ -24,6 +25,7 @@ class SingleChoiceSettingSelector @Inject constructor(
         workspaces: Map<Long, Workspace>
     ): SingleChoiceSettingViewModel {
         val settingHeader: String
+        var settingDescription = ""
         val settingChoiceListItems: List<ChoiceListItem>
 
         when (this) {
@@ -78,12 +80,30 @@ class SingleChoiceSettingSelector @Inject constructor(
                     )
                 }
             }
+            SettingsType.SmartAlert -> {
+                settingHeader = context.getString(R.string.set_smart_reminders)
+                settingDescription = context.getString(R.string.set_smart_reminders_message)
+                settingChoiceListItems = SmartAlertsOption.values().map {
+                    ChoiceListItem(
+                        it.getTranslatedRepresentation(context),
+                        userPreferences.smartAlertsOption == it,
+                        selectedActions = listOf(
+                            SettingsAction.SmartAlertsOptionSelected(it)
+                        )
+                    )
+                }
+            }
             else -> {
                 settingHeader = "UNKNOWN"
                 settingChoiceListItems = listOf()
             }
         }
 
-        return SingleChoiceSettingViewModel(settingHeader, settingChoiceListItems, SettingsAction.FinishedEditingSetting)
+        return SingleChoiceSettingViewModel(
+            settingHeader,
+            settingDescription,
+            settingChoiceListItems,
+            SettingsAction.FinishedEditingSetting
+        )
     }
 }

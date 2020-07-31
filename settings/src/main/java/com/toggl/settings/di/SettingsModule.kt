@@ -1,6 +1,7 @@
 package com.toggl.settings.di
 
 import android.content.Context
+import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.settings.domain.SettingsSelector
 import com.toggl.settings.domain.SettingsStructureBlueprint
 import com.toggl.settings.domain.SingleChoiceSettingSelector
@@ -17,22 +18,23 @@ object FragmentSettingsModule {
     @Provides
     @FragmentScoped
     @ProvideMainSettingsSelector
-    internal fun mainSettingsSelector(@ActivityContext context: Context) =
-        SettingsSelector(context) { SettingsStructureBlueprint.mainSections }
+    internal fun mainSettingsSelector(@ActivityContext context: Context, permissionCheckerService: PermissionCheckerService) =
+        SettingsSelector(context, permissionCheckerService) { SettingsStructureBlueprint.mainSections }
 
     @Provides
     @FragmentScoped
     @ProvideAboutSettingsSelector
-    internal fun aboutSettingsSelector(@ActivityContext context: Context) =
-        SettingsSelector(context) { listOf(SettingsStructureBlueprint.aboutSection) }
+    internal fun aboutSettingsSelector(@ActivityContext context: Context, permissionCheckerService: PermissionCheckerService) =
+        SettingsSelector(context, permissionCheckerService) { listOf(SettingsStructureBlueprint.aboutSection) }
 
     @Provides
     @FragmentScoped
     @ProvideCalendarSettingsSelector
     internal fun calendarSettingsSelector(
         @ActivityContext context: Context,
+        permissionCheckerService: PermissionCheckerService,
         settingsStructureBlueprint: SettingsStructureBlueprint
-    ) = SettingsSelector(context, settingsStructureBlueprint::calendarSections)
+    ) = SettingsSelector(context, permissionCheckerService, settingsStructureBlueprint::calendarSections)
 
     @Provides
     @FragmentScoped

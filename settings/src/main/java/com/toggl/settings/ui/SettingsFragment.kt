@@ -11,15 +11,12 @@ import com.toggl.architecture.extensions.select
 import com.toggl.settings.compose.extensions.createComposeView
 import com.toggl.settings.di.ProvideMainSettingsSelector
 import com.toggl.settings.domain.SettingsSelector
-import com.toggl.settings.domain.SingleChoiceSettingSelector
-import com.toggl.settings.ui.common.SingleChoiceDialogWithHeader
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
     @Inject @ProvideMainSettingsSelector @JvmField var settingsSelector: SettingsSelector? = null // https://github.com/google/dagger/issues/1883#issuecomment-642565920 🤷‍
-    @Inject @JvmField var singleChoiceSettingSelector: SingleChoiceSettingSelector? = null // https://github.com/google/dagger/issues/1883#issuecomment-642565920 🤷‍
 
     private val store: SettingsStoreViewModel by viewModels()
 
@@ -30,17 +27,11 @@ class SettingsFragment : Fragment() {
     ): View? = createComposeView { statusBarHeight, navigationBarHeight ->
         setContent(androidx.compose.Recomposer.current()) {
             val selectedState = store.state.select(settingsSelector!!)
-            val selectedSingleChoiceState = store.state.select(singleChoiceSettingSelector!!)
 
             SettingsPage(
                 selectedState,
                 statusBarHeight,
                 navigationBarHeight,
-                store::dispatch
-            )
-
-            SingleChoiceDialogWithHeader(
-                selectedSingleChoiceState,
                 store::dispatch
             )
         }

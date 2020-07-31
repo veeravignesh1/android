@@ -62,21 +62,17 @@ internal fun SettingsRow(
         SettingsType.CellSwipe -> SettingsAction.CellSwipeActionsToggled
         SettingsType.ManualMode -> SettingsAction.ManualModeToggled
         SettingsType.CalendarSettings -> SettingsAction.OpenCalendarSettingsTapped
-        SettingsType.SmartAlert -> null
         SettingsType.SubmitFeedback -> SettingsAction.OpenSubmitFeedbackTapped
         SettingsType.About -> SettingsAction.OpenAboutTapped
         SettingsType.PrivacyPolicy -> SettingsAction.OpenPrivacyPolicyTapped
         SettingsType.TermsOfService -> SettingsAction.OpenTermsOfServiceTapped
         SettingsType.Licenses -> SettingsAction.OpenLicencesTapped
         SettingsType.Help -> SettingsAction.OpenHelpTapped
-        SettingsType.Workspace,
-        SettingsType.DateFormat,
-        SettingsType.DurationFormat,
-        SettingsType.FirstDayOfTheWeek -> SettingsAction.OpenSelectionDialog(settingsType)
         SettingsType.SignOut -> SettingsAction.SignOutTapped
         SettingsType.AllowCalendarAccess -> SettingsAction.AllowCalendarAccessToggled
         is SettingsType.Calendar -> SettingsAction.UserCalendarIntegrationToggled(settingsType.id)
         SettingsType.CalendarPermissionInfo -> null
+        is SettingsType.SingleChoiceSetting -> SettingsAction.OpenSelectionDialog(settingsType)
     }
 
     val onClick = tapAction?.let { { dispatcher(it) } }

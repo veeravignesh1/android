@@ -24,6 +24,7 @@ import com.toggl.settings.compose.theme.Shapes
 import com.toggl.settings.compose.theme.TogglTheme
 import com.toggl.settings.compose.theme.grid_3
 import com.toggl.settings.compose.theme.grid_4
+import com.toggl.settings.compose.theme.grid_5
 import com.toggl.settings.compose.theme.grid_6
 import com.toggl.settings.compose.theme.grid_8
 import com.toggl.settings.domain.ChoiceListItem
@@ -51,6 +52,7 @@ internal fun SingleChoiceDialogWithHeader(
                 SingleChoiceListWithHeader(
                     items = observableItems.items,
                     header = observableItems.header,
+                    description = observableItems.description,
                     closeAction = observableItems.closeAction,
                     dispatcher = dispatcher
                 )
@@ -63,6 +65,7 @@ internal fun SingleChoiceDialogWithHeader(
 internal fun SingleChoiceListWithHeader(
     items: List<ChoiceListItem>,
     header: String,
+    description: String,
     closeAction: SettingsAction?,
     dispatcher: (SettingsAction) -> Unit = {}
 ) {
@@ -77,8 +80,16 @@ internal fun SingleChoiceListWithHeader(
             text = header,
             style = MaterialTheme.typography.h6,
             color = MaterialTheme.colors.onBackground,
-            modifier = Modifier.preferredHeight(grid_8)
+            modifier = if (description.isEmpty()) Modifier.preferredHeight(grid_8) else Modifier.preferredHeight(grid_5)
         )
+        if (description != "") {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.body2,
+                color = MaterialTheme.colors.onBackground,
+                modifier = Modifier.preferredHeight(grid_8)
+            )
+        }
         RadioGroup {
             items.forEach { item ->
                 Box(modifier = Modifier.clickable(onClick = { dispatchOnSelected(item) })) {
@@ -116,18 +127,20 @@ fun PreviewSingleChoiceListWithHeaderLight() {
         SingleChoiceListWithHeader(
             previewItems,
             previewHeader,
+            "",
             null
         )
     }
 }
 
-@Preview("SingleChoiceListWithHeader dark theme")
+@Preview("SingleChoiceListWithHeader dark theme - with description")
 @Composable
 fun PreviewSingleChoiceListWithHeaderDark() {
     ThemedPreview(darkTheme = true) {
         SingleChoiceListWithHeader(
             previewItems,
             previewHeader,
+            "A description description description description",
             null
         )
     }
