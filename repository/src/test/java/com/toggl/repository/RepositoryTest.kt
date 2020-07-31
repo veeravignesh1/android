@@ -133,6 +133,7 @@ class RepositoryTest : CoroutineTest() {
         val timeEntryRunningOne =
             DatabaseTimeEntry(
                 1,
+                null,
                 "one running",
                 timeEntryOneStartTime,
                 null,
@@ -199,6 +200,7 @@ class RepositoryTest : CoroutineTest() {
         val timeEntryOneStartTime = OffsetDateTime.parse("2019-07-17T17:15:17+01:00")
         val timeEntryRunningOne = DatabaseTimeEntry(
             1,
+            null,
             "Running",
             timeEntryOneStartTime,
             null,
@@ -223,6 +225,7 @@ class RepositoryTest : CoroutineTest() {
         }
         val startedTimeEntry = DatabaseTimeEntry(
             5,
+            null,
             "started",
             timeEntryOneStartTime,
             null,

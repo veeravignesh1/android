@@ -19,6 +19,7 @@ import java.time.OffsetDateTime
 data class DatabaseTimeEntry(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val serverId: Long?,
     val description: String,
     val startTime: OffsetDateTime,
     val duration: Duration?,

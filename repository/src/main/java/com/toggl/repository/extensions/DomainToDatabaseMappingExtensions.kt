@@ -15,6 +15,7 @@ fun TimeEntry.toDatabaseModel() = DatabaseTimeEntryWithTags(
 
 private fun TimeEntry.toDatabaseTimeEntry() = DatabaseTimeEntry(
     id,
+    null,
     description,
     startTime,
     duration,
@@ -36,6 +37,7 @@ fun StartTimeEntryDTO.toDatabaseModel() = DatabaseTimeEntryWithTags(
 )
 
 private fun CreateTimeEntryDTO.toDatabaseTimeEntry() = DatabaseTimeEntry(
+    serverId = null,
     description = description,
     startTime = startTime,
     duration = duration,
@@ -47,6 +49,7 @@ private fun CreateTimeEntryDTO.toDatabaseTimeEntry() = DatabaseTimeEntry(
 )
 
 private fun StartTimeEntryDTO.toDatabaseTimeEntry() = DatabaseTimeEntry(
+    serverId = null,
     description = description,
     startTime = startTime,
     duration = null,

@@ -8,6 +8,7 @@ import com.toggl.models.domain.WorkspaceFeature
 data class DatabaseWorkspace(
     @PrimaryKey
     val id: Long = 0,
+    val serverId: Long?,
     val name: String,
     val features: List<WorkspaceFeature>
 )

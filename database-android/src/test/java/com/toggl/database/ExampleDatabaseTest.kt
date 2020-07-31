@@ -14,7 +14,7 @@ class ExampleDatabaseTest : BaseDatabaseTest() {
 
     @Test
     fun `insert does insert`() {
-        val databaseWorkspace = DatabaseWorkspace(name = "One workspace", features = listOf(WorkspaceFeature.Pro))
+        val databaseWorkspace = DatabaseWorkspace(serverId = null, name = "One workspace", features = listOf(WorkspaceFeature.Pro))
 
         database.workspaceDao().insert(databaseWorkspace)
 
@@ -23,7 +23,7 @@ class ExampleDatabaseTest : BaseDatabaseTest() {
 
     @Test
     fun `tests are independent`() {
-        val databaseWorkspace = DatabaseWorkspace(name = "Another workspace", features = listOf(WorkspaceFeature.Pro))
+        val databaseWorkspace = DatabaseWorkspace(serverId = null, name = "Another workspace", features = listOf(WorkspaceFeature.Pro))
 
         database.workspaceDao().insert(databaseWorkspace)
 

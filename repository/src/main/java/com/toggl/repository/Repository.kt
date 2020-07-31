@@ -83,7 +83,8 @@ class Repository(
             isPrivate = project.isPrivate,
             billable = project.billable,
             workspaceId = project.workspaceId,
-            clientId = project.clientId
+            clientId = project.clientId,
+            serverId = null
         )
 
         return projectDao.insert(databaseProject)
@@ -99,6 +100,7 @@ class Repository(
     override suspend fun createTag(tag: Tag): Tag {
         val databaseTag = DatabaseTag(
             name = tag.name,
+            serverId = null,
             workspaceId = tag.workspaceId
         )
 
@@ -120,6 +122,7 @@ class Repository(
     override suspend fun createClient(client: Client): Client {
         val databaseClient = DatabaseClient(
             name = client.name,
+            serverId = null,
             workspaceId = client.workspaceId
         )
 
@@ -221,6 +224,7 @@ class Repository(
         workspaceDao.insert(
             DatabaseWorkspace(
                 id = user.defaultWorkspaceId,
+                serverId = user.defaultWorkspaceId,
                 name = "Auto created workspace",
                 features = listOf(WorkspaceFeature.Pro)
             )

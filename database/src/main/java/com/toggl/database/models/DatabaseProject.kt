@@ -16,6 +16,7 @@ import androidx.room.PrimaryKey
 data class DatabaseProject(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val serverId: Long?,
     val name: String,
     val color: String,
     val active: Boolean,

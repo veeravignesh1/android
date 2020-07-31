@@ -83,7 +83,7 @@ fun DatabaseTask.toModel() = Task(
 )
 
 fun DatabaseUser.toModel() = User(
-    id,
+    serverId,
     ApiToken.from(apiToken) as ApiToken.Valid,
     Email.from(email) as Email.Valid,
     name,

@@ -38,7 +38,8 @@ fun BaseDatabaseTest.prepareTimeEntry(
     workspaceId = workspaceId,
     projectId = projectId,
     taskId = taskId,
-    isDeleted = isDeleted
+    isDeleted = isDeleted,
+    serverId = null
 )
 
 fun BaseDatabaseTest.prepareTimeEntryWithTagsIds(
@@ -63,14 +64,15 @@ fun BaseDatabaseTest.prepareProject(
     isPrivate = isPrivate,
     billable = billable,
     workspaceId = workspaceId,
-    clientId = clientId
+    clientId = clientId,
+    serverId = null
 )
 
 fun BaseDatabaseTest.prepareWorkspace(
     name: String = "Generated Workspace",
     features: List<WorkspaceFeature> = listOf(WorkspaceFeature.Pro)
 ): DatabaseWorkspace {
-    return DatabaseWorkspace(name = name, features = features)
+    return DatabaseWorkspace(name = name, features = features, serverId = null)
 }
 
 fun BaseDatabaseTest.prepareClient(
@@ -78,7 +80,8 @@ fun BaseDatabaseTest.prepareClient(
     workspaceId: Long = defaultWorkspaceId()
 ): DatabaseClient = DatabaseClient(
     name = name,
-    workspaceId = workspaceId
+    workspaceId = workspaceId,
+    serverId = null
 )
 
 fun BaseDatabaseTest.prepareTag(
@@ -86,7 +89,8 @@ fun BaseDatabaseTest.prepareTag(
     workspaceId: Long = defaultWorkspaceId()
 ): DatabaseTag = DatabaseTag(
     name = name,
-    workspaceId = workspaceId
+    workspaceId = workspaceId,
+    serverId = null
 )
 
 fun BaseDatabaseTest.prepareTask(
@@ -100,7 +104,8 @@ fun BaseDatabaseTest.prepareTask(
     active = active,
     projectId = projectId,
     workspaceId = workspaceId,
-    userId = userId
+    userId = userId,
+    serverId = null
 )
 
 fun BaseDatabaseTest.createProjects(vararg projects: DatabaseProject) =
@@ -122,10 +127,17 @@ fun BaseDatabaseTest.createSimpleProject(
         isPrivate = isPrivate,
         billable = billable,
         clientId = clientId,
-        workspaceId = workspaceId
+        workspaceId = workspaceId,
+        serverId = null
     )
     return createProjects(project).first()
 }
 
 fun BaseDatabaseTest.createProWorkspace(workspaceName: String) =
-    database.workspaceDao().insert(DatabaseWorkspace(name = workspaceName, features = listOf(WorkspaceFeature.Pro)))
+    database.workspaceDao().insert(
+        DatabaseWorkspace(
+            name = workspaceName,
+            features = listOf(WorkspaceFeature.Pro),
+            serverId = null
+        )
+    )

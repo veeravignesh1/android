@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
 )
 data class DatabaseUser(
     @PrimaryKey
-    val id: Long = 0,
+    val serverId: Long,
     val apiToken: String,
     val email: String,
     val name: String,

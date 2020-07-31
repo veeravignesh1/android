@@ -15,6 +15,7 @@ import androidx.room.PrimaryKey
 data class DatabaseClient(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val serverId: Long?,
     val name: String,
     val workspaceId: Long
 )
