@@ -40,8 +40,6 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
 
@@ -62,8 +60,6 @@ object AppModule {
         @ApplicationContext context: Context
     ) = DeepLinkUrls.fromResources(context.resources)
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton
@@ -96,7 +92,7 @@ object AppModule {
 @InstallIn(ActivityRetainedComponent::class)
 object AppViewModelModule {
     @Provides
-    @ExperimentalCoroutinesApi
+
     fun onboardingStore(store: Store<AppState, AppAction>): Store<OnboardingState, OnboardingAction> =
         store.view(
             mapToLocalState = ::mapAppStateToOnboardingState,
@@ -104,7 +100,7 @@ object AppViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     fun timerStore(store: Store<AppState, AppAction>): Store<TimerState, TimerAction> =
         store.view(
             mapToLocalState = ::mapAppStateToTimerState,
@@ -112,7 +108,7 @@ object AppViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     fun reportsStore(store: Store<AppState, AppAction>): Store<ReportsState, ReportsAction> =
         store.view(
             mapToLocalState = ::mapAppStateToReportsState,
@@ -120,7 +116,7 @@ object AppViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     fun calendarStore(store: Store<AppState, AppAction>): Store<CalendarState, CalendarAction> =
         store.view(
             mapToLocalState = ::mapAppStateToCalendarState,
@@ -128,7 +124,7 @@ object AppViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     fun settingsStore(store: Store<AppState, AppAction>): Store<SettingsState, SettingsAction> =
         store.optionalView(
             mapToLocalState = ::mapAppStateToSettingsState,

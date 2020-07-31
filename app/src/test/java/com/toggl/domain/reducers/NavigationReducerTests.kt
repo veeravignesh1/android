@@ -11,13 +11,11 @@ import com.toggl.domain.extensions.testReduceState
 import com.toggl.settings.domain.SettingsAction
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The NavigationReducer")
 class NavigationReducerTests : CoroutineTest() {
     private val initialState = AppState(

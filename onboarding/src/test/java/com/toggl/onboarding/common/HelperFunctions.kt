@@ -8,7 +8,6 @@ import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import io.kotest.matchers.collections.shouldBeEmpty
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
 
@@ -36,7 +35,6 @@ suspend fun <State, Action> Reducer<State, Action>.testReduce(
     testCase(state, effect)
 }
 
-@ExperimentalCoroutinesApi
 fun <State, Action, EX : Exception> Reducer<State, Action>.testReduceException(
     initialState: State,
     action: Action,

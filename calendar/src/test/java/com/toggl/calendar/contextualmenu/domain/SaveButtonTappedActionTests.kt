@@ -14,7 +14,6 @@ import com.toggl.models.domain.EditableTimeEntry
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -23,7 +22,7 @@ import java.time.OffsetDateTime
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@ExperimentalCoroutinesApi
+
 @DisplayName("The SaveButtonTapped action")
 class SaveButtonTappedActionTests {
 

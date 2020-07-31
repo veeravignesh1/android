@@ -13,9 +13,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.multibindings.IntoSet
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @Module
 @InstallIn(ApplicationComponent::class)
 object SubscriptionModule {

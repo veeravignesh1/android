@@ -14,7 +14,6 @@ import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Assertions
 import java.time.Duration
@@ -108,7 +107,6 @@ suspend fun <State, Action> Reducer<State, Action>.testReduce(
     testCase(state, effect)
 }
 
-@ExperimentalCoroutinesApi
 fun <State, Action, EX : Exception> Reducer<State, Action>.testReduceException(
     initialState: State,
     action: Action,

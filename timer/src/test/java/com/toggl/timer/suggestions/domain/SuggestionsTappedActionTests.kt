@@ -15,7 +15,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
 @DisplayName("The SuggestionTapped action")
 internal class SuggestionTappedTests {
 

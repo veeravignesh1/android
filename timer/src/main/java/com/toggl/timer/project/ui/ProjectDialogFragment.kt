@@ -40,8 +40,6 @@ import com.toggl.timer.project.ui.autocomplete.ProjectAutocompleteSuggestionView
 import com.toggl.timer.project.ui.autocomplete.ProjectAutocompleteSuggestionsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_dialog_project.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -55,19 +53,14 @@ import java.lang.ref.WeakReference
 @AndroidEntryPoint
 class ProjectDialogFragment : BottomSheetDialogFragment() {
 
-    @ExperimentalCoroutinesApi
     private val coloPickerVisibilityRequestFlow = MutableStateFlow(false)
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private val adapter = ColorAdapter(::onColorTapped)
     private val store: ProjectStoreViewModel by viewModels()
 
     private lateinit var projectNameChangedListener: TextWatcher
     private lateinit var colorPickerAnimator: ColorPickerAnimator
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
     private lateinit var autocompleteSuggestionsPopup: LifecycleAwareAutocompletePopup<ProjectSuggestions, ProjectAutocompleteSuggestionViewHolder>
     private lateinit var autocompleteSuggestionsRevealAnimator: AutocompleteSuggestionsRevealAnimator
 
@@ -90,8 +83,7 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
     ): View? = inflater.inflate(R.layout.fragment_dialog_project, container, false)
 
     @InternalCoroutinesApi
-    @FlowPreview
-    @ExperimentalCoroutinesApi
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -303,8 +295,6 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
     private fun toggleAutocompletePopup(query: ProjectAutocompleteQuery, size: Int) {
         if (query is ProjectAutocompleteQuery.None) {
             autocompleteSuggestionsPopup.isShowing = false
@@ -321,8 +311,6 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onDestroyView() {
         super.onDestroyView()
 
@@ -330,8 +318,6 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         project_name_edit_text.removeTextChangedListener(projectNameChangedListener)
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private fun toggleColorPicker(shouldShowPicker: Boolean, currentColorIsPremium: Boolean) {
         if (shouldShowPicker) {
             colorPickerAnimator.showPicker(currentColorIsPremium) {
@@ -345,8 +331,6 @@ class ProjectDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private fun onColorTapped(colorViewModel: ColorViewModel) {
         when (colorViewModel) {
             is ColorViewModel.DefaultColor -> {

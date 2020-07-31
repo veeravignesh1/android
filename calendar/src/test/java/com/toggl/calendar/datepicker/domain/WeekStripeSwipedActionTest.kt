@@ -12,7 +12,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -23,7 +22,7 @@ import java.time.ZoneOffset
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@ExperimentalCoroutinesApi
+
 @DisplayName("The Swiped action")
 internal class WeekStripeSwipedActionTest : CoroutineTest() {
 

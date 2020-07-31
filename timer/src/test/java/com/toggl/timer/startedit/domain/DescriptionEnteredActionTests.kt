@@ -9,12 +9,10 @@ import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The TimeEntryDescriptionChanged action")
 internal class DescriptionEnteredActionTests : CoroutineTest() {
     private val workspace = mockk<Workspace> { every { id } returns 1 }

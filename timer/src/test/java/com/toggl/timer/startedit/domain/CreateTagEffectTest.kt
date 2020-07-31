@@ -7,11 +7,9 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 internal class CreateTagEffectTest : CoroutineTest() {
 
     @Test

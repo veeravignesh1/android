@@ -6,12 +6,10 @@ import com.toggl.timer.common.createTimeEntry
 import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.collections.shouldContainInOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The AutocompleteSuggestionsUpdated action")
 internal class AutocompleteSuggestionsUpdatedActionTests : CoroutineTest() {
     val initialState = createInitialState()

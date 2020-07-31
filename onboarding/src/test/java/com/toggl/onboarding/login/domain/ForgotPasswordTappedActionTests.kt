@@ -8,12 +8,10 @@ import com.toggl.onboarding.common.testReduceState
 import com.toggl.repository.interfaces.UserRepository
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The ForgotPasswordTapped action")
 class ForgotPasswordTappedActionTests : CoroutineTest() {
     private val authenticationApi: AuthenticationApiClient = mockk()

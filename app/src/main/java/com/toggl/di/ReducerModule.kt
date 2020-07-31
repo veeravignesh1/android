@@ -19,7 +19,6 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
 @Module
@@ -27,7 +26,7 @@ import kotlinx.coroutines.InternalCoroutinesApi
 object ReducerModule {
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     @InternalCoroutinesApi
     @ProvideAppReducer
     fun appReducer(

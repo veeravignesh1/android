@@ -13,8 +13,6 @@ import com.toggl.calendar.calendarday.domain.CalendarDayAction
 import com.toggl.calendar.calendarday.domain.CalendarItemsSelector
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_calendarday_page.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
@@ -26,7 +24,7 @@ import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
+
 class CalendarDayPageFragment : Fragment(R.layout.fragment_calendarday_page) {
     private val store: CalendarDayStoreViewModel by activityViewModels()
 
@@ -40,9 +38,8 @@ class CalendarDayPageFragment : Fragment(R.layout.fragment_calendarday_page) {
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    @FlowPreview
     @ExperimentalContracts
-    @ExperimentalCoroutinesApi
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

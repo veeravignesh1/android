@@ -39,10 +39,8 @@ import com.toggl.settings.compose.theme.TogglTheme
 import com.toggl.settings.compose.theme.grid_1
 import com.toggl.settings.compose.theme.grid_2
 import com.toggl.settings.domain.SettingsAction
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
 @Composable
 fun FeedbackPage(
     sendFeedbackRequest: Flow<Loadable<Unit>>,

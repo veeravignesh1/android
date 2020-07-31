@@ -23,7 +23,6 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -32,7 +31,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
-@ExperimentalCoroutinesApi
 @DisplayName("The AutocompleteSuggestionTapped action")
 internal class AutocompleteSuggestionTappedActionTests : CoroutineTest() {
     val initialState = createInitialState()

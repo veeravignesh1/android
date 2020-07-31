@@ -4,13 +4,11 @@ import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
-@ExperimentalCoroutinesApi
 @DisplayName("The DaySelected action")
 class DaySelectedActionTests : CoroutineTest() {
 

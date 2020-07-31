@@ -156,7 +156,7 @@ class FlowStore<State, Action : Any> private constructor(
     override val state: Flow<State>,
     private val dispatchFn: (List<Action>) -> Unit
 ) : Store<State, Action> {
-    @ExperimentalCoroutinesApi
+
     override fun <ViewState, ViewAction : Any> view(
         mapToLocalState: (State) -> ViewState,
         mapToGlobalAction: (ViewAction) -> Action?

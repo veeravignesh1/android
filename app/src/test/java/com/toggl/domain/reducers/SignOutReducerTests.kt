@@ -9,12 +9,10 @@ import com.toggl.settings.domain.SettingsAction
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The SignOutReducer")
 class SignOutReducerTests : CoroutineTest() {
     private val initialState = AppState(

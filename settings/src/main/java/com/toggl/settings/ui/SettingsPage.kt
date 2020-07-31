@@ -22,10 +22,8 @@ import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel
 import com.toggl.settings.ui.common.SectionList
 import com.toggl.settings.ui.common.SectionTitleMode
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
 @Composable
 fun SettingsPage(
     sectionsState: Flow<List<SettingsSectionViewModel>>,
@@ -39,7 +37,6 @@ fun SettingsPage(
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 fun SettingsPageContent(
     sectionsState: List<SettingsSectionViewModel>,
@@ -67,7 +64,6 @@ fun SettingsPageContent(
     )
 }
 
-@ExperimentalCoroutinesApi
 @Preview("Settings page light theme")
 @Composable
 fun PreviewSettingsPageLight() {
@@ -80,7 +76,6 @@ fun PreviewSettingsPageLight() {
     }
 }
 
-@ExperimentalCoroutinesApi
 @Preview("Settings page dark theme")
 @Composable
 fun PreviewSettingsPageDark() {

@@ -14,7 +14,6 @@ import com.toggl.settings.di.ProvideAboutSettingsSelector
 import com.toggl.settings.domain.SettingsSelector
 import com.toggl.settings.ui.SettingsStoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,7 +23,6 @@ class AboutFragment : Fragment() {
 
     private val store: SettingsStoreViewModel by viewModels()
 
-    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

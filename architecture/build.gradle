@@ -6,3 +6,11 @@ dependencies {
     implementation Libs.Kotlin.stdlib
     api Libs.Coroutines.core
 }
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs += [
+                "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
+                "-Xopt-in=kotlinx.coroutines.FlowPreview"]
+    }
+}

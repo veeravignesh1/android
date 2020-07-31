@@ -6,14 +6,13 @@ import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@ExperimentalCoroutinesApi
+
 @DisplayName("The CalendarEventsFetched action")
 internal class CalendarEventsFetchedActionTests : CoroutineTest() {
 

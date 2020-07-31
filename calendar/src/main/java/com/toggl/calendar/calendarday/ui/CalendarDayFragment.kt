@@ -20,8 +20,6 @@ import com.toggl.common.services.permissions.requestCalendarPermissionIfNeeded
 import com.toggl.models.common.SwipeDirection
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_calendarday.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -31,7 +29,7 @@ import javax.inject.Inject
 import kotlin.contracts.ExperimentalContracts
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
+
 class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
     private val store: CalendarDayStoreViewModel by activityViewModels()
     private val datePickerStore: CalendarDatePickerStoreViewModel by activityViewModels()
@@ -43,9 +41,8 @@ class CalendarDayFragment : Fragment(R.layout.fragment_calendarday) {
 
     private var currentPage = 0
 
-    @FlowPreview
     @ExperimentalContracts
-    @ExperimentalCoroutinesApi
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

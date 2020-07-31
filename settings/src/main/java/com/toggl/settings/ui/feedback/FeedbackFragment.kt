@@ -15,7 +15,6 @@ import com.toggl.settings.compose.extensions.createComposeView
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.ui.SettingsStoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -26,7 +25,6 @@ class FeedbackFragment : Fragment() {
 
     private val store: SettingsStoreViewModel by viewModels()
 
-    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.OffsetDateTime
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
 @DisplayName("The SuggestionsLoaded action")
 internal class SuggestionsLoadedActionTests : CoroutineTest() {
 

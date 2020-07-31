@@ -29,8 +29,6 @@ import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.suggestions.domain.SuggestionsAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.main_activity.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -40,9 +38,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-@FlowPreview
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
+
 class MainActivity : AppCompatActivity(R.layout.main_activity) {
     @Inject lateinit var router: Router
     @Inject lateinit var store: Store<AppState, AppAction>
@@ -59,7 +56,6 @@ class MainActivity : AppCompatActivity(R.layout.main_activity) {
         }
     }
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

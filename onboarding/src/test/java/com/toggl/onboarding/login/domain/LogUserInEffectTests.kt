@@ -11,12 +11,10 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The log user in effect")
 class LogUserInEffectTests : CoroutineTest() {
     private val apiClient: AuthenticationApiClient = mockk { coEvery { login(validEmail, validPassword) } returns validUser }

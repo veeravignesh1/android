@@ -7,14 +7,13 @@ import com.toggl.calendar.common.testReduceState
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@ExperimentalCoroutinesApi
+
 @DisplayName("The CalendarViewAppeared action")
 internal class CalendarViewAppearedActionTests : CoroutineTest() {
 

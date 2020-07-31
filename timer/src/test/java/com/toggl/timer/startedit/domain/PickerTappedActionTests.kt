@@ -15,7 +15,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
 @DisplayName("The PickerTapped action")
 internal class PickerTappedActionTests {
     val repository = mockk<TimeEntryRepository>()

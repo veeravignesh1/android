@@ -14,7 +14,6 @@ import com.toggl.settings.domain.SettingsSelector
 import com.toggl.settings.domain.SingleChoiceSettingSelector
 import com.toggl.settings.ui.common.SingleChoiceDialogWithHeader
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -24,7 +23,6 @@ class SettingsFragment : Fragment() {
 
     private val store: SettingsStoreViewModel by viewModels()
 
-    @ExperimentalCoroutinesApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

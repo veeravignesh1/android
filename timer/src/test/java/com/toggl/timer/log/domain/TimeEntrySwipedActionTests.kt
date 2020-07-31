@@ -13,11 +13,9 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 class TimeEntrySwipedActionTests : CoroutineTest() {
     val entryInDatabase = createTimeEntry(1, "test")
     val reducer = TimeEntriesLogReducer()

@@ -4,13 +4,11 @@ import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Tag
 import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The TagCreated Action")
 class TagCreatedActionTests {
     val initialState = createInitialState()

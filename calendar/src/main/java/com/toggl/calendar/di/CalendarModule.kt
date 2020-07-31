@@ -26,7 +26,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ApplicationComponent
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
 import kotlin.contracts.ExperimentalContracts
@@ -36,7 +35,7 @@ typealias CalendarReducer = Reducer<CalendarState, CalendarAction>
 @Module
 @InstallIn(ActivityRetainedComponent::class)
 object CalendarViewModelModule {
-    @ExperimentalCoroutinesApi
+
     @Provides
     internal fun calendarDayStore(store: Store<CalendarState, CalendarAction>): Store<CalendarDayState, CalendarDayAction> =
         store.optionalView(
@@ -44,7 +43,6 @@ object CalendarViewModelModule {
             mapToGlobalAction = CalendarAction::CalendarDay
         )
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun datePickerStore(store: Store<CalendarState, CalendarAction>): Store<CalendarDatePickerState, CalendarDatePickerAction> =
         store.view(
@@ -52,7 +50,6 @@ object CalendarViewModelModule {
             mapToGlobalAction = CalendarAction::DatePicker
         )
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun contextualMenuStore(store: Store<CalendarState, CalendarAction>): Store<ContextualMenuState, ContextualMenuAction> =
         store.optionalView(
@@ -65,7 +62,7 @@ object CalendarViewModelModule {
 @InstallIn(ApplicationComponent::class)
 object CalendarApplicationModule {
     @ExperimentalContracts
-    @ExperimentalCoroutinesApi
+
     @InternalCoroutinesApi
     @Provides
     @Singleton

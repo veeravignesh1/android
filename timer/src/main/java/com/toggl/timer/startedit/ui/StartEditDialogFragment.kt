@@ -65,7 +65,6 @@ import com.toggl.timer.startedit.ui.chips.ChipViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.bottom_control_panel_layout.*
 import kotlinx.android.synthetic.main.fragment_dialog_start_edit.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -107,8 +106,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         store.dispatch(StartEditAction.DateTimePickingCancelled)
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
@@ -129,7 +126,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_dialog_start_edit, container, false)
 
-    @ExperimentalCoroutinesApi
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return (super.onCreateDialog(savedInstanceState) as BottomSheetDialog).also { bottomSheetDialog: BottomSheetDialog ->
             store.state
@@ -147,7 +143,7 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
     }
 
     @kotlinx.coroutines.FlowPreview
-    @ExperimentalCoroutinesApi
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val bottomSheetBehavior = (dialog as BottomSheetDialog).behavior
@@ -330,8 +326,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     private fun showSuggestionsPopup(numberOfSuggestions: Int, bottomSheetState: Int) {
 
         val bottomSheetAllowsPopup = bottomSheetState == BottomSheetBehavior.STATE_COLLAPSED ||
@@ -357,8 +351,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
             old.projects == new.projects
     }
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onDestroyView() {
         dialog?.setOnKeyListener(null)
         bottomSheetCallback.clear()
@@ -374,7 +366,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         super.onCancel(dialog)
     }
 
-    @ExperimentalCoroutinesApi
     private fun DialogInterface.attachBottomView(
         bottomSheetDialog: BottomSheetDialog,
         @LayoutRes layoutToAttach: Int,
@@ -522,8 +513,6 @@ class StartEditDialogFragment : BottomSheetDialogFragment() {
         bottomControlPanelAnimator.animateColorFilter(billableButton, isBillable)
     }
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
     private fun scheduleTimeEntryStartTimeAndDurationIndicators(editableTimeEntry: EditableTimeEntry) {
         timeIndicatorScheduledUpdate?.cancel()
         timeIndicatorScheduledUpdate = lifecycleScope.launchWhenCreated {

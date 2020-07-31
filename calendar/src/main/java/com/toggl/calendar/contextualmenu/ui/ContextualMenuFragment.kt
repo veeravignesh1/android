@@ -18,7 +18,6 @@ import com.toggl.common.feature.domain.formatForDisplay
 import com.toggl.common.feature.navigation.BottomSheetNavigator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_contextualmenu.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -37,7 +36,6 @@ class ContextualMenuFragment : Fragment(R.layout.fragment_contextualmenu) {
 
     private var bottomSheetSlideOffsetUpdateCallback: BottomSheetBehavior.BottomSheetCallback? = null
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

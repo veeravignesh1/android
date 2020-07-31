@@ -7,14 +7,13 @@ import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
 @DisplayName("The FetchCalendarEventsEffect effect")
-@ExperimentalCoroutinesApi
+
 class FetchCalendarEventsEffectTest : CoroutineTest() {
 
     @Test

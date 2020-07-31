@@ -39,12 +39,10 @@ import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import java.time.DayOfWeek
 
-@ExperimentalCoroutinesApi
 @DisplayName("The Loading Reducer")
 class LoadingReducerTests : CoroutineTest() {
     private val clientRepository = mockk<ClientRepository>()

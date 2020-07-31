@@ -33,8 +33,6 @@ import com.toggl.common.extensions.applyAndRecycle
 import com.toggl.common.extensions.performTickEffect
 import com.toggl.common.extensions.roundToClosestQuarter
 import com.toggl.common.feature.models.SelectedCalendarItem
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,8 +47,6 @@ import kotlin.concurrent.withLock
 import kotlin.contracts.ExperimentalContracts
 import kotlin.math.abs
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 @ExperimentalContracts
 class CalendarWidgetView @JvmOverloads constructor(
     context: Context,

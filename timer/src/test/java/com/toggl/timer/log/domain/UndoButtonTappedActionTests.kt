@@ -4,11 +4,9 @@ import com.toggl.architecture.extensions.noEffect
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.toMutableValue
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 class UndoButtonTappedActionTests : CoroutineTest() {
 
     val reducer = TimeEntriesLogReducer()

@@ -7,7 +7,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
 class WaitForUndoEffectTests : CoroutineTest() {
 
     @Test

@@ -16,7 +16,6 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -28,7 +27,6 @@ import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.stream.Stream
 
-@ExperimentalCoroutinesApi
 @DisplayName("The DateTimePicked action")
 internal class DateTimePickedActionTests : CoroutineTest() {
     val repository = mockk<Repository>()

@@ -31,13 +31,12 @@ import com.toggl.onboarding.common.domain.OnboardingReducer
 import com.toggl.reports.domain.ReportsReducer
 import com.toggl.settings.domain.SettingsReducer
 import com.toggl.timer.common.domain.TimerReducer
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 
 typealias AppReducer = Reducer<AppState, AppAction>
 
 @InternalCoroutinesApi
-@ExperimentalCoroutinesApi
+
 fun createAppReducer(
     loadingReducer: LoadingReducer,
     onboardingReducer: OnboardingReducer,

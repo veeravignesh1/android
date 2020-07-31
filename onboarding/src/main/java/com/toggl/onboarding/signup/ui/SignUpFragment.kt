@@ -12,7 +12,6 @@ import com.toggl.onboarding.R
 import com.toggl.onboarding.signup.domain.SignUpAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_signup.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -26,7 +25,6 @@ class SignUpFragment : Fragment(R.layout.fragment_signup) {
     private lateinit var passwordWatcher: TextWatcher
 
     @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

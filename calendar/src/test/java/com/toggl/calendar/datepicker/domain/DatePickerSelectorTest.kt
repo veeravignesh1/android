@@ -11,7 +11,6 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.params.ParameterizedTest
@@ -21,7 +20,6 @@ import java.time.Month
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 
-@ExperimentalCoroutinesApi
 @DisplayName("The DatePickerSelector")
 class DatePickerSelectorTest : CoroutineTest() {
     @ParameterizedTest

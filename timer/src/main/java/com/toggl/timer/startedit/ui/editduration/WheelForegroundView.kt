@@ -33,8 +33,6 @@ import com.toggl.timer.startedit.util.isBetween
 import com.toggl.timer.startedit.util.toAngleOnTheDial
 import com.toggl.timer.startedit.util.toPositiveAngle
 import com.toggl.timer.startedit.util.updateWithPointOnCircumference
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.filter
@@ -43,8 +41,7 @@ import java.time.OffsetDateTime
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@FlowPreview
-@ExperimentalCoroutinesApi
+
 class WheelForegroundView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

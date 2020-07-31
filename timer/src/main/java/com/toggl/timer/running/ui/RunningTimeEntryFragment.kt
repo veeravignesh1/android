@@ -15,7 +15,6 @@ import com.toggl.timer.R
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_running_time_entry.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.launchIn
@@ -28,7 +27,6 @@ class RunningTimeEntryFragment : Fragment(R.layout.fragment_running_time_entry) 
 
     private val store: RunningTimeEntryStoreViewModel by viewModels()
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

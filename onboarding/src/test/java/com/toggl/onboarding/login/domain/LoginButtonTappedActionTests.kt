@@ -8,12 +8,10 @@ import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The login tapped action")
 class LoginButtonTappedActionTests : CoroutineTest() {
     private val reducer = createLoginReducer(dispatcherProvider = dispatcherProvider)

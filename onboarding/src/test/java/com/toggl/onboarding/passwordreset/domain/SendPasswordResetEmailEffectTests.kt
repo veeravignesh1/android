@@ -10,7 +10,6 @@ import com.toggl.onboarding.common.CoroutineTest
 import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,7 +17,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.util.stream.Stream
 
-@ExperimentalCoroutinesApi
 @DisplayName("The SendPasswordResetEmail effect")
 class SendPasswordResetEmailEffectTests : CoroutineTest() {
 

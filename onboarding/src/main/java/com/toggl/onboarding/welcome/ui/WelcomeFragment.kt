@@ -9,10 +9,9 @@ import com.toggl.onboarding.R
 import com.toggl.onboarding.welcome.domain.WelcomeAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_welcome.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
-@ExperimentalCoroutinesApi
+
 class WelcomeFragment : Fragment(R.layout.fragment_welcome) {
     private val store: WelcomeStoreViewModel by viewModels()
 

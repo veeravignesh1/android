@@ -8,12 +8,10 @@ import com.toggl.settings.common.testReduceEffects
 import com.toggl.settings.common.testReduceState
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The SendFeedbackTapped action")
 class SendFeedbackTappedActionTests : CoroutineTest() {
     private val initialState = createSettingsState()

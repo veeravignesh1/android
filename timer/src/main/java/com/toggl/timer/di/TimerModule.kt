@@ -45,7 +45,6 @@ import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.FragmentScoped
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
 
@@ -81,7 +80,6 @@ object FragmentTimerModule {
 @InstallIn(ActivityRetainedComponent::class)
 object ViewModelTimerModule {
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun timeEntriesLogStore(store: Store<TimerState, TimerAction>): Store<TimeEntriesLogState, TimeEntriesLogAction> =
         store.view(
@@ -89,7 +87,6 @@ object ViewModelTimerModule {
             mapToGlobalAction = TimerAction::TimeEntriesLog
         )
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun startTimeEntryStore(store: Store<TimerState, TimerAction>): Store<StartEditState, StartEditAction> =
         store.optionalView(
@@ -97,7 +94,6 @@ object ViewModelTimerModule {
             mapToGlobalAction = TimerAction::StartEditTimeEntry
         )
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun runningTimeEntryStore(store: Store<TimerState, TimerAction>): Store<RunningTimeEntryState, RunningTimeEntryAction> =
         store.optionalView(
@@ -105,7 +101,6 @@ object ViewModelTimerModule {
             mapToGlobalAction = TimerAction::RunningTimeEntry
         )
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun projectStore(store: Store<TimerState, TimerAction>): Store<ProjectState, ProjectAction> =
         store.optionalView(
@@ -113,7 +108,6 @@ object ViewModelTimerModule {
             mapToGlobalAction = TimerAction::Project
         )
 
-    @ExperimentalCoroutinesApi
     @Provides
     internal fun suggestionsStore(store: Store<TimerState, TimerAction>): Store<SuggestionsState, SuggestionsAction> =
         store.optionalView(
@@ -145,7 +139,6 @@ object ApplicationTimerModule {
             mostUsedSuggestionProvider
         )
 
-    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton

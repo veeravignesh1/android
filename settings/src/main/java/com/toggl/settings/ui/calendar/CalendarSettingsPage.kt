@@ -26,10 +26,8 @@ import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel
 import com.toggl.settings.ui.common.SectionList
 import com.toggl.settings.ui.common.SectionTitleMode
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
 @Composable
 fun CalendarSettingsPage(
     calendarSettingsViewModels: Flow<List<SettingsSectionViewModel>>,

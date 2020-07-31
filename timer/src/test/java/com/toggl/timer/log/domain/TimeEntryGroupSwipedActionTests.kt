@@ -14,11 +14,9 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 class TimeEntryGroupSwipedActionTests : CoroutineTest() {
     val entriesInDatabase = listOf(createTimeEntry(1, "test"), createTimeEntry(2, "test"))
     val reducer = TimeEntriesLogReducer()

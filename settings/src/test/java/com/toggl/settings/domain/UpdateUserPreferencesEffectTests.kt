@@ -10,13 +10,11 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.mockk.coVerify
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.DayOfWeek
 
-@ExperimentalCoroutinesApi
 @DisplayName("The UpdateUserPreferences effect")
 class UpdateUserPreferencesEffectTests : CoroutineTest() {
 

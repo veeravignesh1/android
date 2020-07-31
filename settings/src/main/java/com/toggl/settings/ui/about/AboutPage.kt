@@ -3,7 +3,6 @@ package com.toggl.settings.ui.about
 import androidx.compose.Composable
 import androidx.compose.collectAsState
 import androidx.compose.getValue
-import androidx.compose.setValue
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
 import androidx.ui.layout.padding
@@ -25,10 +24,8 @@ import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel
 import com.toggl.settings.ui.common.SectionList
 import com.toggl.settings.ui.common.SectionTitleMode
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
 @Composable
 fun AboutPage(
     sectionsState: Flow<List<SettingsSectionViewModel>>,
@@ -42,7 +39,6 @@ fun AboutPage(
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 fun AboutPageContent(
     sectionsState: List<SettingsSectionViewModel>,
@@ -75,7 +71,6 @@ fun AboutPageContent(
     )
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 @Preview("Settings page light theme")
 fun PreviewCalendarSettingsPageLight() {
@@ -84,7 +79,6 @@ fun PreviewCalendarSettingsPageLight() {
     }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
 @Preview("Settings page dark theme")
 fun PreviewCalendarSettingsPageDark() {

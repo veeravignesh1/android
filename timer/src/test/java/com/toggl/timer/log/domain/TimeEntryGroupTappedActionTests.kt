@@ -7,12 +7,10 @@ import com.toggl.timer.common.toMutableValue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.kotest.property.checkAll
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 import java.time.Duration
 
-@ExperimentalCoroutinesApi
 class TimeEntryGroupTappedActionTests : CoroutineTest() {
 
     val reducer = TimeEntriesLogReducer()

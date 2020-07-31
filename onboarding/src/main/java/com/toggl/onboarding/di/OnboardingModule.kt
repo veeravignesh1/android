@@ -32,7 +32,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import javax.inject.Singleton
 
@@ -40,7 +39,7 @@ import javax.inject.Singleton
 @InstallIn(ActivityRetainedComponent::class)
 object OnboardingViewModelModule {
     @Provides
-    @ExperimentalCoroutinesApi
+
     internal fun welcomeStore(store: Store<OnboardingState, OnboardingAction>): Store<WelcomeState, WelcomeAction> =
         store.view(
             mapToLocalState = WelcomeState.Companion::fromOnboardingState,
@@ -48,7 +47,7 @@ object OnboardingViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     internal fun loginStore(store: Store<OnboardingState, OnboardingAction>): Store<LoginState, LoginAction> =
         store.view(
             mapToLocalState = LoginState.Companion::fromOnboardingState,
@@ -56,7 +55,7 @@ object OnboardingViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     internal fun signUpStore(store: Store<OnboardingState, OnboardingAction>): Store<SignUpState, SignUpAction> =
         store.view(
             mapToLocalState = SignUpState.Companion::fromOnboardingState,
@@ -64,7 +63,7 @@ object OnboardingViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     internal fun passwordResetStore(store: Store<OnboardingState, OnboardingAction>): Store<PasswordResetState, PasswordResetAction> =
         store.view(
             mapToLocalState = PasswordResetState.Companion::fromOnboardingState,
@@ -72,7 +71,7 @@ object OnboardingViewModelModule {
         )
 
     @Provides
-    @ExperimentalCoroutinesApi
+
     internal fun ssoStore(store: Store<OnboardingState, OnboardingAction>): Store<SsoState, SsoAction> =
         store.view(
             mapToLocalState = SsoState.Companion::fromOnboardingState,
@@ -98,7 +97,6 @@ object OnboardingApplicationModule {
         context.getString(R.string.password_reset_email_does_not_exist_error)
     )
 
-    @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
     @Provides
     @Singleton

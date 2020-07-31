@@ -11,12 +11,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.toggl.common.android.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlin.math.min
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class LifecycleAwareAutocompletePopup<ViewModel, ViewHolder : RecyclerView.ViewHolder>(
     context: Context,
     anchorTextView: AutocompleteTextInputEditText,

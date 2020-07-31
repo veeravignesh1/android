@@ -17,12 +17,10 @@ import com.toggl.timer.common.domain.TimerAction
 import com.toggl.timer.startedit.domain.StartEditAction
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The FeatureAvailabilityReducer")
 class FeatureAvailabilityReducerTests : CoroutineTest() {
 

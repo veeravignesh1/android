@@ -14,10 +14,8 @@ import io.kotest.matchers.shouldBe
 import io.mockk.Called
 import io.mockk.mockk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 class AnalyticsReducerTests : CoroutineTest() {
     val analyticsService = mockk<AnalyticsService>(relaxed = true)
     val analyticsReducer = AnalyticsReducer(analyticsService)

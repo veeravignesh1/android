@@ -9,14 +9,12 @@ import android.widget.SeekBar
 import androidx.appcompat.widget.AppCompatSeekBar
 import com.toggl.common.Constants.ColorValue
 import com.toggl.timer.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
-@ExperimentalCoroutinesApi
 class ColorValueSlider @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

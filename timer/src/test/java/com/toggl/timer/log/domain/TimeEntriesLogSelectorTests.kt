@@ -20,7 +20,6 @@ import io.kotest.matchers.types.shouldNotBeTypeOf
 import io.kotest.property.arbitrary.take
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -30,7 +29,6 @@ import java.time.OffsetDateTime
 import java.time.Year
 import java.time.format.DateTimeFormatter
 
-@ExperimentalCoroutinesApi
 @DisplayName("The TimeEntriesLogSelect")
 class TimeEntriesLogSelectorTests : CoroutineTest() {
     private val todayString = "Today"

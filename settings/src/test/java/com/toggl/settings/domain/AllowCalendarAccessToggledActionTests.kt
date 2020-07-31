@@ -13,13 +13,11 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The AllowCalendarAccessToggled action")
 class AllowCalendarAccessToggledActionTests : CoroutineTest() {
     private val permissionChecker: PermissionCheckerService = mockk(relaxed = true)

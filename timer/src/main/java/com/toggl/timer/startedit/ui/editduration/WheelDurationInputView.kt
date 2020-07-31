@@ -21,16 +21,13 @@ import com.toggl.common.extensions.applyAndRecycle
 import com.toggl.timer.R
 import com.toggl.timer.startedit.ui.editduration.model.DurationFieldInfo
 import com.toggl.timer.startedit.util.asDurationString
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import java.time.Duration
 import kotlin.contracts.ExperimentalContracts
 
 @ExperimentalContracts
-@ExperimentalCoroutinesApi
-@FlowPreview
+
 class WheelDurationInputView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

@@ -5,12 +5,10 @@ import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.shouldEmitTimeEntryAction
 import com.toggl.timer.common.testReduceEffects
 import io.kotest.matchers.collections.shouldBeSingleton
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The ContinueButtonTappedAction")
 class ContinueButtonTappedActionTests : CoroutineTest() {
 

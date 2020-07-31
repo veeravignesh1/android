@@ -5,11 +5,9 @@ import com.toggl.timer.common.testReduceNoEffects
 import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 class ToggleTimeEntryGroupTappedActionTests : CoroutineTest() {
 
     val reducer = TimeEntriesLogReducer()

@@ -9,13 +9,11 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 
-@ExperimentalCoroutinesApi
 @DisplayName("The StartTimeEntryAction")
 class StartTimeEntryActionTest : CoroutineTest() {
 

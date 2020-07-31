@@ -14,12 +14,10 @@ import android.view.View
 import androidx.core.graphics.ColorUtils
 import com.toggl.common.extensions.Colors
 import com.toggl.timer.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.abs
 import kotlin.properties.Delegates
 
-@ExperimentalCoroutinesApi
 class ColorHueSaturationPicker @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

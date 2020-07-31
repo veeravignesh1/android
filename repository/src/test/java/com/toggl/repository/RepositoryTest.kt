@@ -24,7 +24,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
@@ -33,7 +32,6 @@ import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.OffsetDateTime
 
-@ExperimentalCoroutinesApi
 @DisplayName("Repository tests")
 class RepositoryTest : CoroutineTest() {
     private val tagDao = mockk<TagDao>()

@@ -32,7 +32,6 @@ import com.toggl.timer.suggestions.ui.SuggestionsLogSelector
 import com.toggl.timer.suggestions.ui.SuggestionsStoreViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_time_entries_log.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -92,7 +91,6 @@ class TimeEntriesLogFragment : Fragment(R.layout.fragment_time_entries_log) {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

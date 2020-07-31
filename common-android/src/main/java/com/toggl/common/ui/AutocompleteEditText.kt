@@ -6,13 +6,9 @@ import android.util.AttributeSet
 import com.google.android.material.textfield.TextInputEditText
 import com.toggl.common.extensions.doSafeAfterTextChanged
 import com.toggl.common.extensions.setSafeText
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 
-@FlowPreview
-@ExperimentalCoroutinesApi
 class AutocompleteTextInputEditText : TextInputEditText {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)

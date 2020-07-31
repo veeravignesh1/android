@@ -9,12 +9,10 @@ import com.toggl.models.domain.EditableTimeEntry
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The Router")
 class RouterTests : CoroutineTest() {
 

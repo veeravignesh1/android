@@ -18,8 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.android.synthetic.main.fragment_login.email
 import kotlinx.android.synthetic.main.fragment_login.password
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -33,8 +31,6 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
     private lateinit var emailWatcher: TextWatcher
     private lateinit var passwordWatcher: TextWatcher
 
-    @FlowPreview
-    @ExperimentalCoroutinesApi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

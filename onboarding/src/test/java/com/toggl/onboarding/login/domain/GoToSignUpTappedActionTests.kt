@@ -5,12 +5,10 @@ import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceNoEffects
 import com.toggl.onboarding.common.testReduceState
 import io.kotest.matchers.collections.shouldContainInOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@ExperimentalCoroutinesApi
 @DisplayName("The GoToSignUpTapped action")
 class GoToSignUpTappedActionTests : CoroutineTest() {
     val reducer = createLoginReducer(dispatcherProvider = dispatcherProvider)

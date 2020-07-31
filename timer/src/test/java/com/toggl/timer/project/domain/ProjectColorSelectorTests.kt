@@ -14,7 +14,6 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@kotlinx.coroutines.ExperimentalCoroutinesApi
 @DisplayName("The ProjectColorSelectorTests returns")
 internal class ProjectColorSelectorTests : CoroutineTest() {
 

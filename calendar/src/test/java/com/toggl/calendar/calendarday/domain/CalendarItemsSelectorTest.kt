@@ -11,7 +11,6 @@ import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
@@ -24,7 +23,6 @@ import java.time.ZoneOffset
 import java.util.function.Predicate
 import kotlin.contracts.ExperimentalContracts
 
-@ExperimentalCoroutinesApi
 @DisplayName("The calendarItemsSelector")
 internal class CalendarItemsSelectorTest {
 

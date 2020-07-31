@@ -10,7 +10,6 @@ import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
-@ExperimentalCoroutinesApi
 @DisplayName("The AutocompleteDescriptionEntered action")
 class AutocompleteDescriptionEnteredActionTests : CoroutineTest() {
     private val reducer = createProjectReducer(dispatcherProvider = dispatcherProvider)

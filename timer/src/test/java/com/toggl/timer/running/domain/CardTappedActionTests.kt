@@ -11,14 +11,12 @@ import io.kotest.matchers.shouldBe
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import java.time.Duration
 import java.time.OffsetDateTime
 
-@ExperimentalCoroutinesApi
 @DisplayName("The CardTapped action")
 class CardTappedActionTests : CoroutineTest() {
     private val workspace = mockk<Workspace>()
