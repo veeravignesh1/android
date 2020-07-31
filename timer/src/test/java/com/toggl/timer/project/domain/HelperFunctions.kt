@@ -4,10 +4,10 @@ import com.toggl.architecture.DispatcherProvider
 import com.toggl.common.feature.navigation.backStackOf
 import com.toggl.models.common.AutocompleteSuggestion
 import com.toggl.models.domain.Client
-import com.toggl.models.domain.EditableProject
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Task
+import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.HSVColor
 import com.toggl.repository.interfaces.ClientRepository

@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.toggl.common.extensions.performClickHapticFeedback
-import com.toggl.common.feature.timeentry.extensions.runningTimeEntryOrNull
 import com.toggl.models.domain.TimeEntry
 import com.toggl.timer.R
+import com.toggl.common.feature.timeentry.extensions.runningTimeEntryOrNull
 import com.toggl.timer.running.domain.RunningTimeEntryAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_running_time_entry.*

@@ -12,8 +12,8 @@ import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.extensions.isPro
 import com.toggl.timer.startedit.domain.StartEditAction
 
-class FeatureAvailabilityReducer(override val innerReducer: AppReducer) :
-    HigherOrderReducer<AppState, AppAction> {
+class FeatureAvailabilityReducer(override val innerReducer: AppReducer)
+    : HigherOrderReducer<AppState, AppAction> {
     override fun reduce(
         state: MutableValue<AppState>,
         action: AppAction
@@ -28,5 +28,5 @@ class FeatureAvailabilityReducer(override val innerReducer: AppReducer) :
                 else noEffect()
             }
             else -> innerReducer.reduce(state, action)
-        }
+    }
 }

@@ -28,12 +28,10 @@ class ColorPickerAnimator(
     init {
         window.get()?.run {
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
-            decorView.setOnApplyWindowInsetsListener(
-                View.OnApplyWindowInsetsListener { view, insets ->
-                    sceneRoot?.let { TransitionManager.beginDelayedTransition(it, ChangeBounds()) }
-                    return@OnApplyWindowInsetsListener view.onApplyWindowInsets(insets)
-                }
-            )
+            decorView.setOnApplyWindowInsetsListener(View.OnApplyWindowInsetsListener { view, insets ->
+                sceneRoot?.let { TransitionManager.beginDelayedTransition(it, ChangeBounds()) }
+                return@OnApplyWindowInsetsListener view.onApplyWindowInsets(insets)
+            })
         }
     }
 

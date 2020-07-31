@@ -5,9 +5,9 @@ import com.toggl.architecture.Loadable
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.onboarding.common.CoroutineTest
-import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
+import com.toggl.onboarding.common.testReduceState
 import com.toggl.repository.interfaces.UserRepository
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
@@ -36,7 +36,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
             newState shouldBe initialState
         }
-    }
+}
     @Test
     fun `does nothing if the password is invalid`() = runBlockingTest {
         val initialState = emptyState().withCredentials(email = validEmail)

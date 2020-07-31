@@ -1,9 +1,9 @@
 package com.toggl.timer.startedit.domain
 
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Workspace
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.common.testReduceEffects
 import com.toggl.timer.common.testReduceState
 import io.kotest.matchers.shouldBe

@@ -1,8 +1,8 @@
 package com.toggl.di
 
 import com.toggl.architecture.DispatcherProvider
-import com.toggl.architecture.core.CompositeSubscription
 import com.toggl.architecture.core.Subscription
+import com.toggl.architecture.core.CompositeSubscription
 import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import com.toggl.domain.loading.LoadProjectsSubscriptions

@@ -393,6 +393,5 @@ class UpdateAutocompleteSuggestionsEffectTests : CoroutineTest() {
         tasks,
         clients,
         projects,
-        timeEntries
-    )
+        timeEntries)
 }

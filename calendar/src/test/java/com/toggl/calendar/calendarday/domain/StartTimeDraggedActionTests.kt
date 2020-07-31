@@ -3,12 +3,12 @@ package com.toggl.calendar.calendarday.domain
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
-import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException

@@ -218,13 +218,11 @@ class Repository(
 
     override suspend fun set(user: User) {
         // Automatically create a default workspace
-        workspaceDao.insert(
-            DatabaseWorkspace(
-                id = user.defaultWorkspaceId,
-                name = "Auto created workspace",
-                features = listOf(WorkspaceFeature.Pro)
-            )
-        )
+        workspaceDao.insert(DatabaseWorkspace(
+            id = user.defaultWorkspaceId,
+            name = "Auto created workspace",
+            features = listOf(WorkspaceFeature.Pro)
+        ))
 
         userDao.set(user.toDatabaseModel())
     }

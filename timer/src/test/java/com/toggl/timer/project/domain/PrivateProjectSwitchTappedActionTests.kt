@@ -1,8 +1,8 @@
 package com.toggl.timer.project.domain
 
 import com.toggl.architecture.extensions.noEffect
-import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.CoroutineTest
+import com.toggl.models.domain.EditableProject
 import com.toggl.timer.common.testReduce
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi

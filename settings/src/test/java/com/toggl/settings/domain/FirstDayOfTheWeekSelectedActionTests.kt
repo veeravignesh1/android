@@ -6,8 +6,8 @@ import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.testReduceEffects
 import com.toggl.settings.common.testReduceState
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName

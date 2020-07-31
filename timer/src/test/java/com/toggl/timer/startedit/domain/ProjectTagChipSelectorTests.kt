@@ -2,10 +2,10 @@ package com.toggl.timer.startedit.domain
 
 import com.toggl.common.Constants.AutoCompleteSuggestions.projectToken
 import com.toggl.common.Constants.AutoCompleteSuggestions.tagToken
-import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.Tag
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.createTimeEntry
+import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.timer.project.domain.createProject
 import com.toggl.timer.startedit.ui.chips.ChipViewModel
 import io.kotest.matchers.booleans.shouldBeTrue

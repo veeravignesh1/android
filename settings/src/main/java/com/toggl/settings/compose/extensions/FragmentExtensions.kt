@@ -19,6 +19,7 @@ fun Fragment.createComposeView(
             callback.invoke(statusBarHeight.pixelsToDp(context).dp, navigationBarHeight.pixelsToDp(context).dp)
         }
     }
+
 }
 
 fun Fragment.createComposeDialog(
@@ -29,7 +30,7 @@ fun Fragment.createComposeDialog(
     }
 }
 
-private fun Fragment.blankFrameLayout(): ViewGroup = FrameLayout(requireContext()).apply {
+private fun Fragment.blankFrameLayout() = FrameLayout(requireContext()).apply {
     isClickable = false
     isFocusable = false
     layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)

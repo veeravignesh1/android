@@ -120,16 +120,14 @@ class CalendarSuggestionProviderTest : CoroutineTest() {
                     createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(1)),
                     createCalendarEvent(id = "b", description = "B", startTime = now.plusMinutes(2)),
                     createCalendarEvent(id = "c", description = "C", startTime = now.plusMinutes(3))
-                ),
-                createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(1))
+                ), createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(1))
             ),
             CalendarTestData(
                 listOf(
                     createCalendarEvent(id = "a", description = "A", startTime = now.plusMinutes(3)),
                     createCalendarEvent(id = "b", description = "B", startTime = now.minusMinutes(1)),
                     createCalendarEvent(id = "c", description = "C", startTime = now.plusMinutes(2))
-                ),
-                createCalendarEvent(id = "b", description = "B", startTime = now.minusMinutes(1))
+                ), createCalendarEvent(id = "b", description = "B", startTime = now.minusMinutes(1))
             )
         )
     }

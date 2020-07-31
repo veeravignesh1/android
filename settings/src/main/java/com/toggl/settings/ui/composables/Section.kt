@@ -78,9 +78,9 @@ internal fun SettingsRow(
     val rowModifier = Modifier
         .height(48.dp)
         .fillMaxWidth() + Modifier.clickable(
-        indication = RippleIndication(),
-        onClick = onClickAction
-    )
+            indication = RippleIndication(),
+            onClick = onClickAction
+        )
 
     Row(
         modifier = rowModifier,

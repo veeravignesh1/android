@@ -3,12 +3,12 @@ package com.toggl.calendar.calendarday.domain
 import com.toggl.calendar.common.CoroutineTest
 import com.toggl.calendar.common.createCalendarDayReducer
 import com.toggl.calendar.common.createTimeEntry
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.common.testReduceNoEffects
 import com.toggl.calendar.common.testReduceState
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
 import com.toggl.calendar.exception.SelectedItemShouldNotBeNullException
-import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.setRouteParam
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeNewException
@@ -34,14 +34,12 @@ class TimeEntryDraggedActionTests : CoroutineTest() {
 
     private val startTime = OffsetDateTime.of(2005, 5, 5, 5, 5, 0, 0, ZoneOffset.UTC)
 
-    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(
-        createTimeEntry(
-            1,
-            "test",
-            startTime,
-            Duration.ofMinutes(90)
-        )
-    )
+    private val validEditableTimeEntry = EditableTimeEntry.fromSingle(createTimeEntry(
+        1,
+        "test",
+        startTime,
+        Duration.ofMinutes(90)
+    ))
 
     @Test
     fun `throws if executed on a calendar item`() = runBlockingTest {

@@ -28,11 +28,9 @@ interface TimeEntryDao {
         val (timeEntry, tags) = databaseTimeEntryWithTags
         val stoppedTimeEntries = stopRunningTimeEntries(timeEntry.startTime)
         val id = insertTimeEntry(timeEntry)
-        insertAllTimeEntryTagsPairs(
-            tags.map {
-                DatabaseTimeEntryTag(id, it)
-            }
-        )
+        insertAllTimeEntryTagsPairs(tags.map {
+            DatabaseTimeEntryTag(id, it)
+        })
         return StartTimeEntryDatabaseResult(
             getOneTimeEntryWithTags(id),
             stoppedTimeEntries
@@ -43,11 +41,9 @@ interface TimeEntryDao {
     fun createTimeEntry(databaseTimeEntryWithTags: DatabaseTimeEntryWithTags): Long {
         val (timeEntry, tags) = databaseTimeEntryWithTags
         val id = insertTimeEntry(timeEntry)
-        insertAllTimeEntryTagsPairs(
-            tags.map {
-                DatabaseTimeEntryTag(id, it)
-            }
-        )
+        insertAllTimeEntryTagsPairs(tags.map {
+            DatabaseTimeEntryTag(id, it)
+        })
         return id
     }
 
@@ -94,11 +90,9 @@ interface TimeEntryDao {
     @Transaction
     @Update
     fun updateTimeEntryWithTags(databaseTimeEntryWithTags: DatabaseTimeEntryWithTags) {
-        insertAllTimeEntryTagsPairs(
-            databaseTimeEntryWithTags.tags.map {
-                DatabaseTimeEntryTag(databaseTimeEntryWithTags.timeEntry.id, it)
-            }
-        )
+        insertAllTimeEntryTagsPairs(databaseTimeEntryWithTags.tags.map {
+            DatabaseTimeEntryTag(databaseTimeEntryWithTags.timeEntry.id, it)
+        })
 
         updateTimeEntry(databaseTimeEntryWithTags.timeEntry)
     }

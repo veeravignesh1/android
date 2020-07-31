@@ -1,7 +1,7 @@
 package com.toggl.buildsrc
 
 object Versions {
-    const val ktlint = "0.37.2"
+    const val ktlint = "0.29.0"
 }
 
 object Libs {

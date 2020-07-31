@@ -9,9 +9,9 @@ import com.toggl.models.validation.Email
 import com.toggl.settings.common.CoroutineTest
 import com.toggl.settings.common.createSettingsState
 import com.toggl.settings.common.createUserPreferences
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

@@ -2,18 +2,18 @@ package com.toggl.calendar.contextualmenu.domain
 
 import com.toggl.calendar.common.createCalendarEvent
 import com.toggl.calendar.common.createTimeEntry
+import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.calendar.common.shouldEmitTimeEntryAction
 import com.toggl.calendar.common.testReduceEffects
 import com.toggl.calendar.common.testReduceException
 import com.toggl.calendar.exception.SelectedItemShouldBeATimeEntryException
-import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.timeentry.TimeEntryAction
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldBePersistedException
 import com.toggl.common.feature.timeentry.exceptions.TimeEntryShouldNotBeRunningException
 import com.toggl.common.services.time.TimeService
 import com.toggl.models.domain.EditableTimeEntry
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -78,11 +78,9 @@ internal class ContinueButtonTappedActionTests {
         reducer.testReduceEffects(
             initialState = initialState,
             action = ContextualMenuAction.ContinueButtonTapped
-        ) { effects ->
-            effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
-                it.id shouldBe timeEntry.id
-            }
-        }
+        ) { effects -> effects.first().shouldEmitTimeEntryAction<ContextualMenuAction.TimeEntryHandling, TimeEntryAction.ContinueTimeEntry> {
+            it.id shouldBe timeEntry.id
+        } }
     }
 
     @Test

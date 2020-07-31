@@ -30,13 +30,10 @@ class BottomSheetNavigator @Inject constructor() : Navigator<BottomSheetNavigato
         navigatorExtras: Extras?
     ): NavDestination? {
         bottomSheetBehavior?.let {
-            handler.postDelayed(
-                {
-                    it.state = BottomSheetBehavior.STATE_EXPANDED
-                    it.addBottomSheetCallback(dismissCallback)
-                },
-                bottomSheetExpansionDelayInMillis
-            )
+            handler.postDelayed({
+                it.state = BottomSheetBehavior.STATE_EXPANDED
+                it.addBottomSheetCallback(dismissCallback)
+            }, bottomSheetExpansionDelayInMillis)
         }
         return destination
     }

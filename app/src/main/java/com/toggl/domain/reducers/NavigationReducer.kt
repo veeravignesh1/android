@@ -26,13 +26,11 @@ class NavigationReducer @Inject constructor() : Reducer<AppState, AppAction> {
             is AppAction.Reports -> noEffect()
             AppAction.BackButtonPressed -> state.popBackStackWithoutEffects()
             is AppAction.TabSelected -> state.mutateWithoutEffects {
-                copy(
-                    backStack = when (action.tab) {
-                        Tab.Timer -> backStackOf(Route.Timer)
-                        Tab.Reports -> backStackOf(Route.Timer, Route.Reports)
-                        Tab.Calendar -> backStackOf(Route.Timer, Route.Calendar)
-                    }
-                )
+                copy(backStack = when (action.tab) {
+                    Tab.Timer -> backStackOf(Route.Timer)
+                    Tab.Reports -> backStackOf(Route.Timer, Route.Reports)
+                    Tab.Calendar -> backStackOf(Route.Timer, Route.Calendar)
+                })
             }
         }
 }

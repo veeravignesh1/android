@@ -18,15 +18,12 @@ class WelcomeCarouselAdapter(private val context: Context) : PagerAdapter() {
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = LayoutInflater.from(context)?.inflate(
-            when (position) {
-                0 -> R.layout.fragment_welcome_first_slide
-                1 -> R.layout.fragment_welcome_second_slide
-                2 -> R.layout.fragment_welcome_third_slide
-                else -> throw IllegalStateException()
-            },
-            container, false
-        ) ?: throw IllegalStateException()
+        val view = LayoutInflater.from(context)?.inflate(when (position) {
+            0 -> R.layout.fragment_welcome_first_slide
+            1 -> R.layout.fragment_welcome_second_slide
+            2 -> R.layout.fragment_welcome_third_slide
+            else -> throw IllegalStateException()
+        }, container, false) ?: throw IllegalStateException()
 
         container.addView(view)
         return view

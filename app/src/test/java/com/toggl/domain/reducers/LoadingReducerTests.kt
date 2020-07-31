@@ -36,8 +36,8 @@ import com.toggl.repository.interfaces.UserRepository
 import com.toggl.repository.interfaces.WorkspaceRepository
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.jupiter.api.DisplayName
@@ -77,8 +77,7 @@ class LoadingReducerTests : CoroutineTest() {
             smartAlertsOption = SmartAlertsOption.Disabled,
             calendarIntegrationEnabled = true,
             calendarIds = emptyList()
-        ),
-        listOf()
+        ), listOf()
     )
 
     @Nested
@@ -114,18 +113,13 @@ class LoadingReducerTests : CoroutineTest() {
             fun `sets the current route to the timer page`() {
                 var initialState = emptyState
                 val mutableValue = initialState.toMutableValue { initialState = it }
-                reducer.reduce(
-                    mutableValue,
-                    LoadingAction.UserLoaded(
-                        User(
-                            id = 0,
-                            apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
-                            defaultWorkspaceId = 1,
-                            email = Email.from("validemail@toggl.com") as Email.Valid,
-                            name = "name"
-                        )
-                    )
-                )
+                reducer.reduce(mutableValue, LoadingAction.UserLoaded(User(
+                    id = 0,
+                    apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
+                    defaultWorkspaceId = 1,
+                    email = Email.from("validemail@toggl.com") as Email.Valid,
+                    name = "name"
+                )))
 
                 initialState shouldBe emptyState.copy(
                     backStack = backStackOf(Route.Timer)
@@ -135,18 +129,13 @@ class LoadingReducerTests : CoroutineTest() {
             fun `returns a list of effects that load entities`() {
                 var initialState = emptyState
                 val mutableValue = initialState.toMutableValue { initialState = it }
-                val effects = reducer.reduce(
-                    mutableValue,
-                    LoadingAction.UserLoaded(
-                        User(
-                            id = 0,
-                            apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
-                            defaultWorkspaceId = 1,
-                            email = Email.from("validemail@toggl.com") as Email.Valid,
-                            name = "name"
-                        )
-                    )
-                )
+                val effects = reducer.reduce(mutableValue, LoadingAction.UserLoaded(User(
+                    id = 0,
+                    apiToken = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid,
+                    defaultWorkspaceId = 1,
+                    email = Email.from("validemail@toggl.com") as Email.Valid,
+                    name = "name"
+                )))
 
                 effects.map { it.javaClass.kotlin } shouldContainExactlyInAnyOrder listOf(
                     LoadWorkspacesEffect::class,

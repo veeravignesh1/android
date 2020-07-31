@@ -3,8 +3,8 @@ package com.toggl.common.extensions
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.max
 
 fun Int.getHSV(): Triple<Float, Float, Float> {
     val hsvArray = floatArrayOf(0F, 0F, 0F)

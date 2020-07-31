@@ -186,9 +186,8 @@ class CalendarLayoutCalculator @Inject constructor(private val timeService: Time
             is CalendarItem.TimeEntry -> timeEntry.duration ?: (now + offsetFromNow).absoluteDurationBetween(startTime)
             is CalendarItem.CalendarEvent -> calendarEvent.duration
             is CalendarItem.SelectedItem -> when (selectedCalendarItem) {
-                is SelectedCalendarItem.SelectedTimeEntry ->
-                    selectedCalendarItem.editableTimeEntry.duration
-                        ?: (now + offsetFromNow).absoluteDurationBetween(startTime)
+                is SelectedCalendarItem.SelectedTimeEntry -> selectedCalendarItem.editableTimeEntry.duration
+                    ?: (now + offsetFromNow).absoluteDurationBetween(startTime)
                 is SelectedCalendarItem.SelectedCalendarEvent -> selectedCalendarItem.calendarEvent.duration
             }
         }

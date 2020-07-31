@@ -43,11 +43,9 @@ internal class ItemTappedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.ItemTapped(timeEntryItemToBeSelected)
         ) { state ->
-            state shouldBe initialState.copy(
-                backStack = initialState.backStack.setRouteParam {
-                    Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
-                }
-            )
+            state shouldBe initialState.copy(backStack = initialState.backStack.setRouteParam {
+                Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
+            })
         }
     }
 
@@ -57,11 +55,9 @@ internal class ItemTappedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.ItemTapped(timeEntryItemToBeSelected)
         ) { state ->
-            state shouldBe initialState.copy(
-                backStack = initialState.backStack.push(
-                    Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
-                )
-            )
+            state shouldBe initialState.copy(backStack = initialState.backStack.push(
+                Route.ContextualMenu(SelectedCalendarItem.SelectedTimeEntry(EditableTimeEntry.fromSingle(timeEntry)))
+            ))
         }
     }
 
@@ -71,11 +67,9 @@ internal class ItemTappedActionTests : CoroutineTest() {
             initialState,
             CalendarDayAction.ItemTapped(calendarEventItemToBeSelected)
         ) { state ->
-            state shouldBe initialState.copy(
-                backStack = initialState.backStack.push(
-                    Route.ContextualMenu(SelectedCalendarItem.SelectedCalendarEvent(calendarEvent))
-                )
-            )
+            state shouldBe initialState.copy(backStack = initialState.backStack.push(
+                Route.ContextualMenu(SelectedCalendarItem.SelectedCalendarEvent(calendarEvent))
+            ))
         }
     }
 

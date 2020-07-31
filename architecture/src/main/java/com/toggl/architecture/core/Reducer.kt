@@ -29,12 +29,12 @@ fun <LocalState, GlobalState, LocalAction, GlobalAction> Reducer<GlobalState, Gl
     CombinedReducer(listOf(this, reducer.pullback(mapToLocalState, mapToLocalAction, mapToGlobalState, mapToGlobalAction)))
 
 fun <LocalState, GlobalState, LocalAction, GlobalAction>
-Reducer<LocalState, LocalAction>.pullback(
-    mapToLocalState: (GlobalState) -> LocalState,
-    mapToLocalAction: (GlobalAction) -> LocalAction?,
-    mapToGlobalState: (GlobalState, LocalState) -> GlobalState,
-    mapToGlobalAction: (LocalAction) -> GlobalAction
-): Reducer<GlobalState, GlobalAction> =
+    Reducer<LocalState, LocalAction>.pullback(
+        mapToLocalState: (GlobalState) -> LocalState,
+        mapToLocalAction: (GlobalAction) -> LocalAction?,
+        mapToGlobalState: (GlobalState, LocalState) -> GlobalState,
+        mapToGlobalAction: (LocalAction) -> GlobalAction
+    ): Reducer<GlobalState, GlobalAction> =
     PullbackReducer(this, mapToLocalState, mapToLocalAction, mapToGlobalState, mapToGlobalAction)
 
 class PullbackReducer<LocalState, GlobalState, LocalAction, GlobalAction>(
@@ -58,12 +58,12 @@ class PullbackReducer<LocalState, GlobalState, LocalAction, GlobalAction>(
 }
 
 fun <LocalState, GlobalState, LocalAction, GlobalAction>
-Reducer<LocalState, LocalAction>.optionalPullback(
-    mapToLocalState: (GlobalState) -> LocalState?,
-    mapToLocalAction: (GlobalAction) -> LocalAction?,
-    mapToGlobalState: (GlobalState, LocalState?) -> GlobalState,
-    mapToGlobalAction: (LocalAction) -> GlobalAction
-): Reducer<GlobalState, GlobalAction> =
+    Reducer<LocalState, LocalAction>.optionalPullback(
+        mapToLocalState: (GlobalState) -> LocalState?,
+        mapToLocalAction: (GlobalAction) -> LocalAction?,
+        mapToGlobalState: (GlobalState, LocalState?) -> GlobalState,
+        mapToGlobalAction: (LocalAction) -> GlobalAction
+    ): Reducer<GlobalState, GlobalAction> =
     OptionalReducer(this, mapToLocalState, mapToLocalAction, mapToGlobalState, mapToGlobalAction)
 
 class OptionalReducer<LocalState, GlobalState, LocalAction, GlobalAction>(

@@ -1204,11 +1204,8 @@ private fun CalendarItem.drawingId(): String = when (this) {
     is CalendarItem.TimeEntry -> timeEntry.id.toString()
     is CalendarItem.CalendarEvent -> "${calendarEvent.calendarId}:${calendarEvent.id}"
     is CalendarItem.SelectedItem -> when (selectedCalendarItem) {
-        is SelectedCalendarItem.SelectedTimeEntry ->
-            (
-                selectedCalendarItem.editableTimeEntry.ids.firstOrNull()?.toString()
-                    ?: "null"
-                )
+        is SelectedCalendarItem.SelectedTimeEntry -> (selectedCalendarItem.editableTimeEntry.ids.firstOrNull()?.toString()
+            ?: "null")
         is SelectedCalendarItem.SelectedCalendarEvent -> "${selectedCalendarItem.calendarEvent.calendarId}:${selectedCalendarItem.calendarEvent.id}"
     }
 }

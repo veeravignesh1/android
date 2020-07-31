@@ -1,7 +1,7 @@
 package com.toggl.timer.project.domain
 
-import com.toggl.models.domain.Client
 import com.toggl.models.domain.EditableProject
+import com.toggl.models.domain.Client
 import com.toggl.timer.common.CoroutineTest
 import com.toggl.timer.common.assertNoEffectsWereReturned
 import com.toggl.timer.common.testReduce

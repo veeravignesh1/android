@@ -50,8 +50,7 @@ class Event private constructor(val name: String, val parameters: Map<String, St
             calendarProviderState: CalendarSuggestionProviderState,
             workspaceCount: Int
         ) = Event(
-            "SuggestionsPresented",
-            mapOf(
+            "SuggestionsPresented", mapOf(
                 "SuggestionsCount" to suggestionsCount.toString(),
                 "CalendarProviderState" to calendarProviderState.name,
                 "DistinctWorkspaceCount" to workspaceCount.toString()

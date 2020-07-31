@@ -237,8 +237,7 @@ class RepositoryTest : CoroutineTest() {
             DatabaseTimeEntryWithTags(
                 startedTimeEntry,
                 emptyList()
-            ),
-            stoppedTimeEntries
+            ), stoppedTimeEntries
         )
         val startTimeEntryDTO = StartTimeEntryDTO(
             startedTimeEntry.description,

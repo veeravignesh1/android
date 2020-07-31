@@ -1,7 +1,7 @@
 package com.toggl.timer.startedit.ui.autocomplete
 
-import com.toggl.common.feature.domain.ProjectViewModel
 import com.toggl.models.common.AutocompleteSuggestion
+import com.toggl.common.feature.domain.ProjectViewModel
 
 sealed class AutocompleteSuggestionViewModel {
     data class TimeEntryAutocompleteSuggestion(

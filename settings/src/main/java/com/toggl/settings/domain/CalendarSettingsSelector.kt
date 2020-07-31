@@ -28,16 +28,13 @@ class CalendarSettingsSelector @Inject constructor(
             val calendarSections = availableCalendars
                 .groupBy { it.sourceName }
                 .map { (groupName, calendars) ->
-                    SettingsSectionViewModel(
-                        groupName,
-                        calendars.map {
-                            SettingsViewModel.Toggle(
-                                it.name,
-                                SettingsType.Calendar(it.id),
-                                userCalendars.contains(it)
-                            )
-                        }
-                    )
+                    SettingsSectionViewModel(groupName, calendars.map {
+                        SettingsViewModel.Toggle(
+                            it.name,
+                            SettingsType.Calendar(it.id),
+                            userCalendars.contains(it)
+                        )
+                    })
                 }
 
             yieldAll(calendarSections.map(CalendarSettingsViewModel::CalendarSection))
