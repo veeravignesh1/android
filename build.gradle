@@ -50,7 +50,7 @@ subprojects {
     spotless {
         kotlin {
             target "**/*.kt"
-            ktlint(Versions.ktlint)
+            ktlint(Versions.ktlint).userData(["disabled_rules": "final-newline,import-ordering"])
         }
     }
 
