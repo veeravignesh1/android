@@ -1,4 +1,4 @@
-package com.toggl.onboarding.login.domain
+package com.toggl.onboarding.signup.domain
 
 import com.toggl.onboarding.common.CoroutineTest
 import com.toggl.onboarding.common.testReduceState
@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The password entered action")
 class PasswordEnteredActionTests : CoroutineTest() {
-    private val reducer = createLoginReducer(dispatcherProvider = dispatcherProvider)
+    private val reducer = createSignUpReducer()
 
     @Test
     fun `sets the password`() = runBlockingTest {
-        val initialState = emptyLoginState()
+        val initialState = emptySignUpState()
 
-        reducer.testReduceState(initialState, LoginAction.PasswordEntered(validPassword.toString())) { newState ->
+        reducer.testReduceState(initialState, SignUpAction.PasswordEntered(validPassword.toString())) { newState ->
             newState shouldBe initialState.copy(password = validPassword)
         }
     }

@@ -10,8 +10,17 @@
         android:name="com.toggl.onboarding.login.ui.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login"
-        app:launchSingleTop="true"  >
+        app:launchSingleTop="true">
         <deepLink app:uri="@string/deep_link_login" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/sign_up"
+        android:name="com.toggl.onboarding.signup.ui.SignUpFragment"
+        android:label="SignUpFragment"
+        tools:layout="@layout/fragment_signup"
+        app:launchSingleTop="true">
+        <deepLink app:uri="@string/deep_link_sign_up" />
     </fragment>
 
     <fragment
@@ -19,7 +28,7 @@
         android:name="com.toggl.onboarding.passwordreset.ui.PasswordResetFragment"
         android:label="PasswordResetFragment"
         tools:layout="@layout/fragment_passwordreset"
-        app:launchSingleTop="true"  >
+        app:launchSingleTop="true">
         <deepLink app:uri="@string/deep_link_password_reset" />
     </fragment>
 

@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import java.lang.IllegalStateException
 
 @ExperimentalCoroutinesApi
 @DisplayName("The log user in effect")

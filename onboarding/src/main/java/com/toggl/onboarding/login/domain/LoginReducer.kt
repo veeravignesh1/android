@@ -52,6 +52,9 @@ class LoginReducer @Inject constructor(
             is LoginAction.SetUserError -> state.mutateWithoutEffects {
                 copy(user = Loadable.Error(Failure(action.throwable, "")))
             }
+            LoginAction.GoToSignUpTapped -> state.mutateWithoutEffects {
+                copy(backStack = backStackOf(Route.Welcome, Route.SignUp))
+            }
             is LoginAction.EmailEntered -> state.mutateWithoutEffects { copy(email = action.email.toEmail()) }
             is LoginAction.PasswordEntered -> state.mutateWithoutEffects { copy(password = action.password.toPassword()) }
             LoginAction.ForgotPasswordTapped -> state.navigateTo(Route.PasswordReset)

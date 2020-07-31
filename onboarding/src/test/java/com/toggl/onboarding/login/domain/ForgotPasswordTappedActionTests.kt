@@ -23,7 +23,7 @@ class ForgotPasswordTappedActionTests : CoroutineTest() {
 
     @Test
     fun `navigates to the password reset view`() = runBlocking {
-        reducer.testReduceState(emptyState(), LoginAction.ForgotPasswordTapped) { newState ->
+        reducer.testReduceState(emptyLoginState(), LoginAction.ForgotPasswordTapped) { newState ->
             newState.backStack shouldBe backStackOf(Route.PasswordReset)
         }
     }

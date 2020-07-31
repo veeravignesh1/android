@@ -8,6 +8,7 @@ import com.toggl.common.android.R
 class DeepLinkUrls(
     val welcome: Uri,
     val login: Uri,
+    val signUp: Uri,
     val passwordReset: Uri,
     val timeEntriesLog: Uri,
     val startEditDialog: Uri,
@@ -33,6 +34,7 @@ class DeepLinkUrls(
                     reports = getString(R.string.deep_link_reports).toUri(),
                     welcome = getString(R.string.deep_link_welcome).toUri(),
                     login = getString(R.string.deep_link_login).toUri(),
+                    signUp = getString(R.string.deep_link_sign_up).toUri(),
                     passwordReset = getString(R.string.deep_link_password_reset).toUri(),
                     settings = getString(R.string.deep_link_settings).toUri(),
                     contextualMenu = getString(R.string.deep_link_contextual_menu).toUri(),

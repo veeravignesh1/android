@@ -14,5 +14,6 @@
     <string name="deep_link_settings_about" translatable="false">toggl://settings/about</string>
     <string name="deep_link_settings_licences" translatable="false">toggl://settings/licences</string>
     <string name="deep_link_login" translatable="false">toggl://login</string>
+    <string name="deep_link_sign_up" translatable="false">toggl://signUp</string>
     <string name="deep_link_password_reset" translatable="false">"toggl://passwordreset"</string>
 </resources>

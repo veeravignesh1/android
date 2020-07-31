@@ -16,6 +16,8 @@ import com.toggl.onboarding.R
 import com.toggl.onboarding.login.domain.LoginAction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.android.synthetic.main.fragment_login.email
+import kotlinx.android.synthetic.main.fragment_login.password
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -56,6 +58,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             .map { it.password }
             .onEach { password?.setSafeText(it.toString()) }
             .launchIn(lifecycleScope)
+
+        sign_up_button.setOnClickListener {
+            store.dispatch(LoginAction.GoToSignUpTapped)
+        }
 
         store.state
             .map { it.email is Email.Valid && it.password is Password.Valid && it.user !is Loadable.Loading }

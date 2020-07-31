@@ -1,16 +1,13 @@
 package com.toggl.onboarding.login.domain
 
-import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.architecture.Loadable
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import com.toggl.onboarding.common.CoroutineTest
+import com.toggl.onboarding.common.testReduceState
 import com.toggl.onboarding.common.validEmail
 import com.toggl.onboarding.common.validPassword
-import com.toggl.onboarding.common.testReduceState
-import com.toggl.repository.interfaces.UserRepository
 import io.kotest.matchers.shouldBe
-import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.jupiter.api.DisplayName
@@ -19,10 +16,7 @@ import org.junit.jupiter.api.Test
 @ExperimentalCoroutinesApi
 @DisplayName("The login tapped action")
 class LoginButtonTappedActionTests : CoroutineTest() {
-    private val authenticationApi: AuthenticationApiClient = mockk()
-    private val userRepository: UserRepository = mockk()
-    private val reducer =
-        LoginReducer(authenticationApi, userRepository, dispatcherProvider)
+    private val reducer = createLoginReducer(dispatcherProvider = dispatcherProvider)
 
     private fun LoginState.withCredentials(
         email: Email = Email.from(""),
@@ -31,7 +25,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
 
     @Test
     fun `does nothing if the email is invalid`() = runBlockingTest {
-        val initialState = emptyState().withCredentials(password = validPassword)
+        val initialState = emptyLoginState().withCredentials(password = validPassword)
 
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
             newState shouldBe initialState
@@ -39,7 +33,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
 }
     @Test
     fun `does nothing if the password is invalid`() = runBlockingTest {
-        val initialState = emptyState().withCredentials(email = validEmail)
+        val initialState = emptyLoginState().withCredentials(email = validEmail)
 
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
             newState shouldBe initialState
@@ -49,7 +43,7 @@ class LoginButtonTappedActionTests : CoroutineTest() {
     @Test
     fun `sets the users state to loading if both states are valid`() = runBlockingTest {
         val initialState =
-            emptyState().withCredentials(email = validEmail, password = validPassword)
+            emptyLoginState().withCredentials(email = validEmail, password = validPassword)
 
         reducer.testReduceState(initialState, LoginAction.LoginButtonTapped) { newState ->
             newState shouldBe initialState.copy(
