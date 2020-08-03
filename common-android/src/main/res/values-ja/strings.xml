@@ -90,6 +90,7 @@
     <string name="password_reset_success">メールが送信されました。メールを確認してパスワードをリセットしてください</string>
     <string name="password_reset_email_does_not_exist_error">おっと。知らないメールのようです。正しいメールアドレスを入力しているか確認してください</string>
     <string name="password_reset_general_error">パスワードのリセットに失敗しました。もう一度お試しください</string>
+    <string name="password_strength_criteria">8文字以上で大文字・小文字・数字を最低1回ずつ使用してください。</string>
     <string name="one_hour_before">1時間前</string>
     <string name="thirty_minutes_before">30分前</string>
     <string name="fifteen_minutes_before">15分前</string>

@@ -94,6 +94,7 @@
     <string name="password_reset_success">Lien envoyé. Veuillez vérifiez votre email pour réinitialiser le mot de passe.</string>
     <string name="password_reset_email_does_not_exist_error">Oops! Email inconnu. Veuillez vérifier qu\'il n\'y ai pas d\'erreur.</string>
     <string name="password_reset_general_error">Désolé, nous ne parvenons pas à réinitialiser votre mot de passe. Veuillez réessayer.</string>
+    <string name="password_strength_criteria">Inclure 8 caractères minimum, avec au moins une majuscule, une minuscule, et un chiffre.</string>
     <string name="set_smart_reminders">Définissez des rappels intelligents</string>
     <string name="set_smart_reminders_message">Recevez un rappel exploitable pour commencer à suivre l\'heure de votre événement</string>
     <string name="disabled">Désactivé</string>
