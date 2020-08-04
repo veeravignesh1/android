@@ -9,7 +9,6 @@ import com.toggl.api.extensions.AppBuildConfig
 import com.toggl.api.network.AuthenticationApi
 import com.toggl.api.network.FeedbackApi
 import com.toggl.api.network.ReportsApi
-import com.toggl.api.network.ResetPasswordBody
 import com.toggl.api.network.deserializers.TotalsResponseDeserializer
 import com.toggl.api.network.deserializers.UserDeserializer
 import com.toggl.api.network.interceptors.AuthInterceptor
@@ -18,7 +17,6 @@ import com.toggl.api.network.models.feedback.FeedbackBody
 import com.toggl.api.network.models.reports.TotalsBody
 import com.toggl.api.network.models.reports.TotalsResponse
 import com.toggl.api.network.serializers.FeedbackBodySerializer
-import com.toggl.api.network.serializers.ResetPasswordBodySerializer
 import com.toggl.api.network.serializers.TotalsBodySerializer
 import com.toggl.models.domain.User
 import dagger.Binds
@@ -70,7 +68,6 @@ object ApiModule {
         okHttpClient: OkHttpClient
     ): Retrofit {
         val converterFactory = GsonBuilder()
-            .registerTypeAdapter(ResetPasswordBody::class.java, ResetPasswordBodySerializer())
             .registerTypeAdapter(FeedbackBody::class.java, FeedbackBodySerializer())
             .registerTypeAdapter(User::class.java, UserDeserializer())
             .create()
