@@ -6,7 +6,6 @@ import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.SettingsType
-import java.lang.reflect.Parameter
 
 sealed class Route {
     object Welcome : Route()

@@ -59,7 +59,7 @@ internal fun TextPickerContent(
     user: Flow<User>,
     dispatcher: (SettingsAction) -> Unit = {}
 ) {
-    val setting by settingFlow.collectAsState(initial = SettingsType.TextSetting.Name   )
+    val setting by settingFlow.collectAsState(initial = SettingsType.TextSetting.Name)
 
     val validateText: (String) -> Boolean = { text ->
         when (setting) {
@@ -79,7 +79,7 @@ internal fun TextPickerContent(
     Column(modifier = Modifier.padding(grid_3) + Modifier.fillMaxWidth()) {
         Text(
             text = stringResource(
-                when(setting) {
+                when (setting) {
                     SettingsType.TextSetting.Name -> R.string.name
                     SettingsType.TextSetting.Email -> R.string.email
                 }
@@ -90,7 +90,7 @@ internal fun TextPickerContent(
         )
         TextField(
             value = textState,
-            onValueChange = { textState = it},
+            onValueChange = { textState = it },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -98,14 +98,15 @@ internal fun TextPickerContent(
             TextButton(onClick = { dispatcher(SettingsAction.FinishedEditingSetting) }) {
                 Text(text = stringResource(R.string.cancel))
             }
-            TextButton(onClick = {
-                if (validateText(textState.text)) {
-                    dispatcher(SettingsAction.UpdateName(textState.text))
+            TextButton(
+                onClick = {
+                    if (validateText(textState.text)) {
+                        dispatcher(SettingsAction.UpdateName(textState.text))
+                    }
                 }
-            }) {
+            ) {
                 Text(text = stringResource(R.string.ok))
             }
-
         }
     }
 }
