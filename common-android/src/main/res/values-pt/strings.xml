@@ -109,4 +109,6 @@
     <string name="incorrect_email_or_password">Email ou senha incorreta.</string>
     <string name="one_more_try_before_account_locked">Email ou senha incorreta. Você tem apenas mais uma tentativa de login antes da sua conta ser bloqueada por 5 minutos.</string>
     <string name="account_is_locked">Email ou senha incorreta. Conta bloqueada por 5 minutos. O dono da conta foi notificado.</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancelar</string>
 </resources>

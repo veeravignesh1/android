@@ -108,4 +108,6 @@
     <string name="incorrect_email_or_password">Email ou mot de passe incorrect.</string>
     <string name="one_more_try_before_account_locked">Email ou mot de passe incorrect. Vous avez encore un essai, ensuite votre compte sera bloqué pendant 5 minutes.</string>
     <string name="account_is_locked">Email ou mot de passe incorrect. Compte bloqué pendant 5 minutes. Le propriétaire du compte a été notifié.</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Annuler</string>
 </resources>

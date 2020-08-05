@@ -121,4 +121,6 @@
     <string name="incorrect_email_or_password">Incorrect email or password.</string>
     <string name="one_more_try_before_account_locked">Incorrect email or password. One more try before account gets locked for 5 minutes.</string>
     <string name="account_is_locked">Incorrect email or password. Account is locked for 5 minutes. Account owner has been notified.</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 </resources>
