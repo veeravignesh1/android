@@ -92,8 +92,8 @@ val settingsListPreviewData: List<SettingsSectionViewModel> = listOf(
     SettingsSectionViewModel(
         title = "Your Profile",
         settingsOptions = listOf(
-            SettingsViewModel.ListChoice("Name", SettingsType.Name, "Semanticer"),
-            SettingsViewModel.ListChoice("Email Address", SettingsType.Email, "test@test.com"),
+            SettingsViewModel.ListChoice("Name", SettingsType.TextSetting.Name, "Semanticer"),
+            SettingsViewModel.ListChoice("Email Address", SettingsType.TextSetting.Email, "test@test.com"),
             SettingsViewModel.ListChoice("Workspace", SettingsType.Workspace, "Semanticer's workspace")
         )
     ),

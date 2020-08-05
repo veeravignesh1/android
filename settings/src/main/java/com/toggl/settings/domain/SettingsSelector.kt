@@ -27,12 +27,12 @@ class SettingsSelector @Inject constructor(
 
     private fun SettingsType.toViewModel(user: User, userPreferences: UserPreferences, workspaces: Map<Long, Workspace>): SettingsViewModel? =
         when (this) {
-            SettingsType.Name -> SettingsViewModel.ListChoice(
+            SettingsType.TextSetting.Name -> SettingsViewModel.ListChoice(
                 context.getString(R.string.name),
                 this,
                 user.name
             )
-            SettingsType.Email -> SettingsViewModel.ListChoice(
+            SettingsType.TextSetting.Email -> SettingsViewModel.ListChoice(
                 context.getString(R.string.email_address),
                 this,
                 user.email.email

@@ -52,8 +52,8 @@ class SettingsStructureBlueprint @Inject constructor(
             SettingsSectionBlueprint(
                 Res(R.string.your_profile),
                 listOf(
-                    SettingsType.Name,
-                    SettingsType.Email,
+                    SettingsType.TextSetting.Name,
+                    SettingsType.TextSetting.Email,
                     SettingsType.Workspace
                 )
             ),

@@ -1,10 +1,12 @@
 package com.toggl.models.domain
 
 sealed class SettingsType {
+    sealed class TextSetting : SettingsType() {
+        object Name : TextSetting()
+        object Email : TextSetting()
+    }
     open class SingleChoiceSetting : SettingsType()
 
-    object Name : SettingsType()
-    object Email : SettingsType()
     object Workspace : SingleChoiceSetting()
     object DateFormat : SingleChoiceSetting()
     object TwentyFourHourClock : SettingsType()
