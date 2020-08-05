@@ -130,4 +130,11 @@
         <deepLink app:uri="@string/deep_link_settings_single_choice" />
     </dialog>
 
+    <dialog
+        android:id="@+id/settings_text"
+        android:name="com.toggl.settings.ui.TextPickerSettingsDialogFragment"
+        android:label="SingleChoiceSettingsDialogFragment">
+        <deepLink app:uri="@string/deep_link_settings_text" />
+    </dialog>
+
 </navigation>

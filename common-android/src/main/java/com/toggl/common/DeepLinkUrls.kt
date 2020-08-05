@@ -21,6 +21,7 @@ class DeepLinkUrls(
     val about: Uri,
     val licences: Uri,
     val singleChoiceDialog: Uri,
+    val textPickerDialog: Uri,
     val submitFeedback: Uri
 ) {
 
@@ -43,7 +44,8 @@ class DeepLinkUrls(
                     submitFeedback = getString(R.string.deep_link_settings_submit_feedback).toUri(),
                     about = getString(R.string.deep_link_settings_about).toUri(),
                     licences = getString(R.string.deep_link_settings_licences).toUri(),
-                    singleChoiceDialog = getString(R.string.deep_link_settings_single_choice).toUri()
+                    singleChoiceDialog = getString(R.string.deep_link_settings_single_choice).toUri(),
+                    textPickerDialog = getString(R.string.deep_link_settings_text).toUri()
                 )
             }
     }

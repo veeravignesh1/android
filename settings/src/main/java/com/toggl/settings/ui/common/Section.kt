@@ -55,8 +55,6 @@ internal fun SettingsRow(
 ) {
 
     val tapAction = when (val settingsType = setting.settingsType) {
-        SettingsType.Name -> null
-        SettingsType.Email -> null
         SettingsType.TwentyFourHourClock -> SettingsAction.Use24HourClockToggled
         SettingsType.GroupSimilar -> SettingsAction.GroupSimilarTimeEntriesToggled
         SettingsType.CellSwipe -> SettingsAction.CellSwipeActionsToggled
@@ -73,6 +71,7 @@ internal fun SettingsRow(
         is SettingsType.Calendar -> SettingsAction.UserCalendarIntegrationToggled(settingsType.id)
         SettingsType.CalendarPermissionInfo -> null
         is SettingsType.SingleChoiceSetting -> SettingsAction.OpenSelectionDialog(settingsType)
+        is SettingsType.TextSetting -> SettingsAction.OpenTextPickerDialog(settingsType)
     }
 
     val onClick = tapAction?.let { { dispatcher(it) } }

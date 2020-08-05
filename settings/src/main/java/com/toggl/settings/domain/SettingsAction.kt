@@ -35,6 +35,7 @@ sealed class SettingsAction {
     data class UpdateName(val name: String) : SettingsAction()
     object FinishedEditingSetting : SettingsAction()
     data class OpenSelectionDialog(val settingType: SettingsType) : SettingsAction()
+    data class OpenTextPickerDialog(val settingType: SettingsType.TextSetting) : SettingsAction()
     object OpenAboutTapped : SettingsAction()
     object OpenPrivacyPolicyTapped : SettingsAction()
     object OpenTermsOfServiceTapped : SettingsAction()
@@ -75,4 +76,5 @@ fun SettingsAction.formatForDebug() =
         SettingsAction.OpenTermsOfServiceTapped -> "Open terms of service tapped"
         SettingsAction.OpenLicencesTapped -> "Open licences tapped"
         SettingsAction.OpenHelpTapped -> "Open help tapped"
+        is SettingsAction.OpenTextPickerDialog -> "Text dialog opened for setting $settingType"
     }

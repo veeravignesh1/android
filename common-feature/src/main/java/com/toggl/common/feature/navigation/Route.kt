@@ -6,6 +6,7 @@ import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.models.domain.EditableProject
 import com.toggl.models.domain.EditableTimeEntry
 import com.toggl.models.domain.SettingsType
+import java.lang.reflect.Parameter
 
 sealed class Route {
     object Welcome : Route()
@@ -23,6 +24,7 @@ sealed class Route {
 
     object Settings : Route()
     data class SettingsDialog(override val parameter: SettingsType) : Route(), ParameterRoute<SettingsType>
+    data class SettingsTextPicker(override val parameter: SettingsType.TextSetting) : Route(), ParameterRoute<SettingsType.TextSetting>
     object CalendarSettings : Route()
     object Feedback : Route()
     object PasswordReset : Route()
@@ -52,6 +54,7 @@ fun Route.isSameTypeAs(otherRoute: Route) =
         Route.PasswordReset -> otherRoute is Route.PasswordReset
         Route.About -> otherRoute is Route.About
         Route.Licences -> otherRoute is Route.Licences
+        is Route.SettingsTextPicker -> otherRoute is Route.SettingsTextPicker
     }
 
 fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
@@ -72,5 +75,6 @@ fun Route.deepLink(deepLinks: DeepLinkUrls): Uri {
         Route.PasswordReset -> deepLinks.passwordReset
         Route.About -> deepLinks.about
         Route.Licences -> deepLinks.licences
+        is Route.SettingsTextPicker -> deepLinks.textPickerDialog
     }
 }
