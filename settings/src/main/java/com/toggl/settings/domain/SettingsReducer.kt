@@ -28,6 +28,7 @@ class SettingsReducer @Inject constructor(
     private val signOutEffect: SignOutEffect,
     private val feedbackDataBuilder: FeedbackDataBuilder,
     private val feedbackApiClient: FeedbackApiClient,
+    private val mockDatabaseInitializer: MockDatabaseInitializer,
     private val dispatcherProvider: DispatcherProvider
 ) : Reducer<SettingsState, SettingsAction> {
 
@@ -54,6 +55,7 @@ class SettingsReducer @Inject constructor(
             is SettingsAction.DurationFormatSelected -> state.updatePrefs { copy(durationFormat = action.durationFormat) }
             is SettingsAction.FirstDayOfTheWeekSelected -> state.updatePrefs { copy(firstDayOfTheWeek = action.firstDayOfTheWeek) }
             is SettingsAction.SmartAlertsOptionSelected -> state.updatePrefs { copy(smartAlertsOption = action.smartAlertsOption) }
+            is SettingsAction.MockDataSetSelected -> effect(InsertMockDataEffect(action.mockDataSetSize.amount, mockDatabaseInitializer, dispatcherProvider))
             is SettingsAction.FinishedEditingSetting -> {
                 state.updateSendFeedbackRequestStateWithoutEffects(Loadable.Uninitialized)
                 state.mutateWithoutEffects { copy(backStack = backStack.pop()) }

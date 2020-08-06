@@ -43,10 +43,10 @@ dependencies {
 
     api Libs.Google.firebaseAnalytics
     api Libs.Microsoft.appCenterAnalytics
-    api Libs.Google.gson
-    api Libs.Square.retrofit
-    api Libs.Square.gsonConverter
-
+    api Libs.Square.Retrofit.retrofit
+    api Libs.Square.Retrofit.moshiConverter
+    api Libs.Square.Moshi.core
+    kapt Libs.Square.Moshi.codegen
     implementation Libs.Hilt.hilt
     kapt Libs.Hilt.compiler
 

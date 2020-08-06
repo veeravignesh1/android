@@ -1,9 +1,17 @@
 package com.toggl.api.network.models.reports
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.time.OffsetDateTime
 
-internal data class TotalsBody(
-    val userId: Long,
+@JsonClass(generateAdapter = true)
+data class TotalsBody(
+    @Json(name = "start_date")
     val startDate: OffsetDateTime,
-    val endDate: OffsetDateTime?
+    @Json(name = "end_date")
+    val endDate: OffsetDateTime?,
+    @Json(name = "user_ids")
+    val userIds: List<Long>,
+    @Json(name = "with_graph")
+    val withGraph: Boolean
 )

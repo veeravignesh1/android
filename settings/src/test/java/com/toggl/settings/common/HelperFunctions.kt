@@ -93,6 +93,7 @@ fun createSettingsReducer(
     signOutEffect = signOutEffect,
     feedbackApiClient = feedbackApiClient,
     feedbackDataBuilder = feedbackDataBuilder,
+    mockDatabaseInitializer = mockk(),
     dispatcherProvider = dispatcherProvider
 )
 

@@ -132,5 +132,11 @@ class SettingsSelector @Inject constructor(
                 this
             )
             is SettingsType.SingleChoiceSetting -> throw IllegalStateException("All single choice settings have to be handled separately")
+            // debug
+            SettingsType.InsertMockData -> SettingsViewModel.ListChoice(
+                "Insert mock data",
+                this,
+                ""
+            )
         }
 }

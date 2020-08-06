@@ -25,4 +25,7 @@ sealed class SettingsType {
     object Licenses : SettingsType()
     object Help : SettingsType()
     object SignOut : SettingsType()
+
+    // debug sections
+    object InsertMockData : SettingsType()
 }

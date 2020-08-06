@@ -3,6 +3,7 @@ package com.toggl.settings.domain
 import com.toggl.common.feature.services.calendar.CalendarService
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.SettingsType
+import com.toggl.settings.BuildConfig
 import com.toggl.settings.R
 import com.toggl.settings.compose.ResOrStr
 import com.toggl.settings.compose.ResOrStr.Empty
@@ -48,6 +49,15 @@ class SettingsStructureBlueprint @Inject constructor(
     }
 
     companion object {
+        val debugSection = if (BuildConfig.DEBUG) listOf(
+            SettingsSectionBlueprint(
+                Str("Debug"),
+                listOf(
+                    SettingsType.InsertMockData
+                )
+            )
+        ) else listOf()
+
         val mainSections = listOf(
             SettingsSectionBlueprint(
                 Res(R.string.your_profile),
@@ -95,7 +105,7 @@ class SettingsStructureBlueprint @Inject constructor(
                     SettingsType.SignOut
                 )
             )
-        )
+        ) + debugSection
 
         val aboutSection =
             SettingsSectionBlueprint(

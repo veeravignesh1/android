@@ -1,6 +1,8 @@
 package com.toggl.api.clients.authentication
 
 import com.toggl.api.extensions.basicAuthenticationWithPassword
+import com.toggl.api.extensions.toModel
+import com.toggl.api.models.ApiUser
 import com.toggl.api.network.AuthenticationApi
 import com.toggl.api.network.ResetPasswordBody
 import com.toggl.models.domain.User
@@ -15,7 +17,7 @@ internal class RetrofitAuthenticationApiClient @Inject constructor(
 ) : AuthenticationApiClient {
     override suspend fun login(email: Email.Valid, password: Password.Valid): User {
         val authHeader = email.basicAuthenticationWithPassword(password)
-        return authenticationApi.login(authHeader)
+        return authenticationApi.login(authHeader).let(ApiUser::toModel)
     }
 
     override suspend fun resetPassword(email: Email.Valid): String {

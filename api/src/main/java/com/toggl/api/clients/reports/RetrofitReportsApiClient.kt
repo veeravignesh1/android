@@ -20,7 +20,7 @@ internal class RetrofitReportsApiClient @Inject constructor(
         if (endDate.minusDays(Constants.Reports.maximumRangeInDays) > startDate)
             throw ReportsRangeTooLongException()
 
-        val body = TotalsBody(userId, startDate, endDate)
+        val body = TotalsBody(startDate, endDate, listOf(userId), false)
         val response = reportsApi.totals(workspaceId, body)
 
         return ReportsTotals(

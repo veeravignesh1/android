@@ -5,6 +5,7 @@ import com.toggl.architecture.core.Selector
 import com.toggl.common.feature.navigation.getRouteParam
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.MockDataSetSize
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
@@ -89,6 +90,19 @@ class SingleChoiceSettingSelector @Inject constructor(
                         userPreferences.smartAlertsOption == it,
                         selectedActions = listOf(
                             SettingsAction.SmartAlertsOptionSelected(it)
+                        )
+                    )
+                }
+            }
+            SettingsType.InsertMockData -> {
+                settingHeader = "Mock data set size"
+                settingDescription = "Choose how much data you want to add"
+                settingChoiceListItems = MockDataSetSize.values().map {
+                    ChoiceListItem(
+                        it.label,
+                        false,
+                        selectedActions = listOf(
+                            SettingsAction.MockDataSetSelected(it)
                         )
                     )
                 }

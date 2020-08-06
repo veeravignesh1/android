@@ -73,6 +73,8 @@ internal fun SettingsRow(
         is SettingsType.Calendar -> SettingsAction.UserCalendarIntegrationToggled(settingsType.id)
         SettingsType.CalendarPermissionInfo -> null
         is SettingsType.SingleChoiceSetting -> SettingsAction.OpenSelectionDialog(settingsType)
+        // debug
+        SettingsType.InsertMockData -> SettingsAction.OpenSelectionDialog(settingsType)
     }
 
     val onClick = tapAction?.let { { dispatcher(it) } }

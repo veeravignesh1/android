@@ -1,6 +1,6 @@
 package com.toggl.api.di
 
-import com.google.gson.GsonBuilder
+import com.squareup.moshi.Moshi
 import com.toggl.api.clients.ErrorHandlingProxyClient
 import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.api.clients.feedback.FeedbackApiClient
@@ -9,16 +9,9 @@ import com.toggl.api.extensions.AppBuildConfig
 import com.toggl.api.network.AuthenticationApi
 import com.toggl.api.network.FeedbackApi
 import com.toggl.api.network.ReportsApi
-import com.toggl.api.network.deserializers.TotalsResponseDeserializer
-import com.toggl.api.network.deserializers.UserDeserializer
+import com.toggl.api.network.adapters.OffsetDateTimeAdapter
 import com.toggl.api.network.interceptors.AuthInterceptor
 import com.toggl.api.network.interceptors.UserAgentInterceptor
-import com.toggl.api.network.models.feedback.FeedbackBody
-import com.toggl.api.network.models.reports.TotalsBody
-import com.toggl.api.network.models.reports.TotalsResponse
-import com.toggl.api.network.serializers.FeedbackBodySerializer
-import com.toggl.api.network.serializers.TotalsBodySerializer
-import com.toggl.models.domain.User
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -26,7 +19,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -62,21 +55,22 @@ object ApiModule {
 
     @Provides
     @Singleton
+    fun moshi() = Moshi.Builder()
+        .add(OffsetDateTimeAdapter())
+        .build()
+
+    @Provides
+    @Singleton
     @ApiRetrofit
     fun apiRetrofit(
         @BaseApiUrl baseUrl: String,
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
+        moshi: Moshi
     ): Retrofit {
-        val converterFactory = GsonBuilder()
-            .registerTypeAdapter(FeedbackBody::class.java, FeedbackBodySerializer())
-            .registerTypeAdapter(User::class.java, UserDeserializer())
-            .create()
-            .let(GsonConverterFactory::create)
-
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
-            .addConverterFactory(converterFactory)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 
@@ -85,18 +79,13 @@ object ApiModule {
     @ReportsRetrofit
     fun reportsRetrofit(
         @BaseReportsUrl baseUrl: String,
-        okHttpClient: OkHttpClient
+        okHttpClient: OkHttpClient,
+        moshi: Moshi
     ): Retrofit {
-        val converterFactory = GsonBuilder()
-            .registerTypeAdapter(TotalsBody::class.java, TotalsBodySerializer())
-            .registerTypeAdapter(TotalsResponse::class.java, TotalsResponseDeserializer())
-            .create()
-            .let(GsonConverterFactory::create)
-
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .client(okHttpClient)
-            .addConverterFactory(converterFactory)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 

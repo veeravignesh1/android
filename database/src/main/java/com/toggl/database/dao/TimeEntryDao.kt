@@ -69,7 +69,7 @@ interface TimeEntryDao {
     fun getOneTimeEntryWithTags(id: Long): DatabaseTimeEntryWithTags
 
     @Insert
-    fun insertAllTimeEntries(vararg databaseTimeEntries: DatabaseTimeEntry): List<Long>
+    fun insertAllTimeEntries(databaseTimeEntries: List<DatabaseTimeEntry>): List<Long>
 
     @Insert
     fun insertTimeEntry(databaseTimeEntries: DatabaseTimeEntry): Long
@@ -106,6 +106,14 @@ interface TimeEntryDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertAllTimeEntryTagsPairs(databaseTimeEntryTags: List<DatabaseTimeEntryTag>)
 
+    fun clear() {
+        clearTimeEntryTag()
+        clearTimeEntries()
+    }
+
     @Query("DELETE FROM time_entries")
-    fun clear()
+    fun clearTimeEntries()
+
+    @Query("DELETE FROM time_entries_tags")
+    fun clearTimeEntryTag()
 }

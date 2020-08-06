@@ -157,7 +157,15 @@ object Libs {
     }
 
     object Square {
-        const val retrofit = "com.squareup.retrofit2:retrofit:2.9.0"
-        const val gsonConverter = "com.squareup.retrofit2:converter-gson:2.9.0"
+        object Retrofit {
+            private const val version = "2.9.0"
+            const val retrofit = "com.squareup.retrofit2:retrofit:$version"
+            const val moshiConverter = "com.squareup.retrofit2:converter-moshi:$version"
+        }
+        object Moshi {
+            private const val version = "1.9.3"
+            const val core = "com.squareup.moshi:moshi:$version"
+            const val codegen = "com.squareup.moshi:moshi-kotlin-codegen:$version"
+        }
     }
 }

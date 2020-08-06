@@ -2,6 +2,7 @@ package com.toggl.settings.domain
 
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
+import com.toggl.models.domain.MockDataSetSize
 import com.toggl.models.domain.SettingsType
 import com.toggl.models.domain.SmartAlertsOption
 import com.toggl.models.domain.UserPreferences
@@ -16,6 +17,7 @@ sealed class SettingsAction {
     data class DurationFormatSelected(val durationFormat: DurationFormat) : SettingsAction()
     data class FirstDayOfTheWeekSelected(val firstDayOfTheWeek: DayOfWeek) : SettingsAction()
     data class SmartAlertsOptionSelected(val smartAlertsOption: SmartAlertsOption) : SettingsAction()
+    data class MockDataSetSelected(val mockDataSetSize: MockDataSetSize) : SettingsAction()
     object ManualModeToggled : SettingsAction()
     object Use24HourClockToggled : SettingsAction()
     object CellSwipeActionsToggled : SettingsAction()
@@ -75,4 +77,5 @@ fun SettingsAction.formatForDebug() =
         SettingsAction.OpenTermsOfServiceTapped -> "Open terms of service tapped"
         SettingsAction.OpenLicencesTapped -> "Open licences tapped"
         SettingsAction.OpenHelpTapped -> "Open help tapped"
+        is SettingsAction.MockDataSetSelected -> "Mock data set selected $mockDataSetSize"
     }
