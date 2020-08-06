@@ -4,6 +4,7 @@ import com.toggl.architecture.Loadable
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.BackStackAwareState
 import com.toggl.common.feature.navigation.pop
+import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
@@ -18,6 +19,7 @@ data class CalendarState(
     val projects: Map<Long, Project>,
     val clients: Map<Long, Client>,
     val backStack: BackStack,
+    val calendars: Map<String, Calendar>,
     val calendarEvents: Map<String, CalendarEvent>,
     val userPreferences: UserPreferences,
     val localState: LocalState
