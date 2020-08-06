@@ -7,20 +7,14 @@ import android.net.Uri
 import android.os.Handler
 import android.provider.CalendarContract
 import com.toggl.architecture.DispatcherProvider
-import com.toggl.architecture.Loadable
-import com.toggl.architecture.core.Subscription
 import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.permissionToReadCalendarWasGranted
-import com.toggl.domain.AppAction
 import com.toggl.domain.AppState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 private class CalendarContentObserver(
     handler: Handler?,
@@ -40,7 +34,6 @@ private class CalendarContentObserver(
     override fun deliverSelfNotifications(): Boolean = true
 
     override fun onChange(selfChange: Boolean) {
-
         val cursor = contentResolver.query(
             CalendarContract.Calendars.CONTENT_URI,
             calendarProjection,
@@ -69,23 +62,15 @@ private class CalendarContentObserver(
 @ExperimentalCoroutinesApi
 class LoadCalendarsSubscription(
     private val context: Context,
-    private val dispatcherProvider: DispatcherProvider
-) : Subscription<AppState, AppAction> {
+    dispatcherProvider: DispatcherProvider
+) : BaseLoadingSubscription(dispatcherProvider) {
 
     private val calendarsUri: Uri = CalendarContract.Calendars.CONTENT_URI
+    override val startLoadingTrigger: (AppState) -> Boolean
+        get() = { state -> super.startLoadingTrigger(state) && !state.calendarPermissionWasGranted }
 
-    override fun subscribe(state: Flow<AppState>): Flow<AppAction.Loading> {
-        return state.map { it.user is Loadable.Loaded && it.calendarPermissionWasGranted }
-            .distinctUntilChanged()
-            .flatMapLatest { isLoggedIn ->
-                withContext(dispatcherProvider.io) {
-                    subscribe(isLoggedIn).map { AppAction.Loading(it) }
-                }
-            }
-    }
-
-    fun subscribe(isUserLoggedIn: Boolean): Flow<LoadingAction> {
-        if (!isUserLoggedIn || !context.permissionToReadCalendarWasGranted())
+    override fun subscribe(shouldStartLoading: Boolean): Flow<LoadingAction> {
+        if (!shouldStartLoading || !context.permissionToReadCalendarWasGranted())
             return flowOf(emptyList<Calendar>()).map { LoadingAction.CalendarsLoaded(it) }
 
         val calendarsFlow = MutableStateFlow<List<Calendar>>(emptyList())
