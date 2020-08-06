@@ -11,17 +11,21 @@ import com.toggl.architecture.extensions.effect
 import com.toggl.architecture.extensions.effectOf
 import com.toggl.architecture.extensions.noEffect
 import com.toggl.common.feature.extensions.mutateWithoutEffects
+import com.toggl.common.feature.extensions.returnEffect
 import com.toggl.common.feature.navigation.ExternalLocation
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.pop
 import com.toggl.common.feature.navigation.push
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.PlatformInfo
+import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
+import com.toggl.repository.interfaces.UserRepository
 import javax.inject.Inject
 
 class SettingsReducer @Inject constructor(
+    private val userRepository: UserRepository,
     private val settingsRepository: SettingsRepository,
     private val permissionCheckerService: PermissionCheckerService,
     private val platformInfo: PlatformInfo,
@@ -128,6 +132,12 @@ class SettingsReducer @Inject constructor(
             updatePrefsEffects + RequestCalendarPermissionEffect()
         else
             updatePrefsEffects
+    }
+
+    private fun MutableValue<SettingsState>.updateUser(updateBlock: User.() -> User) {
+        mutate { copy (user = user.updateBlock()) } returnEffect effect(
+            UpdateUserEffect(this().user, userRepository, dispatcherProvider)
+        )
     }
 
     private fun MutableValue<SettingsState>.updatePrefs(updateBlock: UserPreferences.() -> UserPreferences) =
