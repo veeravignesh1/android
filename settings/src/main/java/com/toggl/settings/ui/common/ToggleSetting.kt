@@ -9,8 +9,8 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.Switch
 import androidx.ui.tooling.preview.Preview
 import com.toggl.models.domain.SettingsType
-import com.toggl.settings.compose.ThemedPreview
-import com.toggl.settings.compose.theme.grid_2
+import com.toggl.common.feature.compose.ThemedPreview
+import com.toggl.common.feature.compose.theme.grid_2
 import com.toggl.settings.domain.SettingsViewModel
 
 @Composable

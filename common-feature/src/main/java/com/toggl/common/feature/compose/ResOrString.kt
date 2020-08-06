@@ -1,4 +1,4 @@
-package com.toggl.settings.compose
+package com.toggl.common.feature.compose
 
 import android.content.Context
 import androidx.annotation.StringRes

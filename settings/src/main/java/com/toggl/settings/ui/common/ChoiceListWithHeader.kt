@@ -19,14 +19,14 @@ import androidx.ui.material.MaterialTheme
 import androidx.ui.material.RadioButton
 import androidx.ui.material.RadioGroup
 import androidx.ui.tooling.preview.Preview
-import com.toggl.settings.compose.ThemedPreview
-import com.toggl.settings.compose.theme.Shapes
-import com.toggl.settings.compose.theme.TogglTheme
-import com.toggl.settings.compose.theme.grid_3
-import com.toggl.settings.compose.theme.grid_4
-import com.toggl.settings.compose.theme.grid_5
-import com.toggl.settings.compose.theme.grid_6
-import com.toggl.settings.compose.theme.grid_8
+import com.toggl.common.feature.compose.ThemedPreview
+import com.toggl.common.feature.compose.theme.Shapes
+import com.toggl.common.feature.compose.theme.TogglTheme
+import com.toggl.common.feature.compose.theme.grid_3
+import com.toggl.common.feature.compose.theme.grid_4
+import com.toggl.common.feature.compose.theme.grid_5
+import com.toggl.common.feature.compose.theme.grid_6
+import com.toggl.common.feature.compose.theme.grid_8
 import com.toggl.settings.domain.ChoiceListItem
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SingleChoiceSettingViewModel
@@ -48,7 +48,10 @@ internal fun SingleChoiceDialogWithHeader(
         }
     ) {
         TogglTheme {
-            Box(shape = Shapes.medium, backgroundColor = MaterialTheme.colors.background) {
+            Box(
+                shape = Shapes.medium,
+                backgroundColor = MaterialTheme.colors.background
+            ) {
                 SingleChoiceListWithHeader(
                     items = observableItems.items,
                     header = observableItems.header,
@@ -80,7 +83,9 @@ internal fun SingleChoiceListWithHeader(
             text = header,
             style = MaterialTheme.typography.h6,
             color = MaterialTheme.colors.onBackground,
-            modifier = if (description.isEmpty()) Modifier.preferredHeight(grid_8) else Modifier.preferredHeight(grid_5)
+            modifier = if (description.isEmpty()) Modifier.preferredHeight(grid_8) else Modifier.preferredHeight(
+                grid_5
+            )
         )
         if (description != "") {
             Text(

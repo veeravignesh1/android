@@ -34,10 +34,10 @@ import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import com.toggl.architecture.Loadable
 import com.toggl.settings.R
-import com.toggl.settings.compose.ThemedPreview
-import com.toggl.settings.compose.theme.TogglTheme
-import com.toggl.settings.compose.theme.grid_1
-import com.toggl.settings.compose.theme.grid_2
+import com.toggl.common.feature.compose.ThemedPreview
+import com.toggl.common.feature.compose.theme.TogglTheme
+import com.toggl.common.feature.compose.theme.grid_1
+import com.toggl.common.feature.compose.theme.grid_2
 import com.toggl.settings.domain.SettingsAction
 import kotlinx.coroutines.flow.Flow
 

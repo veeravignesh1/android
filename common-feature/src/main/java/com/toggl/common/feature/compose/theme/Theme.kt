@@ -1,4 +1,4 @@
-package com.toggl.settings.compose.theme
+package com.toggl.common.feature.compose.theme
 
 import androidx.compose.Composable
 import androidx.ui.foundation.isSystemInDarkTheme
@@ -32,7 +32,7 @@ private val DarkThemeColors = darkColorPalette(
 @Composable
 fun TogglTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable() () -> Unit
+    content: @Composable () -> Unit
 ) {
     MaterialTheme(
         colors = if (darkTheme) DarkThemeColors else LightThemeColors,

@@ -1,4 +1,4 @@
-package com.toggl.settings.compose.theme
+package com.toggl.common.feature.compose.theme
 
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.material.Shapes

@@ -1,13 +1,13 @@
-package com.toggl.settings.compose
+package com.toggl.common.feature.compose
 
 import androidx.compose.Composable
 import androidx.ui.material.Surface
-import com.toggl.settings.compose.theme.TogglTheme
+import com.toggl.common.feature.compose.theme.TogglTheme
 
 @Composable
-internal fun ThemedPreview(
+fun ThemedPreview(
     darkTheme: Boolean = false,
-    children: @Composable() () -> Unit
+    children: @Composable () -> Unit
 ) {
     TogglTheme(darkTheme = darkTheme) {
         Surface {

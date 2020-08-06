@@ -19,8 +19,8 @@ import androidx.ui.unit.Dp
 import androidx.ui.unit.dp
 import com.toggl.models.domain.SettingsType
 import com.toggl.settings.R
-import com.toggl.settings.compose.ThemedPreview
-import com.toggl.settings.compose.theme.TogglTheme
+import com.toggl.common.feature.compose.ThemedPreview
+import com.toggl.common.feature.compose.theme.TogglTheme
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel

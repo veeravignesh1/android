@@ -17,8 +17,8 @@ import androidx.ui.res.stringResource
 import androidx.ui.unit.dp
 import com.toggl.models.domain.SettingsType
 import com.toggl.settings.R
-import com.toggl.settings.compose.theme.grid_1
-import com.toggl.settings.compose.theme.grid_2
+import com.toggl.common.feature.compose.theme.grid_1
+import com.toggl.common.feature.compose.theme.grid_2
 import com.toggl.settings.domain.SettingsAction
 import com.toggl.settings.domain.SettingsSectionViewModel
 import com.toggl.settings.domain.SettingsViewModel

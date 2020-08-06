@@ -4,10 +4,10 @@ import com.toggl.common.feature.services.calendar.CalendarService
 import com.toggl.common.services.permissions.PermissionCheckerService
 import com.toggl.models.domain.SettingsType
 import com.toggl.settings.R
-import com.toggl.settings.compose.ResOrStr
-import com.toggl.settings.compose.ResOrStr.Empty
-import com.toggl.settings.compose.ResOrStr.Res
-import com.toggl.settings.compose.ResOrStr.Str
+import com.toggl.common.feature.compose.ResOrStr
+import com.toggl.common.feature.compose.ResOrStr.Empty
+import com.toggl.common.feature.compose.ResOrStr.Res
+import com.toggl.common.feature.compose.ResOrStr.Str
 import javax.inject.Inject
 
 class SettingsStructureBlueprint @Inject constructor(
