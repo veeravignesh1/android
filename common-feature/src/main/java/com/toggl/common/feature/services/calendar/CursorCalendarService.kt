@@ -3,7 +3,6 @@ package com.toggl.common.feature.services.calendar
 import android.content.Context
 import android.database.Cursor
 import android.provider.CalendarContract
-import com.toggl.models.domain.UserPreferences
 import com.toggl.repository.interfaces.SettingsRepository
 import java.time.Duration
 import java.time.Instant

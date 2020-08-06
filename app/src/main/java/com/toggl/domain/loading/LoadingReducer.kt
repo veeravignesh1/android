@@ -1,6 +1,5 @@
 package com.toggl.domain.loading
 
-import android.util.Log
 import com.toggl.architecture.DispatcherProvider
 import com.toggl.architecture.Loadable
 import com.toggl.architecture.core.Effect

@@ -44,7 +44,7 @@ fun createSettingsState(
     sendFeedbackRequest: Loadable<Unit> = Loadable.Uninitialized,
     backStack: BackStack = emptyList(),
     calendars: Map<String, Calendar> = emptyMap()
-    ) = SettingsState(
+) = SettingsState(
     user = user,
     userPreferences = userPreferences,
     workspaces = mapOf(),
