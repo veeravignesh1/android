@@ -15,14 +15,6 @@ class CursorCalendarService @Inject constructor(
     val context: Context,
     val settingsRepository: SettingsRepository
 ) : CalendarService {
-    private val calendarProjection = arrayOf(
-        CalendarContract.Calendars._ID,
-        CalendarContract.Calendars.CALENDAR_DISPLAY_NAME,
-        CalendarContract.Calendars.ACCOUNT_NAME
-    )
-    private val calendarIdIndex = 0
-    private val calendarDisplayNameIndex = 1
-    private val calendarAccountNameIndex = 2
 
     private val eventsProjection = arrayOf(
         CalendarContract.Instances._ID,
@@ -42,38 +34,6 @@ class CursorCalendarService @Inject constructor(
     private val eventCalendarIdIndex = 5
     private val eventIsAllDayIndex = 6
     private val eventCalendarDisplayNameIndex = 7
-
-    override suspend fun getAvailableCalendars(): List<Calendar> {
-        if (!context.permissionToReadCalendarWasGranted())
-            return emptyList()
-
-        val cursor = context.contentResolver.query(
-            CalendarContract.Calendars.CONTENT_URI,
-            calendarProjection,
-            null,
-            null,
-            null
-        )
-        return sequence {
-            cursor?.use {
-                if (it.count <= 0)
-                    return@sequence
-
-                while (it.moveToNext()) {
-                    val id = it.getString(calendarIdIndex)
-                    val displayName = it.getString(calendarDisplayNameIndex)
-                    val accountName = it.getString(calendarAccountNameIndex)
-
-                    yield(Calendar(id, displayName, accountName))
-                }
-            }
-        }.toList()
-    }
-
-    override suspend fun getUserSelectedCalendars(userPreferences: UserPreferences): List<Calendar> {
-        val selectedCalendarIds = userPreferences.calendarIds
-        return getAvailableCalendars().filter { selectedCalendarIds.contains(it.id) }
-    }
 
     override suspend fun getCalendarEvents(
         fromStartDate: OffsetDateTime,
