@@ -4,7 +4,6 @@ import com.toggl.architecture.Loadable
 import com.toggl.common.feature.navigation.BackStack
 import com.toggl.common.feature.navigation.BackStackAwareState
 import com.toggl.common.feature.navigation.pop
-import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
@@ -26,11 +25,10 @@ data class CalendarState(
     data class LocalState internal constructor(
         internal val selectedDate: OffsetDateTime,
         internal val calendarEvents: Map<String, CalendarEvent>,
-        internal val calendars: List<Calendar>,
         internal val availableDates: List<OffsetDateTime>,
         internal val visibleDates: List<OffsetDateTime>
     ) {
-        constructor() : this(OffsetDateTime.now(), mapOf(), listOf(), listOf(), listOf())
+        constructor() : this(OffsetDateTime.now(), mapOf(), listOf(), listOf())
     }
 
     override fun popBackStack(): CalendarState =

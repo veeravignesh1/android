@@ -4,7 +4,6 @@ import com.toggl.calendar.common.validUser
 import com.toggl.common.feature.models.SelectedCalendarItem
 import com.toggl.common.feature.navigation.Route
 import com.toggl.common.feature.navigation.backStackOf
-import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
@@ -17,7 +16,6 @@ fun createInitialState(
     projects: List<Project> = listOf(),
     selectedItem: SelectedCalendarItem? = null,
     date: OffsetDateTime = OffsetDateTime.now(),
-    calendars: List<Calendar> = listOf(),
     userPreferences: UserPreferences = UserPreferences.default
 ) = CalendarDayState(
     user = validUser,
@@ -26,6 +24,5 @@ fun createInitialState(
     backStack = if (selectedItem == null) emptyList() else backStackOf(Route.ContextualMenu(selectedItem)),
     events = calendarEvents.associateBy { it.id },
     selectedDate = date,
-    calendars = calendars,
     userPreferences = userPreferences
 )

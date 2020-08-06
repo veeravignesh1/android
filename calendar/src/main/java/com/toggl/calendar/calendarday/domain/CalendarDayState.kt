@@ -3,7 +3,6 @@ package com.toggl.calendar.calendarday.domain
 import com.toggl.architecture.Loadable
 import com.toggl.calendar.common.domain.CalendarState
 import com.toggl.common.feature.navigation.BackStack
-import com.toggl.common.feature.services.calendar.Calendar
 import com.toggl.common.feature.services.calendar.CalendarEvent
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.TimeEntry
@@ -18,7 +17,6 @@ data class CalendarDayState(
     val backStack: BackStack,
     val events: Map<String, CalendarEvent>,
     val selectedDate: OffsetDateTime,
-    val calendars: List<Calendar>,
     val userPreferences: UserPreferences
 ) {
     companion object {
@@ -32,7 +30,6 @@ data class CalendarDayState(
                 calendarState.backStack,
                 calendarState.calendarEvents,
                 calendarState.localState.selectedDate,
-                calendarState.localState.calendars,
                 calendarState.userPreferences
             )
         }
@@ -45,8 +42,7 @@ data class CalendarDayState(
                     backStack = calendarDayState.backStack,
                     calendarEvents = calendarDayState.events,
                     localState = calendarState.localState.copy(
-                        selectedDate = calendarDayState.selectedDate,
-                        calendars = calendarDayState.calendars
+                        selectedDate = calendarDayState.selectedDate
                     )
                 )
             } ?: calendarState
