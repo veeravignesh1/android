@@ -67,7 +67,7 @@ class LoadCalendarsSubscription(
 
     private val calendarsUri: Uri = CalendarContract.Calendars.CONTENT_URI
     override val startLoadingTrigger: (AppState) -> Boolean
-        get() = { state -> super.startLoadingTrigger(state) && !state.calendarPermissionWasGranted }
+        get() = { state -> super.startLoadingTrigger(state) && state.calendarPermissionWasGranted }
 
     override fun subscribe(shouldStartLoading: Boolean): Flow<LoadingAction> {
         if (!shouldStartLoading || !context.permissionToReadCalendarWasGranted())
