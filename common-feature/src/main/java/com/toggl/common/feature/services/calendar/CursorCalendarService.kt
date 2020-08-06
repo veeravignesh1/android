@@ -31,7 +31,8 @@ class CursorCalendarService @Inject constructor(
         CalendarContract.Instances.TITLE,
         CalendarContract.Instances.DISPLAY_COLOR,
         CalendarContract.Instances.CALENDAR_ID,
-        CalendarContract.Instances.ALL_DAY
+        CalendarContract.Instances.ALL_DAY,
+        CalendarContract.Instances.CALENDAR_DISPLAY_NAME
     )
     private val eventIdIndex = 0
     private val eventStartDateIndex = 1
@@ -40,6 +41,7 @@ class CursorCalendarService @Inject constructor(
     private val eventDisplayColorIndex = 4
     private val eventCalendarIdIndex = 5
     private val eventIsAllDayIndex = 6
+    private val eventCalendarDisplayNameIndex = 7
 
     override suspend fun getAvailableCalendars(): List<Calendar> {
         if (!context.permissionToReadCalendarWasGranted())
@@ -113,6 +115,7 @@ class CursorCalendarService @Inject constructor(
         val description = this.getString(eventDescriptionIndex)
         val colorHex = this.getInt(eventDisplayColorIndex)
         val calendarId = this.getString(eventCalendarIdIndex)
+        val calendarName = this.getString(eventCalendarDisplayNameIndex)
         val rgb = String.format("#%06X", (0xFFFFFF and colorHex))
 
         val startTime = Instant.ofEpochMilli(startDateUnixTime).atOffset(ZoneOffset.UTC)
@@ -123,7 +126,8 @@ class CursorCalendarService @Inject constructor(
             duration = Duration.ofMillis(endDateUnixTime - startDateUnixTime),
             description = description,
             color = rgb,
-            calendarId = calendarId
+            calendarId = calendarId,
+            calendarName = calendarName
         )
     }
 }
