@@ -16,7 +16,6 @@ import com.toggl.models.domain.User
 import com.toggl.models.validation.Email
 import com.toggl.models.validation.Password
 import retrofit2.HttpException
-import java.lang.Exception
 import java.net.UnknownHostException
 import java.time.OffsetDateTime
 import javax.inject.Inject
@@ -31,6 +30,14 @@ internal class ErrorHandlingProxyClient @Inject constructor(
     override suspend fun login(email: Email.Valid, password: Password.Valid): User {
         try {
             return authenticationApiClient.login(email, password)
+        } catch (exception: Exception) {
+            throw handledException(exception)
+        }
+    }
+
+    override suspend fun signUp(email: Email.Valid, password: Password.Strong): User {
+        try {
+            return authenticationApiClient.signUp(email, password)
         } catch (exception: Exception) {
             throw handledException(exception)
         }
@@ -68,11 +75,13 @@ internal class ErrorHandlingProxyClient @Inject constructor(
     private fun handledException(exception: Exception) =
         when (exception) {
             is UnknownHostException -> OfflineException()
-            is HttpException -> ApiException.from(
-                exception.code(),
-                null,
-                exception.tryParsingNumberOfAttemptsBeforeAccountBlock()
-            )
+            is HttpException -> {
+                ApiException.from(
+                    exception.code(),
+                    exception.response()?.errorBody()?.string(),
+                    exception.tryParsingNumberOfAttemptsBeforeAccountBlock()
+                )
+            }
             else -> exception
         }
 

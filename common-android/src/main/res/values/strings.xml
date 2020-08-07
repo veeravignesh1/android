@@ -121,4 +121,8 @@
     <string name="incorrect_email_or_password">Incorrect email or password.</string>
     <string name="one_more_try_before_account_locked">Incorrect email or password. One more try before account gets locked for 5 minutes.</string>
     <string name="account_is_locked">Incorrect email or password. Account is locked for 5 minutes. Account owner has been notified.</string>
+    <string name="email_is_already_used">User with this email already exists.</string>
+    <string name="generic_signup_error">Sorry, we\'re having trouble signing you up.\nPlease try again.</string>
+    <string name="invalid_email_error">Please enter a valid email address</string>
+    <string name="no_email_error">Please enter an email address</string>
 </resources>
