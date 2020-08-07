@@ -5,19 +5,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.Box
-import androidx.ui.graphics.Color
-import androidx.ui.layout.padding
+import com.toggl.architecture.extensions.select
 import com.toggl.common.feature.compose.extensions.createComposeView
 import com.toggl.reports.domain.ReportsSelector
+import com.toggl.reports.ui.composables.ReportsPage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ReportsFragment : Fragment() {
 
-    @Inject lateinit var selector: ReportsSelector
+    @Inject @JvmField var selector: ReportsSelector? = null
 
     private val store: ReportsStoreViewModel by viewModels()
 
@@ -26,9 +24,9 @@ class ReportsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ) = createComposeView { statusBarHeight, _ ->
-        Box(
-            modifier = Modifier.padding(top = statusBarHeight),
-            backgroundColor = Color.Magenta
-        )
+
+        val viewModels = store.state.select(selector!!)
+
+        ReportsPage(viewModels, statusBarHeight, store::dispatch)
     }
 }
