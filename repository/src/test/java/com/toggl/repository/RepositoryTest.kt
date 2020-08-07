@@ -12,6 +12,8 @@ import com.toggl.database.dao.UserDao
 import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
+import com.toggl.database.properties.NullableDurationSyncProperty
+import com.toggl.database.properties.OffsetDateTimeSyncProperty
 import com.toggl.models.domain.TimeEntry
 import com.toggl.models.domain.User
 import com.toggl.models.validation.ApiToken
@@ -133,7 +135,7 @@ class RepositoryTest : CoroutineTest() {
         val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
         val timeEntryOneStartTime = OffsetDateTime.parse("2019-07-17T17:15:17+01:00")
         val timeEntryRunningOne =
-            DatabaseTimeEntry(
+            DatabaseTimeEntry.from(
                 1,
                 null,
                 "one running",
@@ -148,13 +150,15 @@ class RepositoryTest : CoroutineTest() {
         val timeEntryTwoStartTime = OffsetDateTime.parse("2019-07-17T12:17:17+01:00")
         val timeEntryRunningTwo = timeEntryRunningOne.copy(
             id = 3,
-            startTime = timeEntryTwoStartTime
+            startTime = OffsetDateTimeSyncProperty.from(timeEntryTwoStartTime)
         )
         val stoppedTimeEntries = listOf(timeEntryRunningOne, timeEntryRunningTwo).map {
             it.copy(
-                duration = Duration.between(
-                    timeEntryOneStartTime,
-                    nowTime
+                duration = NullableDurationSyncProperty.from(
+                    Duration.between(
+                        timeEntryOneStartTime,
+                        nowTime
+                    )
                 )
             )
         }
@@ -200,7 +204,7 @@ class RepositoryTest : CoroutineTest() {
     fun `startTimeEntry stops currently running time entry and inserts a new one to DAO`() = runBlockingTest {
         val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
         val timeEntryOneStartTime = OffsetDateTime.parse("2019-07-17T17:15:17+01:00")
-        val timeEntryRunningOne = DatabaseTimeEntry(
+        val timeEntryRunningOne = DatabaseTimeEntry.from(
             1,
             null,
             "Running",
@@ -215,17 +219,19 @@ class RepositoryTest : CoroutineTest() {
         val timeEntryTwoStartTime = OffsetDateTime.parse("2019-07-17T12:17:17+01:00")
         val timeEntryRunningTwo = timeEntryRunningOne.copy(
             id = 3,
-            startTime = timeEntryTwoStartTime
+            startTime = OffsetDateTimeSyncProperty.from(timeEntryTwoStartTime)
         )
         val stoppedTimeEntries = listOf(timeEntryRunningOne, timeEntryRunningTwo).map {
             it.copy(
-                duration = Duration.between(
-                    timeEntryOneStartTime,
-                    nowTime
+                duration = NullableDurationSyncProperty.from(
+                    Duration.between(
+                        timeEntryOneStartTime,
+                        nowTime
+                    )
                 )
             )
         }
-        val startedTimeEntry = DatabaseTimeEntry(
+        val startedTimeEntry = DatabaseTimeEntry.from(
             5,
             null,
             "started",
@@ -246,12 +252,12 @@ class RepositoryTest : CoroutineTest() {
             stoppedTimeEntries
         )
         val startTimeEntryDTO = StartTimeEntryDTO(
-            startedTimeEntry.description,
-            startedTimeEntry.startTime,
-            startedTimeEntry.billable,
-            startedTimeEntry.workspaceId,
-            startedTimeEntry.projectId,
-            startedTimeEntry.taskId,
+            startedTimeEntry.description.current,
+            startedTimeEntry.startTime.current,
+            startedTimeEntry.billable.current,
+            startedTimeEntry.workspaceId.current,
+            startedTimeEntry.projectId.current,
+            startedTimeEntry.taskId.current,
             listOf()
         )
         val result = repository.startTimeEntry(startTimeEntryDTO)
@@ -272,10 +278,24 @@ class RepositoryTest : CoroutineTest() {
     @Test
     fun `editTimeEntry updates the time entry and returns it`() = runBlockingTest {
         val nowTime = OffsetDateTime.parse("2019-07-17T17:17:17+01:00")
-        val timeEntry = spyk<TimeEntry>(
+        val timeEntry = spyk(
             TimeEntry(1, "desc", nowTime, null, false, 1, null, null, false, emptyList())
         )
         every { timeEntryDao.updateTimeEntryWithTags(any()) } returns mockk()
+        every { timeEntryDao.getOneTimeEntryWithTags(any()) } returns DatabaseTimeEntryWithTags(
+            DatabaseTimeEntry.from(
+                serverId = null,
+                description = timeEntry.description,
+                startTime = timeEntry.startTime,
+                duration = timeEntry.duration,
+                billable = timeEntry.billable,
+                workspaceId = timeEntry.workspaceId,
+                projectId = timeEntry.projectId,
+                taskId = timeEntry.taskId,
+                isDeleted = timeEntry.isDeleted
+            ),
+            listOf()
+        )
 
         val result = repository.editTimeEntry(timeEntry)
 
@@ -302,12 +322,28 @@ class RepositoryTest : CoroutineTest() {
             emptyList()
         )
         every { timeEntryDao.updateTimeEntryWithTags(any()) } returns mockk()
+        every { timeEntryDao.getOneTimeEntryWithTags(any()) } returns DatabaseTimeEntryWithTags(
+            DatabaseTimeEntry.from(
+                id = timeEntry.id,
+                serverId = null,
+                description = timeEntry.description,
+                startTime = timeEntry.startTime,
+                duration = timeEntry.duration,
+                billable = timeEntry.billable,
+                workspaceId = timeEntry.workspaceId,
+                projectId = timeEntry.projectId,
+                taskId = timeEntry.taskId,
+                isDeleted = timeEntry.isDeleted
+            ),
+            listOf()
+        )
 
         val result =
             repository.deleteTimeEntry(timeEntry)
 
         verify(exactly = 1) {
-            timeEntryDao.updateTimeEntryWithTags(timeEntry.copy(isDeleted = true).toDatabaseModel())
+            timeEntryDao.updateTimeEntryWithTags(any())
+            timeEntryDao.getOneTimeEntryWithTags(any())
         }
         verify {
             workspaceDao wasNot called

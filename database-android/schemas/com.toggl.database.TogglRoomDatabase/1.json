@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9889c901254f65aa3276acf94654a6f1",
+    "identityHash": "0714688b939ae2df4f6f5b422776c8db",
     "entities": [
       {
         "tableName": "time_entries",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `serverId` INTEGER, `description` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `duration` INTEGER, `billable` INTEGER NOT NULL, `workspaceId` INTEGER NOT NULL, `projectId` INTEGER, `taskId` INTEGER, `isDeleted` INTEGER NOT NULL, FOREIGN KEY(`projectId`) REFERENCES `projects`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`workspaceId`) REFERENCES `workspaces`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`taskId`) REFERENCES `tasks`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `serverId` INTEGER, `description_current` TEXT NOT NULL, `description_backup` TEXT NOT NULL, `description_status` TEXT NOT NULL, `startTime_current` INTEGER NOT NULL, `startTime_backup` INTEGER NOT NULL, `startTime_status` TEXT NOT NULL, `duration_current` INTEGER, `duration_backup` INTEGER, `duration_status` TEXT NOT NULL, `billable_current` INTEGER NOT NULL, `billable_backup` INTEGER NOT NULL, `billable_status` TEXT NOT NULL, `workspaceId_current` INTEGER NOT NULL, `workspaceId_backup` INTEGER NOT NULL, `workspaceId_status` TEXT NOT NULL, `projectId_current` INTEGER, `projectId_backup` INTEGER, `projectId_status` TEXT NOT NULL, `taskId_current` INTEGER, `taskId_backup` INTEGER, `taskId_status` TEXT NOT NULL, `isDeleted_current` INTEGER NOT NULL, `isDeleted_backup` INTEGER NOT NULL, `isDeleted_status` TEXT NOT NULL, FOREIGN KEY(`projectId_current`) REFERENCES `projects`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`workspaceId_current`) REFERENCES `workspaces`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`taskId_current`) REFERENCES `tasks`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "id",
@@ -21,51 +21,147 @@
             "notNull": false
           },
           {
-            "fieldPath": "description",
-            "columnName": "description",
+            "fieldPath": "description.current",
+            "columnName": "description_current",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "startTime",
-            "columnName": "startTime",
+            "fieldPath": "description.backup",
+            "columnName": "description_backup",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description.status",
+            "columnName": "description_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startTime.current",
+            "columnName": "startTime_current",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "duration",
-            "columnName": "duration",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "billable",
-            "columnName": "billable",
+            "fieldPath": "startTime.backup",
+            "columnName": "startTime_backup",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "workspaceId",
-            "columnName": "workspaceId",
+            "fieldPath": "startTime.status",
+            "columnName": "startTime_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "duration.current",
+            "columnName": "duration_current",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "duration.backup",
+            "columnName": "duration_backup",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "duration.status",
+            "columnName": "duration_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "billable.current",
+            "columnName": "billable_current",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "projectId",
-            "columnName": "projectId",
+            "fieldPath": "billable.backup",
+            "columnName": "billable_backup",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "billable.status",
+            "columnName": "billable_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "workspaceId.current",
+            "columnName": "workspaceId_current",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "workspaceId.backup",
+            "columnName": "workspaceId_backup",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "workspaceId.status",
+            "columnName": "workspaceId_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectId.current",
+            "columnName": "projectId_current",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "taskId",
-            "columnName": "taskId",
+            "fieldPath": "projectId.backup",
+            "columnName": "projectId_backup",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
-            "fieldPath": "isDeleted",
-            "columnName": "isDeleted",
+            "fieldPath": "projectId.status",
+            "columnName": "projectId_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "taskId.current",
+            "columnName": "taskId_current",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "taskId.backup",
+            "columnName": "taskId_backup",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "taskId.status",
+            "columnName": "taskId_status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeleted.current",
+            "columnName": "isDeleted_current",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeleted.backup",
+            "columnName": "isDeleted_backup",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeleted.status",
+            "columnName": "isDeleted_status",
+            "affinity": "TEXT",
             "notNull": true
           }
         ],
@@ -77,28 +173,28 @@
         },
         "indices": [
           {
-            "name": "index_time_entries_projectId",
+            "name": "index_time_entries_projectId_current",
             "unique": false,
             "columnNames": [
-              "projectId"
+              "projectId_current"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_projectId` ON `${TABLE_NAME}` (`projectId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_projectId_current` ON `${TABLE_NAME}` (`projectId_current`)"
           },
           {
-            "name": "index_time_entries_workspaceId",
+            "name": "index_time_entries_workspaceId_current",
             "unique": false,
             "columnNames": [
-              "workspaceId"
+              "workspaceId_current"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_workspaceId` ON `${TABLE_NAME}` (`workspaceId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_workspaceId_current` ON `${TABLE_NAME}` (`workspaceId_current`)"
           },
           {
-            "name": "index_time_entries_taskId",
+            "name": "index_time_entries_taskId_current",
             "unique": false,
             "columnNames": [
-              "taskId"
+              "taskId_current"
             ],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_taskId` ON `${TABLE_NAME}` (`taskId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_time_entries_taskId_current` ON `${TABLE_NAME}` (`taskId_current`)"
           }
         ],
         "foreignKeys": [
@@ -107,7 +203,7 @@
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
-              "projectId"
+              "projectId_current"
             ],
             "referencedColumns": [
               "id"
@@ -118,7 +214,7 @@
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
-              "workspaceId"
+              "workspaceId_current"
             ],
             "referencedColumns": [
               "id"
@@ -129,7 +225,7 @@
             "onDelete": "NO ACTION",
             "onUpdate": "NO ACTION",
             "columns": [
-              "taskId"
+              "taskId_current"
             ],
             "referencedColumns": [
               "id"
@@ -633,7 +729,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9889c901254f65aa3276acf94654a6f1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0714688b939ae2df4f6f5b422776c8db')"
     ]
   }
 }

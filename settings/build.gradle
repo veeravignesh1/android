@@ -42,7 +42,6 @@ android {
     }
 
     kotlinOptions {
-        apiVersion = '1.3' // Compose compiler based on 1.4 but set 1.3 for compatibility
         jvmTarget = JavaVersion.VERSION_1_8.toString()
         freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
     }

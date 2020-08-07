@@ -1,6 +1,7 @@
 package com.toggl.database
 
 import androidx.room.TypeConverter
+import com.toggl.database.properties.PropertySyncStatus
 import com.toggl.models.domain.WorkspaceFeature
 import java.time.Duration
 import java.time.Instant
@@ -39,4 +40,12 @@ class TogglTypeConverters {
         value?.run {
             joinToString(",") { it.featureId.toString() }
         }
+
+    @TypeConverter
+    fun fromPropertySyncStatus(value: PropertySyncStatus): String =
+        value.name
+
+    @TypeConverter
+    fun toPropertySyncStatus(value: String): PropertySyncStatus =
+        enumValueOf(value)
 }

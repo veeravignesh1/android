@@ -8,6 +8,7 @@ import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseUser
 import com.toggl.database.models.DatabaseWorkspace
+import com.toggl.database.properties.updateWith
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.Project
 import com.toggl.models.domain.Tag
@@ -18,29 +19,45 @@ import com.toggl.models.domain.Workspace
 import com.toggl.models.validation.ApiToken
 import com.toggl.models.validation.Email
 
+infix fun DatabaseTimeEntryWithTags.updateWith(updatedTimeEntry: TimeEntry): DatabaseTimeEntryWithTags = copy(
+    timeEntry = timeEntry updateWith updatedTimeEntry,
+    tags // TODO 🤷‍
+)
+
+infix fun DatabaseTimeEntry.updateWith(updatedTimeEntry: TimeEntry): DatabaseTimeEntry = copy(
+    description = description updateWith updatedTimeEntry.description,
+    startTime = startTime updateWith updatedTimeEntry.startTime,
+    duration = duration updateWith updatedTimeEntry.duration,
+    billable = billable updateWith updatedTimeEntry.billable,
+    workspaceId = workspaceId updateWith updatedTimeEntry.workspaceId,
+    projectId = projectId updateWith updatedTimeEntry.projectId,
+    taskId = taskId updateWith updatedTimeEntry.taskId,
+    isDeleted = isDeleted.updateWith(updatedTimeEntry.isDeleted)
+)
+
 fun DatabaseTimeEntryWithTags.toModel() = TimeEntry(
     timeEntry.id,
-    timeEntry.description,
-    timeEntry.startTime,
-    timeEntry.duration,
-    timeEntry.billable,
-    timeEntry.workspaceId,
-    timeEntry.projectId,
-    timeEntry.taskId,
-    timeEntry.isDeleted,
+    timeEntry.description.current,
+    timeEntry.startTime.current,
+    timeEntry.duration.current,
+    timeEntry.billable.current,
+    timeEntry.workspaceId.current,
+    timeEntry.projectId.current,
+    timeEntry.taskId.current,
+    timeEntry.isDeleted.current,
     tags
 )
 
 fun DatabaseTimeEntry.toModelWithoutTags() = TimeEntry(
     id,
-    description,
-    startTime,
-    duration,
-    billable,
-    workspaceId,
-    projectId,
-    taskId,
-    isDeleted,
+    description.current,
+    startTime.current,
+    duration.current,
+    billable.current,
+    workspaceId.current,
+    projectId.current,
+    taskId.current,
+    isDeleted.current,
     emptyList()
 )
 

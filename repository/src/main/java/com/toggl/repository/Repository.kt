@@ -18,6 +18,7 @@ import com.toggl.database.models.DatabaseTask
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.database.models.DatabaseUser
 import com.toggl.database.models.DatabaseWorkspace
+import com.toggl.database.properties.updateWith
 import com.toggl.models.domain.Client
 import com.toggl.models.domain.DateFormat
 import com.toggl.models.domain.DurationFormat
@@ -35,6 +36,7 @@ import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModel
 import com.toggl.repository.extensions.toModelWithoutTags
+import com.toggl.repository.extensions.updateWith
 import com.toggl.repository.interfaces.AppRepository
 import com.toggl.repository.interfaces.ClientRepository
 import com.toggl.repository.interfaces.ProjectRepository
@@ -154,12 +156,20 @@ class Repository(
     }
 
     override suspend fun editTimeEntry(timeEntry: TimeEntry): TimeEntry {
-        return timeEntryDao.updateTimeEntryWithTags(timeEntry.toDatabaseModel()).run { timeEntry }
+        val oldDatabaseTimeEntry = timeEntryDao.getOneTimeEntryWithTags(timeEntry.id)
+        val newDatabaseTimeEntry = oldDatabaseTimeEntry updateWith timeEntry
+        return timeEntryDao.updateTimeEntryWithTags(newDatabaseTimeEntry).run { timeEntry }
     }
 
     override suspend fun deleteTimeEntry(timeEntry: TimeEntry): TimeEntry {
-        val timeEntryWithTags = timeEntry.copy(isDeleted = true).toDatabaseModel()
-        return timeEntryWithTags
+        val oldDatabaseTimeEntryWithTags = timeEntryDao.getOneTimeEntryWithTags(timeEntry.id)
+        val oldDatabaseTimeEntry = oldDatabaseTimeEntryWithTags.timeEntry
+        val newDatabaseTimeEntryWithTags = oldDatabaseTimeEntryWithTags.copy(
+            timeEntry = oldDatabaseTimeEntry.copy(
+                isDeleted = oldDatabaseTimeEntry.isDeleted updateWith true
+            )
+        )
+        return newDatabaseTimeEntryWithTags
             .apply(timeEntryDao::updateTimeEntryWithTags)
             .let(DatabaseTimeEntryWithTags::toModel)
     }
