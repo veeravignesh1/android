@@ -18,6 +18,7 @@ import com.toggl.models.domain.User
 import com.toggl.models.domain.UserPreferences
 import com.toggl.models.domain.Workspace
 import com.toggl.onboarding.common.domain.OnboardingState
+import com.toggl.reports.domain.ReportsState
 import com.toggl.settings.domain.SettingsState
 import com.toggl.timer.common.domain.TimerState
 
@@ -38,7 +39,8 @@ data class AppState(
     val onboardingLocalState: OnboardingState.LocalState = OnboardingState.LocalState(),
     val timerLocalState: TimerState.LocalState = TimerState.LocalState(),
     val calendarLocalState: CalendarState.LocalState = CalendarState.LocalState(),
-    val settingsLocalState: SettingsState.LocalState = SettingsState.LocalState()
+    val settingsLocalState: SettingsState.LocalState = SettingsState.LocalState(),
+    val reportsLocalState: ReportsState.LocalState = ReportsState.LocalState()
 ) : BackStackAwareState<AppState> {
     override fun popBackStack(): AppState =
         copy(backStack = backStack.pop())

@@ -1,4 +1,4 @@
-package com.toggl.api.models
+package com.toggl.reports.models
 
 import java.time.Duration
 

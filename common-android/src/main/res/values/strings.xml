@@ -125,4 +125,7 @@
     <string name="generic_signup_error">Sorry, we\'re having trouble signing you up.\nPlease try again.</string>
     <string name="invalid_email_error">Please enter a valid email address</string>
     <string name="no_email_error">Please enter an email address</string>
+    <string name="no_project">No project</string>
+    <string name="reports_error_offline">Network connection failed</string>
+    <string name="reports_error_generic">Something went wrong</string>
 </resources>

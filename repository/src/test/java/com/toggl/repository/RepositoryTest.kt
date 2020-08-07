@@ -13,9 +13,13 @@ import com.toggl.database.dao.WorkspaceDao
 import com.toggl.database.models.DatabaseTimeEntry
 import com.toggl.database.models.DatabaseTimeEntryWithTags
 import com.toggl.models.domain.TimeEntry
+import com.toggl.models.domain.User
+import com.toggl.models.validation.ApiToken
+import com.toggl.models.validation.Email
 import com.toggl.repository.dto.StartTimeEntryDTO
 import com.toggl.repository.extensions.toDatabaseModel
 import com.toggl.repository.extensions.toModelWithoutTags
+import com.toggl.repository.interfaces.SettingsRepository
 import com.toggl.repository.interfaces.StartTimeEntryResult
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
@@ -311,5 +315,31 @@ class RepositoryTest : CoroutineTest() {
             clientDao wasNot called
         }
         result shouldBe timeEntry.copy(isDeleted = true)
+    }
+
+    @Test
+    fun `the set user method saves the api token in the shared preferences`() = runBlockingTest {
+
+        val editor = mockk<SharedPreferences.Editor>()
+        every { editor.apply() } returns Unit
+        every { editor.putString(any(), any()) } returns editor
+        every { sharedPreferences.edit() } returns editor
+        every { workspaceDao.insert(any()) } returns 0L
+        every { userDao.set(any()) } returns Unit
+
+        val token = ApiToken.from("12345678901234567890123456789012") as ApiToken.Valid
+        val user = User(
+            id = 0,
+            apiToken = token,
+            defaultWorkspaceId = 1,
+            email = Email.from("valid.mail@toggl.com") as Email.Valid,
+            name = "name"
+        )
+
+        repository.set(user)
+
+        verify {
+            editor.putString(SettingsRepository.apiToken, token.toString())
+        }
     }
 }

@@ -8,7 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import com.toggl.reports.domain.ReportsAction
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ReportsFragment : Fragment() {
     private val store: ReportsStoreViewModel by viewModels()
 
@@ -17,4 +20,9 @@ class ReportsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ) = View(context).apply { background = ColorDrawable(Color.parseColor("#FF00FF")) }
+
+    override fun onResume() {
+        super.onResume()
+        store.dispatch(ReportsAction.ViewAppeared)
+    }
 }

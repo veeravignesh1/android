@@ -2,13 +2,14 @@ package com.toggl.api.di
 
 import com.squareup.moshi.Moshi
 import com.toggl.api.clients.ErrorHandlingProxyClient
+import com.toggl.api.clients.ReportsApiClient
 import com.toggl.api.clients.authentication.AuthenticationApiClient
 import com.toggl.api.clients.feedback.FeedbackApiClient
-import com.toggl.api.clients.reports.ReportsApiClient
 import com.toggl.api.extensions.AppBuildConfig
 import com.toggl.api.network.AuthenticationApi
 import com.toggl.api.network.FeedbackApi
 import com.toggl.api.network.ReportsApi
+import com.toggl.api.network.adapters.DateAdapter
 import com.toggl.api.network.adapters.OffsetDateTimeAdapter
 import com.toggl.api.network.interceptors.AuthInterceptor
 import com.toggl.api.network.interceptors.UserAgentInterceptor
@@ -57,6 +58,7 @@ object ApiModule {
     @Singleton
     fun moshi() = Moshi.Builder()
         .add(OffsetDateTimeAdapter())
+        .add(DateAdapter())
         .build()
 
     @Provides

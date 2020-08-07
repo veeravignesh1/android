@@ -51,6 +51,9 @@ fun Int.toLabelColor(context: Context): Int {
 fun Int.toColorStateList() =
     ColorStateList.valueOf(this)
 
+fun Int.toHex() =
+    String.format("#%06X", 0xFFFFFF and this)
+
 object Colors {
     val defaultPalette = intArrayOf(Color.RED, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA, Color.RED)
 }

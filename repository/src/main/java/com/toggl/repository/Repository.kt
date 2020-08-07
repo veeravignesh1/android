@@ -214,6 +214,7 @@ class Repository(
         )
 
         userDao.set(user.toDatabaseModel())
+        setApiToken(user.apiToken)
     }
 
     private fun setApiToken(apiToken: ApiToken) {

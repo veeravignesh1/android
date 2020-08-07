@@ -113,4 +113,7 @@
     <string name="generic_signup_error">Já existe um usuário com esse email.</string>
     <string name="invalid_email_error">Por favor digite um email válido</string>
     <string name="no_email_error">Por favor, digite seu email</string>
+    <string name="no_project">Sem Projeto</string>
+    <string name="reports_error_offline">Falha na conexão de rede</string>
+    <string name="reports_error_generic">Algo deu errado</string>
 </resources>

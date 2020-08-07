@@ -6,19 +6,12 @@ import com.toggl.api.network.adapters.SerializeAsDate
 import java.time.OffsetDateTime
 
 @JsonClass(generateAdapter = true)
-data class TotalsBody(
-
+internal data class ProjectsSummaryBody(
     @SerializeAsDate
     @Json(name = "start_date")
     val startDate: OffsetDateTime,
 
     @SerializeAsDate
     @Json(name = "end_date")
-    val endDate: OffsetDateTime?,
-
-    @Json(name = "user_ids")
-    val userIds: List<Long>,
-
-    @Json(name = "with_graph")
-    val withGraph: Boolean
+    val endDate: OffsetDateTime?
 )

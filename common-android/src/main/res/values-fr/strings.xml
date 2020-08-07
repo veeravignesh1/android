@@ -112,4 +112,7 @@
     <string name="email_is_already_used">Un utilisateur avec ce courriel existe déjà.</string>
     <string name="no_email_error">Veuillez entrer une adresse email</string>
     <string name="invalid_email_error">Veuillez entrer une adresse email valide</string>
+    <string name="no_project">Aucun projet</string>
+    <string name="reports_error_offline">La connexión au réseau a échoué</string>
+    <string name="reports_error_generic">Quelque chose a mal tourné</string>
 </resources>
